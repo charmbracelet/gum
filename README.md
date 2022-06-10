@@ -1,6 +1,6 @@
 # Sea Shell
 
-Command-line utilities to make delightful shell scripts.
+Command line utilities to make delightful shell scripts.
 
 Sea Shell provides utilities to help you create shell scripts that will delight
 your users. Powered by [Bubbles](https://github.com/charmbracelet/bubbles) and

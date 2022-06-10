@@ -5,13 +5,13 @@ go 1.18
 require (
 	github.com/charmbracelet/bubbles v0.11.0
 	github.com/charmbracelet/bubbletea v0.21.1-0.20220606102736-dd0db24cb769
+	github.com/charmbracelet/lipgloss v0.5.1-0.20220604171933-77aae4ab0bf5
 	github.com/muesli/coral v1.0.0
 )
 
 require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52 v1.0.3 // indirect
-	github.com/charmbracelet/lipgloss v0.5.1-0.20220604171933-77aae4ab0bf5 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
