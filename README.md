@@ -11,7 +11,7 @@ your users. Powered by [Bubbles](https://github.com/charmbracelet/bubbles) and
 Prompt your users for input with a simple command.
 
 ```bash
-sea input 2> answer.text
+sea input > answer.text
 ```
 
 ## Styling

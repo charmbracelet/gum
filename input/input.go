@@ -51,13 +51,10 @@ func Cmd() *coral.Command {
 
 			ti.Focus()
 
-			p := tea.NewProgram(model{ti})
+			p := tea.NewProgram(model{ti}, tea.WithOutput(os.Stderr))
 			m, err := p.StartReturningModel()
 
-			// Print the result of the user's text input to stderr so that it
-			// can be captured by the invoker of `sea input`.
-			// We can't use stdout because it is being used by Bubble Tea.
-			fmt.Fprintln(os.Stderr, m.(model).textinput.Value())
+			fmt.Println(m.(model).textinput.Value())
 
 			return err
 		},
