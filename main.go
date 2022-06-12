@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/charmbracelet/seashell/input"
+	"github.com/charmbracelet/seashell/search"
 	"github.com/charmbracelet/seashell/style"
 	"github.com/muesli/coral"
 )
@@ -18,6 +19,7 @@ var rootCmd = &coral.Command{
 // Execute executes the root command
 func main() {
 	rootCmd.AddCommand(input.Cmd())
+	rootCmd.AddCommand(search.Cmd())
 	rootCmd.AddCommand(style.Cmd())
 
 	if err := rootCmd.Execute(); err != nil {
