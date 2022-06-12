@@ -1,4 +1,4 @@
-module github.com/charmbracelet/sea-shell
+module github.com/charmbracelet/seashell
 
 go 1.18
 

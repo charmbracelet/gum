@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/sea-shell/input"
-	"github.com/charmbracelet/sea-shell/style"
+	"github.com/charmbracelet/seashell/input"
+	"github.com/charmbracelet/seashell/style"
 	"github.com/muesli/coral"
 )
 
