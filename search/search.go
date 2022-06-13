@@ -9,47 +9,60 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/mattn/go-runewidth"
 	"github.com/muesli/coral"
 	"github.com/sahilm/fuzzy"
 )
 
-const (
-	indicator = "•"
-)
-
 type model struct {
 	textinput textinput.Model
-	options   []string
+	choices   []string
 	matches   []fuzzy.Match
 	selected  int
+	indicator string
 }
 
 func (m model) Init() tea.Cmd { return nil }
 func (m model) View() string {
 	var s string
+
+	// Since there are matches, display them so that the user can see, in real
+	// time, what they are searching for.
 	for i, match := range m.matches {
+
+		// If this the the current selected index, we add a small indicator to
+		// represent it. Otherwise, simply pad the string.
 		if i == m.selected {
-			s += m.textinput.PromptStyle.Render(indicator)
+			s += m.textinput.PromptStyle.Render(m.indicator) + " "
 		} else {
-			s += " "
+			s += strings.Repeat(" ", runewidth.StringWidth(m.indicator)) + " "
 		}
-		s += " "
+
+		// For this match, there are a certain number of characters that have
+		// caused the match. i.e. fuzzy matching.
+		// We should indicate to the users which characters are being matched.
+		var mi = 0
 		for ci, c := range match.Str {
-			included := false
-			for _, mi := range match.MatchedIndexes {
-				if ci == mi {
-					included = true
-					s += m.textinput.PromptStyle.Render(string(c))
-					break
-				}
-			}
-			if !included {
+			// Check if the current character index matches the current matched
+			// index. If so, color the character to indicate a match.
+			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
+				s += m.textinput.PromptStyle.Render(string(c))
+				// We have matched this character, so we never have to check it
+				// again. Move on to the next match.
+				mi++
+			} else {
+				// Not a match, simply show the character, unstyled.
 				s += string(c)
 			}
 		}
+
+		// We have finished displaying the match with all of it's matched
+		// characters highlighted and the rest filled in.
+		// Move on to the next match.
 		s += "\n"
 	}
 
+	// View the textinput and the filtered choices
 	return m.textinput.View() + "\n" + s
 }
 
@@ -66,13 +79,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.selected = clamp(0, len(m.matches)-1, m.selected-1)
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
-			m.matches = fuzzy.Find(m.textinput.Value(), m.options)
+
+			// A character was entered, this likely means that the text input
+			// has changed. This suggests that the matches are outdated, so
+			// update them, with a fuzzy finding algorithm provided by
+			// https://github.com/sahilm/fuzzy
+			m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
+
+			// If the search field is empty, let's not display the matches
+			// (none), but rather display all possible choices.
 			if m.textinput.Value() == "" {
-				m.matches = matchAll(m.options)
+				m.matches = matchAll(m.choices)
 			}
 		}
 	}
 
+	// It's possible that filtering items have caused fewer matches. So, ensure
+	// that the selected index is within the bounds of the number of matches.
 	m.selected = clamp(0, len(m.matches)-1, m.selected)
 	return m, cmd
 }
@@ -82,6 +105,7 @@ type options struct {
 	placeholder *string
 	width       *int
 	accentColor *string
+	indicator   *string
 }
 
 // Cmd returns the input command
@@ -107,18 +131,19 @@ func Cmd() *coral.Command {
 			if err != nil {
 				return err
 			}
-			options := strings.Split(string(input), "\n")
+			choices := strings.Split(string(input), "\n")
 
 			p := tea.NewProgram(model{
 				textinput: ti,
-				options:   options,
-				matches:   matchAll(options),
+				choices:   choices,
+				matches:   matchAll(choices),
+				indicator: *opts.indicator,
 			})
 
 			m, err := p.StartReturningModel()
 			mm := m.(model)
 
-			if len(mm.matches) > mm.selected {
+			if len(mm.matches) > mm.selected && mm.selected >= 0 {
 				fmt.Println(mm.matches[mm.selected].Str)
 			}
 
@@ -130,7 +155,8 @@ func Cmd() *coral.Command {
 		prompt:      cmd.Flags().String("prompt", "> ", "Prompt to display"),
 		placeholder: cmd.Flags().String("placeholder", "Enter a value...", "Placeholder value"),
 		width:       cmd.Flags().Int("width", 20, "Input width"),
-		accentColor: cmd.Flags().String("color", "#FF06B7", "Accent color for the prompt, indicator, and matches"),
+		accentColor: cmd.Flags().String("accent-color", "#FF06B7", "Accent color for the prompt, indicator, and matches"),
+		indicator:   cmd.Flags().String("indicator", "•", "Character to use to indicate the selected match"),
 	}
 
 	return cmd
