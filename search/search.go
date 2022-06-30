@@ -156,7 +156,6 @@ func Cmd() *coral.Command {
 			}
 			choices := strings.Split(string(input), "\n")
 
-			lipgloss.SetColorProfile(termenv.ANSI256)
 			p := tea.NewProgram(model{
 				textinput: ti,
 				choices:   choices,

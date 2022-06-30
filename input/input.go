@@ -53,7 +53,6 @@ func Cmd() *coral.Command {
 
 			ti.Focus()
 
-			lipgloss.SetColorProfile(termenv.ANSI256)
 			p := tea.NewProgram(model{ti}, tea.WithOutput(os.Stderr))
 			m, err := p.StartReturningModel()
 
