@@ -22,6 +22,10 @@ func main() {
 	rootCmd.AddCommand(search.Cmd())
 	rootCmd.AddCommand(style.Cmd())
 
+	// We re-add a help command to remove the shorthand, so that we can use the
+	// -h shorthand for height
+	rootCmd.PersistentFlags().BoolP("help", "", false, "Show help for a command")
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

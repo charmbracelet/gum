@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var parseMargin = parsePadding
+
 func parsePadding(s string) (int, int, int, int) {
 	var ints []int
 

@@ -1,7 +1,11 @@
 package style
 
 import (
+	"bufio"
 	"fmt"
+	"io"
+	"os"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/coral"
@@ -11,20 +15,16 @@ type options struct {
 	// Colors
 	background       *string
 	foreground       *string
-	borderForeground *string
 	borderBackground *string
-
-	// Decoration
-	border *string
-
+	borderForeground *string
 	// Layout
 	align   *string
-	height  *int
-	width   *int
+	border  *string
 	margin  *string
 	padding *string
-
-	// Styles
+	height  *int
+	width   *int
+	// Format
 	bold          *bool
 	faint         *bool
 	italic        *bool
@@ -38,60 +38,90 @@ func Cmd() *coral.Command {
 	var cmd = &coral.Command{
 		Use:   "style",
 		Short: "Style styles a given string",
-		Args:  coral.ExactArgs(1),
+		Args:  coral.ArbitraryArgs,
 		Run: func(cmd *coral.Command, args []string) {
-			s := lipgloss.NewStyle()
+			var str string
 
-			// Color
-			s = s.Background(lipgloss.Color(*opts.background))
-			s = s.Foreground(lipgloss.Color(*opts.foreground))
-			s = s.BorderForeground(lipgloss.Color(*opts.borderForeground))
-			s = s.BorderBackground(lipgloss.Color(*opts.borderBackground))
+			if len(args) <= 0 {
+				str, _ = readStdin()
+			} else {
+				str = strings.Join(args, " ")
+			}
 
-			// Layout
-			s = s.Align(alignment[*opts.align])
-			s = s.Height(*opts.height)
-			s = s.Width(*opts.width)
-			s = s.Padding(parsePadding(*opts.padding))
-			s = s.Margin(parsePadding(*opts.margin))
+			fmt.Println(lipgloss.NewStyle().
+				// Colors
+				Foreground(lipgloss.Color(*opts.foreground)).
+				Background(lipgloss.Color(*opts.background)).
+				BorderBackground(lipgloss.Color(*opts.borderBackground)).
+				BorderForeground(lipgloss.Color(*opts.borderForeground)).
+				// Layout
+				Align(alignment[*opts.align]).
+				Bold(*opts.bold).
+				Border(border[*opts.border]).
+				Margin(parseMargin(*opts.margin)).
+				Padding(parsePadding(*opts.padding)).
+				Height(*opts.height).
+				Width(*opts.width).
+				// Format
+				Faint(*opts.faint).
+				Italic(*opts.italic).
+				Strikethrough(*opts.strikethrough).
+				// Render the string,
+				// with the styling specified through the flag options.
+				Render(str))
 
-			// Decoration
-			s = s.Border(border[*opts.border])
-
-			// Style
-			s = s.Bold(*opts.bold)
-			s = s.Faint(*opts.faint)
-			s = s.Italic(*opts.italic)
-			s = s.Strikethrough(*opts.strikethrough)
-
-			fmt.Println(s.Render(args[0]))
 		},
 	}
 
 	f := cmd.Flags()
 	opts = options{
 		// Colors
-		background:       f.String("background", "", "Background"),
-		foreground:       f.String("foreground", "", "Foreground"),
-		borderBackground: f.String("border-background", "", "Border Background"),
-		borderForeground: f.String("border-foreground", "", "Border Foreground"),
-
-		// Decoration
-		border: f.String("border", "none", "Border"),
+		background:       f.StringP("background", "b", "", "The background color to apply"),
+		foreground:       f.StringP("foreground", "f", "", "The foreground color to apply"),
+		borderBackground: f.String("border-background", "", "The border background color to apply"),
+		borderForeground: f.String("border-foreground", "", "The border foreground color to apply"),
 
 		// Layout
-		align:   f.String("align", "left", "Alignment"),
-		height:  f.Int("height", 0, "Height"),
-		width:   f.Int("width", 0, "Width"),
-		padding: f.String("padding", "0 0 0 0", "Padding"),
-		margin:  f.String("margin", "0 0 0 0", "Margin"),
+		align:   f.StringP("align", "a", "left", "The text alignment (left, center, right, bottom, middle, top)"),
+		border:  f.String("border", "none", "The border style to apply (none, hidden, normal, rounded, thick, double)"),
+		height:  f.IntP("height", "h", 0, "The height the output should take up"),
+		width:   f.IntP("width", "w", 0, "The width the output should take up"),
+		margin:  f.StringP("margin", "m", "0 0 0 0", "Margin to apply around the text."),
+		padding: f.StringP("padding", "p", "0 0 0 0", "Padding to apply around the text."),
 
-		// Styles
-		bold:          f.Bool("bold", false, "Bold"),
-		faint:         f.Bool("faint", false, "Faint"),
-		italic:        f.Bool("italic", false, "Italic"),
-		strikethrough: f.Bool("strikethrough", false, "Strikethrough"),
+		// Format
+		bold:          f.Bool("bold", false, "Whether to apply bold formatting"),
+		faint:         f.Bool("faint", false, "Whether to apply faint formatting"),
+		italic:        f.BoolP("italic", "i", false, "Whether to apply italic formatting"),
+		strikethrough: f.BoolP("strikethrough", "x", false, "Whether to apply strikethrough formatting"),
 	}
 
 	return cmd
+}
+
+func readStdin() (string, error) {
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return "", err
+	}
+
+	if stat.Mode()&os.ModeNamedPipe == 0 && stat.Size() == 0 {
+		return "", nil
+	}
+
+	reader := bufio.NewReader(os.Stdin)
+	var b strings.Builder
+
+	for {
+		r, _, err := reader.ReadRune()
+		if err != nil && err == io.EOF {
+			break
+		}
+		_, err = b.WriteRune(r)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return b.String(), nil
 }
