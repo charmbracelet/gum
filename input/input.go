@@ -6,9 +6,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/coral"
-	"github.com/muesli/termenv"
 )
 
 type model struct{ textinput textinput.Model }

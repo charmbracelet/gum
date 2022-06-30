@@ -12,7 +12,6 @@ import (
 	"github.com/charmbracelet/seashell/internal/stdin"
 	"github.com/mattn/go-runewidth"
 	"github.com/muesli/coral"
-	"github.com/muesli/termenv"
 	"github.com/sahilm/fuzzy"
 )
 

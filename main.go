@@ -6,6 +6,7 @@ import (
 
 	"github.com/charmbracelet/seashell/input"
 	"github.com/charmbracelet/seashell/search"
+	"github.com/charmbracelet/seashell/spin"
 	"github.com/charmbracelet/seashell/style"
 	"github.com/muesli/coral"
 )
@@ -20,6 +21,7 @@ var rootCmd = &coral.Command{
 func main() {
 	rootCmd.AddCommand(input.Cmd())
 	rootCmd.AddCommand(search.Cmd())
+	rootCmd.AddCommand(spin.Cmd())
 	rootCmd.AddCommand(style.Cmd())
 
 	// We re-add a help command to remove the shorthand, so that we can use the

@@ -8,11 +8,46 @@ your users. Powered by [Bubbles](https://github.com/charmbracelet/bubbles) and
 
 ## Interaction
 
+#### Input
 Prompt your users for input with a simple command.
 
 ```bash
 sea input > answer.text
 ```
+
+#### Search
+
+Allow your users to filter through a list of options by fuzzy searching.
+
+```bash
+echo Gastropoda >> options.text
+echo Bivalvia >> options.text
+echo Polyplacophora >> options.text
+cat options.text | grg search > selection.text
+```
+
+#### Loading
+
+Display a progress bar while loading.
+
+```bash
+sea loading --time 5s
+```
+
+#### Spinners
+
+Display a spinner while taking some running action. We specify the command to
+run while showing the spinner, the spinner will automatically stop after the
+command exits.
+
+```bash
+sea spin --type dot --title "Purchasing Seashells" -- sleep 5
+```
+
+```
+⣽ Purchasing Seashells
+```
+
 
 ## Styling
 
