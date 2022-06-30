@@ -1,3 +1,11 @@
+// Package input provides a shell script interface for the text input bubble.
+// https://github.com/charmbracelet/bubbles/textinput
+//
+// It can be used to prompt the user for some input. The text the user entered
+// will be sent to stdout.
+//
+//   $ sea input --prompt "? " --placeholder "What's your favorite color?" > answer.text
+//
 package input
 
 import (
@@ -13,7 +21,7 @@ import (
 
 type model struct{ textinput textinput.Model }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd { return textinput.Blink }
 func (m model) View() string  { return m.textinput.View() }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
