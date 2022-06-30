@@ -2,12 +2,32 @@ package style
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/seashell/internal/stdin"
 	"github.com/muesli/coral"
 )
+
+// alignment maps strings to lipgloss.Position's
+var alignment = map[string]lipgloss.Position{
+	"center": lipgloss.Center,
+	"left":   lipgloss.Left,
+	"top":    lipgloss.Top,
+	"bottom": lipgloss.Bottom,
+	"right":  lipgloss.Right,
+}
+
+// border maps strings to lipgloss.Border's
+var border map[string]lipgloss.Border = map[string]lipgloss.Border{
+	"double":  lipgloss.DoubleBorder(),
+	"hidden":  lipgloss.HiddenBorder(),
+	"none":    {},
+	"normal":  lipgloss.NormalBorder(),
+	"rounded": lipgloss.RoundedBorder(),
+	"thick":   lipgloss.ThickBorder(),
+}
 
 type options struct {
 	// Colors
@@ -103,3 +123,38 @@ func Cmd() *coral.Command {
 
 	return cmd
 }
+
+// parsePadding parses 1 - 4 integers from a string and returns them in a top,
+// right, bottom, left order for use in the lipgloss.Padding() method
+func parsePadding(s string) (int, int, int, int) {
+	var ints []int
+
+	tokens := strings.Split(s, " ")
+
+	// All tokens must be an integer
+	for _, token := range tokens {
+		parsed, err := strconv.Atoi(token)
+		if err != nil {
+			return 0, 0, 0, 0
+		}
+		ints = append(ints, parsed)
+	}
+
+	if len(tokens) == 1 {
+		return ints[0], ints[0], ints[0], ints[0]
+	}
+
+	if len(tokens) == 2 {
+		return ints[0], ints[1], ints[0], ints[1]
+	}
+
+	if len(tokens) == 4 {
+		return ints[0], ints[1], ints[2], ints[3]
+	}
+
+	return 0, 0, 0, 0
+}
+
+// parseMargin is an alias for parsePadding since they involve the same logic
+// to parse integers to the same format.
+var parseMargin = parsePadding
