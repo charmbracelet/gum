@@ -3,6 +3,7 @@ package search
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -15,17 +16,22 @@ import (
 	"github.com/sahilm/fuzzy"
 )
 
+var defaultIgnore = []string{
+	".git",
+}
+
 type model struct {
 	textinput textinput.Model
 	choices   []string
 	matches   []fuzzy.Match
 	selected  int
 	indicator string
+	height    int
 }
 
 func (m model) Init() tea.Cmd { return nil }
 func (m model) View() string {
-	var s string
+	var s strings.Builder
 
 	// Since there are matches, display them so that the user can see, in real
 	// time, what they are searching for.
@@ -34,9 +40,9 @@ func (m model) View() string {
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
 		if i == m.selected {
-			s += m.textinput.PromptStyle.Render(m.indicator) + " "
+			s.WriteString(m.textinput.PromptStyle.Render(m.indicator) + " ")
 		} else {
-			s += strings.Repeat(" ", runewidth.StringWidth(m.indicator)) + " "
+			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)) + " ")
 		}
 
 		// For this match, there are a certain number of characters that have
@@ -47,29 +53,33 @@ func (m model) View() string {
 			// Check if the current character index matches the current matched
 			// index. If so, color the character to indicate a match.
 			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
-				s += m.textinput.PromptStyle.Render(string(c))
+				s.WriteString(m.textinput.PromptStyle.Render(string(c)))
 				// We have matched this character, so we never have to check it
 				// again. Move on to the next match.
 				mi++
 			} else {
 				// Not a match, simply show the character, unstyled.
-				s += string(c)
+				s.WriteRune(c)
 			}
 		}
 
 		// We have finished displaying the match with all of it's matched
 		// characters highlighted and the rest filled in.
 		// Move on to the next match.
-		s += "\n"
+		s.WriteRune('\n')
 	}
 
+	tv := m.textinput.View()
+	results := lipgloss.NewStyle().MaxHeight(m.height - lipgloss.Height(tv)).Render(s.String())
 	// View the input and the filtered choices
-	return m.textinput.View() + "\n" + s
+	return tv + "\n" + results
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.height = msg.Height
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc", "enter":
@@ -131,6 +141,19 @@ func Cmd() *coral.Command {
 			if err != nil {
 				return err
 			}
+			if input == "" {
+				// No input, let's assume they want to filter files in the
+				// current directory.
+				filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+					if info.IsDir() || shouldIgnore(path) {
+						return nil
+					}
+
+					input += path + "\n"
+					return nil
+				},
+				)
+			}
 			choices := strings.Split(string(input), "\n")
 
 			lipgloss.SetColorProfile(termenv.ANSI256)
@@ -179,4 +202,13 @@ func clamp(min, max, val int) int {
 		return max
 	}
 	return val
+}
+
+func shouldIgnore(e string) bool {
+	for _, a := range defaultIgnore {
+		if strings.HasPrefix(e, a) {
+			return true
+		}
+	}
+	return false
 }
