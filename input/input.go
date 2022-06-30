@@ -52,9 +52,7 @@ func Cmd() *coral.Command {
 		Use:   "input",
 		Short: "Input prompts the user for input.",
 		RunE: func(cmd *coral.Command, args []string) error {
-			profile := lipgloss.ColorProfile()
 			lipgloss.SetColorProfile(termenv.ANSI256)
-			defer lipgloss.SetColorProfile(profile)
 
 			ti := textinput.New()
 

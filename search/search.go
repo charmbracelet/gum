@@ -132,9 +132,7 @@ type options struct {
 
 // Cmd returns the input command
 func Cmd() *coral.Command {
-	profile := lipgloss.ColorProfile()
 	lipgloss.SetColorProfile(termenv.ANSI256)
-	defer lipgloss.SetColorProfile(profile)
 
 	var opts options
 
