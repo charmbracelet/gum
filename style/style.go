@@ -41,9 +41,16 @@ func Cmd() *coral.Command {
 		Args:  coral.ArbitraryArgs,
 		Run: func(cmd *coral.Command, args []string) {
 			var str string
+			var err error
 
 			if len(args) <= 0 {
-				str, _ = readStdin()
+				// No arguments are passed, let's check stdin
+				str, err = readStdin()
+				if err != nil || str == "" {
+					// No stdin, let's display the help
+					cmd.Help()
+					return
+				}
 			} else {
 				str = strings.Join(args, " ")
 			}
