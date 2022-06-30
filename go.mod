@@ -3,9 +3,9 @@ module github.com/charmbracelet/seashell
 go 1.18
 
 require (
-	github.com/charmbracelet/bubbles v0.11.0
-	github.com/charmbracelet/bubbletea v0.21.1-0.20220606102736-dd0db24cb769
-	github.com/charmbracelet/lipgloss v0.5.1-0.20220604171933-77aae4ab0bf5
+	github.com/charmbracelet/bubbles v0.12.1-0.20220628162924-2fd583c8ef43
+	github.com/charmbracelet/bubbletea v0.22.1-0.20220628193422-db4f6474c9c2
+	github.com/charmbracelet/lipgloss v0.5.1-0.20220407020210-a86f21a0ae43
 	github.com/muesli/coral v1.0.0
 )
 
@@ -18,7 +18,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/muesli/ansi v0.0.0-20211018074035-2e021307bc4b // indirect
-	github.com/muesli/cancelreader v0.2.0 // indirect
+	github.com/muesli/cancelreader v0.2.1 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.12.1-0.20220606102431-9500d1649068 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
