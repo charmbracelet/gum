@@ -2,15 +2,16 @@ package search
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/seashell/internal/stdin"
 	"github.com/mattn/go-runewidth"
 	"github.com/muesli/coral"
+	"github.com/muesli/termenv"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -30,7 +31,7 @@ func (m model) View() string {
 	// time, what they are searching for.
 	for i, match := range m.matches {
 
-		// If this the the current selected index, we add a small indicator to
+		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
 		if i == m.selected {
 			s += m.textinput.PromptStyle.Render(m.indicator) + " "
@@ -62,7 +63,7 @@ func (m model) View() string {
 		s += "\n"
 	}
 
-	// View the textinput and the filtered choices
+	// View the input and the filtered choices
 	return m.textinput.View() + "\n" + s
 }
 
@@ -124,21 +125,21 @@ func Cmd() *coral.Command {
 			ti.Placeholder = *opts.placeholder
 			ti.Width = *opts.width
 
-			ti.SetCursorMode(textinput.CursorStatic)
 			ti.Focus()
 
-			input, err := ioutil.ReadAll(os.Stdin)
+			input, err := stdin.Read()
 			if err != nil {
 				return err
 			}
 			choices := strings.Split(string(input), "\n")
 
+			lipgloss.SetColorProfile(termenv.ANSI256)
 			p := tea.NewProgram(model{
 				textinput: ti,
 				choices:   choices,
 				matches:   matchAll(choices),
 				indicator: *opts.indicator,
-			})
+			}, tea.WithOutput(os.Stderr))
 
 			m, err := p.StartReturningModel()
 			mm := m.(model)

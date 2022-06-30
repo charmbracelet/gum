@@ -6,7 +6,9 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/coral"
+	"github.com/muesli/termenv"
 )
 
 type model struct{ textinput textinput.Model }
@@ -51,6 +53,7 @@ func Cmd() *coral.Command {
 
 			ti.Focus()
 
+			lipgloss.SetColorProfile(termenv.ANSI256)
 			p := tea.NewProgram(model{ti}, tea.WithOutput(os.Stderr))
 			m, err := p.StartReturningModel()
 

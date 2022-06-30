@@ -1,13 +1,11 @@
 package style
 
 import (
-	"bufio"
 	"fmt"
-	"io"
-	"os"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/seashell/internal/stdin"
 	"github.com/muesli/coral"
 )
 
@@ -45,7 +43,7 @@ func Cmd() *coral.Command {
 
 			if len(args) <= 0 {
 				// No arguments are passed, let's check stdin
-				str, err = readStdin()
+				str, err = stdin.Read()
 				if err != nil || str == "" {
 					// No stdin, let's display the help
 					cmd.Help()
@@ -104,31 +102,4 @@ func Cmd() *coral.Command {
 	}
 
 	return cmd
-}
-
-func readStdin() (string, error) {
-	stat, err := os.Stdin.Stat()
-	if err != nil {
-		return "", err
-	}
-
-	if stat.Mode()&os.ModeNamedPipe == 0 && stat.Size() == 0 {
-		return "", nil
-	}
-
-	reader := bufio.NewReader(os.Stdin)
-	var b strings.Builder
-
-	for {
-		r, _, err := reader.ReadRune()
-		if err != nil && err == io.EOF {
-			break
-		}
-		_, err = b.WriteRune(r)
-		if err != nil {
-			return "", err
-		}
-	}
-
-	return b.String(), nil
 }
