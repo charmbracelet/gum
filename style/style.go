@@ -100,7 +100,7 @@ func Cmd() *coral.Command {
 		bold:          f.Bool("bold", false, "Whether to apply bold formatting"),
 		faint:         f.Bool("faint", false, "Whether to apply faint formatting"),
 		italic:        f.BoolP("italic", "i", false, "Whether to apply italic formatting"),
-		strikethrough: f.BoolP("strikethrough", "x", false, "Whether to apply strikethrough formatting"),
+		strikethrough: f.BoolP("strikethrough", "s", false, "Whether to apply strikethrough formatting"),
 	}
 
 	return cmd
