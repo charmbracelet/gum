@@ -6,7 +6,9 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/coral"
+	"github.com/muesli/termenv"
 )
 
 type model struct{ textinput textinput.Model }
@@ -42,6 +44,10 @@ func Cmd() *coral.Command {
 		Use:   "input",
 		Short: "Input prompts the user for input.",
 		RunE: func(cmd *coral.Command, args []string) error {
+			profile := lipgloss.ColorProfile()
+			lipgloss.SetColorProfile(termenv.ANSI256)
+			defer lipgloss.SetColorProfile(profile)
+
 			ti := textinput.New()
 
 			// Flags + Options

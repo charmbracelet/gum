@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/seashell/internal/stdin"
 	"github.com/mattn/go-runewidth"
 	"github.com/muesli/coral"
+	"github.com/muesli/termenv"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -120,6 +121,10 @@ type options struct {
 
 // Cmd returns the input command
 func Cmd() *coral.Command {
+	profile := lipgloss.ColorProfile()
+	lipgloss.SetColorProfile(termenv.ANSI256)
+	defer lipgloss.SetColorProfile(profile)
+
 	var opts options
 
 	var cmd = &coral.Command{
