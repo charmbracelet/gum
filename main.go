@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/alecthomas/kong"
 )
 
@@ -18,13 +16,10 @@ func main() {
 		}))
 	switch ctx.Command() {
 	case "input":
-		fmt.Println(pop.Input)
+		pop.InputCmd()
 	case "search":
-		fmt.Println(pop.Search)
 	case "spin":
-		fmt.Println(pop.Spin)
 	case "style":
-		fmt.Println(pop.Style)
 	case "layout":
 	default:
 	}

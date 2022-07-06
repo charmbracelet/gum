@@ -11,7 +11,7 @@ type Pop struct {
 	//   $ pop input --placeholder "What's your favorite pop?" > answer.text
 	//
 	Input struct {
-		Placeholder string `help:"Placeholder value" default:"..."`
+		Placeholder string `help:"Placeholder value" default:"Type something..."`
 		Prompt      string `help:"Prompt to display" default:"> "`
 		Width       int    `help:"Input width" default:"20"`
 	} `cmd:"" help:"Prompt for input."`
