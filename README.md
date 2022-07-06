@@ -20,10 +20,11 @@ pop input > answer.text
 Allow your users to filter through a list of options by fuzzy searching.
 
 ```bash
-echo Gastropoda >> options.text
-echo Bivalvia >> options.text
-echo Polyplacophora >> options.text
-cat options.text | pop search > selection.text
+echo Cherry >> flavors.text
+echo Grape >> flavors.text
+echo Lime >> flavors.text
+echo Orange >> flavors.text
+cat flavors.text | pop search > selection.text
 ```
 
 #### Loading
