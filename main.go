@@ -7,11 +7,10 @@ import (
 )
 
 func main() {
-	pop := Pop{}
-
-	ctx := kong.Parse(&pop,
-		kong.Name("help"),
-		kong.Description("An app demonstrating HelpProviders"),
+	pop := &Pop{}
+	ctx := kong.Parse(pop,
+		kong.Name("pop"),
+		kong.Description("Make your shell pop."),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
