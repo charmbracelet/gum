@@ -26,7 +26,8 @@ func main() {
 	case "spin <command>":
 		pop.Spin.Run()
 	case "style":
-		pop.Style.Text, _ = stdin.Read()
+		input, _ := stdin.Read()
+		pop.Style.Text = []string{input}
 		pop.Style.Run()
 	case "style <text>":
 		pop.Style.Run()

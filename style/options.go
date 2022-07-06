@@ -2,7 +2,7 @@ package style
 
 // Options is the customization options for the style command.
 type Options struct {
-	Text string `arg:"" optional:"" help:"Text to style"`
+	Text []string `arg:"" optional:"" help:"Text to style"`
 
 	Background       string `help:"Background color"`
 	Foreground       string `help:"Foreground color"`

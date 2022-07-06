@@ -36,4 +36,5 @@ echo "One sec, while I finish my drink."
 pop spin --title "Drinking some $POP soda pop..." --color 212 -- sleep 5
 
 pop style --width 50 --padding "1 5" --margin "1 2" --border double --border-foreground 212 \
-		"Well, it was nice meeting you, $(pop style --foreground 212 "$NAME"). Hope to see you soon! Don't forget to drink some $(pop style --foreground 212 $POP) soda pop."
+    "Well, it was nice meeting you, $(pop style --foreground 212 "$NAME"). Hope to see you soon!"\
+    "Don't forget to drink some $(pop style --foreground 212 $POP) soda pop."
