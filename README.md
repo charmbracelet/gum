@@ -1,10 +1,10 @@
-# Sea Shell
+# Soda Pop
 
-Command line utilities to make delightful shell scripts.
+Command line utilities to make your command-line `pop`.
 
-Sea Shell provides utilities to help you create shell scripts that will delight
-your users. Powered by [Bubbles](https://github.com/charmbracelet/bubbles) and
-[Lip Gloss](https://github.com/charmbracelet/lipgloss)
+Soda Pop provides utilities to help you create shell scripts make your user's
+shells `pop`. Powered by [Bubbles](https://github.com/charmbracelet/bubbles)
+and [Lip Gloss](https://github.com/charmbracelet/lipgloss)
 
 ## Interaction
 
@@ -12,7 +12,7 @@ your users. Powered by [Bubbles](https://github.com/charmbracelet/bubbles) and
 Prompt your users for input with a simple command.
 
 ```bash
-sea input > answer.text
+pop input > answer.text
 ```
 
 #### Search
@@ -23,7 +23,7 @@ Allow your users to filter through a list of options by fuzzy searching.
 echo Gastropoda >> options.text
 echo Bivalvia >> options.text
 echo Polyplacophora >> options.text
-cat options.text | grg search > selection.text
+cat options.text | pop search > selection.text
 ```
 
 #### Loading
@@ -31,7 +31,7 @@ cat options.text | grg search > selection.text
 Display a progress bar while loading.
 
 ```bash
-sea loading --time 5s
+pop loading --time 5s
 ```
 
 #### Spinners
@@ -41,7 +41,7 @@ run while showing the spinner, the spinner will automatically stop after the
 command exits.
 
 ```bash
-sea spin --type dot --title "Purchasing Seashells" -- sleep 5
+pop spin --type dot --title "Purchasing Seashells" -- sleep 5
 ```
 
 ```
@@ -54,22 +54,28 @@ sea spin --type dot --title "Purchasing Seashells" -- sleep 5
 Pretty print any string with any layout with one command.
 
 ```bash
-sea style "She sells sea shells by the sea shore." --width 50 --height 5
+pop style \
+		--foreground "#FF06B7" --border "double" \
+		--margin 2 --padding "2 4" --width 50 \
+		"And oh gosh, how delicious the fabulous frizzy frobscottle was!
+```
+
+```bash
+pop style "She sells sea shells by the sea shore." --width 50 --height 5
   --align center --padding 2 --margin "1 2" --border double
 ```
                                                         
 Result:
 
 ```
-                                                        
-  ╔══════════════════════════════════════════════════╗  
-  ║                                                  ║  
-  ║                                                  ║  
-  ║      She sells sea shells by the sea shore.      ║  
-  ║                                                  ║  
-  ║                                                  ║  
-  ╚══════════════════════════════════════════════════╝  
-                                                        
+╔══════════════════════════════════════════════════╗
+║                                                  ║
+║                                                  ║
+║    And oh gosh, how delicious the fabulous       ║
+║    frizzy frobscottle was!                       ║
+║                                                  ║
+║                                                  ║
+╚══════════════════════════════════════════════════╝
 ```
 
 ## Feedback

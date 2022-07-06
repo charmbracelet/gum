@@ -8,7 +8,7 @@ type Pop struct {
 	// It can be used to prompt the user for some input. The text the user
 	// entered will be sent to stdout.
 	//
-	//   $ pop input --prompt "? " --placeholder "What's your favorite pop?" > answer.text
+	//   $ pop input --placeholder "What's your favorite pop?" > answer.text
 	//
 	Input struct {
 		Placeholder string `help:"Placeholder value" default:"..."`
@@ -25,7 +25,7 @@ type Pop struct {
 	//
 	// I.e. let's pick from a list of soda pop flavors:
 	//
-	// $ cat flavors.text | pop search
+	//   $ cat flavors.text | pop search
 	//
 	Search struct {
 		AccentColor string `help:"Accent color for prompt, indicator, and matches" default:"#FF06B7"`
@@ -56,7 +56,36 @@ type Pop struct {
 		Spinner string `help:"Spinner type" enum:"line,dot,minidot,jump,pulse,points,globe,moon,monkey,meter,hamburger" default:"dot"`
 	} `cmd:"" help:"Show spinner while executing a command."`
 
-	// Style styles some text.
+	// Style provides a shell script interface for Lip Gloss.
+	// https://github.com/charmbracelet/lipgloss
+	//
+	// It allows you to use Lip Gloss to style text without needing to use Go.
+	// All of the styling options are available as flags.
+	//
+	// Let's make some text glamorous using bash:
+	//
+	//   $ pop style \
+	//		--foreground "#FF06B7" --border "double" \
+	// 		--margin 2 --padding "2 4" --width 50 \
+	//			"And oh gosh, how delicious the fabulous frizzy frobscottle" \
+	//			"was! It was sweet and refreshing. It tasted of vanilla and" \
+	//			"cream, with just the faintest trace of raspberries on the" \
+	//			"edge of the flavour. And the bubbles were wonderful."
+	//
+	//
+	//     ╔══════════════════════════════════════════════════╗
+	//     ║                                                  ║
+	//     ║                                                  ║
+	//     ║    And oh gosh, how delicious the fabulous       ║
+	//     ║    frizzy frobscottle was It was sweet and       ║
+	//     ║    refreshing. It tasted of vanilla and          ║
+	//     ║    cream, with just the faintest trace of        ║
+	//     ║    raspberries on the edge of the flavour.       ║
+	//     ║    And the bubbles were wonderful.               ║
+	//     ║                                                  ║
+	//     ║                                                  ║
+	//     ╚══════════════════════════════════════════════════╝
+	//
 	Style struct {
 		Background       string `help:"Background color"`
 		Foreground       string `help:"Foreground color"`
