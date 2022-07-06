@@ -17,10 +17,15 @@ type model struct {
 	selected  int
 	indicator string
 	height    int
+	quitting  bool
 }
 
 func (m model) Init() tea.Cmd { return nil }
 func (m model) View() string {
+	if m.quitting {
+		return ""
+	}
+
 	var s strings.Builder
 
 	// Since there are matches, display them so that the user can see, in real
@@ -73,6 +78,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc", "enter":
+			m.quitting = true
 			return m, tea.Quit
 		case "ctrl+n":
 			m.selected = clamp(0, len(m.matches)-1, m.selected+1)

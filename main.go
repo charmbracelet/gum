@@ -2,10 +2,13 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/sodapop/internal/stdin"
+	"github.com/muesli/termenv"
 )
 
 func main() {
+	lipgloss.SetColorProfile(termenv.ANSI256)
 	pop := &Pop{}
 	ctx := kong.Parse(pop,
 		kong.Name("pop"),

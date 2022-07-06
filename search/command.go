@@ -10,14 +10,11 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/sodapop/internal/log"
 	"github.com/charmbracelet/sodapop/internal/stdin"
-	"github.com/muesli/termenv"
 )
 
 // Run provides a shell script interface for the search bubble.
 // https://github.com/charmbracelet/bubbles/search
 func (o Options) Run() {
-	lipgloss.SetColorProfile(termenv.ANSI256)
-
 	i := textinput.New()
 	i.Focus()
 
