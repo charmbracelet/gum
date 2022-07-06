@@ -16,10 +16,13 @@ func main() {
 		}))
 	switch ctx.Command() {
 	case "input":
-		pop.InputCmd()
+		pop.Input.Run()
 	case "search":
+		pop.Search.Run()
 	case "spin":
+		pop.Spin.Run()
 	case "style":
+		pop.Style.Run()
 	case "layout":
 	default:
 	}

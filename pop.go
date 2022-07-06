@@ -1,5 +1,12 @@
 package main
 
+import (
+	"github.com/charmbracelet/sodapop/input"
+	"github.com/charmbracelet/sodapop/search"
+	"github.com/charmbracelet/sodapop/spin"
+	"github.com/charmbracelet/sodapop/style"
+)
+
 // Pop is the command-line interface for Soda Pop.
 type Pop struct {
 	// Input provides a shell script interface for the text input bubble.
@@ -10,11 +17,7 @@ type Pop struct {
 	//
 	//   $ pop input --placeholder "What's your favorite pop?" > answer.text
 	//
-	Input struct {
-		Placeholder string `help:"Placeholder value" default:"Type something..."`
-		Prompt      string `help:"Prompt to display" default:"> "`
-		Width       int    `help:"Input width" default:"20"`
-	} `cmd:"" help:"Prompt for input."`
+	Input input.Options `cmd:"" help:"Prompt for input."`
 
 	// Search provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.
@@ -27,13 +30,7 @@ type Pop struct {
 	//
 	//   $ cat flavors.text | pop search
 	//
-	Search struct {
-		AccentColor string `help:"Accent color for prompt, indicator, and matches" default:"#FF06B7"`
-		Indicator   string `help:"Character for selection" default:"•"`
-		Placeholder string `help:"Placeholder value" default:"..."`
-		Prompt      string `help:"Prompt to display" default:"> "`
-		Width       int    `help:"Input width" default:"20"`
-	} `cmd:"" help:"Fuzzy search options."`
+	Search search.Options `cmd:"" help:"Fuzzy search options."`
 
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/spinner
@@ -50,11 +47,7 @@ type Pop struct {
 	//   $ pop spin -t "Taking a nap..." -- sleep 5
 	//
 	// The spinner will automatically exit when the task is complete.
-	Spin struct {
-		Color   string `help:"Spinner color" default:"#FF06B7"`
-		Display string `help:"Text to display to user while spinning" default:"Loading..."`
-		Spinner string `help:"Spinner type" enum:"line,dot,minidot,jump,pulse,points,globe,moon,monkey,meter,hamburger" default:"dot"`
-	} `cmd:"" help:"Show spinner while executing a command."`
+	Spin spin.Options `cmd:"" help:"Show spinner while executing a command."`
 
 	// Style provides a shell script interface for Lip Gloss.
 	// https://github.com/charmbracelet/lipgloss
@@ -86,20 +79,5 @@ type Pop struct {
 	//     ║                                                  ║
 	//     ╚══════════════════════════════════════════════════╝
 	//
-	Style struct {
-		Background       string `help:"Background color"`
-		Foreground       string `help:"Foreground color"`
-		BorderBackground string `help:"Border background color"`
-		BorderForeground string `help:"Border foreground color"`
-		Align            string `help:"Text alignment" enum:"left,center,right,bottom,middle,top" default:"left"`
-		Border           string `help:"Border style to apply" enum:"none,hidden,normal,rounded,thick,double" default:"none"`
-		Height           int    `help:"Height of output"`
-		Width            int    `help:"Width of output"`
-		Margin           string `help:"Margin to apply around the text."`
-		Padding          string `help:"Padding to apply around the text."`
-		Bold             bool   `help:"Apply bold formatting"`
-		Faint            bool   `help:"Apply faint formatting"`
-		Italic           bool   `help:"Apply italic formatting"`
-		Strikethrough    bool   `help:"Apply strikethrough formatting"`
-	} `cmd:"" help:"Style some text."`
+	Style style.Options `cmd:"" help:"Style some text."`
 }
