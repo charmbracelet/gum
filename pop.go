@@ -5,6 +5,7 @@ import (
 	"github.com/charmbracelet/sodapop/search"
 	"github.com/charmbracelet/sodapop/spin"
 	"github.com/charmbracelet/sodapop/style"
+	"github.com/charmbracelet/sodapop/write"
 )
 
 // Pop is the command-line interface for Soda Pop.
@@ -18,6 +19,16 @@ type Pop struct {
 	//   $ pop input --placeholder "What's your favorite pop?" > answer.text
 	//
 	Input input.Options `cmd:"" help:"Prompt for input."`
+
+	// Write provides a shell script interface for the text area bubble.
+	// https://github.com/charmbracelet/bubbles/textarea
+	//
+	// It can be used to ask the user to write some long form of text
+	// (multi-line) input. The text the user entered will be sent to stdout.
+	//
+	//   $ pop write > output.text
+	//
+	Write write.Options `cmd:"" help:"Prompt for text"`
 
 	// Search provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.

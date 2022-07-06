@@ -21,6 +21,8 @@ func main() {
 	switch ctx.Command() {
 	case "input":
 		pop.Input.Run()
+	case "write":
+		pop.Write.Run()
 	case "search":
 		pop.Search.Run()
 	case "spin <command>":
