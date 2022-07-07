@@ -10,7 +10,7 @@ import (
 // Run runs the progress command.
 func (o Options) Run() {
 	p := progress.New(
-		progress.WithDefaultGradient(),
+		progress.WithGradient(o.ColorStart, o.ColorEnd),
 		progress.WithSpringOptions(o.Frequency, o.Damping),
 	)
 	m := model{

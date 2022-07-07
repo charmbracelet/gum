@@ -19,7 +19,7 @@ func (o Options) Run() {
 	i.Focus()
 
 	i.Prompt = o.Prompt
-	i.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(o.AccentColor))
+	i.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(o.PromptColor))
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
 
@@ -31,10 +31,12 @@ func (o Options) Run() {
 	choices := strings.Split(string(input), "\n")
 
 	p := tea.NewProgram(model{
-		textinput: i,
-		choices:   choices,
-		matches:   matchAll(choices),
-		indicator: o.Indicator,
+		textinput:      i,
+		choices:        choices,
+		matches:        matchAll(choices),
+		indicator:      o.Indicator,
+		highlightStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(o.HighlightColor)),
+		indicatorStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(o.IndicatorColor)),
 	}, tea.WithOutput(os.Stderr))
 
 	tm, _ := p.StartReturningModel()

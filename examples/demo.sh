@@ -14,7 +14,7 @@ echo "Wait a moment, while I think of my favorite color..."
 
 gum spin --title "Thinking..." --color 212 -- sleep 3
 
-echo "I like $(gum style --background $COLOR $COLOR), too. In fact, it's my $(gum style --background $COLOR 'favorite color!')"
+echo "I like $(gum style --padding "0 1" --background $COLOR $COLOR), too. In fact, it's my $(gum style --padding "0 1" --background $COLOR 'favorite color!')"
 
 sleep 1
 
@@ -24,7 +24,7 @@ sleep 1
 
 echo "What's your favorite Gum flavor?"
 
-GUM=$(gum search --accent-color 212 << FLAVORS
+GUM=$(gum search << FLAVORS
 Cherry
 Grape
 Lime

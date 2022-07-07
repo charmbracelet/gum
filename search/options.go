@@ -2,9 +2,11 @@ package search
 
 // Options is the customization options for the search.
 type Options struct {
-	AccentColor string `help:"Accent color for prompt, indicator, and matches" default:"#FF06B7"`
-	Indicator   string `help:"Character for selection" default:"•"`
-	Placeholder string `help:"Placeholder value" default:"Search..."`
-	Prompt      string `help:"Prompt to display" default:"> "`
-	Width       int    `help:"Input width" default:"20"`
+	HighlightColor string `help:"Color for highlighted matches" default:"212"`
+	Indicator      string `help:"Character for selection" default:"•"`
+	IndicatorColor string `help:"Color for indicator" default:"212"`
+	Placeholder    string `help:"Placeholder value" default:"Search..."`
+	Prompt         string `help:"Prompt to display" default:"> "`
+	PromptColor    string `help:"Color for prompt" default:"240"`
+	Width          int    `help:"Input width" default:"20"`
 }

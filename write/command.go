@@ -23,6 +23,11 @@ func (o Options) Run() {
 		a.BlurredStyle.CursorLine = lipgloss.NewStyle()
 	}
 
+	a.Cursor.Style = lipgloss.NewStyle().Foreground(lipgloss.Color(o.CursorColor))
+
+	a.FocusedStyle.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color(o.PromptColor))
+	a.BlurredStyle.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color(o.PromptColor))
+
 	a.SetWidth(o.Width)
 
 	p := tea.NewProgram(model{a}, tea.WithOutput(os.Stderr))

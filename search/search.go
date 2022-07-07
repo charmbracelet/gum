@@ -11,13 +11,15 @@ import (
 )
 
 type model struct {
-	textinput textinput.Model
-	choices   []string
-	matches   []fuzzy.Match
-	selected  int
-	indicator string
-	height    int
-	quitting  bool
+	textinput      textinput.Model
+	choices        []string
+	matches        []fuzzy.Match
+	selected       int
+	indicator      string
+	height         int
+	quitting       bool
+	highlightStyle lipgloss.Style
+	indicatorStyle lipgloss.Style
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -35,7 +37,7 @@ func (m model) View() string {
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
 		if i == m.selected {
-			s.WriteString(m.textinput.PromptStyle.Render(m.indicator) + " ")
+			s.WriteString(m.indicatorStyle.Render(m.indicator) + " ")
 		} else {
 			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)) + " ")
 		}
@@ -48,7 +50,7 @@ func (m model) View() string {
 			// Check if the current character index matches the current matched
 			// index. If so, color the character to indicate a match.
 			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
-				s.WriteString(m.textinput.PromptStyle.Render(string(c)))
+				s.WriteString(m.highlightStyle.Render(string(c)))
 				// We have matched this character, so we never have to check it
 				// again. Move on to the next match.
 				mi++
