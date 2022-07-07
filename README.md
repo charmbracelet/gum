@@ -7,8 +7,9 @@ Gum is a command-line tool (`gum`) that gives you the power of
 [Lip Gloss](https://github.com/charmbracelet/lipgloss) without needing to write
 any Go code.
 
-Check out the [Example](./examples/demo.sh) script to see what you can do with
-it.
+The following example is generated entirely from a [single bash script](./examples/demo.sh).
+
+<img src="https://stuff.charm.sh/gum/gum.gif" width="900" alt="Shell running the Gum examples/demo.sh script">
 
 ## Interaction
 
