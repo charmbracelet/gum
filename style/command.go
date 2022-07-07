@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/gum/internal/decode"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -17,7 +18,7 @@ func (o Options) Run() {
 		Background(lipgloss.Color(o.Background)).
 		BorderBackground(lipgloss.Color(o.BorderBackground)).
 		BorderForeground(lipgloss.Color(o.BorderForeground)).
-		Align(align[o.Align]).
+		Align(decode.Align[o.Align]).
 		Bold(o.Bold).
 		Border(border[o.Border]).
 		Margin(parseMargin(o.Margin)).

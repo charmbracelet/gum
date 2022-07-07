@@ -1,9 +1,9 @@
-package style
+package decode
 
 import "github.com/charmbracelet/lipgloss"
 
-// align maps strings to `lipgloss.Position`s
-var align = map[string]lipgloss.Position{
+// Align maps strings to `lipgloss.Position`s
+var Align = map[string]lipgloss.Position{
 	"center": lipgloss.Center,
 	"left":   lipgloss.Left,
 	"top":    lipgloss.Top,

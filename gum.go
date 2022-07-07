@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/charmbracelet/gum/input"
+	"github.com/charmbracelet/gum/join"
 	"github.com/charmbracelet/gum/progress"
 	"github.com/charmbracelet/gum/search"
 	"github.com/charmbracelet/gum/spin"
@@ -93,4 +94,9 @@ type Gum struct {
 	//    ╚══════════════════════════════════════════════════╝
 	//
 	Style style.Options `cmd:"" help:"Style some text."`
+
+	// Join provides a shell script interface for the lipgloss JoinHorizontal
+	// and JoinVertical commands.
+	//
+	Join join.Options `cmd:"" help:"Join text horizontally or vertically"`
 }

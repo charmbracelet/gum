@@ -35,6 +35,7 @@ func main() {
 		gum.Style.Run()
 	case "style <text>":
 		gum.Style.Run()
-	case "layout":
+	case "join <text>":
+		gum.Join.Run()
 	}
 }
