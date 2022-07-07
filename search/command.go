@@ -7,9 +7,9 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/log"
+	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/sodapop/internal/log"
-	"github.com/charmbracelet/sodapop/internal/stdin"
 )
 
 // Run provides a shell script interface for the search bubble.

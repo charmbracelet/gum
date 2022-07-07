@@ -2,17 +2,17 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
+	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/sodapop/internal/stdin"
 	"github.com/muesli/termenv"
 )
 
 func main() {
 	lipgloss.SetColorProfile(termenv.ANSI256)
-	pop := &Pop{}
-	ctx := kong.Parse(pop,
-		kong.Name("pop"),
-		kong.Description("Make your shell pop."),
+	gum := &Gum{}
+	ctx := kong.Parse(gum,
+		kong.Name("gum"),
+		kong.Description("Tasty Bubble Gum for your shell."),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
@@ -20,19 +20,21 @@ func main() {
 		}))
 	switch ctx.Command() {
 	case "input":
-		pop.Input.Run()
+		gum.Input.Run()
 	case "write":
-		pop.Write.Run()
+		gum.Write.Run()
 	case "search":
-		pop.Search.Run()
+		gum.Search.Run()
 	case "spin <command>":
-		pop.Spin.Run()
+		gum.Spin.Run()
+	case "progress":
+		gum.Progress.Run()
 	case "style":
 		input, _ := stdin.Read()
-		pop.Style.Text = []string{input}
-		pop.Style.Run()
+		gum.Style.Text = []string{input}
+		gum.Style.Run()
 	case "style <text>":
-		pop.Style.Run()
+		gum.Style.Run()
 	case "layout":
 	}
 }

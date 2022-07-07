@@ -1,10 +1,14 @@
-# Soda Pop
+# Gum
 
-Command line utilities to make your command-line `pop`.
+Tasty Bubble Gum for your shell.
 
-Soda Pop provides utilities to help you create shell scripts make your user's
-shells `pop`. Powered by [Bubbles](https://github.com/charmbracelet/bubbles)
-and [Lip Gloss](https://github.com/charmbracelet/lipgloss)
+Gum is a command-line tool (`gum`) that gives you the power of
+[Bubbles](https://github.com/charmbracelet/bubbles) and
+[Lip Gloss](https://github.com/charmbracelet/lipgloss) without needing to write
+any Go code.
+
+Check out the [Example](./examples/demo.sh) script to see what you can do with
+it.
 
 ## Interaction
 
@@ -12,7 +16,7 @@ and [Lip Gloss](https://github.com/charmbracelet/lipgloss)
 Prompt your users for input with a simple command.
 
 ```bash
-pop input > answer.text
+gum input > answer.text
 ```
 
 #### Search
@@ -20,19 +24,20 @@ pop input > answer.text
 Allow your users to filter through a list of options by fuzzy searching.
 
 ```bash
+echo Strawberry >> flavors.text
+echo Banana >> flavors.text
 echo Cherry >> flavors.text
-echo Grape >> flavors.text
-echo Lime >> flavors.text
-echo Orange >> flavors.text
-cat flavors.text | pop search > selection.text
+cat flavors.text | gum search > selection.text
 ```
 
 #### Loading
 
-Display a progress bar while loading.
+Display a progress bar while loading. The following command will display a
+progress bar and increment the progress by 10% every 1 second. Thus, taking 10
+seconds to complete the progress bar.
 
 ```bash
-pop loading --time 5s
+gum progress --increment 0.1 --interval 1s
 ```
 
 #### Spinners
@@ -42,11 +47,11 @@ run while showing the spinner, the spinner will automatically stop after the
 command exits.
 
 ```bash
-pop spin --spinner dot --title "Buying Soda Pop..." -- sleep 5
+gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
 
 ```
-⣽ Buying Soda Pop...
+⣽ Buying Bubble Gum...
 ```
 
 
@@ -55,23 +60,27 @@ pop spin --spinner dot --title "Buying Soda Pop..." -- sleep 5
 Pretty print any string with any layout with one command.
 
 ```bash
-pop style \
-    --foreground "#FF06B7" --border "double" \
-    --margin 2 --padding "2 4" --width 50 \
-    "And oh gosh, how delicious the fabulous frizzy frobscottle was!
+gum style \
+	--foreground "#FF06B7" --border "double" --align "center" \
+	--width 50 --margin 2 --padding "2 4" \
+	"Bubble Gum (1¢)" "So sweet and so fresh\!"
 ```
                                                         
 Result:
 
 ```
-╔══════════════════════════════════════════════════╗
-║                                                  ║
-║                                                  ║
-║    And oh gosh, how delicious the fabulous       ║
-║    frizzy frobscottle was!                       ║
-║                                                  ║
-║                                                  ║
-╚══════════════════════════════════════════════════╝
+                                                        
+                                                        
+  ╔══════════════════════════════════════════════════╗  
+  ║                                                  ║  
+  ║                                                  ║  
+  ║                 Bubble Gum (1¢)                  ║  
+  ║              So sweet and so fresh!              ║  
+  ║                                                  ║  
+  ║                                                  ║  
+  ╚══════════════════════════════════════════════════╝  
+                                                        
+                                                        
 ```
 
 ## Feedback
