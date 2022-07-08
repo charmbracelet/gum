@@ -1,0 +1,14 @@
+name: nightly
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  nightly:
+    uses: charmbracelet/meta/.github/workflows/nightly.yml@main
+    secrets:
+      docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
+      goreleaser_key: ${{ secrets.GORELEASER_KEY }}

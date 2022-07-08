@@ -1,0 +1,13 @@
+includes:
+  - from_url:
+      url: charmbracelet/meta/main/goreleaser.yaml
+
+variables:
+  main: "."
+  description: "Tasty Bubble Gum for your shell."
+  github_url: "https://github.com/charmbracelet/gum"
+  maintainer: "Maas Lalani <maas@charm.sh>"
+  brew_commit_author_name: "Maas Lalani"
+  brew_commit_author_email: "maas@charm.sh"
+
+

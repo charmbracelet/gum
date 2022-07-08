@@ -10,6 +10,46 @@ The following example is running from a [single Bash script](./examples/demo.sh)
 
 <img src="https://stuff.charm.sh/gum/gum.gif" width="900" alt="Shell running the Gum examples/demo.sh script">
 
+## Installation
+
+Use a package manager:
+
+```bash
+# macOS or Linux
+brew tap charmbracelet/tap && brew install charmbracelet/tap/gum
+
+# Arch Linux
+pacman -S gum
+
+# Nix
+nix-env -iA nixpkgs.gum
+
+# Debian/Ubuntu
+echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' | sudo tee /etc/apt/sources.list.d/charm.list
+sudo apt update && sudo apt install gum
+
+# Fedora
+echo '[charm]
+name=Charm
+baseurl=https://repo.charm.sh/yum/
+enabled=1
+gpgcheck=0' | sudo tee /etc/yum.repos.d/charm.repo
+sudo yum install gum
+```
+
+Or download it:
+
+* [Packages][releases] are available in Debian and RPM formats
+* [Binaries][releases] are available for Linux, macOS, and Windows
+
+Or just install it with `go`:
+
+```bash
+go install github.com/charmbracelet/gum@latest
+```
+
+[releases]: https://github.com/charmbracelet/gum/releases
+
 ## Interaction
 
 #### Input
