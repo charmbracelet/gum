@@ -25,14 +25,15 @@ Use a package manager:
 # macOS or Linux
 brew tap charmbracelet/tap && brew install charmbracelet/tap/gum
 
-# Arch Linux
+# Arch Linux (btw)
 pacman -S gum
 
 # Nix
 nix-env -iA nixpkgs.gum
 
 # Debian/Ubuntu
-echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' | sudo tee /etc/apt/sources.list.d/charm.list
+echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' \
+    | sudo tee /etc/apt/sources.list.d/charm.list
 sudo apt update && sudo apt install gum
 
 # Fedora
