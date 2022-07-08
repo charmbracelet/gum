@@ -1,5 +1,12 @@
 # Gum
 
+<p>
+    <a href="https://github.com/charmbracelet/gum/releases"><img src="https://img.shields.io/github/release/charmbracelet/gum.svg" alt="Latest Release"></a>
+    <a href="https://pkg.go.dev/github.com/charmbracelet/gum?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="GoDoc"></a>
+    <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
+    <a href="https://nightly.link/charmbracelet/gum/workflows/nightly/main"><img src="https://shields.io/badge/-Nightly%20Builds-orange?logo=hackthebox&logoColor=fff&style=appveyor"/></a>
+</p>
+
 Gum is a collection of command-line utilities that make your shell scripts a
 little more glamorous. It gives you the power of
 [Bubbles](https://github.com/charmbracelet/bubbles) and
