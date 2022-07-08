@@ -27,7 +27,7 @@ echo "What's your favorite Gum flavor?"
 GUM=$(echo "Cherry
 Grape
 Lime
-Orange" | gum search)
+Orange" | gum filter)
 
 echo "One sec, while I finish my drink."
 

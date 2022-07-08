@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/charmbracelet/gum/filter"
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
 	"github.com/charmbracelet/gum/progress"
-	"github.com/charmbracelet/gum/search"
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/gum/write"
@@ -32,7 +32,7 @@ type Gum struct {
 	//
 	Write write.Options `cmd:"" help:"Prompt for multi-line input."`
 
-	// Search provides a fuzzy searching text input to allow filtering a list of
+	// Filter provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.
 	//
 	// By default it will list all the files (recursively) in the current directory
@@ -41,9 +41,9 @@ type Gum struct {
 	//
 	// I.e. let's pick from a list of gum flavors:
 	//
-	//   $ cat flavors.text | gum search
+	//   $ cat flavors.text | gum filter
 	//
-	Search search.Options `cmd:"" help:"Fuzzy search options."`
+	Filter filter.Options `cmd:"" help:"Filter options through fuzzy search."`
 
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/spinner

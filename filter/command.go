@@ -1,4 +1,4 @@
-package search
+package filter
 
 import (
 	"fmt"
@@ -13,8 +13,8 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// Run provides a shell script interface for the search bubble.
-// https://github.com/charmbracelet/bubbles/search
+// Run provides a shell script interface for filtering through options, powered
+// by the textinput bubble.
 func (o Options) Run() {
 	i := textinput.New()
 	i.Focus()

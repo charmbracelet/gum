@@ -1,6 +1,6 @@
-package search
+package filter
 
-// Options is the customization options for the search.
+// Options is the customization options for the filter command.
 type Options struct {
 	HighlightColor string `help:"Color for highlighted matches" default:"212"`
 	Indicator      string `help:"Character for selection" default:"•"`

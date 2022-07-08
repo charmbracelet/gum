@@ -74,7 +74,7 @@ Prompt your users to write some multi-line text.
 gum write > story.text
 ```
 
-#### Search
+#### Filter
 
 Allow your users to filter through a list of options by fuzzy searching.
 
@@ -82,7 +82,7 @@ Allow your users to filter through a list of options by fuzzy searching.
 echo Strawberry >> flavors.text
 echo Banana >> flavors.text
 echo Cherry >> flavors.text
-cat flavors.text | gum search > selection.text
+cat flavors.text | gum filter > selection.text
 ```
 
 #### Progress

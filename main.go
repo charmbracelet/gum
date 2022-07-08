@@ -23,8 +23,8 @@ func main() {
 		gum.Input.Run()
 	case "write":
 		gum.Write.Run()
-	case "search":
-		gum.Search.Run()
+	case "filter":
+		gum.Filter.Run()
 	case "spin <command>":
 		gum.Spin.Run()
 	case "progress":
