@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/charmbracelet/gum/cat"
 	"github.com/charmbracelet/gum/filter"
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
@@ -94,6 +95,18 @@ type Gum struct {
 	//    ╚══════════════════════════════════════════════════╝
 	//
 	Style style.Options `cmd:"" help:"Style some text."`
+
+	// Cat provides a shell script interface for glamour.
+	// https://github.com/charmbracelet/glamour
+	//
+	// It allows you to render markdown text or syntax highlighted code to the
+	// terminal by simply passing a file name.
+	//
+	//   $ gum cat README.md
+	//
+	//   $ gum cat main.go
+	//
+	Cat cat.Options `cmd:"" help:"Render markdown or syntax highlighted code."`
 
 	// Join provides a shell script interface for the lipgloss JoinHorizontal
 	// and JoinVertical commands. It allows you to join multi-line text to
