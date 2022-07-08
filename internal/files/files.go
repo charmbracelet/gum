@@ -26,12 +26,13 @@ func List() []string {
 
 }
 
+var defaultIgnorePatterns = []string{"node_modules", ".git", "."}
+
 func shouldIgnore(path string) bool {
-	if strings.HasPrefix(path, ".git") {
-		return true
-	}
-	if strings.HasPrefix(path, ".") {
-		return true
+	for _, prefix := range defaultIgnorePatterns {
+		if strings.HasPrefix(path, prefix) {
+			return true
+		}
 	}
 	return false
 }
