@@ -92,15 +92,27 @@ Note: It's important to wrap the output of `gum style` in quotes to ensure new
 lines (`\n`) are part of a single argument passed to the `join` command.
 
 ```bash
-gum join "$(gum style --padding "1 5" --border double "I love Bubble Gum")" "$(gum style --padding "1 5" --border double "<3")"
+I=$(gum style --padding "1 5" --border double "I")
+LOVE=$(gum style --padding "1 4" --border double "LOVE")
+BUBBLE=$(gum style --padding "1 8" --border double "Bubble")
+GUM=$(gum style --padding "1 5" --border double "Gum")
+
+I_LOVE=$(gum join "$I" "$LOVE")
+BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
+gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ```
 
 ```
-╔═══════════════════════════╗╔════════════╗
-║                           ║║            ║
-║     I love Bubble Gum     ║║     <3     ║
-║                           ║║            ║
-╚═══════════════════════════╝╚════════════╝
+      ╔═══════════╗╔════════════╗      
+      ║           ║║            ║      
+      ║     I     ║║    LOVE    ║      
+      ║           ║║            ║      
+      ╚═══════════╝╚════════════╝      
+╔══════════════════════╗╔═════════════╗
+║                      ║║             ║
+║        Bubble        ║║     Gum     ║
+║                      ║║             ║
+╚══════════════════════╝╚═════════════╝
 ```
 
 
