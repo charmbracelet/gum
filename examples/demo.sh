@@ -24,12 +24,10 @@ sleep 1
 
 echo "What's your favorite Gum flavor?"
 
-GUM=$(gum search << FLAVORS
-Cherry
+GUM=$(echo "Cherry
 Grape
 Lime
-Orange
-FLAVORS)
+Orange" | gum search)
 
 echo "One sec, while I finish my drink."
 
