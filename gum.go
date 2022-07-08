@@ -30,7 +30,7 @@ type Gum struct {
 	//
 	//   $ gum write > output.text
 	//
-	Write write.Options `cmd:"" help:"Prompt for text"`
+	Write write.Options `cmd:"" help:"Prompt for multi-line input."`
 
 	// Search provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.
@@ -98,5 +98,5 @@ type Gum struct {
 	// Join provides a shell script interface for the lipgloss JoinHorizontal
 	// and JoinVertical commands.
 	//
-	Join join.Options `cmd:"" help:"Join text horizontally or vertically"`
+	Join join.Options `cmd:"" help:"Join text horizontally or vertically."`
 }
