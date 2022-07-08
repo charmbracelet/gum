@@ -11,9 +11,7 @@ import (
 // Run provides a shell script interface for Glamour rendering.
 // https://github.com/charmbracelet/glamour
 func (o Options) Run() {
-	// Are we rendering markdown?
-	// If not, let's render it as code.
-	if !strings.HasSuffix(o.File, ".md") {
+	if !o.shouldRenderAsMarkdown() {
 		o.Text = fmt.Sprintf("```\n%s\n```", strings.TrimSpace(o.Text))
 		// Since this is code, let's not do word wrapping.
 		o.Width = 0
@@ -35,4 +33,8 @@ func (o Options) Run() {
 	}
 
 	fmt.Print(out)
+}
+
+func (o Options) shouldRenderAsMarkdown() bool {
+	return strings.HasSuffix(o.File, ".md") || o.File == ""
 }
