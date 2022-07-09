@@ -29,6 +29,7 @@ func (o Options) Run() {
 	a.BlurredStyle.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color(o.PromptColor))
 
 	a.SetWidth(o.Width)
+	a.SetHeight(o.Height)
 
 	p := tea.NewProgram(model{a}, tea.WithOutput(os.Stderr))
 	m, _ := p.StartReturningModel()
