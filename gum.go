@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/gum/format"
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
+	"github.com/charmbracelet/gum/man"
 	"github.com/charmbracelet/gum/progress"
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
@@ -14,6 +15,9 @@ import (
 
 // Gum is the command-line interface for Gum.
 type Gum struct {
+	// Man is a hidden command that generates Gum man pages.
+	Man man.Man `cmd:"" hidden:"" help:"Generate man pages"`
+
 	// Choose provides an interface to choose one option from a given list of
 	// options. The options can be provided as (new-line separated) stdin or a
 	// list of arguments.
