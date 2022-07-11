@@ -28,7 +28,7 @@ gum spin --title "Taking a nap..." --color 212 -- sleep 5
 find . -type f | gum filter
 ```
 
-The following example is running from a [single Bash script](./examples/demo.sh).
+The following example is running from a [single bash script](./examples/demo.sh).
 
 <img src="https://stuff.charm.sh/gum/gum.gif" width="900" alt="Shell running the Gum examples/demo.sh script">
 
@@ -99,6 +99,17 @@ echo Strawberry >> flavors.text
 echo Banana >> flavors.text
 echo Cherry >> flavors.text
 cat flavors.text | gum filter > selection.text
+```
+
+#### Choose
+
+Ask your users to choose an option from a list of choices.
+
+
+```bash
+echo "Pick a card, any card..."
+CARD=$(gum choose --height 15 {{A,K,Q,J},{10..2}}" "{♠,♥,♣,♦})
+echo "Was your card the $CARD?"
 ```
 
 #### Progress

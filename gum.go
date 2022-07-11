@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/charmbracelet/gum/choose"
 	"github.com/charmbracelet/gum/filter"
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
@@ -44,6 +45,19 @@ type Gum struct {
 	//   $ cat flavors.text | gum filter
 	//
 	Filter filter.Options `cmd:"" help:"Filter options through fuzzy search."`
+
+	// Choose provides an interface to choose one option from a given list of
+	// options. The options can be provided as (new-line separated) stdin or a
+	// list of arguments.
+	//
+	// It is different from the filter command as it does not provide a fuzzy
+	// finding input, so it is best used for smaller lists of options.
+	//
+	// Let's pick from a list of gum flavors:
+	//
+	//   $ gum choose "Strawberry" "Banana" "Cherry"
+	//
+	Choose choose.Options `cmd:"" help:"Choose from a list of options."`
 
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/spinner

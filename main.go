@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/lipgloss"
@@ -25,6 +27,12 @@ func main() {
 		gum.Write.Run()
 	case "filter":
 		gum.Filter.Run()
+	case "choose":
+		input, _ := stdin.Read()
+		gum.Choose.Options = strings.Split(input, "\n")
+		gum.Choose.Run()
+	case "choose <options>":
+		gum.Choose.Run()
 	case "spin <command>":
 		gum.Spin.Run()
 	case "progress":
