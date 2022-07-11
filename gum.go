@@ -13,7 +13,7 @@ import (
 // Gum is the command-line interface for Soda Gum.
 type Gum struct {
 	// Input provides a shell script interface for the text input bubble.
-	// https://github.com/charmbracelet/bubbles/textinput
+	// https://github.com/charmbracelet/bubbles/tree/master/textinput
 	//
 	// It can be used to prompt the user for some input. The text the user
 	// entered will be sent to stdout.
@@ -23,7 +23,7 @@ type Gum struct {
 	Input input.Options `cmd:"" help:"Prompt for input."`
 
 	// Write provides a shell script interface for the text area bubble.
-	// https://github.com/charmbracelet/bubbles/textarea
+	// https://github.com/charmbracelet/bubbles/tree/master/textarea
 	//
 	// It can be used to ask the user to write some long form of text
 	// (multi-line) input. The text the user entered will be sent to stdout.
@@ -46,7 +46,7 @@ type Gum struct {
 	Filter filter.Options `cmd:"" help:"Filter options through fuzzy search."`
 
 	// Spin provides a shell script interface for the spinner bubble.
-	// https://github.com/charmbracelet/bubbles/spinner
+	// https://github.com/charmbracelet/bubbles/tree/master/spinner
 	//
 	// It is useful for displaying that some task is running in the background
 	// while consuming it's output so that it is not shown to the user.
@@ -63,7 +63,7 @@ type Gum struct {
 	Spin spin.Options `cmd:"" help:"Show spinner while executing a command."`
 
 	// Progress provides a shell script interface for the progress bubble.
-	// https://github.com/charmbracelet/bubbles/progress
+	// https://github.com/charmbracelet/bubbles/tree/master/progress
 	//
 	// It's useful for indicating that something is happening in the background
 	// that will end after some set time.
