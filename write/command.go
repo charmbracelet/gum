@@ -32,7 +32,7 @@ func (o Options) Run() {
 	a.SetHeight(o.Height)
 	a.SetValue(o.Value)
 
-	p := tea.NewProgram(model{a}, tea.WithOutput(os.Stderr))
+	p := tea.NewProgram(model{textarea: a}, tea.WithOutput(os.Stderr))
 	m, _ := p.StartReturningModel()
 	fmt.Println(m.(model).textarea.Value())
 }
