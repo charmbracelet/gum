@@ -4,7 +4,6 @@
     <a href="https://github.com/charmbracelet/gum/releases"><img src="https://img.shields.io/github/release/charmbracelet/gum.svg" alt="Latest Release"></a>
     <a href="https://pkg.go.dev/github.com/charmbracelet/gum?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="GoDoc"></a>
     <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
-    <a href="https://nightly.link/charmbracelet/gum/workflows/nightly/main"><img src="https://shields.io/badge/-Nightly%20Builds-orange?logo=hackthebox&logoColor=fff&style=appveyor"/></a>
 </p>
 
 Gum is a collection of command-line utilities that make your shell scripts a
@@ -12,6 +11,22 @@ little more glamorous. It gives you the power of
 [Bubbles](https://github.com/charmbracelet/bubbles) and
 [Lip Gloss](https://github.com/charmbracelet/lipgloss) without needing to write
 any Go code.
+
+```bash
+# Prompt users for input
+NAME=$(gum input --placeholder "What is your name?")
+
+# Style some text
+gum style --foreground 212 --padding "1 4" \
+	--border double --border-foreground 57 \
+	"Nice to meet you, $NAME."
+
+# Do some work while spinning
+gum spin --title "Taking a nap..." --color 212 -- sleep 5
+
+# Fuzzy find a file or directory
+find . -type f | gum filter
+```
 
 The following example is running from a [single Bash script](./examples/demo.sh).
 
@@ -163,6 +178,45 @@ gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ╚══════════════════════╝╚═════════════╝
 ```
 
+## Examples
+
+See the [examples](./examples/) directory for more real world use cases.
+
+How to use `gum` in your daily workflows:
+
+#### Open files in your `$EDITOR`
+
+By default `gum filter` will display a list of all files (searched recursively)
+through your current directory, it has some sensible ignored defaults (`.git`,
+`node_modules`). You can use this to pick a file and open it in your `$EDITOR`.
+
+```bash
+$EDITOR $(gum filter)
+```
+
+#### Write a commit message
+
+Prompt for user input to write git commit messages with a short summary and
+longer details with `gum input` and `gum write`.
+
+Bonus points if you use `gum filter` with the [Conventional Commits
+Specification](https://www.conventionalcommits.org/en/v1.0.0/#summary) as a
+prefix for your commit message.
+
+```bash
+git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
+           -m "$(gum write --width 80 --placeholder "Details of changes")"
+```
+
+#### Connect to a TMUX session
+
+Pick from a running `TMUX` session and attach to it if not inside `TMUX` or
+switch your client to the session if already attached to a session.
+
+```bash
+SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session...")
+tmux switch-client -t $SESSION || tmux attach -t $SESSION
+```
 
 ## Feedback
 
@@ -174,7 +228,7 @@ We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
 ## License
 
-[MIT](https://github.com/charmbracelet/seashell/raw/main/LICENSE)
+[MIT](https://github.com/charmbracelet/gum/raw/main/LICENSE)
 
 Part of [Charm](https://charm.sh).
 
