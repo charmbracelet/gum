@@ -218,6 +218,16 @@ SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session..."
 tmux switch-client -t $SESSION || tmux attach -t $SESSION
 ```
 
+#### Pick commit hash from history
+
+Filter through your git history searching for commit messages and copy the
+commit hash of the selected commit.
+
+```bash
+git log --oneline | gum filter | cut -d' ' -f1 # | copy
+```
+
+
 ## Feedback
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
