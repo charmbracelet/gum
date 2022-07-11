@@ -30,6 +30,7 @@ func (o Options) Run() {
 
 	a.SetWidth(o.Width)
 	a.SetHeight(o.Height)
+	a.SetValue(o.Value)
 
 	p := tea.NewProgram(model{a}, tea.WithOutput(os.Stderr))
 	m, _ := p.StartReturningModel()

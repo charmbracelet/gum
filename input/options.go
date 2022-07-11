@@ -6,5 +6,6 @@ type Options struct {
 	Placeholder string `help:"Placeholder value" default:"Type something..."`
 	Prompt      string `help:"Prompt to display" default:"> "`
 	PromptColor string `help:"Color of prompt" default:"7"`
+	Value       string `help:"Initial value" default:""`
 	Width       int    `help:"Input width" default:"20"`
 }

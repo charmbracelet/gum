@@ -9,5 +9,6 @@ type Options struct {
 	PromptColor     string `help:"Prompt color" default:"238"`
 	ShowCursorLine  bool   `help:"Show cursor line" default:"false"`
 	ShowLineNumbers bool   `help:"Show line numbers" default:"false"`
+	Value           string `help:"Initial value" default:""`
 	Width           int    `help:"Text area width" default:"50"`
 }

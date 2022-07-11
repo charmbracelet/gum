@@ -15,6 +15,7 @@ func (o Options) Run() {
 	i := textinput.New()
 	i.Focus()
 
+	i.SetValue(o.Value)
 	i.Prompt = o.Prompt
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
