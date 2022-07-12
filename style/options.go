@@ -2,8 +2,12 @@ package style
 
 // Options is the customization options for the style command.
 type Options struct {
-	Text []string `arg:"" optional:"" help:"Text to style"`
+	Text  []string `arg:"" optional:"" help:"Text to style"`
+	Style Style    `embed:""`
+}
 
+// Style is a flag set of the options for a lipgloss.Style.
+type Style struct {
 	Background       string `help:"Background color"`
 	Foreground       string `help:"Foreground color"`
 	BorderBackground string `help:"Border background color"`
