@@ -8,9 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/files"
-	"github.com/charmbracelet/gum/internal/log"
 	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/lipgloss"
 )
 
 // Run provides a shell script interface for filtering through options, powered
@@ -20,16 +18,11 @@ func (o Options) Run() {
 	i.Focus()
 
 	i.Prompt = o.Prompt
-	i.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(o.PromptColor))
+	i.PromptStyle = o.PromptStyle.ToLipgloss()
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
 
-	input, err := stdin.Read()
-	if err != nil {
-		log.Error("Could not read stdin.")
-		return
-	}
-
+	input, _ := stdin.Read()
 	var choices []string
 	if input != "" {
 		choices = strings.Split(string(input), "\n")
@@ -38,12 +31,13 @@ func (o Options) Run() {
 	}
 
 	p := tea.NewProgram(model{
-		textinput:      i,
 		choices:        choices,
-		matches:        matchAll(choices),
 		indicator:      o.Indicator,
-		highlightStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(o.HighlightColor)),
-		indicatorStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(o.IndicatorColor)),
+		matches:        matchAll(choices),
+		textinput:      i,
+		indicatorStyle: o.IndicatorStyle.ToLipgloss(),
+		matchStyle:     o.MatchStyle.ToLipgloss(),
+		textStyle:      o.TextStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr))
 
 	tm, _ := p.StartReturningModel()

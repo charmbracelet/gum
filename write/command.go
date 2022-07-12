@@ -6,7 +6,6 @@ import (
 
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 // Run provides a shell script interface for the text area bubble.
@@ -18,15 +17,20 @@ func (o Options) Run() {
 	a.Prompt = o.Prompt
 	a.Placeholder = o.Placeholder
 	a.ShowLineNumbers = o.ShowLineNumbers
-	if !o.ShowCursorLine {
-		a.FocusedStyle.CursorLine = lipgloss.NewStyle()
-		a.BlurredStyle.CursorLine = lipgloss.NewStyle()
+
+	style := textarea.Style{
+		Base:             o.BaseStyle.ToLipgloss(),
+		Placeholder:      o.PlaceholderStyle.ToLipgloss(),
+		CursorLine:       o.CursorLineStyle.ToLipgloss(),
+		CursorLineNumber: o.CursorLineNumberStyle.ToLipgloss(),
+		EndOfBuffer:      o.EndOfBufferStyle.ToLipgloss(),
+		LineNumber:       o.LineNumberStyle.ToLipgloss(),
+		Prompt:           o.PromptStyle.ToLipgloss(),
 	}
 
-	a.Cursor.Style = lipgloss.NewStyle().Foreground(lipgloss.Color(o.CursorColor))
-
-	a.FocusedStyle.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color(o.PromptColor))
-	a.BlurredStyle.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color(o.PromptColor))
+	a.BlurredStyle = style
+	a.FocusedStyle = style
+	a.Cursor.Style = o.CursorStyle.ToLipgloss()
 
 	a.SetWidth(o.Width)
 	a.SetHeight(o.Height)

@@ -18,7 +18,8 @@ type model struct {
 	indicator      string
 	height         int
 	quitting       bool
-	highlightStyle lipgloss.Style
+	matchStyle     lipgloss.Style
+	textStyle      lipgloss.Style
 	indicatorStyle lipgloss.Style
 }
 
@@ -50,13 +51,13 @@ func (m model) View() string {
 			// Check if the current character index matches the current matched
 			// index. If so, color the character to indicate a match.
 			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
-				s.WriteString(m.highlightStyle.Render(string(c)))
+				s.WriteString(m.matchStyle.Render(string(c)))
 				// We have matched this character, so we never have to check it
 				// again. Move on to the next match.
 				mi++
 			} else {
 				// Not a match, simply show the character, unstyled.
-				s.WriteRune(c)
+				s.WriteString(m.textStyle.Render(string(c)))
 			}
 		}
 

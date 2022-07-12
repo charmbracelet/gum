@@ -16,10 +16,11 @@ func main() {
 		kong.Name("gum"),
 		kong.Description("Tasty Bubble Gum for your shell."),
 		kong.UsageOnError(),
-		kong.ConfigureHelp(kong.HelpOptions{
-			Compact: true,
-			Summary: false,
-		}))
+		kong.Vars{
+			"defaultBackground": "",
+			"defaultForeground": "",
+		},
+	)
 	switch ctx.Command() {
 	case "input":
 		gum.Input.Run()

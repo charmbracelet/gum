@@ -1,11 +1,13 @@
 package input
 
+import "github.com/charmbracelet/gum/style"
+
 // Options are the customization options for the input.
 type Options struct {
-	CursorColor string `help:"Color of prompt" default:"212"`
-	Placeholder string `help:"Placeholder value" default:"Type something..."`
-	Prompt      string `help:"Prompt to display" default:"> "`
-	PromptColor string `help:"Color of prompt" default:"7"`
-	Value       string `help:"Initial value" default:""`
-	Width       int    `help:"Input width" default:"20"`
+	Placeholder string       `help:"Placeholder value" default:"Type something..."`
+	Prompt      string       `help:"Prompt to display" default:"> "`
+	PromptStyle style.Styles `embed:"" prefix:"prompt." set:"name=prompt"`
+	CursorStyle style.Styles `embed:"" prefix:"cursor." set:"defaultForeground=212" set:"name=cursor"`
+	Value       string       `help:"Initial value" default:""`
+	Width       int          `help:"Input width" default:"20"`
 }

@@ -6,7 +6,6 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
 )
 
@@ -25,9 +24,9 @@ func (o Options) Run() {
 
 	id := itemDelegate{
 		indicator:         o.Indicator,
-		indicatorStyle:    lipgloss.NewStyle().Foreground(lipgloss.Color(o.IndicatorColor)),
-		itemStyle:         lipgloss.NewStyle().Padding(0, runewidth.StringWidth(o.Indicator)).Foreground(lipgloss.Color(o.UnselectedColor)),
-		selectedItemStyle: lipgloss.NewStyle().Foreground(lipgloss.Color(o.SelectedColor)),
+		indicatorStyle:    o.IndicatorStyle.ToLipgloss(),
+		selectedItemStyle: o.SelectedStyle.ToLipgloss(),
+		itemStyle:         o.ItemStyle.ToLipgloss().MarginLeft(runewidth.StringWidth(o.Indicator)),
 	}
 
 	l := list.New(items, id, defaultWidth, o.Height)
