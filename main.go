@@ -23,8 +23,16 @@ func main() {
 	)
 	switch ctx.Command() {
 	case "input":
+		v, _ := stdin.Read()
+		if v != "" {
+			gum.Input.Value = v
+		}
 		gum.Input.Run()
 	case "write":
+		v, _ := stdin.Read()
+		if v != "" {
+			gum.Write.Value = v
+		}
 		gum.Write.Run()
 	case "filter":
 		gum.Filter.Run()

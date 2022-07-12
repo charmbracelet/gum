@@ -10,7 +10,7 @@ type Options struct {
 	Prompt          string `help:"Prompt to display" default:"┃ "`
 	ShowCursorLine  bool   `help:"Show cursor line" default:"false"`
 	ShowLineNumbers bool   `help:"Show line numbers" default:"false"`
-	Value           string `help:"Initial value" default:""`
+	Value           string `help:"Initial value (can be passed via stdin)" default:""`
 
 	BaseStyle             style.Styles `embed:"" prefix:"base." set:"name=base"`
 	CursorLineNumberStyle style.Styles `embed:"" prefix:"cursor-line-number." set:"defaultForeground=7" set:"name=cursor line number"`

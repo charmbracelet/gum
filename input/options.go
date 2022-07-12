@@ -8,6 +8,6 @@ type Options struct {
 	Prompt      string       `help:"Prompt to display" default:"> "`
 	PromptStyle style.Styles `embed:"" prefix:"prompt." set:"name=prompt"`
 	CursorStyle style.Styles `embed:"" prefix:"cursor." set:"defaultForeground=212" set:"name=cursor"`
-	Value       string       `help:"Initial value" default:""`
+	Value       string       `help:"Initial value (can also be passed via stdin)" default:""`
 	Width       int          `help:"Input width" default:"20"`
 }
