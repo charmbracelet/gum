@@ -1,3 +1,14 @@
+// Package filter provides a fuzzy searching text input to allow filtering a
+// list of options to select one option.
+//
+// By default it will list all the files (recursively) in the current directory
+// for the user to choose one, but the script (or user) can provide different
+// new-line separated options to choose from.
+//
+// I.e. let's pick from a list of gum flavors:
+//
+//   $ cat flavors.text | gum filter
+//
 package filter
 
 import (

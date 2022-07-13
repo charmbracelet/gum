@@ -1,6 +1,6 @@
 package join
 
-// Options is the set
+// Options is the set of options that can configure a join.
 type Options struct {
 	Text []string `arg:"" help:"Text to join."`
 

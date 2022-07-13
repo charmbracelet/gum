@@ -1,3 +1,14 @@
+// Package choose provides an interface to choose one option from a given list
+// of options. The options can be provided as (new-line separated) stdin or a
+// list of arguments.
+//
+// It is different from the filter command as it does not provide a fuzzy
+// finding input, so it is best used for smaller lists of options.
+//
+// Let's pick from a list of gum flavors:
+//
+//   $ gum choose "Strawberry" "Banana" "Cherry"
+//
 package choose
 
 import (

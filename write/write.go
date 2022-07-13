@@ -1,3 +1,11 @@
+// Package write provides a shell script interface for the text area bubble.
+// https://github.com/charmbracelet/bubbles/tree/master/textarea
+//
+// It can be used to ask the user to write some long form of text
+// (multi-line) input. The text the user entered will be sent to stdout.
+//
+//   $ gum write > output.text
+//
 package write
 
 import (

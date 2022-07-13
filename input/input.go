@@ -1,3 +1,11 @@
+// Package input provides a shell script interface for the text input bubble.
+// https://github.com/charmbracelet/bubbles/tree/master/textinput
+//
+// It can be used to prompt the user for some input. The text the user entered
+// will be sent to stdout.
+//
+//   $ gum input --placeholder "What's your favorite gum?" > answer.text
+//
 package input
 
 import (

@@ -1,3 +1,13 @@
+// Package progress provides a shell script interface for the progress bubble.
+// https://github.com/charmbracelet/bubbles/tree/master/progress
+//
+// It's useful for indicating that something is happening in the background
+// that will end after some set time. It can be passed an increment value which
+// specifies how much the progress bar should move every interval, which can
+// also be configured.
+//
+//   $ gum progress --increment 0.1 --interval 250ms
+//
 package progress
 
 import (

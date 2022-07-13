@@ -13,25 +13,18 @@ import (
 
 // Gum is the command-line interface for Gum.
 type Gum struct {
-	// Input provides a shell script interface for the text input bubble.
-	// https://github.com/charmbracelet/bubbles/tree/master/textinput
+	// Choose provides an interface to choose one option from a given list of
+	// options. The options can be provided as (new-line separated) stdin or a
+	// list of arguments.
 	//
-	// It can be used to prompt the user for some input. The text the user
-	// entered will be sent to stdout.
+	// It is different from the filter command as it does not provide a fuzzy
+	// finding input, so it is best used for smaller lists of options.
 	//
-	//   $ gum input --placeholder "What's your favorite gum?" > answer.text
+	// Let's pick from a list of gum flavors:
 	//
-	Input input.Options `cmd:"" help:"Prompt for some input"`
-
-	// Write provides a shell script interface for the text area bubble.
-	// https://github.com/charmbracelet/bubbles/tree/master/textarea
+	//   $ gum choose "Strawberry" "Banana" "Cherry"
 	//
-	// It can be used to ask the user to write some long form of text
-	// (multi-line) input. The text the user entered will be sent to stdout.
-	//
-	//   $ gum write > output.text
-	//
-	Write write.Options `cmd:"" help:"Prompt for long-form text"`
+	Choose choose.Options `cmd:"" help:"Choose an option from a list of choices"`
 
 	// Filter provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.
@@ -46,68 +39,15 @@ type Gum struct {
 	//
 	Filter filter.Options `cmd:"" help:"Filter items from a list"`
 
-	// Choose provides an interface to choose one option from a given list of
-	// options. The options can be provided as (new-line separated) stdin or a
-	// list of arguments.
+	// Input provides a shell script interface for the text input bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/textinput
 	//
-	// It is different from the filter command as it does not provide a fuzzy
-	// finding input, so it is best used for smaller lists of options.
+	// It can be used to prompt the user for some input. The text the user
+	// entered will be sent to stdout.
 	//
-	// Let's pick from a list of gum flavors:
+	//   $ gum input --placeholder "What's your favorite gum?" > answer.text
 	//
-	//   $ gum choose "Strawberry" "Banana" "Cherry"
-	//
-	Choose choose.Options `cmd:"" help:"Choose an option from a list of choices"`
-
-	// Spin provides a shell script interface for the spinner bubble.
-	// https://github.com/charmbracelet/bubbles/tree/master/spinner
-	//
-	// It is useful for displaying that some task is running in the background
-	// while consuming it's output so that it is not shown to the user.
-	//
-	// For example, let's do a long running task:
-	//   $ sleep 5
-	//
-	// We can simply prepend a spinner to this task to show it to the user,
-	// while performing the task / command in the background.
-	//
-	//   $ gum spin -t "Taking a nap..." -- sleep 5
-	//
-	// The spinner will automatically exit when the task is complete.
-	Spin spin.Options `cmd:"" help:"Display spinner while running a command"`
-
-	// Progress provides a shell script interface for the progress bubble.
-	// https://github.com/charmbracelet/bubbles/tree/master/progress
-	//
-	// It's useful for indicating that something is happening in the background
-	// that will end after some set time.
-	//
-	Progress progress.Options `cmd:"" help:"Display a progress bar for a certain time"`
-
-	// Style provides a shell script interface for Lip Gloss.
-	// https://github.com/charmbracelet/lipgloss
-	//
-	// It allows you to use Lip Gloss to style text without needing to use Go.
-	// All of the styling options are available as flags.
-	//
-	// Let's make some text glamorous using bash:
-	//
-	//   $ gum style \
-	//  	--foreground "#FF06B7" --border "double" --align "center" \
-	//  	--width 50 --margin 2 --padding "2 4" \
-	//  	"Bubble Gum (1¢)" "So sweet and so fresh\!"
-	//
-	//
-	//    ╔══════════════════════════════════════════════════╗
-	//    ║                                                  ║
-	//    ║                                                  ║
-	//    ║                 Bubble Gum (1¢)                  ║
-	//    ║              So sweet and so fresh!              ║
-	//    ║                                                  ║
-	//    ║                                                  ║
-	//    ╚══════════════════════════════════════════════════╝
-	//
-	Style style.Options `cmd:"" help:"Apply coloring, borders, spacing to text"`
+	Input input.Options `cmd:"" help:"Prompt for some input"`
 
 	// Join provides a shell script interface for the lipgloss JoinHorizontal
 	// and JoinVertical commands. It allows you to join multi-line text to
@@ -126,4 +66,68 @@ type Gum struct {
 	//   ╚══════════════════════╝╚═════════════╝
 	//
 	Join join.Options `cmd:"" help:"Join text vertically or horizontally"`
+
+	// Progress provides a shell script interface for the progress bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/progress
+	//
+	// It's useful for indicating that something is happening in the background
+	// that will end after some set time. It can be passed an increment value
+	// which specifies how much the progress bar should move every interval,
+	// which can also be configured.
+	//
+	//   $ gum progress --increment 0.1 --interval 250ms
+	//
+	Progress progress.Options `cmd:"" help:"Display a progress bar for a certain time"`
+
+	// Spin provides a shell script interface for the spinner bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/spinner
+	//
+	// It is useful for displaying that some task is running in the background
+	// while consuming it's output so that it is not shown to the user.
+	//
+	// For example, let's do a long running task: $ sleep 5
+	//
+	// We can simply prepend a spinner to this task to show it to the user,
+	// while performing the task / command in the background.
+	//
+	//   $ gum spin -t "Taking a nap..." -- sleep 5
+	//
+	// The spinner will automatically exit when the task is complete.
+	//
+	Spin spin.Options `cmd:"" help:"Display spinner while running a command"`
+
+	// Style provides a shell script interface for Lip Gloss.
+	// https://github.com/charmbracelet/lipgloss
+	//
+	// It allows you to use Lip Gloss to style text without needing to use Go.
+	// All of the styling options are available as flags.
+	//
+	// Let's make some text glamorous using bash:
+	//
+	//   $ gum style \
+	//  	--foreground 212 --border double --align center \
+	//  	--width 50 --margin 2 --padding "2 4" \
+	//  	"Bubble Gum (1¢)" "So sweet and so fresh\!"
+	//
+	//
+	//    ╔══════════════════════════════════════════════════╗
+	//    ║                                                  ║
+	//    ║                                                  ║
+	//    ║                 Bubble Gum (1¢)                  ║
+	//    ║              So sweet and so fresh!              ║
+	//    ║                                                  ║
+	//    ║                                                  ║
+	//    ╚══════════════════════════════════════════════════╝
+	//
+	Style style.Options `cmd:"" help:"Apply coloring, borders, spacing to text"`
+
+	// Write provides a shell script interface for the text area bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/textarea
+	//
+	// It can be used to ask the user to write some long form of text
+	// (multi-line) input. The text the user entered will be sent to stdout.
+	//
+	//   $ gum write > output.text
+	//
+	Write write.Options `cmd:"" help:"Prompt for long-form text"`
 }
