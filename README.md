@@ -164,23 +164,12 @@ Pretty print any string with any layout with one command.
 
 ```bash
 gum style \
-	--foreground "#FF06B7" --border "double" --align "center" \
-	--width 50 --margin "1 2" --padding "2 4" \
-	"Bubble Gum (1¢)" "So sweet and so fresh\!"
+	--foreground 212 --border-foreground 212 --border double \
+	--align center --width 50 --margin "1 2" --padding "2 4" \
+	'Bubble Gum (1¢)' 'So sweet and so fresh!'
 ```
 
-```
-                                                        
-  ╔══════════════════════════════════════════════════╗  
-  ║                                                  ║  
-  ║                                                  ║  
-  ║                 Bubble Gum (1¢)                  ║  
-  ║              So sweet and so fresh!              ║  
-  ║                                                  ║  
-  ║                                                  ║  
-  ╚══════════════════════════════════════════════════╝  
-
-```
+<img src="https://stuff.charm.sh/gum/style.png?cache=1" width="600" alt="Bubble Gum, So sweet and so fresh!">
 
 #### Join
 
@@ -191,28 +180,17 @@ Note: It's important to wrap the output of `gum style` in quotes to ensure new
 lines (`\n`) are part of a single argument passed to the `join` command.
 
 ```bash
-I=$(gum style --padding "1 5" --border double "I")
-LOVE=$(gum style --padding "1 4" --border double "LOVE")
-BUBBLE=$(gum style --padding "1 8" --border double "Bubble")
-GUM=$(gum style --padding "1 5" --border double "Gum")
+I=$(gum style --padding "1 5" --border double --border-foreground 212 "I")
+LOVE=$(gum style --padding "1 4" --border double --border-foreground 57 "LOVE")
+BUBBLE=$(gum style --padding "1 8" --border double --border-foreground 255 "Bubble")
+GUM=$(gum style --padding "1 5" --border double --border-foreground 240 "Gum")
 
 I_LOVE=$(gum join "$I" "$LOVE")
 BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
 gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ```
 
-```
-      ╔═══════════╗╔════════════╗      
-      ║           ║║            ║      
-      ║     I     ║║    LOVE    ║      
-      ║           ║║            ║      
-      ╚═══════════╝╚════════════╝      
-╔══════════════════════╗╔═════════════╗
-║                      ║║             ║
-║        Bubble        ║║     Gum     ║
-║                      ║║             ║
-╚══════════════════════╝╚═════════════╝
-```
+<img src="https://stuff.charm.sh/gum/join.png" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them.">
 
 ## Examples
 
