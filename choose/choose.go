@@ -12,57 +12,35 @@
 package choose
 
 import (
-	"fmt"
-	"io"
+	"strings"
 
-	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/mattn/go-runewidth"
 )
 
 type model struct {
-	choice            string
-	height            int
-	indicator         string
-	indicatorStyle    lipgloss.Style
-	itemStyle         lipgloss.Style
-	items             []item
-	list              list.Model
-	options           []string
-	quitting          bool
-	selectedItemStyle lipgloss.Style
-}
+	height           int
+	page             int
+	cursor           string
+	selectedPrefix   string
+	unselectedPrefix string
+	cursorPrefix     string
+	items            []item
+	quitting         bool
+	index            int
+	limit            int
+	numSelected      int
 
-type item string
-
-func (i item) FilterValue() string { return "" }
-
-type itemDelegate struct {
-	indicator         string
-	indicatorStyle    lipgloss.Style
+	// styles
+	cursorStyle       lipgloss.Style
 	itemStyle         lipgloss.Style
 	selectedItemStyle lipgloss.Style
 }
 
-func (d itemDelegate) Height() int                               { return 1 }
-func (d itemDelegate) Spacing() int                              { return 0 }
-func (d itemDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd { return nil }
-func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	i, ok := listItem.(item)
-	if !ok {
-		return
-	}
-
-	str := fmt.Sprintf("%s", i)
-
-	fn := d.itemStyle.Render
-	if index == m.Index() {
-		fn = func(s string) string {
-			return d.indicatorStyle.Render(d.indicator) + d.selectedItemStyle.Render(s)
-		}
-	}
-
-	fmt.Fprintf(w, fn(str))
+type item struct {
+	text     string
+	selected bool
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -70,43 +48,92 @@ func (m model) Init() tea.Cmd { return nil }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.list.SetWidth(msg.Width)
 		return m, nil
 
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
+		case "down", "j", "ctrl+n":
+			m.index = (m.index + 1) % len(m.items)
+			m.page = m.index / m.height
+		case "up", "k", "ctrl+p":
+			m.index = (m.index - 1 + len(m.items)) % len(m.items)
+			m.page = m.index / m.height
+		case "right", "l", "ctrl+f":
+			if m.index+m.height < len(m.items) {
+				m.index += m.height
+			} else {
+				if m.page < len(m.items)/m.height {
+					m.index = len(m.items) - 1
+				}
+			}
+			m.page = m.index / m.height
+		case "left", "h", "ctrl+b":
+			if m.index-m.height >= 0 {
+				m.index -= m.height
+			}
+			m.page = m.index / m.height
 		case "ctrl+c":
 			m.quitting = true
 			return m, tea.Quit
+		case " ", "x":
+			if m.limit == 1 {
+				break // no op
+			}
 
+			if m.items[m.index].selected {
+				m.items[m.index].selected = false
+				m.numSelected--
+			} else if m.numSelected < m.limit {
+				m.items[m.index].selected = true
+				m.numSelected++
+			}
 		case "enter":
 			m.quitting = true
-			i, ok := m.list.SelectedItem().(item)
-			if ok {
-				m.choice = string(i)
+			// Select the item on which they've hit enter if it falls within
+			// the limit.
+			if m.numSelected < m.limit {
+				m.items[m.index].selected = true
 			}
 			return m, tea.Quit
 		}
 	}
 
-	var cmd tea.Cmd
-	m.list, cmd = m.list.Update(msg)
-	return m, cmd
+	return m, nil
 }
 
 func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
-	return m.list.View()
+
+	var s strings.Builder
+
+	for i, item := range m.items[clamp(m.page*m.height, 0, len(m.items)):clamp((m.page+1)*m.height, 0, len(m.items))] {
+		if i == m.index%m.height {
+			s.WriteString(m.cursorStyle.Render(m.cursor))
+		} else {
+			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.cursor)))
+		}
+
+		if item.selected {
+			s.WriteString(m.selectedItemStyle.Render(m.selectedPrefix + item.text))
+		} else if i == m.index%m.height {
+			s.WriteString(m.cursorStyle.Render(m.cursorPrefix + item.text))
+		} else {
+			s.WriteString(m.itemStyle.Render(m.unselectedPrefix + item.text))
+		}
+		s.WriteRune('\n')
+	}
+
+	return s.String()
 }
 
-func clamp(min, max, val int) int {
-	if val < min {
+func clamp(x, min, max int) int {
+	if x < min {
 		return min
 	}
-	if val > max {
+	if x > max {
 		return max
 	}
-	return val
+	return x
 }
