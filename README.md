@@ -198,16 +198,6 @@ See the [examples](./examples/) directory for more real world use cases.
 
 How to use `gum` in your daily workflows:
 
-#### Open files in your `$EDITOR`
-
-By default `gum filter` will display a list of all files (searched recursively)
-through your current directory, it has some sensible ignored defaults (`.git`,
-`node_modules`). You can use this to pick a file and open it in your `$EDITOR`.
-
-```bash
-$EDITOR $(gum filter)
-```
-
 #### Write a commit message
 
 Prompt for user input to write git commit messages with a short summary and
@@ -220,6 +210,18 @@ prefix for your commit message.
 ```bash
 git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
            -m "$(gum write --width 80 --placeholder "Details of changes")"
+```
+
+<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git">
+
+#### Open files in your `$EDITOR`
+
+By default `gum filter` will display a list of all files (searched recursively)
+through your current directory, it has some sensible ignored defaults (`.git`,
+`node_modules`). You can use this to pick a file and open it in your `$EDITOR`.
+
+```bash
+$EDITOR $(gum filter)
 ```
 
 #### Connect to a TMUX session
