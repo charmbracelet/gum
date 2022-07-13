@@ -82,6 +82,8 @@ Prompt your users for input with a simple command.
 gum input > answer.text
 ```
 
+<img src="https://stuff.charm.sh/gum/input.gif" width="350" alt="Shell running gum input typing I love bubble gum <3">
+
 #### Write
 
 Prompt your users to write some multi-line text.
@@ -89,6 +91,8 @@ Prompt your users to write some multi-line text.
 ```bash
 gum write > story.text
 ```
+
+<img src="https://stuff.charm.sh/gum/write.gif" width="400" alt="Shell running gum write typing My favorite flavors are:">
 
 #### Filter
 
@@ -101,6 +105,8 @@ echo Cherry >> flavors.text
 cat flavors.text | gum filter > selection.text
 ```
 
+<img src="https://stuff.charm.sh/gum/filter.gif" width="400" alt="Shell running gum filter on different bubble gum flavors">
+
 #### Choose
 
 Ask your users to choose an option from a list of choices.
@@ -112,6 +118,8 @@ CARD=$(gum choose --height 15 {{A,K,Q,J},{10..2}}" "{♠,♥,♣,♦})
 echo "Was your card the $CARD?"
 ```
 
+<img src="https://stuff.charm.sh/gum/choose.gif" width="400" alt="Shell running gum choose on a deck of cards, picking the Ace of Hearts">
+
 #### Progress
 
 Display a progress bar while loading. The following command will display a
@@ -122,6 +130,8 @@ seconds to complete the progress bar.
 gum progress --increment 0.1 --interval 1s
 ```
 
+<img src="https://stuff.charm.sh/gum/progress.gif" width="600" alt="Shell running gum progress">
+
 #### Spinners
 
 Display a spinner while taking some running action. We specify the command to
@@ -131,6 +141,8 @@ command exits.
 ```bash
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
+
+<img src="https://stuff.charm.sh/gum/spin.gif" width="800" alt="Shell running gum spin while sleeping for 5 seconds">
 
 ## Styling and Layout
 
