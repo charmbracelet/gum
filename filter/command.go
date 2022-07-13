@@ -13,7 +13,7 @@ import (
 
 // Run provides a shell script interface for filtering through options, powered
 // by the textinput bubble.
-func (o Options) Run() {
+func (o Options) Run() error {
 	i := textinput.New()
 	i.Focus()
 
@@ -40,10 +40,12 @@ func (o Options) Run() {
 		textStyle:      o.TextStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr))
 
-	tm, _ := p.StartReturningModel()
+	tm, err := p.StartReturningModel()
 	m := tm.(model)
 
 	if len(m.matches) > m.selected && m.selected >= 0 {
 		fmt.Println(m.matches[m.selected].Str)
 	}
+
+	return err
 }

@@ -6,15 +6,23 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/stdin"
 )
 
 // Run provides a shell script interface for the text input bubble.
 // https://github.com/charmbracelet/bubbles/textinput
-func (o Options) Run() {
-	i := textinput.New()
-	i.Focus()
+func (o Options) Run() error {
+	in, _ := stdin.Read()
 
-	i.SetValue(o.Value)
+	i := textinput.New()
+
+	if in != "" && o.Value == "" {
+		i.SetValue(in)
+	} else {
+		i.SetValue(o.Value)
+	}
+
+	i.Focus()
 	i.Prompt = o.Prompt
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
@@ -22,6 +30,7 @@ func (o Options) Run() {
 	i.CursorStyle = o.CursorStyle.ToLipgloss()
 
 	p := tea.NewProgram(model{i}, tea.WithOutput(os.Stderr))
-	m, _ := p.StartReturningModel()
+	m, err := p.StartReturningModel()
 	fmt.Println(m.(model).textinput.Value())
+	return err
 }

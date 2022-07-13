@@ -8,7 +8,7 @@ import (
 )
 
 // Run runs the progress command.
-func (o Options) Run() {
+func (o Options) Run() error {
 	p := progress.New(
 		progress.WithGradient(o.ColorStart, o.ColorEnd),
 		progress.WithSpringOptions(o.Frequency, o.Damping),
@@ -18,5 +18,5 @@ func (o Options) Run() {
 		interval:  o.Interval,
 		increment: o.Increment,
 	}
-	_ = tea.NewProgram(m, tea.WithOutput(os.Stderr)).Start()
+	return tea.NewProgram(m, tea.WithOutput(os.Stderr)).Start()
 }

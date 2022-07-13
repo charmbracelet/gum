@@ -11,7 +11,7 @@ import (
 	"github.com/charmbracelet/gum/write"
 )
 
-// Gum is the command-line interface for Soda Gum.
+// Gum is the command-line interface for Gum.
 type Gum struct {
 	// Input provides a shell script interface for the text input bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/textinput
@@ -21,7 +21,7 @@ type Gum struct {
 	//
 	//   $ gum input --placeholder "What's your favorite gum?" > answer.text
 	//
-	Input input.Options `cmd:"" help:"Prompt for input."`
+	Input input.Options `cmd:"" help:"Prompt for some input"`
 
 	// Write provides a shell script interface for the text area bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/textarea
@@ -31,7 +31,7 @@ type Gum struct {
 	//
 	//   $ gum write > output.text
 	//
-	Write write.Options `cmd:"" help:"Prompt for multi-line input."`
+	Write write.Options `cmd:"" help:"Prompt for long-form text"`
 
 	// Filter provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.
@@ -44,7 +44,7 @@ type Gum struct {
 	//
 	//   $ cat flavors.text | gum filter
 	//
-	Filter filter.Options `cmd:"" help:"Filter options through fuzzy search."`
+	Filter filter.Options `cmd:"" help:"Filter items from a list"`
 
 	// Choose provides an interface to choose one option from a given list of
 	// options. The options can be provided as (new-line separated) stdin or a
@@ -57,7 +57,7 @@ type Gum struct {
 	//
 	//   $ gum choose "Strawberry" "Banana" "Cherry"
 	//
-	Choose choose.Options `cmd:"" help:"Choose from a list of options."`
+	Choose choose.Options `cmd:"" help:"Choose an option from a list of choices"`
 
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/spinner
@@ -74,7 +74,7 @@ type Gum struct {
 	//   $ gum spin -t "Taking a nap..." -- sleep 5
 	//
 	// The spinner will automatically exit when the task is complete.
-	Spin spin.Options `cmd:"" help:"Show spinner while executing a command."`
+	Spin spin.Options `cmd:"" help:"Display spinner while running a command"`
 
 	// Progress provides a shell script interface for the progress bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/progress
@@ -82,7 +82,7 @@ type Gum struct {
 	// It's useful for indicating that something is happening in the background
 	// that will end after some set time.
 	//
-	Progress progress.Options `cmd:"" help:"Show a progress bar for some amount of time."`
+	Progress progress.Options `cmd:"" help:"Display a progress bar for a certain time"`
 
 	// Style provides a shell script interface for Lip Gloss.
 	// https://github.com/charmbracelet/lipgloss
@@ -107,7 +107,7 @@ type Gum struct {
 	//    ║                                                  ║
 	//    ╚══════════════════════════════════════════════════╝
 	//
-	Style style.Options `cmd:"" help:"Style some text."`
+	Style style.Options `cmd:"" help:"Apply coloring, borders, spacing to text"`
 
 	// Join provides a shell script interface for the lipgloss JoinHorizontal
 	// and JoinVertical commands. It allows you to join multi-line text to
@@ -125,5 +125,5 @@ type Gum struct {
 	//   ║                      ║║             ║
 	//   ╚══════════════════════╝╚═════════════╝
 	//
-	Join join.Options `cmd:"" help:"Join text horizontally or vertically."`
+	Join join.Options `cmd:"" help:"Join text vertically or horizontally"`
 }

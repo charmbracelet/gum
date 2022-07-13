@@ -3,15 +3,22 @@ package choose
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/mattn/go-runewidth"
 )
 
 // Run provides a shell script interface for choosing between different through
 // options.
-func (o Options) Run() {
+func (o Options) Run() error {
+	if len(o.Options) == 0 {
+		input, _ := stdin.Read()
+		o.Options = strings.Split(input, "\n")
+	}
+
 	items := []list.Item{}
 	for _, option := range o.Options {
 		if option == "" {
@@ -37,10 +44,6 @@ func (o Options) Run() {
 	l.SetShowPagination(!o.HidePagination)
 
 	m, err := tea.NewProgram(model{list: l}, tea.WithOutput(os.Stderr)).StartReturningModel()
-
-	if err != nil {
-		fmt.Println("Error running program:", err)
-		os.Exit(1)
-	}
 	fmt.Println(m.(model).choice)
+	return err
 }

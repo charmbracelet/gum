@@ -6,11 +6,17 @@ import (
 
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/stdin"
 )
 
 // Run provides a shell script interface for the text area bubble.
 // https://github.com/charmbracelet/bubbles/textarea
-func (o Options) Run() {
+func (o Options) Run() error {
+	in, _ := stdin.Read()
+	if in != "" && o.Value == "" {
+		o.Value = in
+	}
+
 	a := textarea.New()
 	a.Focus()
 
@@ -37,6 +43,7 @@ func (o Options) Run() {
 	a.SetValue(o.Value)
 
 	p := tea.NewProgram(model{textarea: a}, tea.WithOutput(os.Stderr))
-	m, _ := p.StartReturningModel()
+	m, err := p.StartReturningModel()
 	fmt.Println(m.(model).textarea.Value())
+	return err
 }

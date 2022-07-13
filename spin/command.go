@@ -7,7 +7,7 @@ import (
 
 // Run provides a shell script interface for the spinner bubble.
 // https://github.com/charmbracelet/bubbles/spinner
-func (o Options) Run() {
+func (o Options) Run() error {
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
@@ -17,5 +17,5 @@ func (o Options) Run() {
 		command: o.Command,
 	}
 	p := tea.NewProgram(m)
-	_ = p.Start()
+	return p.Start()
 }

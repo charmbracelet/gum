@@ -10,7 +10,7 @@ import (
 type Styles struct {
 	// Colors
 	Background string `help:"Background color of the ${name=element}" default:"${defaultBackground}" hidden:""`
-	Foreground string `help:"Foreground color of the ${name=element}" default:"${defaultForeground}"`
+	Foreground string `help:"color of the ${name=element}" default:"${defaultForeground}"`
 
 	// Border
 	Border           string `help:"Border style to apply" enum:"none,hidden,normal,rounded,thick,double" default:"none" hidden:""`
