@@ -1,6 +1,7 @@
 package choose
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -14,6 +15,9 @@ import (
 func (o Options) Run() error {
 	if len(o.Options) == 0 {
 		input, _ := stdin.Read()
+		if input == "" {
+			return errors.New("no options provided, see `gum choose --help`")
+		}
 		o.Options = strings.Split(strings.TrimSpace(input), "\n")
 	}
 
@@ -24,10 +28,16 @@ func (o Options) Run() error {
 
 	// We don't need to display prefixes if we are only picking one option.
 	// Simply displaying the cursor is enough.
-	if o.Limit == 1 {
+	if o.Limit == 1 && !o.NoLimit {
 		o.SelectedPrefix = ""
 		o.UnselectedPrefix = ""
 		o.CursorPrefix = ""
+	}
+
+	// If we've set no limit then we can simply select as many options as there
+	// are so let's set the limit to the number of options.
+	if o.NoLimit {
+		o.Limit = len(o.Options)
 	}
 
 	m, err := tea.NewProgram(model{
