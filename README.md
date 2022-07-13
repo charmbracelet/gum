@@ -92,7 +92,7 @@ Prompt your users to write some multi-line text.
 gum write > story.text
 ```
 
-<img src="https://stuff.charm.sh/gum/write.gif" width="400" alt="Shell running gum write typing My favorite flavors are:">
+<img src="https://stuff.charm.sh/gum/write.gif" width="600" alt="Shell running gum write typing My favorite flavors are:">
 
 #### Filter
 
@@ -105,7 +105,7 @@ echo Cherry >> flavors.text
 cat flavors.text | gum filter > selection.text
 ```
 
-<img src="https://stuff.charm.sh/gum/filter.gif" width="400" alt="Shell running gum filter on different bubble gum flavors">
+<img src="https://stuff.charm.sh/gum/filter.gif" width="600" alt="Shell running gum filter on different bubble gum flavors">
 
 #### Choose
 
@@ -117,7 +117,7 @@ CARD=$(gum choose --height 15 {{A,K,Q,J},{10..2}}" "{♠,♥,♣,♦})
 echo "Was your card the $CARD?"
 ```
 
-<img src="https://stuff.charm.sh/gum/choose.gif" width="400" alt="Shell running gum choose on a deck of cards, picking the Ace of Hearts">
+<img src="https://stuff.charm.sh/gum/choose.gif" width="600" alt="Shell running gum choose on a deck of cards, picking the Ace of Hearts">
 
 You can also set a limit on the number of items to choose with the `--limit` flag.
 
@@ -155,7 +155,7 @@ command exits.
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
 
-<img src="https://stuff.charm.sh/gum/spin.gif" width="800" alt="Shell running gum spin while sleeping for 5 seconds">
+<img src="https://stuff.charm.sh/gum/spin.gif?cache=1" width="600" alt="Shell running gum spin while sleeping for 5 seconds">
 
 ## Styling and Layout
 
