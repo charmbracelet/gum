@@ -111,7 +111,6 @@ cat flavors.text | gum filter > selection.text
 
 Ask your users to choose an option from a list of choices.
 
-
 ```bash
 echo "Pick a card, any card..."
 CARD=$(gum choose --height 15 {{A,K,Q,J},{10..2}}" "{♠,♥,♣,♦})
@@ -119,6 +118,20 @@ echo "Was your card the $CARD?"
 ```
 
 <img src="https://stuff.charm.sh/gum/choose.gif" width="400" alt="Shell running gum choose on a deck of cards, picking the Ace of Hearts">
+
+You can also set a limit on the number of items to choose with the `--limit` flag.
+
+```bash
+echo "Pick your top 5 songs."
+cat songs.txt | gum choose --limit 5
+```
+
+Or, allow any number of selections with the `--no-limit` flag.
+
+```bash
+echo "What do you need from the grocery store?"
+cat foods.txt | gum choose --no-limit
+```
 
 #### Progress
 
@@ -250,6 +263,14 @@ commit hash of the selected commit.
 git log --oneline | gum filter | cut -d' ' -f1 # | copy
 ```
 
+#### Choose packages to uninstall
+
+List all packages installed by your package manager (we'll use `brew`) and
+choose which packages to uninstall.
+
+```bash
+brew list | gum choose --no-limit | xargs brew uninstall
+```
 
 ## Feedback
 
