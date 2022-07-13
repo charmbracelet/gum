@@ -14,6 +14,7 @@ package choose
 import (
 	"strings"
 
+	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
@@ -21,7 +22,6 @@ import (
 
 type model struct {
 	height           int
-	page             int
 	cursor           string
 	selectedPrefix   string
 	unselectedPrefix string
@@ -31,6 +31,7 @@ type model struct {
 	index            int
 	limit            int
 	numSelected      int
+	paginator        paginator.Model
 
 	// styles
 	cursorStyle       lipgloss.Style
@@ -51,27 +52,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.KeyMsg:
+		start, end := m.paginator.GetSliceBounds(len(m.items))
 		switch keypress := msg.String(); keypress {
 		case "down", "j", "ctrl+n":
-			m.index = (m.index + 1) % len(m.items)
-			m.page = m.index / m.height
+			m.index = clamp(m.index+1, 0, len(m.items)-1)
+			if m.index >= end {
+				m.paginator.NextPage()
+			}
 		case "up", "k", "ctrl+p":
-			m.index = (m.index - 1 + len(m.items)) % len(m.items)
-			m.page = m.index / m.height
+			m.index = clamp(m.index-1, 0, len(m.items)-1)
+			if m.index <= start {
+				m.paginator.PrevPage()
+			}
 		case "right", "l", "ctrl+f":
-			if m.index+m.height < len(m.items) {
-				m.index += m.height
-			} else {
-				if m.page < len(m.items)/m.height {
-					m.index = len(m.items) - 1
-				}
-			}
-			m.page = m.index / m.height
+			m.index = clamp(m.index+m.height, 0, len(m.items)-1)
+			m.paginator.NextPage()
 		case "left", "h", "ctrl+b":
-			if m.index-m.height >= 0 {
-				m.index -= m.height
-			}
-			m.page = m.index / m.height
+			m.index = clamp(m.index-m.height, 0, len(m.items)-1)
+			m.paginator.PrevPage()
 		case "ctrl+c":
 			m.quitting = true
 			return m, tea.Quit
@@ -98,7 +96,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	return m, nil
+	var cmd tea.Cmd
+	m.paginator, cmd = m.paginator.Update(msg)
+	return m, cmd
 }
 
 func (m model) View() string {
@@ -108,7 +108,8 @@ func (m model) View() string {
 
 	var s strings.Builder
 
-	for i, item := range m.items[clamp(m.page*m.height, 0, len(m.items)):clamp((m.page+1)*m.height, 0, len(m.items))] {
+	start, end := m.paginator.GetSliceBounds(len(m.items))
+	for i, item := range m.items[start:end] {
 		if i == m.index%m.height {
 			s.WriteString(m.cursorStyle.Render(m.cursor))
 		} else {
@@ -122,8 +123,17 @@ func (m model) View() string {
 		} else {
 			s.WriteString(m.itemStyle.Render(m.unselectedPrefix + item.text))
 		}
-		s.WriteRune('\n')
+		if i != m.height {
+			s.WriteRune('\n')
+		}
 	}
+
+	if m.paginator.TotalPages <= 1 {
+		return s.String()
+	}
+
+	s.WriteString(strings.Repeat("\n", m.height-m.paginator.ItemsOnPage(len(m.items))+1))
+	s.WriteString("  " + m.paginator.View())
 
 	return s.String()
 }

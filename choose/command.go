@@ -6,8 +6,15 @@ import (
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/lipgloss"
+)
+
+var (
+	subduedStyle     = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "#847A85", Dark: "#979797"})
+	verySubduedStyle = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "#DDDADA", Dark: "#3C3C3C"})
 )
 
 // Run provides a shell script interface for choosing between different through
@@ -40,6 +47,21 @@ func (o Options) Run() error {
 		o.Limit = len(o.Options)
 	}
 
+	// Use the pagination model to display the current and total number of
+	// pages.
+	pager := paginator.New()
+	pager.SetTotalPages((len(items) + o.Height - 1) / o.Height)
+	pager.PerPage = o.Height
+	pager.Type = paginator.Dots
+	pager.ActiveDot = subduedStyle.Render("•")
+	pager.InactiveDot = verySubduedStyle.Render("•")
+
+	// Disable Keybindings since we will control it ourselves.
+	pager.UseHLKeys = false
+	pager.UseLeftRightKeys = false
+	pager.UseJKKeys = false
+	pager.UsePgUpPgDownKeys = false
+
 	m, err := tea.NewProgram(model{
 		height:            o.Height,
 		cursor:            o.Cursor,
@@ -48,6 +70,7 @@ func (o Options) Run() error {
 		cursorPrefix:      o.CursorPrefix,
 		items:             items,
 		limit:             o.Limit,
+		paginator:         pager,
 		cursorStyle:       o.CursorStyle.ToLipgloss(),
 		itemStyle:         o.ItemStyle.ToLipgloss(),
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
