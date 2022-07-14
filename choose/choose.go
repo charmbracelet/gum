@@ -87,9 +87,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			m.quitting = true
-			// Select the item on which they've hit enter if it falls within
-			// the limit.
-			if m.numSelected < m.limit {
+			// If the user hasn't selected any items in a multi-select.
+			// Then we select the item that they have pressed enter on. If they
+			// have selected items, then we simply return them.
+			if m.numSelected < 1 {
 				m.items[m.index].selected = true
 			}
 			return m, tea.Quit
