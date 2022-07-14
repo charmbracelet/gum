@@ -40,20 +40,46 @@ type Gum struct {
 	//
 	Filter filter.Options `cmd:"" help:"Filter items from a list"`
 
-	// Format provides a way to format a string using a template.
-	// Behind the scenes it uses the termenv templating helpers to format the string.
+	// Package format allows you to render formatted text from the command line.
+	// There are a few different types of formats that can be used:
+	//
+	// 1. Markdown
+	// ─────────────
+	// Render any input as markdown text. This uses glamour behind the scenes.
+	// https://github.com/charmbracelet/glamour
+	//
+	//   $ gum format '**Tasty** *Bubble* `Gum`'
+	//
+	// Or, pass input via stdin:
+	//
+	//   $ echo '**Tasty** *Bubble* `Gum`' | gum format
+	//
+	// 2. Template
+	// ─────────────
+	// Render styled input from a template. Templates are handled by termenv.
 	// https://github.com/muesli/termenv
 	//
-	// Use it to quickly print styled strings without needing to manually mess
-	// with lots of style commands. If you need more powerful styling use the
-	// `gum style` and `gum join` to build up output.
+	//   $ gum format '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' --type template
 	//
-	//   $ gum format '{{ Bold "Tasty" }} {{ Underline "Bubble" }} {{ Foreground "212" "Gum" }}'
+	// 3. Code
+	// ─────────────
+	// Perform syntax highlighting on some code snippets. Styling is handled by
+	// glamour, which in turn uses chroma. https://github.com/alecthomas/chroma
 	//
-	// Or, pass the format string over stdin:
+	//   $ cat code.go | gum format --type code
 	//
-	//   $ printf '{{ Bold "Tasty" }} {{ Underline "Bubble" }} {{ Foreground "212" "Gum" }}' | gum format
-	//   $ printf 'Inline {{ Bold (Color "#eb5757" "#292927" " code ") }} block' | gum format
+	// 4. Emoji
+	// ─────────────
+	// Parse emojis within text and render emojis. Emoji rendering is handled by
+	// glamour, which in turn uses goldmark-emoji.
+	// https://github.com/yuin/goldmark-emoji
+	//
+	//   $ gum format 'I :heart: Bubble Gum :candy:' --type emoji
+	//   $ echo "I :heart: Bubble Gum :candy:" | gum format --type emoji
+	//
+	// Output:
+	//
+	//   I ❤️ Bubble Gum 🍬
 	//
 	Format format.Options `cmd:"" help:"Format a string using a template"`
 
