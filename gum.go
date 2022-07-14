@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/charmbracelet/gum/choose"
 	"github.com/charmbracelet/gum/filter"
+	"github.com/charmbracelet/gum/format"
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
 	"github.com/charmbracelet/gum/progress"
@@ -38,6 +39,23 @@ type Gum struct {
 	//   $ cat flavors.text | gum filter
 	//
 	Filter filter.Options `cmd:"" help:"Filter items from a list"`
+
+	// Format provides a way to format a string using a template.
+	// Behind the scenes it uses the termenv templating helpers to format the string.
+	// https://github.com/muesli/termenv
+	//
+	// Use it to quickly print styled strings without needing to manually mess
+	// with lots of style commands. If you need more powerful styling use the
+	// `gum style` and `gum join` to build up output.
+	//
+	//   $ gum format '{{ Bold "Tasty" }} {{ Underline "Bubble" }} {{ Foreground "212" "Gum" }}'
+	//
+	// Or, pass the format string over stdin:
+	//
+	//   $ printf '{{ Bold "Tasty" }} {{ Underline "Bubble" }} {{ Foreground "212" "Gum" }}' | gum format
+	//   $ printf 'Inline {{ Bold (Color "#eb5757" "#292927" " code ") }} block' | gum format
+	//
+	Format format.Options `cmd:"" help:"Format a string using a template"`
 
 	// Input provides a shell script interface for the text input bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/textinput
