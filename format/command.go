@@ -68,7 +68,14 @@ func (o Options) Run() error {
 
 	switch o.Type {
 	case "code":
-		out, err := glamour.Render(fmt.Sprintf("```\n%s\n```", input), "auto")
+		renderer, err := glamour.NewTermRenderer(
+			glamour.WithAutoStyle(),
+			glamour.WithWordWrap(0),
+		)
+		if err != nil {
+			return err
+		}
+		out, err := renderer.Render(fmt.Sprintf("```\n%s\n```", input))
 		if err != nil {
 			return err
 		}
@@ -80,7 +87,9 @@ func (o Options) Run() error {
 		}
 		fmt.Println(out)
 	case "emoji":
-		renderer, err := glamour.NewTermRenderer(glamour.WithEmoji())
+		renderer, err := glamour.NewTermRenderer(
+			glamour.WithEmoji(),
+		)
 		if err != nil {
 			return err
 		}
