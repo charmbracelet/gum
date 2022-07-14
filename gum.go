@@ -40,47 +40,9 @@ type Gum struct {
 	//
 	Filter filter.Options `cmd:"" help:"Filter items from a list"`
 
-	// Package format allows you to render formatted text from the command line.
-	// There are a few different types of formats that can be used:
-	//
-	// 1. Markdown
-	// ─────────────
-	// Render any input as markdown text. This uses glamour behind the scenes.
-	// https://github.com/charmbracelet/glamour
-	//
-	//   $ gum format '**Tasty** *Bubble* `Gum`'
-	//
-	// Or, pass input via stdin:
-	//
-	//   $ echo '**Tasty** *Bubble* `Gum`' | gum format
-	//
-	// 2. Template
-	// ─────────────
-	// Render styled input from a template. Templates are handled by termenv.
-	// https://github.com/muesli/termenv
-	//
-	//   $ gum format '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' --type template
-	//
-	// 3. Code
-	// ─────────────
-	// Perform syntax highlighting on some code snippets. Styling is handled by
-	// glamour, which in turn uses chroma. https://github.com/alecthomas/chroma
-	//
-	//   $ cat code.go | gum format --type code
-	//
-	// 4. Emoji
-	// ─────────────
-	// Parse emojis within text and render emojis. Emoji rendering is handled by
-	// glamour, which in turn uses goldmark-emoji.
-	// https://github.com/yuin/goldmark-emoji
-	//
-	//   $ gum format 'I :heart: Bubble Gum :candy:' --type emoji
-	//   $ echo "I :heart: Bubble Gum :candy:" | gum format --type emoji
-	//
-	// Output:
-	//
-	//   I ❤️ Bubble Gum 🍬
-	//
+	// Format allows you to render styled text from `markdown`, `code`,
+	// `template` strings, or embedded `emoji` strings.
+	// For more information see the format/README.md file.
 	Format format.Options `cmd:"" help:"Format a string using a template"`
 
 	// Input provides a shell script interface for the text input bubble.
