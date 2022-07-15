@@ -200,27 +200,37 @@ markdown, code, template strings, and emoji strings.
 For example, we can output a markdown list with the following command:
 
 ```bash
-gum format "# Gum Formats" "- Markdown" "-Code" "-Template" "- Emoji"
+gum format -- "# Gum Formats" "- Markdown" "- Code" "- Template" "- Emoji"
 echo "# Gum Formats\n- Markdown\n- Code\n- Template\n- Emoji" | gum format
 ```
 
-Apply syntax highlighting to code with `gum format code`:
+<img src="https://stuff.charm.sh/gum/format-markdown.png" width="250" alt="Format markdown displaying a markdown list with content of different possible formats">
+
+Apply syntax highlighting to code with `gum format -t code`:
 
 ```bash
 cat main.go | gum format -t code
 ```
 
-Render a template string:
+<img src="https://stuff.charm.sh/gum/format-code.png" width="400" alt="Format code command displaying a simple Hello, world! Go program with syntax highlighting.">
+
+Render a template string with `gum format -t template`:
 
 ```bash
-echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' | gum format -t template
+echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' \
+    | gum format -t template
 ```
 
-Render some emojis with `:emoji:` syntax.
+<img src="https://stuff.charm.sh/gum/format-template.png" width="400" alt="Format template command displaying Tasty Bubble Gum in different styles">
+
+Render some emojis with `:emoji:` syntax with `gum format -t emoji`.
 
 ```bash
 echo 'I :heart: Bubble Gum :candy:' | gum format -t emoji
 ```
+
+<img src="https://stuff.charm.sh/gum/format-emoji.png" width="400" alt="Format emoji command displaying I :heart: Bubble Gum :candy:.">
+
 
 ## Examples
 
