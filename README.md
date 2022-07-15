@@ -1,6 +1,8 @@
-# Gum
+Gum
+===
 
 <p>
+    <a href="https://stuff.charm.sh/gum/gum-logo.png"><img src="https://stuff.charm.sh/gum/gum-logo.png" alt="Gum Image" width="325"></a><br>
     <a href="https://github.com/charmbracelet/gum/releases"><img src="https://img.shields.io/github/release/charmbracelet/gum.svg" alt="Latest Release"></a>
     <a href="https://pkg.go.dev/github.com/charmbracelet/gum?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="GoDoc"></a>
     <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
