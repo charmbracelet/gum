@@ -6,11 +6,12 @@
     <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
 </p>
 
+
 Gum is a collection of command-line utilities that make your shell scripts a
 little more glamorous. It gives you the power of
-[Bubbles](https://github.com/charmbracelet/bubbles) and
-[Lip Gloss](https://github.com/charmbracelet/lipgloss) without needing to write
-any Go code.
+[Bubbles](https://github.com/charmbracelet/bubbles) and [Lip
+Gloss](https://github.com/charmbracelet/lipgloss) without needing to write any
+Go code.
 
 ```bash
 # Prompt users for input
@@ -72,6 +73,21 @@ go install github.com/charmbracelet/gum@latest
 ```
 
 [releases]: https://github.com/charmbracelet/gum/releases
+
+## Customization
+
+`gum` is designed to be embedded in scripts and different use cases. All
+components are configurable and customizable to fit your theme and use case.
+
+You can customize with `--flags`. See `gum <command> --help` for a full view of
+all the command's customization and configuration options.
+
+For example, let's customize the cursor color, prompt color, prompt indicator,
+placeholder text, width, and pre-populate the value of the input:
+```bash
+gum input --cursor.foreground "#FF0" --prompt.foreground "#0FF" --prompt "* " \
+    --placeholder "What's up?" --width 80 --value "Not much, hby?"
+```
 
 ## Interaction
 
