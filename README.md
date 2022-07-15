@@ -192,6 +192,36 @@ gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 
 <img src="https://stuff.charm.sh/gum/join.png" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them.">
 
+#### Format
+
+Format allows you to take some text and stylize it. `gum format` can parse
+markdown, code, template strings, and emoji strings.
+
+For example, we can output a markdown list with the following command:
+
+```bash
+gum format "# Gum Formats" "- Markdown" "-Code" "-Template" "- Emoji"
+echo "# Gum Formats\n- Markdown\n- Code\n- Template\n- Emoji" | gum format
+```
+
+Apply syntax highlighting to code with `gum format code`:
+
+```bash
+cat main.go | gum format -t code
+```
+
+Render a template string:
+
+```bash
+echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' | gum format -t template
+```
+
+Render some emojis with `:emoji:` syntax.
+
+```bash
+echo 'I :heart: Bubble Gum :candy:' | gum format -t emoji
+```
+
 ## Examples
 
 See the [examples](./examples/) directory for more real world use cases.
