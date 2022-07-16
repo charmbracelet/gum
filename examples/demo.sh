@@ -12,7 +12,7 @@ COLOR=$(gum input --placeholder "What is your favorite color? (#HEX)")
 
 echo "Wait a moment, while I think of my favorite color..."
 
-gum spin --title "Thinking..." --color 212 -- sleep 3
+gum spin --title "Thinking..." -- sleep 3
 
 echo "I like $(gum style --padding "0 1" --background $COLOR $COLOR), too. In fact, it's my $(gum style --padding "0 1" --background $COLOR 'favorite color!')"
 
@@ -31,7 +31,7 @@ Orange" | gum filter)
 
 echo "One sec, while I finish my drink."
 
-gum spin --title "Chewing some $GUM bubble gum..." --color 212 -- sleep 5
+gum spin --title "Chewing some $GUM bubble gum..." -- sleep 5
 
 gum style --width 50 --padding "1 5" --margin "1 2" --border double --border-foreground 212 \
     "Well, it was nice meeting you, $(gum style --foreground 212 "$NAME"). Hope to see you soon!"\

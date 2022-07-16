@@ -25,7 +25,7 @@ gum style --foreground 212 --padding "1 4" \
 	"Nice to meet you, $NAME."
 
 # Do some work while spinning
-gum spin --title "Taking a nap..." --color 212 -- sleep 5
+gum spin --title "Taking a nap..." --title.foreground 212 -- sleep 5
 
 # Fuzzy find a file or directory
 find . -type f | gum filter
