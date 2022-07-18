@@ -2,38 +2,45 @@ Gum
 ===
 
 <p>
-    <a href="https://stuff.charm.sh/gum/gum-logo.png"><img src="https://stuff.charm.sh/gum/gum-logo.png" alt="Gum Image" width="325"></a><br>
+    <a href="https://stuff.charm.sh/gum/gum-logo.png"><img src="https://stuff.charm.sh/gum/gum-logo.png?cache=1" alt="Gum Image" width="325"></a>
+    <br><br>
     <a href="https://github.com/charmbracelet/gum/releases"><img src="https://img.shields.io/github/release/charmbracelet/gum.svg" alt="Latest Release"></a>
     <a href="https://pkg.go.dev/github.com/charmbracelet/gum?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="GoDoc"></a>
     <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
 </p>
 
+Gum helps you write glamorous bash scripts by providing a collection of
+beautiful and highly configurable ready-to-use utilities.
 
-Gum is a collection of command-line utilities that make your shell scripts a
-little more glamorous. It gives you the power of
-[Bubbles](https://github.com/charmbracelet/bubbles) and [Lip
-Gloss](https://github.com/charmbracelet/lipgloss) without needing to write any
-Go code.
+Let's build a `git commit` helper for your dotfiles.
+
+<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git">
 
 ```bash
-# Prompt users for input
-NAME=$(gum input --placeholder "What is your name?")
+# Get the commit type by asking the user to choose an option from the
+# conventional commit Specification and store it in $TYPE.
+TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
 
-# Style some text
-gum style --foreground 212 --padding "1 4" \
-	--border double --border-foreground 57 \
-	"Nice to meet you, $NAME."
+# Optionally, provide a scope by prompting for input.
+SCOPE=$(gum input --placeholder "scope")
 
-# Do some work while spinning
-gum spin --title "Taking a nap..." --title.foreground 212 -- sleep 5
+# Wrap the scope in parentheses if non-empty.
+[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
 
-# Fuzzy find a file or directory
-find . -type f | gum filter
+# Prompt for commit message summary.
+# We pre-populate the value with the type and scope of the commit message in #
+case the user changes their mind.
+SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
+
+# Prompt for a multi-line description of these changes
+DESCRIPTION=$(gum write --placeholder "Details of this change")
 ```
 
-The following example is running from a [single bash script](./examples/demo.sh).
+Or, a simplified version (one-liner for your dotfiles as a shell aliases):
 
-<img src="https://stuff.charm.sh/gum/gum.gif" width="900" alt="Shell running the Gum examples/demo.sh script">
+```bash
+git commit -m "$(gum input)" -m "$(gum write)"
+```
 
 ## Installation
 
@@ -48,19 +55,6 @@ pacman -S gum
 
 # Nix
 nix-env -iA nixpkgs.gum
-
-# Debian/Ubuntu
-echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' \
-    | sudo tee /etc/apt/sources.list.d/charm.list
-sudo apt update && sudo apt install gum
-
-# Fedora
-echo '[charm]
-name=Charm
-baseurl=https://repo.charm.sh/yum/
-enabled=1
-gpgcheck=0' | sudo tee /etc/yum.repos.d/charm.repo
-sudo yum install gum
 ```
 
 Or download it:
@@ -269,8 +263,6 @@ prefix for your commit message.
 git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
            -m "$(gum write --width 80 --placeholder "Details of changes")"
 ```
-
-<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git">
 
 #### Open files in your `$EDITOR`
 

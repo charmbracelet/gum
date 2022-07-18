@@ -14,9 +14,7 @@
 TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
 SCOPE=$(gum input --placeholder "scope")
 
-if [ -n "$SCOPE" ]; then
-    SCOPE="($SCOPE)"
-fi
+[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
 
 git commit \
     -m "$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")" \
