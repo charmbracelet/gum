@@ -12,35 +12,45 @@ Gum
 Gum helps you write glamorous bash scripts by providing a collection of
 beautiful and highly configurable ready-to-use utilities.
 
-Let's build a `git commit` helper for your dotfiles.
+Build a useful `git commit` helper for your dotfiles with a couple lines of `bash`:
+
+```bash
+#!/bin/bash
+TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
+SCOPE=$(gum input --placeholder "scope")
+[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
+SUMMARY=$(gum input --width 50 --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
+DESCRIPTION=$(gum write --width 80 --placeholder "Details of this change")
+gum spin --title "Commiting..." -- git commit -m "$SUMMARY" -m "$DESCRIPTION"
+```
 
 <img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git">
 
-```bash
-# Get the commit type by asking the user to choose an option from the
-# conventional commit Specification and store it in $TYPE.
-TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
-
-# Optionally, provide a scope by prompting for input.
-SCOPE=$(gum input --placeholder "scope")
-
-# Wrap the scope in parentheses if non-empty.
-[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
-
-# Prompt for commit message summary.
-# We pre-populate the value with the type and scope of the commit message in #
-case the user changes their mind.
-SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
-
-# Prompt for a multi-line description of these changes
-DESCRIPTION=$(gum write --placeholder "Details of this change")
-```
 
 Or, a simplified version (one-liner for your dotfiles as a shell aliases):
 
 ```bash
 git commit -m "$(gum input)" -m "$(gum write)"
 ```
+
+## Components
+
+1. [Interaction](#Interaction)
+    * [Input](#input): Prompt for some input
+    * [Write](#write): Prompt for multi-line input
+    * [Filter](#filter): Fuzzy find from a list of options
+    * [Choose](#choose): Prompt user to choose (an) option(s) from a list of choices
+    * [Progress](#progress): Display a progress bar to the user
+    * [Spin](#spin): Show a spinner while doing some work in the background
+2. [Styling](#styling)
+    * [Style](#style): Apply CSS-like styling to strings
+3. [Layout](#Layout)
+    * [Join](#join): Join text horizontally or vertically for building layouts
+4. [Format](#Format)
+    * [Markdown](#markdown): Render markdown
+    * [Code](#code): Render syntax-highlighted code
+    * [Template](#template): Render styles applied from a template string
+    * [Emoji](#emoji): Render emojis from `:emoji:` syntax
 
 ## Installation
 
@@ -157,7 +167,7 @@ gum progress --increment 0.1 --interval 1s
 
 <img src="https://stuff.charm.sh/gum/progress.gif" width="600" alt="Shell running gum progress">
 
-#### Spinners
+#### Spin
 
 Display a spinner while taking some running action. We specify the command to
 run while showing the spinner, the spinner will automatically stop after the
@@ -169,9 +179,10 @@ gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 
 <img src="https://stuff.charm.sh/gum/spin.gif?cache=1" width="600" alt="Shell running gum spin while sleeping for 5 seconds">
 
-## Styling and Layout
+## Styling
 
 #### Style
+
 Pretty print any string with any layout with one command.
 
 ```bash
@@ -182,6 +193,8 @@ gum style \
 ```
 
 <img src="https://stuff.charm.sh/gum/style.png?cache=1" width="600" alt="Bubble Gum, So sweet and so fresh!">
+
+## Layout
 
 #### Join
 
@@ -204,7 +217,9 @@ gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 
 <img src="https://stuff.charm.sh/gum/join.png" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them.">
 
-#### Format
+## Format
+
+#### Markdown
 
 Format allows you to take some text and stylize it. `gum format` can parse
 markdown, code, template strings, and emoji strings.
@@ -218,6 +233,8 @@ echo "# Gum Formats\n- Markdown\n- Code\n- Template\n- Emoji" | gum format
 
 <img src="https://stuff.charm.sh/gum/format-markdown.png" width="250" alt="Format markdown displaying a markdown list with content of different possible formats">
 
+#### Code
+
 Apply syntax highlighting to code with `gum format -t code`:
 
 ```bash
@@ -225,6 +242,8 @@ cat main.go | gum format -t code
 ```
 
 <img src="https://stuff.charm.sh/gum/format-code.png" width="400" alt="Format code command displaying a simple Hello, world! Go program with syntax highlighting.">
+
+#### Template
 
 Render a template string with `gum format -t template`:
 
@@ -237,6 +256,7 @@ echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' \
 
 Render some emojis with `:emoji:` syntax with `gum format -t emoji`.
 
+#### Emoji
 ```bash
 echo 'I :heart: Bubble Gum :candy:' | gum format -t emoji
 ```
