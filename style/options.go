@@ -1,5 +1,9 @@
 package style
 
+const (
+	groupName = "Style Flags"
+)
+
 // Options is the customization options for the style command.
 type Options struct {
 	Text  []string `arg:"" optional:"" help:"Text to which to apply the style"`
@@ -14,24 +18,24 @@ type Options struct {
 // components, through embedding and prefixing.
 type Styles struct {
 	// Colors
-	Background string `help:"Background color of the ${name=element}" default:"${defaultBackground}" hidden:"" group:"Style Flags"`
+	Background string `help:"Background color of the ${name=element}" default:"${defaultBackground}" group:"Style Flags"`
 	Foreground string `help:"color of the ${name=element}" default:"${defaultForeground}" group:"Style Flags"`
 
 	// Border
-	Border           string `help:"Border style to apply" enum:"none,hidden,normal,rounded,thick,double" default:"none" hidden:"" group:"Style Flags"`
-	BorderBackground string `help:"Border background color" hidden:"" group:"Style Flags"`
-	BorderForeground string `help:"Border foreground color" hidden:"" group:"Style Flags"`
+	Border           string `help:"Border style to apply" enum:"none,hidden,normal,rounded,thick,double" default:"none" group:"Style Flags"`
+	BorderBackground string `help:"Border background color" group:"Style Flags"`
+	BorderForeground string `help:"Border foreground color" group:"Style Flags"`
 
 	// Layout
-	Align   string `help:"Text alignment" enum:"left,center,right,bottom,middle,top" default:"left" hidden:"" group:"Style Flags"`
-	Height  int    `help:"Height of output" hidden:"" group:"Style Flags"`
-	Width   int    `help:"Width of output" hidden:"" group:"Style Flags"`
-	Margin  string `help:"Margin to apply around the text." default:"0 0" hidden:"" group:"Style Flags"`
-	Padding string `help:"Padding to apply around the text." default:"0 0" hidden:""`
+	Align   string `help:"Text alignment" enum:"left,center,right,bottom,middle,top" default:"left" group:"Style Flags"`
+	Height  int    `help:"Height of output" group:"Style Flags"`
+	Width   int    `help:"Width of output" group:"Style Flags"`
+	Margin  string `help:"Margin to apply around the text." default:"0 0" group:"Style Flags"`
+	Padding string `help:"Padding to apply around the text." default:"0 0"`
 
 	// Format
-	Bold          bool `help:"Apply bold formatting" hidden:"" group:"Style Flags"`
-	Faint         bool `help:"Apply faint formatting" hidden:"" group:"Style Flags"`
-	Italic        bool `help:"Apply italic formatting" hidden:"" group:"Style Flags"`
-	Strikethrough bool `help:"Apply strikethrough formatting" hidden:"" group:"Style Flags"`
+	Bold          bool `help:"Apply bold formatting" group:"Style Flags"`
+	Faint         bool `help:"Apply faint formatting" group:"Style Flags"`
+	Italic        bool `help:"Apply italic formatting" group:"Style Flags"`
+	Strikethrough bool `help:"Apply strikethrough formatting" group:"Style Flags"`
 }

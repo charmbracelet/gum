@@ -6,9 +6,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -88,4 +90,9 @@ func (o Options) Run() error {
 	fmt.Println(strings.TrimSuffix(s.String(), "\n"))
 
 	return err
+}
+
+// BeforeReset hook. Used to unclutter style flags.
+func (o Options) BeforeReset(ctx *kong.Context) error {
+	return style.HideFlags(ctx)
 }
