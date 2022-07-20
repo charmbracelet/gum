@@ -2,7 +2,7 @@ Gum
 ===
 
 <p>
-    <a href="https://stuff.charm.sh/gum/gum-logo.png"><img src="https://stuff.charm.sh/gum/gum-logo.png?cache=1" alt="Gum Image" width="325"></a>
+    <a href="https://stuff.charm.sh/gum/nutritional-information.png"><img src="https://stuff.charm.sh/gum/gum-logo.png?cache=1" alt="Gum Image" width="325"></a>
     <br><br>
     <a href="https://github.com/charmbracelet/gum/releases"><img src="https://img.shields.io/github/release/charmbracelet/gum.svg" alt="Latest Release"></a>
     <a href="https://pkg.go.dev/github.com/charmbracelet/gum?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="GoDoc"></a>
@@ -12,7 +12,7 @@ Gum
 Gum helps you write glamorous bash scripts by providing a collection of
 beautiful and highly configurable ready-to-use utilities.
 
-<img src="https://stuff.charm.sh/gum/filter.gif?cache=1" width="600" alt="Shell running gum filter on different bubble gum flavors">
+<img src="https://stuff.charm.sh/gum/combined.gif" width="600" alt="Shell running different gum commands">
 
 ## Installation
 
