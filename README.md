@@ -12,45 +12,7 @@ Gum
 Gum helps you write glamorous bash scripts by providing a collection of
 beautiful and highly configurable ready-to-use utilities.
 
-Build a useful `git commit` helper for your dotfiles with a couple lines of `bash`:
-
-```bash
-#!/bin/bash
-TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
-SCOPE=$(gum input --placeholder "scope")
-[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
-SUMMARY=$(gum input --width 50 --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
-DESCRIPTION=$(gum write --width 80 --placeholder "Details of this change")
-gum spin --title "Commiting..." -- git commit -m "$SUMMARY" -m "$DESCRIPTION"
-```
-
-<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git">
-
-
-Or, a simplified version (one-liner for your dotfiles as a shell aliases):
-
-```bash
-git commit -m "$(gum input)" -m "$(gum write)"
-```
-
-## Components
-
-1. [Interaction](#Interaction)
-    * [Input](#input): Prompt for some input
-    * [Write](#write): Prompt for multi-line input
-    * [Filter](#filter): Fuzzy find from a list of options
-    * [Choose](#choose): Prompt user to choose (an) option(s) from a list of choices
-    * [Progress](#progress): Display a progress bar to the user
-    * [Spin](#spin): Show a spinner while doing some work in the background
-2. [Styling](#styling)
-    * [Style](#style): Apply CSS-like styling to strings
-3. [Layout](#Layout)
-    * [Join](#join): Join text horizontally or vertically for building layouts
-4. [Format](#Format)
-    * [Markdown](#markdown): Render markdown
-    * [Code](#code): Render syntax-highlighted code
-    * [Template](#template): Render styles applied from a template string
-    * [Emoji](#emoji): Render emojis from `:emoji:` syntax
+<img src="https://stuff.charm.sh/gum/filter.gif?cache=1" width="600" alt="Shell running gum filter on different bubble gum flavors">
 
 ## Installation
 
@@ -104,7 +66,7 @@ Prompt your users for input with a simple command.
 gum input > answer.text
 ```
 
-<img src="https://stuff.charm.sh/gum/input.gif" width="350" alt="Shell running gum input typing I love bubble gum <3">
+<img src="https://stuff.charm.sh/gum/input.gif?cache=1" width="600" alt="Shell running gum input typing Not much, you?">
 
 #### Write
 
@@ -114,7 +76,7 @@ Prompt your users to write some multi-line text.
 gum write > story.text
 ```
 
-<img src="https://stuff.charm.sh/gum/write.gif" width="600" alt="Shell running gum write typing My favorite flavors are:">
+<img src="https://stuff.charm.sh/gum/write.gif?cache=2" width="600" alt="Shell running gum write typing a story">
 
 #### Filter
 
@@ -127,7 +89,7 @@ echo Cherry >> flavors.text
 cat flavors.text | gum filter > selection.text
 ```
 
-<img src="https://stuff.charm.sh/gum/filter.gif" width="600" alt="Shell running gum filter on different bubble gum flavors">
+<img src="https://stuff.charm.sh/gum/filter.gif?cache=1" width="600" alt="Shell running gum filter on different bubble gum flavors">
 
 #### Choose
 
@@ -138,8 +100,6 @@ echo "Pick a card, any card..."
 CARD=$(gum choose --height 15 {{A,K,Q,J},{10..2}}" "{♠,♥,♣,♦})
 echo "Was your card the $CARD?"
 ```
-
-<img src="https://stuff.charm.sh/gum/choose.gif" width="600" alt="Shell running gum choose on a deck of cards, picking the Ace of Hearts">
 
 You can also set a limit on the number of items to choose with the `--limit` flag.
 
@@ -155,17 +115,7 @@ echo "What do you need from the grocery store?"
 cat foods.txt | gum choose --no-limit
 ```
 
-#### Progress
-
-Display a progress bar while loading. The following command will display a
-progress bar and increment the progress by 10% every 1 second. Thus, taking 10
-seconds to complete the progress bar.
-
-```bash
-gum progress --increment 0.1 --interval 1s
-```
-
-<img src="https://stuff.charm.sh/gum/progress.gif" width="600" alt="Shell running gum progress">
+<img src="https://stuff.charm.sh/gum/choose.gif?cache=1" width="600" alt="Shell running gum choose with numbers and gum flavors">
 
 #### Spin
 
@@ -177,7 +127,7 @@ command exits.
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
 
-<img src="https://stuff.charm.sh/gum/spin.gif?cache=1" width="600" alt="Shell running gum spin while sleeping for 5 seconds">
+<img src="https://stuff.charm.sh/gum/spin.gif?cache=2" width="600" alt="Shell running gum spin while sleeping for 5 seconds">
 
 ## Styling
 
@@ -192,7 +142,7 @@ gum style \
 	'Bubble Gum (1¢)' 'So sweet and so fresh!'
 ```
 
-<img src="https://stuff.charm.sh/gum/style.png?cache=1" width="600" alt="Bubble Gum, So sweet and so fresh!">
+<img src="https://stuff.charm.sh/gum/style.gif" width="600" alt="Bubble Gum, So sweet and so fresh!">
 
 ## Layout
 
@@ -219,50 +169,26 @@ gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 
 ## Format
 
-#### Markdown
-
-Format allows you to take some text and stylize it. `gum format` can parse
-markdown, code, template strings, and emoji strings.
-
-For example, we can output a markdown list with the following command:
+The `format` command allows you to take some text and stylize it. `gum format`
+can parse markdown, code, template strings, and emoji strings.
 
 ```bash
+# Format some markdown
 gum format -- "# Gum Formats" "- Markdown" "- Code" "- Template" "- Emoji"
 echo "# Gum Formats\n- Markdown\n- Code\n- Template\n- Emoji" | gum format
-```
 
-<img src="https://stuff.charm.sh/gum/format-markdown.png" width="250" alt="Format markdown displaying a markdown list with content of different possible formats">
-
-#### Code
-
-Apply syntax highlighting to code with `gum format -t code`:
-
-```bash
+# Syntax highlight some code
 cat main.go | gum format -t code
-```
 
-<img src="https://stuff.charm.sh/gum/format-code.png" width="400" alt="Format code command displaying a simple Hello, world! Go program with syntax highlighting.">
-
-#### Template
-
-Render a template string with `gum format -t template`:
-
-```bash
+# Render text any way you want with templates
 echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' \
     | gum format -t template
-```
 
-<img src="https://stuff.charm.sh/gum/format-template.png" width="400" alt="Format template command displaying Tasty Bubble Gum in different styles">
-
-Render some emojis with `:emoji:` syntax with `gum format -t emoji`.
-
-#### Emoji
-```bash
+# Display your favorite emojis!
 echo 'I :heart: Bubble Gum :candy:' | gum format -t emoji
 ```
 
-<img src="https://stuff.charm.sh/gum/format-emoji.png" width="400" alt="Format emoji command displaying I :heart: Bubble Gum :candy:.">
-
+<img src="https://stuff.charm.sh/gum/format.gif" width="600" alt="Running gum format for different types of formats">
 
 ## Examples
 
@@ -283,6 +209,8 @@ prefix for your commit message.
 git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
            -m "$(gum write --width 80 --placeholder "Details of changes")"
 ```
+
+<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git">
 
 #### Open files in your `$EDITOR`
 
