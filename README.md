@@ -12,7 +12,7 @@ Gum
 Gum helps you write glamorous bash scripts by providing a collection of
 beautiful and highly configurable ready-to-use utilities.
 
-<img src="https://stuff.charm.sh/gum/combined.gif?cache=1" width="600" alt="Shell running different gum commands" />
+<img src="https://stuff.charm.sh/gum/demo.gif?cache=1" width="600" alt="Shell running the ./demo.sh script" />
 
 ## Installation
 
