@@ -26,6 +26,8 @@ package style
 import (
 	"fmt"
 	"strings"
+
+	"github.com/alecthomas/kong"
 )
 
 // Run provides a shell script interface for the Lip Gloss styling.
@@ -33,5 +35,27 @@ import (
 func (o Options) Run() error {
 	text := strings.Join(o.Text, "\n")
 	fmt.Println(o.Style.ToLipgloss().Render(text))
+	return nil
+}
+
+// BeforeReset hook. Used to unclutter style flags.
+func (o Options) BeforeReset(ctx *kong.Context) error {
+	return HideFlags(ctx)
+}
+
+// HideFlags hides the flags from the usage output. This is used in conjunction
+// with BeforeReset hook.
+func HideFlags(ctx *kong.Context) error {
+	n := ctx.Selected()
+	if n == nil {
+		return nil
+	}
+	for _, f := range n.Flags {
+		if g := f.Group; g != nil && g.Key == groupName {
+			if !strings.HasSuffix(f.Name, "foreground") {
+				f.Hidden = true
+			}
+		}
+	}
 	return nil
 }

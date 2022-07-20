@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for the text area bubble.
@@ -46,4 +48,9 @@ func (o Options) Run() error {
 	m, err := p.StartReturningModel()
 	fmt.Println(m.(model).textarea.Value())
 	return err
+}
+
+// BeforeReset hook. Used to unclutter style flags.
+func (o Options) BeforeReset(ctx *kong.Context) error {
+	return style.HideFlags(ctx)
 }

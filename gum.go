@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/charmbracelet/gum/choose"
+	"github.com/charmbracelet/gum/completion"
 	"github.com/charmbracelet/gum/filter"
 	"github.com/charmbracelet/gum/format"
 	"github.com/charmbracelet/gum/input"
@@ -14,6 +15,8 @@ import (
 
 // Gum is the command-line interface for Gum.
 type Gum struct {
+	Completion completion.Completion `cmd:"" hidden:"" help:"Request shell completion"`
+
 	// Man is a hidden command that generates Gum man pages.
 	Man man.Man `cmd:"" hidden:"" help:"Generate man pages"`
 

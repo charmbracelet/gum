@@ -1,8 +1,10 @@
 package spin
 
 import (
+	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for the spinner bubble.
@@ -18,4 +20,9 @@ func (o Options) Run() error {
 	}
 	p := tea.NewProgram(m)
 	return p.Start()
+}
+
+// BeforeReset hook. Used to unclutter style flags.
+func (o Options) BeforeReset(ctx *kong.Context) error {
+	return style.HideFlags(ctx)
 }
