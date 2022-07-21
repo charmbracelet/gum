@@ -12,6 +12,7 @@ var bubbleGumPink = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 
 func main() {
 	lipgloss.SetColorProfile(termenv.ANSI256)
+
 	gum := &Gum{}
 	ctx := kong.Parse(
 		gum,
@@ -21,7 +22,10 @@ func main() {
 			Compact: true,
 			Summary: false,
 		}),
-		kong.Vars{"defaultBackground": "", "defaultForeground": ""},
+		kong.Vars{
+			"defaultBackground": "",
+			"defaultForeground": "",
+		},
 	)
 	ctx.Run()
 }
