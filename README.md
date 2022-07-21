@@ -136,7 +136,7 @@ Prompt your users to write some multi-line text.
 gum write > story.text
 ```
 
-<img src="https://stuff.charm.sh/gum/write.gif" width="600" alt="Shell running gum write typing a story" />
+<img src="https://stuff.charm.sh/gum/write.gif?cache=5" width="600" alt="Shell running gum write typing a story" />
 
 #### Filter
 
