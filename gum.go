@@ -7,7 +7,6 @@ import (
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
 	"github.com/charmbracelet/gum/man"
-	"github.com/charmbracelet/gum/progress"
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/gum/write"
@@ -76,18 +75,6 @@ type Gum struct {
 	//   ╚══════════════════════╝╚═════════════╝
 	//
 	Join join.Options `cmd:"" help:"Join text vertically or horizontally"`
-
-	// Progress provides a shell script interface for the progress bubble.
-	// https://github.com/charmbracelet/bubbles/tree/master/progress
-	//
-	// It's useful for indicating that something is happening in the background
-	// that will end after some set time. It can be passed an increment value
-	// which specifies how much the progress bar should move every interval,
-	// which can also be configured.
-	//
-	//   $ gum progress --increment 0.1 --interval 250ms
-	//
-	Progress progress.Options `cmd:"" help:"Display a progress bar for a certain time"`
 
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/spinner
