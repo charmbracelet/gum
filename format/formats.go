@@ -39,7 +39,14 @@ var emoji Func = func(input string) string {
 }
 
 var markdown Func = func(input string) string {
-	out, err := glamour.Render(input, "pink")
+	renderer, err := glamour.NewTermRenderer(
+		glamour.WithStandardStyle("pink"),
+		glamour.WithWordWrap(0),
+	)
+	if err != nil {
+		return ""
+	}
+	out, err := renderer.Render(input)
 	if err != nil {
 		return ""
 	}
