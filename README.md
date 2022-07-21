@@ -14,6 +14,66 @@ beautiful and highly configurable ready-to-use utilities.
 
 <img src="https://stuff.charm.sh/gum/demo.gif?cache=1" width="600" alt="Shell running the ./demo.sh script" />
 
+## Tutorial
+
+With Gum, you can build wonderful and useful bash scripts with just a few lines
+of code. Let's build a simple script to help you write [Conventional
+Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
+dotfiles.
+
+Start with a `#!/bin/bash`.
+```bash
+#!/bin/bash
+```
+
+Ask the user for the commit type with `gum choose`:
+
+```bash
+gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert"
+```
+
+> Note: this command itself will print to `stdout` which is not all that useful.
+To make use of the command later on you should save the stdout to a `$VARIABLE`
+or `file.txt`.
+
+Prompt for an (optional) scope for the commit:
+
+```bash
+gum input --placeholder "scope"
+```
+
+Prompt the user for a commit message:
+
+```bash
+gum input --placeholder "Summary of this change"
+```
+
+Prompt for a detailed (multi-line) explanation of the changes:
+
+```bash
+gum write --placeholder "Details of this change"
+```
+
+Putting it all together...
+
+```bash
+#!/bin/bash
+TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
+SCOPE=$(gum input --placeholder "scope")
+
+# Since the scope is optional, wrap it in parentheses if it has a value.
+[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
+
+# Pre-populate the input with the type(scope): so that the user may change it
+SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
+DESCRIPTION=$(gum write --placeholder "Details of this change")
+
+# Commit these changes
+git commit -m "$SUMMARY" -m "$DETAILS"
+```
+
+<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
+
 ## Installation
 
 Use a package manager:
@@ -209,8 +269,6 @@ prefix for your commit message.
 git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
            -m "$(gum write --width 80 --placeholder "Details of changes")"
 ```
-
-<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
 
 #### Open files in your `$EDITOR`
 
