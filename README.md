@@ -2,7 +2,7 @@ Gum
 ===
 
 <p>
-    <a href="https://stuff.charm.sh/gum/nutritional-information.png"><img src="https://stuff.charm.sh/gum/gum-logo.png?cache=1" alt="Gum Image" width="325" /></a>
+    <a href="https://stuff.charm.sh/gum/nutritional-information.png" target="_blank"><img src="https://stuff.charm.sh/gum/gum-logo.png?cache=1" alt="Gum Image" width="325" /></a>
     <br><br>
     <a href="https://github.com/charmbracelet/gum/releases"><img src="https://img.shields.io/github/release/charmbracelet/gum.svg" alt="Latest Release"></a>
     <a href="https://pkg.go.dev/github.com/charmbracelet/gum?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="GoDoc"></a>
