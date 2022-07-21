@@ -10,12 +10,15 @@
 #
 # alias gcm='git commit -m "$(gum input)" -m "$(gum write)"'
 
-
 TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
 SCOPE=$(gum input --placeholder "scope")
 
+# Since the scope is optional, wrap it in parentheses if it has a value.
 [[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
 
-git commit \
-    -m "$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")" \
-    -m "$(gum write --placeholder "Details of this change")"
+# Pre-populate the input with the type(scope): so that the user may change it
+SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
+DESCRIPTION=$(gum write --placeholder "Details of this change")
+
+# Commit these changes
+git commit -m "$SUMMARY" -m "$DESCRIPTION"

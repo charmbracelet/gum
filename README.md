@@ -69,7 +69,7 @@ SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this chang
 DESCRIPTION=$(gum write --placeholder "Details of this change")
 
 # Commit these changes
-git commit -m "$SUMMARY" -m "$DETAILS"
+git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
 <img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
