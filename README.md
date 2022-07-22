@@ -301,7 +301,7 @@ commit hash of the selected commit.
 git log --oneline | gum filter | cut -d' ' -f1 # | copy
 ```
 
-<img src="https://stuff.charm.sh/gum/commit-picker.png" width="500" alt="Picking a commit with gum filter" />
+<img src="https://stuff.charm.sh/gum/pick-commit.gif" width="600" alt="Picking a commit with gum filter" />
 
 #### Choose packages to uninstall
 
