@@ -73,7 +73,7 @@ DESCRIPTION=$(gum write --placeholder "Details of this change")
 git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
-<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
+<img src="https://stuff.charm.sh/gum/commit.gif?cache=4" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
 
 ## Installation
 
