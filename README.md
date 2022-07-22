@@ -290,7 +290,7 @@ SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session..."
 tmux switch-client -t $SESSION || tmux attach -t $SESSION
 ```
 
-<img src="https://stuff.charm.sh/gum/tmux-session-picker.png" width="250" alt="Picking a tmux session with gum filter" />
+<img src="https://stuff.charm.sh/gum/pick-tmux-session.gif" width="600" alt="Picking a tmux session with gum filter" />
 
 #### Pick commit hash from history
 
