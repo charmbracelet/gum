@@ -117,6 +117,8 @@ gum input --cursor.foreground "#FF0" --prompt.foreground "#0FF" --prompt "* " \
     --placeholder "What's up?" --width 80 --value "Not much, hby?"
 ```
 
+<img src="https://stuff.charm.sh/gum/customization.gif" width="600" alt="Gum input displaying most customization options" />
+
 ## Interaction
 
 #### Input
@@ -248,7 +250,7 @@ echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' \
 echo 'I :heart: Bubble Gum :candy:' | gum format -t emoji
 ```
 
-<img src="https://stuff.charm.sh/gum/format.gif" width="600" alt="Running gum format for different types of formats" />
+<img src="https://stuff.charm.sh/gum/format.gif?cache=1" width="600" alt="Running gum format for different types of formats" />
 
 ## Examples
 
