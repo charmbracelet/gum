@@ -12,7 +12,7 @@ import (
 type Completion struct {
 	Bash Bash `cmd:"" help:"Generate the autocompletion script for bash"`
 	Zsh  Zsh  `cmd:"" help:"Generate the autocompletion script for zsh"`
-	// Fish Fish `cmd:"" help:"Generate the autocompletion script for fish"`
+	Fish Fish `cmd:"" help:"Generate the autocompletion script for fish"`
 }
 
 func commandName(cmd *kong.Node) string {
@@ -46,4 +46,14 @@ func writeString(b io.StringWriter, s string) {
 
 func nonCompletableFlag(flag *kong.Flag) bool {
 	return flag.Hidden
+}
+
+func flagPossibleValues(flag *kong.Flag) []string {
+	values := make([]string, 0)
+	for _, enum := range flag.EnumSlice() {
+		if strings.TrimSpace(enum) != "" {
+			values = append(values, enum)
+		}
+	}
+	return values
 }
