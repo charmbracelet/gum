@@ -9,14 +9,14 @@ Gum
     <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
 </p>
 
-A tool for building beautiful shell scripts.
+A tool for building glamorous shell scripts.
 
 <img src="https://stuff.charm.sh/gum/demo.gif?cache=1" width="600" alt="Shell running the ./demo.sh script" />
 
 ## Tutorial
 
-Gum provides beautiful and highly configurable utilities to help you write
-useful and delightful bash scripts in just a few lines of code.
+Gum provides highly configurable, ready-to-use utilities to help you write
+useful bash scripts in just a few lines of code.
 
 Let's build a simple script to help you write [Conventional
 Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
