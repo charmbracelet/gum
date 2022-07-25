@@ -1,8 +1,49 @@
 package completion
 
+import (
+	"fmt"
+	"io"
+	"os"
+	"strings"
+
+	"github.com/alecthomas/kong"
+)
+
 type Completion struct {
-	Complete Complete `cmd:"" hidden:"" help:"Request shell completion"`
-	Bash     Bash     `cmd:"" help:"Generate the autocompletion script for bash"`
-	Zsh      Zsh      `cmd:"" help:"Generate the autocompletion script for zsh"`
+	Bash Bash `cmd:"" help:"Generate the autocompletion script for bash"`
+	Zsh  Zsh  `cmd:"" help:"Generate the autocompletion script for zsh"`
 	// Fish Fish `cmd:"" help:"Generate the autocompletion script for fish"`
+}
+
+func commandName(cmd *kong.Node) string {
+	commandName := cmd.FullPath()
+	commandName = strings.ReplaceAll(commandName, " ", "_")
+	commandName = strings.ReplaceAll(commandName, ":", "__")
+	return commandName
+}
+
+func hasCommands(cmd *kong.Node) bool {
+	for _, c := range cmd.Children {
+		if !c.Hidden {
+			return true
+		}
+	}
+	return false
+}
+
+func isArgument(cmd *kong.Node) bool {
+	return cmd.Type == kong.ArgumentNode
+}
+
+// writeString writes a string into a buffer, and checks if the error is not nil.
+func writeString(b io.StringWriter, s string) {
+	_, err := b.WriteString(s)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error:", err)
+		os.Exit(1)
+	}
+}
+
+func nonCompletableFlag(flag *kong.Flag) bool {
+	return flag.Hidden
 }

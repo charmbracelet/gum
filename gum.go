@@ -15,6 +15,7 @@ import (
 
 // Gum is the command-line interface for Gum.
 type Gum struct {
+	// Completion generates Gum shell completion scripts.
 	Completion completion.Completion `cmd:"" hidden:"" help:"Request shell completion"`
 
 	// Man is a hidden command that generates Gum man pages.
