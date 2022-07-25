@@ -1,3 +1,4 @@
+// TODO implement our own gum bash completion
 package completion
 
 import (
@@ -12,13 +13,84 @@ import (
 
 type Bash struct{}
 
-func (b Bash) BeforeApply(app *kong.Kong) error {
-	return GenBashCompletion(app.Model.Node, app.Stdout)
+// Run generates bash shell completion.
+func (b Bash) Run(ctx *kong.Context) error {
+	buf := new(bytes.Buffer)
+	writePreamble(buf, ctx.Model.Name)
+	b.gen(buf, ctx.Model.Node)
+	writePostscript(buf, ctx.Model.Name)
+
+	_, err := fmt.Fprint(ctx.Stdout, buf.String())
+	return err
+}
+
+// ShellCompDirective is a bit map representing the different behaviors the shell
+// can be instructed to have once completions have been provided.
+type ShellCompDirective int
+
+const (
+	// ShellCompDirectiveError indicates an error occurred and completions should be ignored.
+	ShellCompDirectiveError ShellCompDirective = 1 << iota
+
+	// ShellCompDirectiveNoSpace indicates that the shell should not add a space
+	// after the completion even if there is a single completion provided.
+	ShellCompDirectiveNoSpace
+
+	// ShellCompDirectiveNoFileComp indicates that the shell should not provide
+	// file completion even when no completion is provided.
+	ShellCompDirectiveNoFileComp
+
+	// ShellCompDirectiveFilterFileExt indicates that the provided completions
+	// should be used as file extension filters.
+	// For flags, using Command.MarkFlagFilename() and Command.MarkPersistentFlagFilename()
+	// is a shortcut to using this directive explicitly.  The BashCompFilenameExt
+	// annotation can also be used to obtain the same behavior for flags.
+	ShellCompDirectiveFilterFileExt
+
+	// ShellCompDirectiveFilterDirs indicates that only directory names should
+	// be provided in file completion.  To request directory names within another
+	// directory, the returned completions should specify the directory within
+	// which to search.  The BashCompSubdirsInDir annotation can be used to
+	// obtain the same behavior but only for flags.
+	ShellCompDirectiveFilterDirs
+
+	// ===========================================================================
+
+	// All directives using iota should be above this one.
+	// For internal use.
+	shellCompDirectiveMaxValue
+
+	// ShellCompDirectiveDefault indicates to let the shell perform its default
+	// behavior after completions have been provided.
+	// This one must be last to avoid messing up the iota count.
+	ShellCompDirectiveDefault ShellCompDirective = 0
+)
+
+// Annotations for Bash completion.
+const (
+	// ShellCompNoDescRequestCmd is the name of the hidden command that is used to request
+	// completion results without their description.  It is used by the shell completion scripts.
+	ShellCompNoDescRequestCmd = "completion completeNoDesc"
+	BashCompFilenameExt       = "kong_annotation_bash_completion_filename_extensions"
+	BashCompCustom            = "kong_annotation_bash_completion_custom"
+	BashCompOneRequiredFlag   = "kong_annotation_bash_completion_one_required_flag"
+	BashCompSubdirsInDir      = "kong_annotation_bash_completion_subdirs_in_dir"
+
+	activeHelpEnvVarSuffix = "_ACTIVE_HELP"
+)
+
+// activeHelpEnvVar returns the name of the program-specific ActiveHelp environment
+// variable.  It has the format <PROGRAM>_ACTIVE_HELP where <PROGRAM> is the name of the
+// root command in upper case, with all - replaced by _.
+func activeHelpEnvVar(name string) string {
+	// This format should not be changed: users will be using it explicitly.
+	activeHelpEnvVar := strings.ToUpper(fmt.Sprintf("%s%s", name, activeHelpEnvVarSuffix))
+	return strings.ReplaceAll(activeHelpEnvVar, "-", "_")
 }
 
 func writePreamble(buf io.StringWriter, name string) {
-	WriteStringAndCheck(buf, fmt.Sprintf("# bash completion for %-36s -*- shell-script -*-\n", name))
-	WriteStringAndCheck(buf, fmt.Sprintf(`
+	writeString(buf, fmt.Sprintf("# bash completion for %-36s -*- shell-script -*-\n", name))
+	writeString(buf, fmt.Sprintf(`
 __%[1]s_debug()
 {
     if [[ -n ${BASH_COMP_DEBUG_FILE:-} ]]; then
@@ -386,8 +458,8 @@ __%[1]s_handle_word()
 
 func writePostscript(buf io.StringWriter, name string) {
 	name = strings.ReplaceAll(name, ":", "__")
-	WriteStringAndCheck(buf, fmt.Sprintf("__start_%s()\n", name))
-	WriteStringAndCheck(buf, fmt.Sprintf(`{
+	writeString(buf, fmt.Sprintf("__start_%s()\n", name))
+	writeString(buf, fmt.Sprintf(`{
     local cur prev words cword split
     declare -A flaghash 2>/dev/null || :
     declare -A aliashash 2>/dev/null || :
@@ -417,33 +489,33 @@ func writePostscript(buf io.StringWriter, name string) {
 }
 
 `, name))
-	WriteStringAndCheck(buf, fmt.Sprintf(`if [[ $(type -t compopt) = "builtin" ]]; then
+	writeString(buf, fmt.Sprintf(`if [[ $(type -t compopt) = "builtin" ]]; then
     complete -o default -F __start_%s %s
 else
     complete -o default -o nospace -F __start_%s %s
 fi
 
 `, name, name, name, name))
-	WriteStringAndCheck(buf, "# ex: ts=4 sw=4 et filetype=sh\n")
+	writeString(buf, "# ex: ts=4 sw=4 et filetype=sh\n")
 }
 
 func writeCommands(buf io.StringWriter, cmd *kong.Node) {
-	WriteStringAndCheck(buf, "    commands=()\n")
+	writeString(buf, "    commands=()\n")
 	for _, c := range cmd.Children {
 		if c == nil || c.Hidden {
 			continue
 		}
-		WriteStringAndCheck(buf, fmt.Sprintf("    commands+=(%q)\n", c.Name))
+		writeString(buf, fmt.Sprintf("    commands+=(%q)\n", c.Name))
 		writeCmdAliases(buf, c)
 	}
-	WriteStringAndCheck(buf, "\n")
+	writeString(buf, "\n")
 }
 
 func writeFlagHandler(buf io.StringWriter, name string, annotations map[string][]string, cmd *kong.Node) {
 	for key, value := range annotations {
 		switch key {
 		case BashCompFilenameExt:
-			WriteStringAndCheck(buf, fmt.Sprintf("    flags_with_completion+=(%q)\n", name))
+			writeString(buf, fmt.Sprintf("    flags_with_completion+=(%q)\n", name))
 
 			var ext string
 			if len(value) > 0 {
@@ -451,18 +523,18 @@ func writeFlagHandler(buf io.StringWriter, name string, annotations map[string][
 			} else {
 				ext = "_filedir"
 			}
-			WriteStringAndCheck(buf, fmt.Sprintf("    flags_completion+=(%q)\n", ext))
+			writeString(buf, fmt.Sprintf("    flags_completion+=(%q)\n", ext))
 		case BashCompCustom:
-			WriteStringAndCheck(buf, fmt.Sprintf("    flags_with_completion+=(%q)\n", name))
+			writeString(buf, fmt.Sprintf("    flags_with_completion+=(%q)\n", name))
 
 			if len(value) > 0 {
 				handlers := strings.Join(value, "; ")
-				WriteStringAndCheck(buf, fmt.Sprintf("    flags_completion+=(%q)\n", handlers))
+				writeString(buf, fmt.Sprintf("    flags_completion+=(%q)\n", handlers))
 			} else {
-				WriteStringAndCheck(buf, "    flags_completion+=(:)\n")
+				writeString(buf, "    flags_completion+=(:)\n")
 			}
 		case BashCompSubdirsInDir:
-			WriteStringAndCheck(buf, fmt.Sprintf("    flags_with_completion+=(%q)\n", name))
+			writeString(buf, fmt.Sprintf("    flags_with_completion+=(%q)\n", name))
 
 			var ext string
 			if len(value) == 1 {
@@ -470,7 +542,7 @@ func writeFlagHandler(buf io.StringWriter, name string, annotations map[string][
 			} else {
 				ext = "_filedir -d"
 			}
-			WriteStringAndCheck(buf, fmt.Sprintf("    flags_completion+=(%q)\n", ext))
+			writeString(buf, fmt.Sprintf("    flags_completion+=(%q)\n", ext))
 		}
 	}
 }
@@ -484,7 +556,7 @@ func writeShortFlag(buf io.StringWriter, flag *kong.Flag, cmd *kong.Node) {
 		format += "two_word_"
 	}
 	format += "flags+=(\"-%s" + cbn
-	WriteStringAndCheck(buf, fmt.Sprintf(format, name))
+	writeString(buf, fmt.Sprintf(format, name))
 	writeFlagHandler(buf, "-"+name, map[string][]string{}, cmd)
 }
 
@@ -495,10 +567,10 @@ func writeFlag(buf io.StringWriter, flag *kong.Flag, cmd *kong.Node) {
 		format += "="
 	}
 	format += cbn
-	WriteStringAndCheck(buf, fmt.Sprintf(format, name))
+	writeString(buf, fmt.Sprintf(format, name))
 	if len(flag.DefaultValue.String()) == 0 {
 		format = "    two_word_flags+=(\"--%s" + cbn
-		WriteStringAndCheck(buf, fmt.Sprintf(format, name))
+		writeString(buf, fmt.Sprintf(format, name))
 	}
 	writeFlagHandler(buf, "--"+name, map[string][]string{}, cmd)
 }
@@ -509,14 +581,14 @@ func writeLocalNonPersistentFlag(buf io.StringWriter, flag *kong.Flag) {
 	if len(flag.DefaultValue.String()) == 0 {
 		format += "    local_nonpersistent_flags+=(\"--%[1]s=" + cbn
 	}
-	WriteStringAndCheck(buf, fmt.Sprintf(format, name))
+	writeString(buf, fmt.Sprintf(format, name))
 	if flag.Short > 0 {
-		WriteStringAndCheck(buf, fmt.Sprintf("    local_nonpersistent_flags+=(\"-%c\")\n", flag.Short))
+		writeString(buf, fmt.Sprintf("    local_nonpersistent_flags+=(\"-%c\")\n", flag.Short))
 	}
 }
 
 func writeFlags(buf io.StringWriter, cmd *kong.Node) {
-	WriteStringAndCheck(buf, `    flags=()
+	writeString(buf, `    flags=()
     two_word_flags=()
     local_nonpersistent_flags=()
     flags_with_completion=()
@@ -534,7 +606,7 @@ func writeFlags(buf io.StringWriter, cmd *kong.Node) {
 		}
 	}
 
-	WriteStringAndCheck(buf, "\n")
+	writeString(buf, "\n")
 }
 
 func writeCmdAliases(buf io.StringWriter, cmd *kong.Node) {
@@ -544,57 +616,46 @@ func writeCmdAliases(buf io.StringWriter, cmd *kong.Node) {
 
 	sort.Strings(cmd.Aliases)
 
-	WriteStringAndCheck(buf, fmt.Sprint(`    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then`, "\n"))
+	writeString(buf, fmt.Sprint(`    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then`, "\n"))
 	for _, value := range cmd.Aliases {
-		WriteStringAndCheck(buf, fmt.Sprintf("        command_aliases+=(%q)\n", value))
-		WriteStringAndCheck(buf, fmt.Sprintf("        aliashash[%q]=%q\n", value, cmd.Name))
+		writeString(buf, fmt.Sprintf("        command_aliases+=(%q)\n", value))
+		writeString(buf, fmt.Sprintf("        aliashash[%q]=%q\n", value, cmd.Name))
 	}
-	WriteStringAndCheck(buf, `    fi`)
-	WriteStringAndCheck(buf, "\n")
+	writeString(buf, `    fi`)
+	writeString(buf, "\n")
 }
 func writeArgAliases(buf io.StringWriter, cmd *kong.Node) {
-	WriteStringAndCheck(buf, "    noun_aliases=()\n")
+	writeString(buf, "    noun_aliases=()\n")
 	sort.Strings(cmd.Aliases)
 	for _, value := range cmd.Aliases {
-		WriteStringAndCheck(buf, fmt.Sprintf("    noun_aliases+=(%q)\n", value))
+		writeString(buf, fmt.Sprintf("    noun_aliases+=(%q)\n", value))
 	}
 }
 
-func gen(buf io.StringWriter, cmd *kong.Node) {
+func (b Bash) gen(buf io.StringWriter, cmd *kong.Node) {
 	for _, c := range cmd.Children {
 		if c == nil || c.Hidden {
 			continue
 		}
-		gen(buf, c)
+		b.gen(buf, c)
 	}
 	commandName := cmd.FullPath()
 	commandName = strings.ReplaceAll(commandName, " ", "_")
 	commandName = strings.ReplaceAll(commandName, ":", "__")
 
 	if cmd.Parent == nil {
-		WriteStringAndCheck(buf, fmt.Sprintf("_%s_root_command()\n{\n", commandName))
+		writeString(buf, fmt.Sprintf("_%s_root_command()\n{\n", commandName))
 	} else {
-		WriteStringAndCheck(buf, fmt.Sprintf("_%s()\n{\n", commandName))
+		writeString(buf, fmt.Sprintf("_%s()\n{\n", commandName))
 	}
 
-	WriteStringAndCheck(buf, fmt.Sprintf("    last_command=%q\n", commandName))
-	WriteStringAndCheck(buf, "\n")
-	WriteStringAndCheck(buf, "    command_aliases=()\n")
-	WriteStringAndCheck(buf, "\n")
+	writeString(buf, fmt.Sprintf("    last_command=%q\n", commandName))
+	writeString(buf, "\n")
+	writeString(buf, "    command_aliases=()\n")
+	writeString(buf, "\n")
 
 	writeCommands(buf, cmd)
 	writeFlags(buf, cmd)
 	writeArgAliases(buf, cmd)
-	WriteStringAndCheck(buf, "}\n\n")
-}
-
-// GenBashCompletion generates bash completion file and writes to the passed writer.
-func GenBashCompletion(c *kong.Node, w io.Writer) error {
-	buf := new(bytes.Buffer)
-	writePreamble(buf, c.Name)
-	gen(buf, c)
-	writePostscript(buf, c.Name)
-
-	_, err := buf.WriteTo(w)
-	return err
+	writeString(buf, "}\n\n")
 }
