@@ -11,9 +11,10 @@ import (
 	"github.com/alecthomas/kong"
 )
 
+// Bash is a bash completion generator.
 type Bash struct{}
 
-// Run generates bash shell completion.
+// Run generates bash completion script.
 func (b Bash) Run(ctx *kong.Context) error {
 	buf := new(bytes.Buffer)
 	writePreamble(buf, ctx.Model.Name)
