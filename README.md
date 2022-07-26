@@ -9,16 +9,18 @@ Gum
     <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
 </p>
 
-A tool for building glamorous shell scripts.
+A tool for building glamorous shell scripts. Leverage the power of 
+[Bubbles](https://github.com/charmbracelet/bubbles) and [Lip Gloss](https://github.com/charmbracelet/lipgloss) 
+in your CLI without writing any code!
 
 <img src="https://stuff.charm.sh/gum/demo-full.gif" width="600" alt="Shell running the ./demo.sh script" />
 
-The above example is running from a single shell script ([view source](./examples/demo.sh)).
+The above example is running from a single shell script ([source](./examples/demo.sh)).
 
 ## Tutorial
 
 Gum provides highly configurable, ready-to-use utilities to help you write
-useful bash scripts in just a few lines of code.
+useful bash scripts with just a few lines of code.
 
 Let's build a simple script to help you write [Conventional
 Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
@@ -29,15 +31,15 @@ Start with a `#!/bin/bash`.
 #!/bin/bash
 ```
 
-Ask the user for the commit type with `gum choose`:
+Ask for the commit type with `gum choose`:
 
 ```bash
 gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert"
 ```
 
-> Note: this command itself will print to `stdout` which is not all that useful.
-To make use of the command later on you should save the stdout to a `$VARIABLE`
-or `file.txt`.
+> Tip: this command itself will print to `stdout` which is not all that useful.
+To make use of the command later on you can save the stdout to a `$VARIABLE` or
+`file.txt`.
 
 Prompt for an (optional) scope for the commit:
 
@@ -45,7 +47,7 @@ Prompt for an (optional) scope for the commit:
 gum input --placeholder "scope"
 ```
 
-Prompt the user for a commit message:
+Prompt for a commit message:
 
 ```bash
 gum input --placeholder "Summary of this change"
@@ -107,14 +109,16 @@ go install github.com/charmbracelet/gum@latest
 
 ## Customization
 
-`gum` is designed to be embedded in scripts and different use cases. All
-components are configurable and customizable to fit your theme and use case.
+`gum` is designed to be embedded in scripts and supports all sorts of use
+cases. Components are configurable and customizable to fit your theme and
+use case.
 
 You can customize with `--flags`. See `gum <command> --help` for a full view of
-all the command's customization and configuration options.
+each command's customization and configuration options.
 
-For example, let's customize the cursor color, prompt color, prompt indicator,
-placeholder text, width, and pre-populate the value of the input:
+For example, let's use an `input` and change the cursor color, prompt color,
+prompt indicator, placeholder text, width, and pre-populate the value:
+
 ```bash
 gum input --cursor.foreground "#FF0" --prompt.foreground "#0FF" --prompt "* " \
     --placeholder "What's up?" --width 80 --value "Not much, hby?"
@@ -125,7 +129,8 @@ gum input --cursor.foreground "#FF0" --prompt.foreground "#0FF" --prompt "* " \
 ## Interaction
 
 #### Input
-Prompt your users for input with a simple command.
+
+Prompt for input with a simple command.
 
 ```bash
 gum input > answer.text
@@ -135,7 +140,7 @@ gum input > answer.text
 
 #### Write
 
-Prompt your users to write some multi-line text.
+Prompt for some multi-line text.
 
 ```bash
 gum write > story.text
@@ -145,7 +150,7 @@ gum write > story.text
 
 #### Filter
 
-Allow your users to filter through a list of options by fuzzy searching.
+Use fuzzy matching to filter a list of values:
 
 ```bash
 echo Strawberry >> flavors.text
@@ -158,7 +163,7 @@ cat flavors.text | gum filter > selection.text
 
 #### Choose
 
-Ask your users to choose an option from a list of choices.
+Choose an option from a list of choices.
 
 ```bash
 echo "Pick a card, any card..."
@@ -166,7 +171,8 @@ CARD=$(gum choose --height 15 {{A,K,Q,J},{10..2}}" "{♠,♥,♣,♦})
 echo "Was your card the $CARD?"
 ```
 
-You can also set a limit on the number of items to choose with the `--limit` flag.
+You can also select multiple items with the `--limit` flag, which determines
+the maximum of items that can be chosen.
 
 ```bash
 echo "Pick your top 5 songs."
@@ -184,9 +190,8 @@ cat foods.txt | gum choose --no-limit
 
 #### Spin
 
-Display a spinner while taking some running action. We specify the command to
-run while showing the spinner, the spinner will automatically stop after the
-command exits.
+Display a spinner while running a script or command. The spinner will
+automatically stop after the given command exits.
 
 ```bash
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
@@ -213,11 +218,11 @@ gum style \
 
 #### Join
 
-Combine text vertically or horizontally with a single command, use this command
-with `gum style` to build layouts and pretty output.
+Combine text vertically or horizontally. Use this command with `gum style` to
+build layouts and pretty output.
 
-Note: It's important to wrap the output of `gum style` in quotes to ensure new
-lines (`\n`) are part of a single argument passed to the `join` command.
+Tip: Always wrap the output of `gum style` in quotes to preserve newlines
+(`\n`) when using it as an argument in the `join` command.
 
 ```bash
 I=$(gum style --padding "1 5" --border double --border-foreground 212 "I")
@@ -234,8 +239,8 @@ gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 
 ## Format
 
-The `format` command allows you to take some text and stylize it. `gum format`
-can parse markdown, code, template strings, and emoji strings.
+`format` processes and formats bodies of text. `gum format` can parse markdown,
+template strings, and named emojis.
 
 ```bash
 # Format some markdown
@@ -253,6 +258,10 @@ echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' \
 echo 'I :heart: Bubble Gum :candy:' | gum format -t emoji
 ```
 
+For more information on template helpers, see the [Termenv 
+docs](https://github.com/muesli/termenv#template-helpers). For a full list of
+named emojis see the [GitHub API](https://api.github.com/emojis).
+
 <img src="https://stuff.charm.sh/gum/format.gif?cache=1" width="600" alt="Running gum format for different types of formats" />
 
 ## Examples
@@ -263,10 +272,10 @@ How to use `gum` in your daily workflows:
 
 #### Write a commit message
 
-Prompt for user input to write git commit messages with a short summary and
+Prompt for input to write git commit messages with a short summary and
 longer details with `gum input` and `gum write`.
 
-Bonus points if you use `gum filter` with the [Conventional Commits
+Bonus points: use `gum filter` with the [Conventional Commits
 Specification](https://www.conventionalcommits.org/en/v1.0.0/#summary) as a
 prefix for your commit message.
 
@@ -278,8 +287,9 @@ git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
 #### Open files in your `$EDITOR`
 
 By default `gum filter` will display a list of all files (searched recursively)
-through your current directory, it has some sensible ignored defaults (`.git`,
-`node_modules`). You can use this to pick a file and open it in your `$EDITOR`.
+through your current directory, with some sensible ignore settings (`.git`,
+`node_modules`). You can use this command to easily to pick a file and open it
+in your `$EDITOR`.
 
 ```bash
 $EDITOR $(gum filter)
@@ -287,8 +297,8 @@ $EDITOR $(gum filter)
 
 #### Connect to a TMUX session
 
-Pick from a running `TMUX` session and attach to it if not inside `TMUX` or
-switch your client to the session if already attached to a session.
+Pick from a running `tmux` session and attach to it. Or, if you're already in a
+`tmux` session, switch sessions.
 
 ```bash
 SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session...")
@@ -297,10 +307,10 @@ tmux switch-client -t $SESSION || tmux attach -t $SESSION
 
 <img src="https://stuff.charm.sh/gum/pick-tmux-session.gif" width="600" alt="Picking a tmux session with gum filter" />
 
-#### Pick commit hash from history
+#### Pick commit hash from your Git history
 
-Filter through your git history searching for commit messages and copy the
-commit hash of the selected commit.
+Filter through your git history searching for commit messages, copying the
+commit hash of the commit you select.
 
 ```bash
 git log --oneline | gum filter | cut -d' ' -f1 # | copy
