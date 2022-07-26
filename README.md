@@ -9,9 +9,10 @@ Gum
     <a href="https://github.com/charmbracelet/gum/actions"><img src="https://github.com/charmbracelet/gum/workflows/build/badge.svg" alt="Build Status"></a>
 </p>
 
-A tool for building glamorous shell scripts. Leverage the power of 
-[Bubbles](https://github.com/charmbracelet/bubbles) and [Lip Gloss](https://github.com/charmbracelet/lipgloss) 
-in your CLI without writing any code!
+A tool for building glamorous shell scripts. Leverage the power of
+[Bubbles](https://github.com/charmbracelet/bubbles) and [Lip
+Gloss](https://github.com/charmbracelet/lipgloss) in your scripts or dotfiles
+aliases without writing any Go code!
 
 <img src="https://stuff.charm.sh/gum/demo.gif" width="600" alt="Shell running the ./demo.sh script" />
 
@@ -20,7 +21,7 @@ The above example is running from a single shell script ([source](./examples/dem
 ## Tutorial
 
 Gum provides highly configurable, ready-to-use utilities to help you write
-useful bash scripts with just a few lines of code.
+useful bash scripts and dotfiles aliases with just a few lines of bash code.
 
 Let's build a simple script to help you write [Conventional
 Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
