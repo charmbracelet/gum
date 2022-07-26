@@ -20,7 +20,6 @@ type model struct {
 	prompt      string
 	affirmative string
 	negative    string
-	vertical    bool
 	quitting    bool
 	selected    int
 
@@ -65,11 +64,6 @@ func (m model) View() string {
 		return ""
 	}
 
-	joinFunc := lipgloss.JoinHorizontal
-	if m.vertical {
-		joinFunc = lipgloss.JoinVertical
-	}
-
 	var aff, neg string
 
 	if m.selected == 0 {
@@ -80,5 +74,5 @@ func (m model) View() string {
 		neg = m.selectedStyle.Render(m.negative)
 	}
 
-	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), joinFunc(lipgloss.Left, aff, neg))
+	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
 }

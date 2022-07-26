@@ -12,7 +12,6 @@ func (o Options) Run() error {
 	m, err := tea.NewProgram(model{
 		affirmative:     o.Affirmative,
 		negative:        o.Negative,
-		vertical:        o.Vertical,
 		selected:        0,
 		prompt:          o.Prompt,
 		selectedStyle:   o.SelectedStyle.ToLipgloss(),
