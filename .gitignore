@@ -3,3 +3,8 @@ test
 
 # Binaries
 gum
+
+dist
+testdata
+completions/
+manpages/
