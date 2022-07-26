@@ -22,5 +22,6 @@ func (s Styles) ToLipgloss() lipgloss.Style {
 		Bold(s.Bold).
 		Faint(s.Faint).
 		Italic(s.Italic).
-		Strikethrough(s.Strikethrough)
+		Strikethrough(s.Strikethrough).
+		Underline(s.Underline)
 }

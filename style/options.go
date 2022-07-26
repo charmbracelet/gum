@@ -18,24 +18,25 @@ type Options struct {
 // components, through embedding and prefixing.
 type Styles struct {
 	// Colors
-	Background string `help:"Background color of the ${name=element}" default:"${defaultBackground}" group:"Style Flags"`
-	Foreground string `help:"color of the ${name=element}" default:"${defaultForeground}" group:"Style Flags"`
+	Background string `help:"Background Color" default:"${defaultBackground}" group:"Style Flags"`
+	Foreground string `help:"Foreground Color" default:"${defaultForeground}" group:"Style Flags"`
 
 	// Border
-	Border           string `help:"Border style to apply" enum:"none,hidden,normal,rounded,thick,double" default:"none" group:"Style Flags"`
-	BorderBackground string `help:"Border background color" group:"Style Flags"`
-	BorderForeground string `help:"Border foreground color" group:"Style Flags"`
+	Border           string `help:"Border Style" enum:"none,hidden,normal,rounded,thick,double" default:"none" group:"Style Flags"`
+	BorderBackground string `help:"Border Background Color" group:"Style Flags"`
+	BorderForeground string `help:"Border Foreground Color" group:"Style Flags"`
 
 	// Layout
-	Align   string `help:"Text alignment" enum:"left,center,right,bottom,middle,top" default:"left" group:"Style Flags"`
-	Height  int    `help:"Height of output" group:"Style Flags"`
-	Width   int    `help:"Width of output" group:"Style Flags"`
-	Margin  string `help:"Margin to apply around the text." default:"0 0" group:"Style Flags"`
-	Padding string `help:"Padding to apply around the text." default:"0 0"`
+	Align   string `help:"Text Alignment" enum:"left,center,right,bottom,middle,top" default:"left" group:"Style Flags"`
+	Height  int    `help:"Text height" group:"Style Flags"`
+	Width   int    `help:"Text width" group:"Style Flags"`
+	Margin  string `help:"Text margin" default:"${defaultMargin}" group:"Style Flags"`
+	Padding string `help:"Text padding" default:"${defaultPadding}" group:"Style Flags"`
 
 	// Format
-	Bold          bool `help:"Apply bold formatting" group:"Style Flags"`
-	Faint         bool `help:"Apply faint formatting" group:"Style Flags"`
-	Italic        bool `help:"Apply italic formatting" group:"Style Flags"`
-	Strikethrough bool `help:"Apply strikethrough formatting" group:"Style Flags"`
+	Bold          bool `help:"Bold text" group:"Style Flags"`
+	Faint         bool `help:"Faint text" group:"Style Flags"`
+	Italic        bool `help:"Italicize text" group:"Style Flags"`
+	Strikethrough bool `help:"Strikethrough text" group:"Style Flags"`
+	Underline     bool `help:"Underline text" default:"${defaultUnderline}" group:"Style Flags"`
 }

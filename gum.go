@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/charmbracelet/gum/choose"
 	"github.com/charmbracelet/gum/completion"
+	"github.com/charmbracelet/gum/confirm"
 	"github.com/charmbracelet/gum/filter"
 	"github.com/charmbracelet/gum/format"
 	"github.com/charmbracelet/gum/input"
@@ -33,6 +34,20 @@ type Gum struct {
 	//   $ gum choose "Strawberry" "Banana" "Cherry"
 	//
 	Choose choose.Options `cmd:"" help:"Choose an option from a list of choices"`
+
+	// Confirm provides an interface to ask a user to confirm an action.
+	// The user is provided with an interface to choose an affirmative or
+	// negative answer, which is then reflected in the exit code for use in
+	// scripting.
+	//
+	// If the user selects the affirmative answer, the program exits with 0.
+	// If the user selects the negative answer, the program exits with 1.
+	//
+	// I.e. confirm if the user wants to delete a file
+	//
+	//   $ gum confirm "Are you sure?" && rm file.txt
+	//
+	Confirm confirm.Options `cmd:"" help:"Ask a user to confirm an action"`
 
 	// Filter provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.

@@ -25,6 +25,9 @@ func main() {
 		kong.Vars{
 			"defaultBackground": "",
 			"defaultForeground": "",
+			"defaultMargin":     "0 0",
+			"defaultPadding":    "0 0",
+			"defaultUnderline":  "false",
 		},
 	)
 	ctx.Run()
