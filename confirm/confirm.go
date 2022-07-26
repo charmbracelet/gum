@@ -50,6 +50,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			m.quitting = true
 			return m, tea.Quit
+		case "y", "Y":
+			m.quitting = true
+			m.selected = 0
+			return m, tea.Quit
 		case "ctrl+c", "q":
 			m.selected = 1
 			m.quitting = true
