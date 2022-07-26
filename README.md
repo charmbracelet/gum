@@ -11,7 +11,7 @@ Gum
 
 A tool for building glamorous shell scripts.
 
-<img src="https://stuff.charm.sh/gum/demo.gif?cache=1" width="600" alt="Shell running the ./demo.sh script" />
+<img src="https://stuff.charm.sh/gum/demo-full.gif" width="600" alt="Shell running the ./demo.sh script" />
 
 ## Tutorial
 
