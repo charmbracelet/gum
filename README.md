@@ -13,6 +13,8 @@ A tool for building glamorous shell scripts.
 
 <img src="https://stuff.charm.sh/gum/demo-full.gif" width="600" alt="Shell running the ./demo.sh script" />
 
+The above example is running from a single shell script ([view source](./examples/demo.sh)).
+
 ## Tutorial
 
 Gum provides highly configurable, ready-to-use utilities to help you write
