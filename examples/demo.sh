@@ -26,22 +26,22 @@ sleep 1
 
 READ="Read"
 THINK="Think"
-DISCARD="Think"
-ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[*] " --no-limit "$READ" "$THINK" "$DISCARD")
+DISCARD="Discard"
+ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[✓] " --no-limit "$READ" "$THINK" "$DISCARD")
 
 clear
 
 echo "One moment, please."
 
-if grep -q "$READ" <<< "$ACTION"; then
+if grep -q "$READ" <<< "$ACTIONS"; then
     gum spin -s line --title "Reading the secret..." -- sleep 1
 fi
 
-if grep -q "$THINK" <<< "$ACTION"; then
+if grep -q "$THINK" <<< "$ACTIONS"; then
     gum spin -s pulse --title "Thinking about your secret..." -- sleep 1
 fi
 
-if grep -q "$DISCARD" <<< "$ACTION"; then
+if grep -q "$DISCARD" <<< "$ACTIONS"; then
     gum spin -s monkey --title " Discarding your secret..." -- sleep 2
 fi
 
