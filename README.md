@@ -188,6 +188,18 @@ cat foods.txt | gum choose --no-limit
 
 <img src="https://stuff.charm.sh/gum/choose.gif?cache=1" width="600" alt="Shell running gum choose with numbers and gum flavors" />
 
+#### Confirm
+
+Confirm whether to perform an action. Exits with code `0` (affirmative) or `1`
+(negative) depending on selection.
+
+```bash
+gum confirm && rm file.txt || echo "File not removed"
+```
+
+<img src="https://stuff.charm.sh/gum/confirm.gif?cache=1" width="600" alt="Shell running gum confirm" />
+
+
 #### Spin
 
 Display a spinner while running a script or command. The spinner will
