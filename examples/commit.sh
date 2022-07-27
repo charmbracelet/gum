@@ -20,5 +20,5 @@ SCOPE=$(gum input --placeholder "scope")
 SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
 DESCRIPTION=$(gum write --placeholder "Details of this change")
 
-# Commit these changes
-git commit -m "$SUMMARY" -m "$DESCRIPTION"
+# Commit these changes if user confirms
+gum confirm && git commit -m "$SUMMARY" -m "$DESCRIPTION"

@@ -60,6 +60,12 @@ Prompt for a detailed (multi-line) explanation of the changes:
 gum write --placeholder "Details of this change"
 ```
 
+Prompt for a confirmation before committing:
+
+```bash
+gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
+```
+
 Putting it all together...
 
 ```bash
@@ -75,10 +81,10 @@ SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this chang
 DESCRIPTION=$(gum write --placeholder "Details of this change")
 
 # Commit these changes
-git commit -m "$SUMMARY" -m "$DESCRIPTION"
+gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
-<img src="https://stuff.charm.sh/gum/commit.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
+<img src="https://stuff.charm.sh/gum/commit_1.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
 
 ## Installation
 
