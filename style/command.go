@@ -52,7 +52,7 @@ func HideFlags(ctx *kong.Context) error {
 	}
 	for _, f := range n.Flags {
 		if g := f.Group; g != nil && g.Key == groupName {
-			if !strings.HasSuffix(f.Name, "foreground") {
+			if !strings.HasSuffix(f.Name, ".foreground") {
 				f.Hidden = true
 			}
 		}
