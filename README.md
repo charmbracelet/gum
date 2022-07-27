@@ -89,7 +89,7 @@ Use a package manager:
 brew tap charmbracelet/tap && brew install charmbracelet/tap/gum
 
 # Arch Linux (btw)
-pacman -S gum
+yay -S gum-bin
 
 # Nix
 nix-env -iA nixpkgs.gum
