@@ -14,5 +14,3 @@ require (
 	github.com/muesli/termenv v0.11.1-0.20220212125758-44cd13922739
 	github.com/sahilm/fuzzy v0.1.0
 )
-
-replace github.com/charmbracelet/glamour => ../glamour

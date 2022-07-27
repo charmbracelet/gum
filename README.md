@@ -149,7 +149,7 @@ Prompt for input with a simple command.
 gum input > answer.text
 ```
 
-<img src="https://stuff.charm.sh/gum/input.gif?" width="600" alt="Shell running gum input typing Not much, you?" />
+<img src="https://stuff.charm.sh/gum/input_1.gif" width="600" alt="Shell running gum input typing Not much, you?" />
 
 #### Write
 
@@ -210,7 +210,7 @@ Confirm whether to perform an action. Exits with code `0` (affirmative) or `1`
 gum confirm && rm file.txt || echo "File not removed"
 ```
 
-<img src="https://stuff.charm.sh/gum/confirm.gif" width="600" alt="Shell running gum confirm" />
+<img src="https://stuff.charm.sh/gum/confirm_1.gif" width="600" alt="Shell running gum confirm" />
 
 
 #### Spin
