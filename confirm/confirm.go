@@ -37,12 +37,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "left", "h", "ctrl+p":
+		case "left", "h", "ctrl+p", "tab":
 			m.selected = m.selected - 1
 			if m.selected < 0 {
 				m.selected = 1
 			}
-		case "right", "l", "ctrl+n":
+		case "right", "l", "ctrl+n", "shift+tab":
 			m.selected = m.selected + 1
 			if m.selected > 1 {
 				m.selected = 0
