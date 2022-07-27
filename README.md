@@ -61,6 +61,7 @@ gum write --placeholder "Details of this change"
 ```
 
 Prompt for a confirmation before committing:
+> `gum confirm` exits with status `0` if confirmed and status `1` if cancelled.
 
 ```bash
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
@@ -84,7 +85,7 @@ DESCRIPTION=$(gum write --placeholder "Details of this change")
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
-<img src="https://stuff.charm.sh/gum/commit_1.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
+<img src="https://stuff.charm.sh/gum/commit_2.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
 
 ## Installation
 

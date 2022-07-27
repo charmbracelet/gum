@@ -21,4 +21,4 @@ SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this chang
 DESCRIPTION=$(gum write --placeholder "Details of this change")
 
 # Commit these changes if user confirms
-gum confirm && git commit -m "$SUMMARY" -m "$DESCRIPTION"
+gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
