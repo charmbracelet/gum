@@ -210,7 +210,7 @@ Confirm whether to perform an action. Exits with code `0` (affirmative) or `1`
 gum confirm && rm file.txt || echo "File not removed"
 ```
 
-<img src="https://stuff.charm.sh/gum/confirm_1.gif" width="600" alt="Shell running gum confirm" />
+<img src="https://stuff.charm.sh/gum/confirm_2.gif" width="600" alt="Shell running gum confirm" />
 
 
 #### Spin
