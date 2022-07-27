@@ -11,24 +11,14 @@ package input
 import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
-type model struct {
-	textinput textinput.Model
-	autosize  bool
-}
+type model struct{ textinput textinput.Model }
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
 func (m model) View() string  { return m.textinput.View() }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		if !m.autosize {
-			return m, nil
-		}
-		m.textinput.Width = msg.Width - (lipgloss.Width(m.textinput.Prompt) + 1)
-		return m, nil
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEscape, tea.KeyCtrlC, tea.KeyEnter:

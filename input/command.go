@@ -31,10 +31,7 @@ func (o Options) Run() error {
 	i.PromptStyle = o.PromptStyle.ToLipgloss()
 	i.CursorStyle = o.CursorStyle.ToLipgloss()
 
-	p := tea.NewProgram(model{
-		textinput: i,
-		autosize:  o.Width == 0,
-	}, tea.WithOutput(os.Stderr))
+	p := tea.NewProgram(model{i}, tea.WithOutput(os.Stderr))
 	m, err := p.StartReturningModel()
 	fmt.Println(m.(model).textinput.Value())
 	return err
