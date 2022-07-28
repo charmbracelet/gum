@@ -94,9 +94,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "esc", "enter":
 			m.quitting = true
 			return m, tea.Quit
-		case "ctrl+n", "down":
+		case "ctrl+n", "ctrl+j", "down":
 			m.selected = clamp(0, len(m.matches)-1, m.selected+1)
-		case "ctrl+p", "up":
+		case "ctrl+p", "ctrl+k", "up":
 			m.selected = clamp(0, len(m.matches)-1, m.selected-1)
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
