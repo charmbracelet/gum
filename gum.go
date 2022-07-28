@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/gum/choose"
 	"github.com/charmbracelet/gum/completion"
 	"github.com/charmbracelet/gum/confirm"
@@ -16,6 +17,9 @@ import (
 
 // Gum is the command-line interface for Gum.
 type Gum struct {
+	// Version is a flag that can be used to display the version number.
+	Version kong.VersionFlag `short:"v" help:"Print the version number"`
+
 	// Completion generates Gum shell completion scripts.
 	Completion completion.Completion `cmd:"" hidden:"" help:"Request shell completion"`
 
