@@ -21,15 +21,15 @@ The above example is running from a single shell script ([source](./examples/dem
 ## Tutorial
 
 Gum provides highly configurable, ready-to-use utilities to help you write
-useful shell scripts and dotfiles aliases with just a few lines of bash code.
+useful shell scripts and dotfiles aliases with just a few lines of code.
 
 Let's build a simple script to help you write [Conventional
 Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
 dotfiles.
 
-Start with a `#!/bin/bash`.
+Start with a `#!/bin/sh`.
 ```bash
-#!/bin/bash
+#!/bin/sh
 ```
 
 Ask for the commit type with `gum choose`:
@@ -70,7 +70,7 @@ gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 Putting it all together...
 
 ```bash
-#!/bin/bash
+#!/bin/sh
 TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
 SCOPE=$(gum input --placeholder "scope")
 
