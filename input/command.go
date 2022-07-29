@@ -31,6 +31,11 @@ func (o Options) Run() error {
 	i.PromptStyle = o.PromptStyle.ToLipgloss()
 	i.CursorStyle = o.CursorStyle.ToLipgloss()
 
+	if o.Password {
+		i.EchoMode = textinput.EchoPassword
+		i.EchoCharacter = '•'
+	}
+
 	p := tea.NewProgram(model{i}, tea.WithOutput(os.Stderr))
 	m, err := p.StartReturningModel()
 	fmt.Println(m.(model).textinput.Value())
