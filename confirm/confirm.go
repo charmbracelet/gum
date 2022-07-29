@@ -21,7 +21,8 @@ type model struct {
 	affirmative string
 	negative    string
 	quitting    bool
-	selected    int
+
+	confirmation bool
 
 	// styles
 	promptStyle     lipgloss.Style
@@ -37,25 +38,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "left", "h", "ctrl+p", "tab":
-			m.selected = m.selected - 1
-			if m.selected < 0 {
-				m.selected = 1
-			}
-		case "right", "l", "ctrl+n", "shift+tab":
-			m.selected = m.selected + 1
-			if m.selected > 1 {
-				m.selected = 0
-			}
+		case "left", "h", "ctrl+p", "tab",
+			"right", "l", "ctrl+n", "shift+tab":
+			m.confirmation = !m.confirmation
 		case "enter":
 			m.quitting = true
 			return m, tea.Quit
 		case "y", "Y":
 			m.quitting = true
-			m.selected = 0
+			m.confirmation = true
 			return m, tea.Quit
 		case "ctrl+c", "q", "n", "N":
-			m.selected = 1
+			m.confirmation = false
 			m.quitting = true
 			return m, tea.Quit
 		}
@@ -70,7 +64,7 @@ func (m model) View() string {
 
 	var aff, neg string
 
-	if m.selected == 0 {
+	if m.confirmation {
 		aff = m.selectedStyle.Render(m.affirmative)
 		neg = m.unselectedStyle.Render(m.negative)
 	} else {

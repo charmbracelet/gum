@@ -12,7 +12,7 @@ func (o Options) Run() error {
 	m, err := tea.NewProgram(model{
 		affirmative:     o.Affirmative,
 		negative:        o.Negative,
-		selected:        0,
+		confirmation:    o.Default,
 		prompt:          o.Prompt,
 		selectedStyle:   o.SelectedStyle.ToLipgloss(),
 		unselectedStyle: o.UnselectedStyle.ToLipgloss(),
@@ -23,7 +23,11 @@ func (o Options) Run() error {
 		return err
 	}
 
-	os.Exit(m.(model).selected)
+	if m.(model).confirmation {
+		os.Exit(0)
+	} else {
+		os.Exit(1)
+	}
 
 	return nil
 }
