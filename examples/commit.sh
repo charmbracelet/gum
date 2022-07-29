@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script is used to write a conventional commit message.
 # It prompts the user to choose the type of commit as specified in the
@@ -14,7 +14,7 @@ TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert"
 SCOPE=$(gum input --placeholder "scope")
 
 # Since the scope is optional, wrap it in parentheses if it has a value.
-[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
+test -n "$SCOPE" && SCOPE="($SCOPE)"
 
 # Pre-populate the input with the type(scope): so that the user may change it
 SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
