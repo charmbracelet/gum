@@ -8,13 +8,22 @@ import (
 
 // List returns a list of all files in the current directory.
 // It ignores the .git directory.
-func List() []string {
+func List(opts ListOptions) []string {
 	var files []string
+
 	err := filepath.Walk(".",
 		func(path string, info os.FileInfo, err error) error {
-			if shouldIgnore(path) || info.IsDir() || err != nil {
+			switch {
+			case err != nil:
+				return nil
+			case shouldIgnore(path):
+				return nil
+			case info.IsDir() && !opts.OnlyDirectories:
+				return nil
+			case !info.IsDir() && opts.OnlyDirectories:
 				return nil
 			}
+
 			files = append(files, path)
 			return nil
 		})
@@ -22,8 +31,8 @@ func List() []string {
 	if err != nil {
 		return []string{}
 	}
-	return files
 
+	return files
 }
 
 var defaultIgnorePatterns = []string{"node_modules", ".git", "."}
@@ -34,5 +43,6 @@ func shouldIgnore(path string) bool {
 			return true
 		}
 	}
+
 	return false
 }

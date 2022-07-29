@@ -8,6 +8,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -29,7 +30,7 @@ func (o Options) Run() error {
 	if input != "" {
 		choices = strings.Split(string(input), "\n")
 	} else {
-		choices = files.List()
+		choices = files.List(o.FileListOptions)
 	}
 
 	p := tea.NewProgram(model{
