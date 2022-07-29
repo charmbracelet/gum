@@ -27,9 +27,9 @@ Let's build a simple script to help you write [Conventional
 Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
 dotfiles.
 
-Start with a `#!/bin/sh`.
+Start with a `#!/bin/bash`.
 ```bash
-#!/bin/sh
+#!/bin/bash
 ```
 
 Ask for the commit type with `gum choose`:
@@ -70,7 +70,7 @@ gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 Putting it all together...
 
 ```bash
-#!/bin/sh
+#!/bin/bash
 TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
 SCOPE=$(gum input --placeholder "scope")
 
@@ -290,7 +290,7 @@ echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' \
 echo 'I :heart: Bubble Gum :candy:' | gum format -t emoji
 ```
 
-For more information on template helpers, see the [Termenv 
+For more information on template helpers, see the [Termenv
 docs](https://github.com/muesli/termenv#template-helpers). For a full list of
 named emojis see the [GitHub API](https://api.github.com/emojis).
 
