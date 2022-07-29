@@ -27,9 +27,9 @@ Let's build a simple script to help you write [Conventional
 Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
 dotfiles.
 
-Start with a `#!/bin/bash`.
+Start with a `#!/bin/sh`.
 ```bash
-#!/bin/bash
+#!/bin/sh
 ```
 
 Ask for the commit type with `gum choose`:
@@ -70,12 +70,12 @@ gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 Putting it all together...
 
 ```bash
-#!/bin/bash
+#!/bin/sh
 TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
 SCOPE=$(gum input --placeholder "scope")
 
 # Since the scope is optional, wrap it in parentheses if it has a value.
-[[ -n "$SCOPE" ]] && SCOPE="($SCOPE)"
+test -n "$SCOPE" && SCOPE="($SCOPE)"
 
 # Pre-populate the input with the type(scope): so that the user may change it
 SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
