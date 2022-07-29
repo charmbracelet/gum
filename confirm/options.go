@@ -6,6 +6,7 @@ import "github.com/charmbracelet/gum/style"
 type Options struct {
 	Affirmative     string       `help:"The title of the affirmative action" default:"Yes"`
 	Negative        string       `help:"The title of the negative action" default:"No"`
+	Default         bool         `help:"Default confirmation action" default:"true"`
 	Prompt          string       `arg:"" help:"Prompt to display." default:"Are you sure?"`
 	PromptStyle     style.Styles `embed:"" prefix:"prompt." help:"The style of the prompt" set:"defaultMargin=1 0 0 0"`
 	UnselectedStyle style.Styles `embed:"" prefix:"unselected." help:"The style of the unselected action" set:"defaultBackground=235" set:"defaultPadding=0 3" set:"defaultMargin=1 1"`
