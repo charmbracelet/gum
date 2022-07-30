@@ -93,7 +93,7 @@ func (z Zsh) writeCommands(buf io.StringWriter, cmd *kong.Node) {
 		}
 		z.writeCommand(buf, c)
 		if i < len(cmd.Children)-1 {
-			buf.WriteString(" \\")
+			_, _ = buf.WriteString(" \\")
 		}
 		writeString(buf, "\n")
 	}
