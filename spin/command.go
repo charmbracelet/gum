@@ -1,6 +1,9 @@
 package spin
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -19,7 +22,20 @@ func (o Options) Run() error {
 		command: o.Command,
 	}
 	p := tea.NewProgram(m)
-	return p.Start()
+	mm, err := p.StartReturningModel()
+	m = mm.(model)
+
+	if err != nil {
+		return err
+	}
+
+	if o.ShowOutput {
+		fmt.Print(m.output)
+	}
+
+	os.Exit(m.status)
+
+	return nil
 }
 
 // BeforeReset hook. Used to unclutter style flags.

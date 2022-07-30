@@ -26,9 +26,15 @@ type model struct {
 	spinner spinner.Model
 	title   string
 	command []string
+
+	status int
+	output string
 }
 
-type finishCommandMsg struct{ output string }
+type finishCommandMsg struct {
+	output string
+	status int
+}
 
 func commandStart(command []string) tea.Cmd {
 	return func() tea.Msg {
@@ -36,8 +42,19 @@ func commandStart(command []string) tea.Cmd {
 		if len(command) > 1 {
 			args = command[1:]
 		}
-		out, _ := exec.Command(command[0], args...).Output() //nolint:gosec
-		return finishCommandMsg{output: string(out)}
+		cmd := exec.Command(command[0], args...) //nolint:gosec
+		out, _ := cmd.Output()
+
+		status := cmd.ProcessState.ExitCode()
+
+		if status == -1 {
+			status = 1
+		}
+
+		return finishCommandMsg{
+			output: string(out),
+			status: status,
+		}
 	}
 }
 
@@ -53,6 +70,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case finishCommandMsg:
+		m.output = msg.output
+		m.status = msg.status
 		return m, tea.Quit
 	case tea.KeyMsg:
 		switch msg.String() {
