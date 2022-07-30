@@ -39,8 +39,7 @@ func isArgument(cmd *kong.Node) bool {
 
 // writeString writes a string into a buffer, and checks if the error is not nil.
 func writeString(b io.StringWriter, s string) {
-	_, err := b.WriteString(s)
-	if err != nil {
+	if _, err := b.WriteString(s); err != nil {
 		fmt.Fprintln(os.Stderr, "Error:", err)
 		os.Exit(1)
 	}

@@ -1,6 +1,6 @@
 package format
 
-// Options is customization options for the format command
+// Options is customization options for the format command.
 type Options struct {
 	Template []string `arg:"" optional:"" help:"Template string to format (can also be provided via stdin)"`
 

@@ -2,6 +2,7 @@ package stdin
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"os"
 	"strings"
@@ -11,7 +12,7 @@ import (
 func Read() (string, error) {
 	stat, err := os.Stdin.Stat()
 	if err != nil {
-		return "", err
+		return "", errors.New("failed to get stdin stat")
 	}
 
 	if stat.Mode()&os.ModeNamedPipe == 0 && stat.Size() == 0 {
