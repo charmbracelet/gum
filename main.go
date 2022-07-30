@@ -54,5 +54,5 @@ func main() {
 			"defaultUnderline":  "false",
 		},
 	)
-	ctx.Run()
+	_ = ctx.Run()
 }

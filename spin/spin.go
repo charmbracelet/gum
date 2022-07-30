@@ -36,7 +36,7 @@ func commandStart(command []string) tea.Cmd {
 		if len(command) > 1 {
 			args = command[1:]
 		}
-		out, _ := exec.Command(command[0], args...).Output()
+		out, _ := exec.Command(command[0], args...).Output() //nolint:gosec
 		return finishCommandMsg{output: string(out)}
 	}
 }

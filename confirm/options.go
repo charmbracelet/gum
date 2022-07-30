@@ -3,6 +3,7 @@ package confirm
 import "github.com/charmbracelet/gum/style"
 
 // Options is the customization options for the confirm command.
+// nolint:staticcheck
 type Options struct {
 	Affirmative     string       `help:"The title of the affirmative action" default:"Yes"`
 	Negative        string       `help:"The title of the negative action" default:"No"`

@@ -3,6 +3,7 @@ package filter
 import "github.com/charmbracelet/gum/style"
 
 // Options is the customization options for the filter command.
+// nolint:staticcheck
 type Options struct {
 	Indicator      string       `help:"Character for selection" default:"•"`
 	IndicatorStyle style.Styles `embed:"" prefix:"indicator." set:"defaultForeground=212" set:"name=indicator"`

@@ -139,6 +139,7 @@ func (m model) View() string {
 	return s.String()
 }
 
+//nolint:unparam
 func clamp(x, min, max int) int {
 	if x < min {
 		return min

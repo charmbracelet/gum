@@ -13,7 +13,7 @@ func List() []string {
 	err := filepath.Walk(".",
 		func(path string, info os.FileInfo, err error) error {
 			if shouldIgnore(path) || info.IsDir() || err != nil {
-				return nil
+				return nil //nolint:nilerr
 			}
 			files = append(files, path)
 			return nil
@@ -23,7 +23,6 @@ func List() []string {
 		return []string{}
 	}
 	return files
-
 }
 
 var defaultIgnorePatterns = []string{"node_modules", ".git", "."}

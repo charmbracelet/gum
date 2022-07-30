@@ -34,10 +34,10 @@ func (f Fish) gen(buf io.StringWriter, cmd *kong.Node) {
 	}
 	rootName := root.Name
 	if cmd.Parent == nil {
-		buf.WriteString(fmt.Sprintf("# %s\n", rootName))
+		_, _ = buf.WriteString(fmt.Sprintf("# %s\n", rootName))
 	} else {
-		buf.WriteString(fmt.Sprintf("# %s\n", cmd.Path()))
-		buf.WriteString(
+		_, _ = buf.WriteString(fmt.Sprintf("# %s\n", cmd.Path()))
+		_, _ = buf.WriteString(
 			fmt.Sprintf("complete -c %s -f -n '__fish_use_subcommand' -a %s -d '%s'\n",
 				rootName,
 				cmd.Name,
@@ -51,13 +51,13 @@ func (f Fish) gen(buf io.StringWriter, cmd *kong.Node) {
 			continue
 		}
 		if cmd.Parent == nil {
-			buf.WriteString(
+			_, _ = buf.WriteString(
 				fmt.Sprintf("complete -c %s -f",
 					rootName,
 				),
 			)
 		} else {
-			buf.WriteString(
+			_, _ = buf.WriteString(
 				fmt.Sprintf("complete -c %s -f -n '__fish_seen_subcommand_from %s'",
 					rootName,
 					cmd.Name,
@@ -67,19 +67,19 @@ func (f Fish) gen(buf io.StringWriter, cmd *kong.Node) {
 		if !f.IsBool() {
 			enums := flagPossibleValues(f)
 			if len(enums) > 0 {
-				buf.WriteString(fmt.Sprintf(" -xa '%s'", strings.Join(enums, " ")))
+				_, _ = buf.WriteString(fmt.Sprintf(" -xa '%s'", strings.Join(enums, " ")))
 			} else {
-				buf.WriteString(" -x")
+				_, _ = buf.WriteString(" -x")
 			}
 		}
 		if f.Short != 0 {
-			buf.WriteString(fmt.Sprintf(" -s %c", f.Short))
+			_, _ = buf.WriteString(fmt.Sprintf(" -s %c", f.Short))
 		}
-		buf.WriteString(fmt.Sprintf(" -l %s", f.Name))
-		buf.WriteString(fmt.Sprintf(" -d '%s'", f.Help))
-		buf.WriteString("\n")
+		_, _ = buf.WriteString(fmt.Sprintf(" -l %s", f.Name))
+		_, _ = buf.WriteString(fmt.Sprintf(" -d '%s'", f.Help))
+		_, _ = buf.WriteString("\n")
 	}
-	buf.WriteString("\n")
+	_, _ = buf.WriteString("\n")
 
 	for _, c := range cmd.Children {
 		if c == nil || c.Hidden {
