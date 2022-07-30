@@ -18,7 +18,7 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
-// Func is a function that formats some text
+// Func is a function that formats some text.
 type Func func(string) (string, error)
 
 var formatType = map[string]Func{
@@ -28,7 +28,7 @@ var formatType = map[string]Func{
 	"template": template,
 }
 
-// Run runs the format command
+// Run runs the format command.
 func (o Options) Run() error {
 	var input string
 	if len(o.Template) > 0 {

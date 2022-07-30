@@ -55,7 +55,7 @@ const (
 	ShellCompDirectiveFilterDirs
 
 	// ===========================================================================
-
+	//
 	// All directives using iota should be above this one.
 	// For internal use.
 	shellCompDirectiveMaxValue //nolint:deadcode,unused,varcheck

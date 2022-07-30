@@ -24,9 +24,8 @@ func (o Options) Run() error {
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
 
-	input, _ := stdin.Read()
 	var choices []string
-	if input != "" {
+	if input, _ := stdin.Read(); input != "" {
 		choices = strings.Split(strings.TrimSpace(input), "\n")
 	} else {
 		choices = files.List()

@@ -14,11 +14,8 @@ import (
 // Run provides a shell script interface for the text input bubble.
 // https://github.com/charmbracelet/bubbles/textinput
 func (o Options) Run() error {
-	in, _ := stdin.Read()
-
 	i := textinput.New()
-
-	if in != "" && o.Value == "" {
+	if in, _ := stdin.Read(); in != "" && o.Value == "" {
 		i.SetValue(in)
 	} else {
 		i.SetValue(o.Value)
