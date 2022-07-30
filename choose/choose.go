@@ -72,6 +72,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.paginator.PrevPage()
 		case "ctrl+c":
 			m.quitting = true
+			// Ctrl+C should unselect all items
+			for i := range m.items {
+				m.items[i].selected = false
+			}
 			return m, tea.Quit
 		case " ", "x":
 			if m.limit == 1 {
