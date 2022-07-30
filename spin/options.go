@@ -11,4 +11,5 @@ type Options struct {
 	SpinnerStyle style.Styles `embed:"" prefix:"spinner." set:"defaultForeground=212" set:"name=spinner"`
 	Title        string       `help:"Text to display to user while spinning" default:"Loading..."`
 	TitleStyle   style.Styles `embed:"" prefix:"title." set:"name=title"`
+	ShowOutput   bool         `help:"Show output of command" default:"false"`
 }
