@@ -1,4 +1,3 @@
-// TODO implement our own gum bash completion
 package completion
 
 import (

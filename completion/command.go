@@ -9,6 +9,7 @@ import (
 	"github.com/alecthomas/kong"
 )
 
+// Completion command.
 type Completion struct {
 	Bash Bash `cmd:"" help:"Generate the autocompletion script for bash"`
 	Zsh  Zsh  `cmd:"" help:"Generate the autocompletion script for zsh"`

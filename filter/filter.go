@@ -45,7 +45,6 @@ func (m model) View() string {
 	// Since there are matches, display them so that the user can see, in real
 	// time, what they are searching for.
 	for i, match := range m.matches {
-
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
 		if i == m.selected {
