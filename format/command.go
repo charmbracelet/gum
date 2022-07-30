@@ -19,7 +19,7 @@ import (
 )
 
 // Func is a function that formats some text
-type Func func(string) string
+type Func func(string) (string, error)
 
 var formatType = map[string]Func{
 	"code":     code,
@@ -37,6 +37,11 @@ func (o Options) Run() error {
 		input, _ = stdin.Read()
 	}
 
-	fmt.Println(formatType[o.Type](input))
+	v, err := formatType[o.Type](input)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(v)
 	return nil
 }
