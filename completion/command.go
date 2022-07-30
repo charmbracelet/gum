@@ -32,6 +32,7 @@ func hasCommands(cmd *kong.Node) bool {
 	return false
 }
 
+//nolint:deadcode,unused
 func isArgument(cmd *kong.Node) bool {
 	return cmd.Type == kong.ArgumentNode
 }
