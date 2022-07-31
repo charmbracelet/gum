@@ -8,6 +8,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -45,7 +46,7 @@ func (o Options) Run() error {
 	m := tm.(model)
 
 	if m.aborted {
-		return fmt.Errorf("filter aborted")
+		os.Exit(exit.Aborted)
 	}
 	if len(m.matches) > m.selected && m.selected >= 0 {
 		fmt.Println(m.matches[m.selected].Str)
