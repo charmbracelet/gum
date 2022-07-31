@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
@@ -54,5 +55,8 @@ func main() {
 			"defaultUnderline":  "false",
 		},
 	)
-	_ = ctx.Run()
+	if err := ctx.Run(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

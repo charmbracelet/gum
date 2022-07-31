@@ -28,6 +28,7 @@ type model struct {
 	selected       int
 	indicator      string
 	height         int
+	aborted        bool
 	quitting       bool
 	matchStyle     lipgloss.Style
 	textStyle      lipgloss.Style
@@ -90,7 +91,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc", "enter":
+		case "ctrl+c", "esc":
+			m.aborted = true
+			fallthrough
+		case "enter":
 			m.quitting = true
 			return m, tea.Quit
 		case "ctrl+n", "ctrl+j", "down":

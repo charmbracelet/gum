@@ -44,6 +44,9 @@ func (o Options) Run() error {
 	tm, err := p.StartReturningModel()
 	m := tm.(model)
 
+	if m.aborted {
+		return fmt.Errorf("filter aborted")
+	}
 	if len(m.matches) > m.selected && m.selected >= 0 {
 		fmt.Println(m.matches[m.selected].Str)
 	}
