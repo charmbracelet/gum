@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 )
@@ -56,6 +58,9 @@ func main() {
 		},
 	)
 	if err := ctx.Run(); err != nil {
+		if errors.Is(err, exit.ErrAborted) {
+			os.Exit(exit.StatusAborted)
+		}
 		fmt.Println(err)
 		os.Exit(1)
 	}

@@ -46,7 +46,7 @@ func (o Options) Run() error {
 	m := tm.(model)
 
 	if m.aborted {
-		os.Exit(exit.Aborted)
+		return exit.ErrAborted
 	}
 	if len(m.matches) > m.selected && m.selected >= 0 {
 		fmt.Println(m.matches[m.selected].Str)
