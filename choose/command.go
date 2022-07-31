@@ -9,6 +9,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
@@ -64,7 +65,7 @@ func (o Options) Run() error {
 	pager.UseJKKeys = false
 	pager.UsePgUpPgDownKeys = false
 
-	m, err := tea.NewProgram(model{
+	tm, err := tea.NewProgram(model{
 		height:            o.Height,
 		cursor:            o.Cursor,
 		selectedPrefix:    o.SelectedPrefix,
@@ -78,9 +79,14 @@ func (o Options) Run() error {
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr)).StartReturningModel()
 
+	m := tm.(model)
+	if m.aborted {
+		return exit.ErrAborted
+	}
+
 	var s strings.Builder
 
-	for _, item := range m.(model).items {
+	for _, item := range m.items {
 		if item.selected {
 			s.WriteString(item.text)
 			s.WriteRune('\n')

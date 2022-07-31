@@ -32,6 +32,7 @@ type model struct {
 	limit            int
 	numSelected      int
 	paginator        paginator.Model
+	aborted          bool
 
 	// styles
 	cursorStyle       lipgloss.Style
@@ -71,11 +72,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.index = clamp(m.index-m.height, 0, len(m.items)-1)
 			m.paginator.PrevPage()
 		case "ctrl+c":
+			m.aborted = true
 			m.quitting = true
-			// Ctrl+C should unselect all items
-			for i := range m.items {
-				m.items[i].selected = false
-			}
 			return m, tea.Quit
 		case " ", "x":
 			if m.limit == 1 {
