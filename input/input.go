@@ -13,7 +13,10 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type model struct{ textinput textinput.Model }
+type model struct {
+	textinput textinput.Model
+	aborted   bool
+}
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
 func (m model) View() string  { return m.textinput.View() }
@@ -21,7 +24,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
-		case tea.KeyEscape, tea.KeyCtrlC, tea.KeyEnter:
+		case tea.KeyEscape, tea.KeyCtrlC:
+			m.aborted = true
+			fallthrough
+		case tea.KeyEnter:
 			return m, tea.Quit
 		}
 	}

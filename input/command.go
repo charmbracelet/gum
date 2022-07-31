@@ -7,6 +7,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
 )
@@ -33,9 +34,18 @@ func (o Options) Run() error {
 		i.EchoCharacter = '•'
 	}
 
-	p := tea.NewProgram(model{i}, tea.WithOutput(os.Stderr))
-	m, err := p.StartReturningModel()
-	fmt.Println(m.(model).textinput.Value())
+	p := tea.NewProgram(model{
+		textinput: i,
+		aborted:   false,
+	}, tea.WithOutput(os.Stderr))
+	tm, err := p.StartReturningModel()
+	m := tm.(model)
+
+	if m.aborted {
+		os.Exit(exit.Aborted)
+	}
+
+	fmt.Println(m.textinput.Value())
 	return err
 }
 
