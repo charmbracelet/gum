@@ -42,7 +42,7 @@ func (o Options) Run() error {
 	m := tm.(model)
 
 	if m.aborted {
-		os.Exit(exit.Aborted)
+		return exit.ErrAborted
 	}
 
 	fmt.Println(m.textinput.Value())

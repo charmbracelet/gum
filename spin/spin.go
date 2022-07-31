@@ -26,6 +26,7 @@ type model struct {
 	spinner spinner.Model
 	title   string
 	command []string
+	aborted bool
 
 	status int
 	output string
@@ -76,6 +77,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
+			m.aborted = true
 			return m, tea.Quit
 		}
 	}

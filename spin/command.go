@@ -7,6 +7,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -33,8 +34,11 @@ func (o Options) Run() error {
 		fmt.Print(m.output)
 	}
 
-	os.Exit(m.status)
+	if m.aborted {
+		return exit.ErrAborted
+	}
 
+	os.Exit(m.status)
 	return nil
 }
 

@@ -7,6 +7,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
 )
@@ -45,8 +46,13 @@ func (o Options) Run() error {
 	a.SetValue(o.Value)
 
 	p := tea.NewProgram(model{textarea: a}, tea.WithOutput(os.Stderr))
-	m, err := p.StartReturningModel()
-	fmt.Println(m.(model).textarea.Value())
+	tm, err := p.StartReturningModel()
+	m := tm.(model)
+	if m.aborted {
+		return exit.ErrAborted
+	}
+
+	fmt.Println(m.textarea.Value())
 	return err
 }
 
