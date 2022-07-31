@@ -361,6 +361,14 @@ choose which packages to uninstall.
 brew list | gum choose --no-limit | xargs brew uninstall
 ```
 
+#### Choose branches to delete
+
+List all branches and choose which branches to delete.
+
+```bash
+git branch | cut -c 3- | gum choose --no-limit | xargs git branch -D
+```
+
 ## Feedback
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
