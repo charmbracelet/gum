@@ -93,7 +93,7 @@ Use a package manager:
 
 ```bash
 # macOS or Linux
-brew tap charmbracelet/tap && brew install charmbracelet/tap/gum
+brew install gum
 
 # Arch Linux (btw)
 yay -S gum-bin
