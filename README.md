@@ -2,7 +2,11 @@ Gum
 ===
 
 <p>
-    <a href="https://stuff.charm.sh/gum/nutritional-information.png" target="_blank"><img src="https://stuff.charm.sh/gum/gum.png" alt="Gum Image" width="450" /></a>
+    <a href="https://stuff.charm.sh/gum/nutritional-information.png" target="_blank">
+    <div style="max-width: 450px; width: 100%">
+    <img src="https://stuff.charm.sh/gum/gum.png" width="100%" alt="Gum Image" />
+    </div>
+    </a>
     <br><br>
     <a href="https://github.com/charmbracelet/gum/releases"><img src="https://img.shields.io/github/release/charmbracelet/gum.svg" alt="Latest Release"></a>
     <a href="https://pkg.go.dev/github.com/charmbracelet/gum?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="Go Docs"></a>
@@ -14,7 +18,9 @@ A tool for glamorous shell scripts. Leverage the power of
 Gloss](https://github.com/charmbracelet/lipgloss) in your scripts and aliases
 without writing any Go code!
 
-<img src="https://stuff.charm.sh/gum/demo.gif" width="600" alt="Shell running the ./demo.sh script" />
+<div style="width: 100%; max-width: 600px">
+<img src="https://stuff.charm.sh/gum/demo.gif" />
+</div>
 
 The above example is running from a single shell script ([source](./examples/demo.sh)).
 
@@ -85,7 +91,7 @@ DESCRIPTION=$(gum write --placeholder "Details of this change")
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
-<img src="https://stuff.charm.sh/gum/commit_2.gif" width="600" alt="Running the ./examples/commit.sh script to commit to git" />
+<img src="https://stuff.charm.sh/gum/commit_2.gif" style="max-width:600px;width:100%" alt="Running the ./examples/commit.sh script to commit to git" />
 
 ## Installation
 
@@ -144,7 +150,7 @@ gum input --cursor.foreground "#FF0" --prompt.foreground "#0FF" --prompt "* " \
     --placeholder "What's up?" --width 80 --value "Not much, hby?"
 ```
 
-<img src="https://stuff.charm.sh/gum/customization.gif" width="600" alt="Gum input displaying most customization options" />
+<img src="https://stuff.charm.sh/gum/customization.gif" style="max-width:600px;width:100%" alt="Gum input displaying most customization options" />
 
 ## Interaction
 
@@ -156,7 +162,7 @@ Prompt for input with a simple command.
 gum input > answer.text
 ```
 
-<img src="https://stuff.charm.sh/gum/input_1.gif" width="600" alt="Shell running gum input typing Not much, you?" />
+<img src="https://stuff.charm.sh/gum/input_1.gif" style="max-width:600px;width:100%" alt="Shell running gum input typing Not much, you?" />
 
 #### Write
 
@@ -166,7 +172,7 @@ Prompt for some multi-line text.
 gum write > story.text
 ```
 
-<img src="https://stuff.charm.sh/gum/write.gif" width="600" alt="Shell running gum write typing a story" />
+<img src="https://stuff.charm.sh/gum/write.gif" style="max-width:600px;width:100%" alt="Shell running gum write typing a story" />
 
 #### Filter
 
@@ -179,7 +185,7 @@ echo Cherry >> flavors.text
 cat flavors.text | gum filter > selection.text
 ```
 
-<img src="https://stuff.charm.sh/gum/filter.gif" width="600" alt="Shell running gum filter on different bubble gum flavors" />
+<img src="https://stuff.charm.sh/gum/filter.gif" style="max-width:600px;width:100%" alt="Shell running gum filter on different bubble gum flavors" />
 
 #### Choose
 
@@ -206,7 +212,7 @@ echo "What do you need from the grocery store?"
 cat foods.txt | gum choose --no-limit
 ```
 
-<img src="https://stuff.charm.sh/gum/choose.gif" width="600" alt="Shell running gum choose with numbers and gum flavors" />
+<img src="https://stuff.charm.sh/gum/choose.gif" style="max-width:600px;width:100%" alt="Shell running gum choose with numbers and gum flavors" />
 
 #### Confirm
 
@@ -217,7 +223,7 @@ Confirm whether to perform an action. Exits with code `0` (affirmative) or `1`
 gum confirm && rm file.txt || echo "File not removed"
 ```
 
-<img src="https://stuff.charm.sh/gum/confirm_2.gif" width="600" alt="Shell running gum confirm" />
+<img src="https://stuff.charm.sh/gum/confirm_2.gif" style="max-width:600px;width:100%" alt="Shell running gum confirm" />
 
 
 #### Spin
@@ -229,7 +235,7 @@ automatically stop after the given command exits.
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
 
-<img src="https://stuff.charm.sh/gum/spin.gif" width="600" alt="Shell running gum spin while sleeping for 5 seconds" />
+<img src="https://stuff.charm.sh/gum/spin.gif" style="max-width:600px;width:100%" alt="Shell running gum spin while sleeping for 5 seconds" />
 
 Available spinner types include: `line`, `dot`, `minidot`, `jump`, `pulse`, `points`, `globe`, `moon`, `monkey`, `meter`, `hamburger`.
 
@@ -246,7 +252,7 @@ gum style \
 	'Bubble Gum (1¢)' 'So sweet and so fresh!'
 ```
 
-<img src="https://stuff.charm.sh/gum/style.gif" width="600" alt="Bubble Gum, So sweet and so fresh!" />
+<img src="https://stuff.charm.sh/gum/style.gif" style="max-width:600px;width:100%" alt="Bubble Gum, So sweet and so fresh!" />
 
 ## Layout
 
@@ -269,7 +275,7 @@ BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
 gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ```
 
-<img src="https://stuff.charm.sh/gum/join.gif" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
+<img src="https://stuff.charm.sh/gum/join.gif" style="max-width:600px;width:100%" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
 
 ## Format
 
@@ -296,7 +302,7 @@ For more information on template helpers, see the [Termenv
 docs](https://github.com/muesli/termenv#template-helpers). For a full list of
 named emojis see the [GitHub API](https://api.github.com/emojis).
 
-<img src="https://stuff.charm.sh/gum/format.gif" width="600" alt="Running gum format for different types of formats" />
+<img src="https://stuff.charm.sh/gum/format.gif" style="max-width:600px;width:100%" alt="Running gum format for different types of formats" />
 
 ## Examples
 
@@ -339,7 +345,7 @@ SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session..."
 tmux switch-client -t $SESSION || tmux attach -t $SESSION
 ```
 
-<img src="https://stuff.charm.sh/gum/pick-tmux-session.gif" width="600" alt="Picking a tmux session with gum filter" />
+<img src="https://stuff.charm.sh/gum/pick-tmux-session.gif" style="max-width:600px;width:100%" alt="Picking a tmux session with gum filter" />
 
 #### Pick commit hash from your Git history
 
@@ -350,7 +356,7 @@ commit hash of the commit you select.
 git log --oneline | gum filter | cut -d' ' -f1 # | copy
 ```
 
-<img src="https://stuff.charm.sh/gum/pick-commit.gif" width="600" alt="Picking a commit with gum filter" />
+<img src="https://stuff.charm.sh/gum/pick-commit.gif" style="max-width:600px;width:100%" alt="Picking a commit with gum filter" />
 
 #### Choose packages to uninstall
 
@@ -393,6 +399,6 @@ We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
 Part of [Charm](https://charm.sh).
 
-<a href="https://charm.sh/"><img alt="The Charm logo" src="https://stuff.charm.sh/charm-badge.jpg" width="400" /></a>
+<a href="https://charm.sh/"><img alt="The Charm logo" src="https://stuff.charm.sh/charm-badge.jpg" style="max-width:400px;width:100%" /></a>
 
 Charm热爱开源 • Charm loves open source
