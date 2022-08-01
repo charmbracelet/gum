@@ -52,7 +52,7 @@ func commandStart(command []string) tea.Cmd {
 		cmd.Stdout = &outbuf
 		cmd.Stderr = &errbuf
 
-		cmd.Run()
+		_ = cmd.Run()
 
 		status := cmd.ProcessState.ExitCode()
 
