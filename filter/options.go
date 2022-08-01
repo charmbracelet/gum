@@ -13,4 +13,5 @@ type Options struct {
 	Prompt         string       `help:"Prompt to display" default:"> "`
 	PromptStyle    style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=240" set:"name=prompt"`
 	Width          int          `help:"Input width" default:"20"`
+    Delimeter      string       `help:"Delimeter to split input on" default:"\n"`
 }

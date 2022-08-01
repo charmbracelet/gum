@@ -27,7 +27,7 @@ func (o Options) Run() error {
 
 	var choices []string
 	if input, _ := stdin.Read(); input != "" {
-		choices = strings.Split(strings.TrimSpace(input), "\n")
+		choices = strings.Split(strings.TrimSpace(input), o.Delimeter)
 	} else {
 		choices = files.List()
 	}
