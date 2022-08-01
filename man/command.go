@@ -15,7 +15,7 @@ type Man struct{}
 func (m Man) BeforeApply(ctx *kong.Context) error {
 	ctx.Model.Vars()
 	// Set the correct man pages description without color escape sequences.
-	ctx.Model.Help = "Tasty bubble gum for your shell."
+	ctx.Model.Help = "A tool for glamorous shell scripts."
 	man := mangokong.NewManPage(1, ctx.Model)
 	man = man.WithSection("Copyright", "(C) 2021-2022 Charmbracelet, Inc.\n"+
 		"Released under MIT license.")
