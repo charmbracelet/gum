@@ -17,6 +17,7 @@ package spin
 
 import (
 	"os/exec"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -28,13 +29,15 @@ type model struct {
 	command []string
 	aborted bool
 
-	status int
-	output string
+	status  int
+	out_std string
+	out_err string
 }
 
 type finishCommandMsg struct {
-	output string
-	status int
+	out_std string
+	out_err string
+	status  int
 }
 
 func commandStart(command []string) tea.Cmd {
@@ -44,7 +47,12 @@ func commandStart(command []string) tea.Cmd {
 			args = command[1:]
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
-		out, _ := cmd.Output()
+
+		var outbuf, errbuf strings.Builder
+		cmd.Stdout = &outbuf
+		cmd.Stderr = &errbuf
+
+		cmd.Run()
 
 		status := cmd.ProcessState.ExitCode()
 
@@ -53,8 +61,9 @@ func commandStart(command []string) tea.Cmd {
 		}
 
 		return finishCommandMsg{
-			output: string(out),
-			status: status,
+			out_std: outbuf.String(),
+			out_err: errbuf.String(),
+			status:  status,
 		}
 	}
 }
@@ -71,7 +80,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case finishCommandMsg:
-		m.output = msg.output
+		m.out_std = msg.out_std
+		m.out_err = msg.out_err
 		m.status = msg.status
 		return m, tea.Quit
 	case tea.KeyMsg:

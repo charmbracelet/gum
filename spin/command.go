@@ -31,7 +31,11 @@ func (o Options) Run() error {
 	}
 
 	if o.ShowOutput {
-		fmt.Print(m.output)
+		fmt.Fprint(os.Stdout, m.out_std)
+	}
+
+	if o.ShowError {
+		fmt.Fprint(os.Stderr, m.out_err)
 	}
 
 	if m.aborted {
