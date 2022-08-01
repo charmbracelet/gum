@@ -12,11 +12,14 @@ import (
 type Man struct{}
 
 // BeforeApply implements Kong BeforeApply hook.
-func (m Man) BeforeApply(app *kong.Kong) error {
-	man := mangokong.NewManPage(1, app.Model)
+func (m Man) BeforeApply(ctx *kong.Context) error {
+	ctx.Model.Vars()
+	// Set the correct man pages description without color escape sequences.
+	ctx.Model.Help = "Tasty bubble gum for your shell."
+	man := mangokong.NewManPage(1, ctx.Model)
 	man = man.WithSection("Copyright", "(C) 2021-2022 Charmbracelet, Inc.\n"+
 		"Released under MIT license.")
-	fmt.Fprint(app.Stdout, man.Build(roff.NewDocument()))
-	app.Exit(0)
+	fmt.Fprint(ctx.Stdout, man.Build(roff.NewDocument()))
+	ctx.Exit(0)
 	return nil
 }
