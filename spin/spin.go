@@ -30,13 +30,13 @@ type model struct {
 	aborted bool
 
 	status  int
-	out_std string
-	out_err string
+	stdout string
+	stderr string
 }
 
 type finishCommandMsg struct {
-	out_std string
-	out_err string
+	stdout string
+	stderr string
 	status  int
 }
 
@@ -61,8 +61,8 @@ func commandStart(command []string) tea.Cmd {
 		}
 
 		return finishCommandMsg{
-			out_std: outbuf.String(),
-			out_err: errbuf.String(),
+			stdout: outbuf.String(),
+			stderr: errbuf.String(),
 			status:  status,
 		}
 	}
@@ -80,8 +80,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case finishCommandMsg:
-		m.out_std = msg.out_std
-		m.out_err = msg.out_err
+		m.stdout = msg.stdout
+		m.stderr = msg.stderr
 		m.status = msg.status
 		return m, tea.Quit
 	case tea.KeyMsg:
