@@ -29,7 +29,7 @@ type model struct {
 	command []string
 	aborted bool
 
-	status  int
+	status int
 	stdout string
 	stderr string
 }
@@ -37,7 +37,7 @@ type model struct {
 type finishCommandMsg struct {
 	stdout string
 	stderr string
-	status  int
+	status int
 }
 
 func commandStart(command []string) tea.Cmd {
@@ -63,7 +63,7 @@ func commandStart(command []string) tea.Cmd {
 		return finishCommandMsg{
 			stdout: outbuf.String(),
 			stderr: errbuf.String(),
-			status:  status,
+			status: status,
 		}
 	}
 }

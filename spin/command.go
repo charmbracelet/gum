@@ -32,9 +32,6 @@ func (o Options) Run() error {
 
 	if o.ShowOutput {
 		fmt.Fprint(os.Stdout, m.stdout)
-	}
-
-	if o.ShowError {
 		fmt.Fprint(os.Stderr, m.stderr)
 	}
 
