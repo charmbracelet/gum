@@ -11,14 +11,14 @@ gum confirm "Testing?"
 gum confirm "No?" --default=false --affirmative "Okay." --negative "Cancel."
 
 # Filter
-echo -e {1..500} | sed 's/ /\n/g' | gum filter
-echo -e {1..500} | sed 's/ /\n/g' | gum filter --indicator ">" --placeholder "Pick a number..." --indicator.foreground 1 --text.foreground 2 --match.foreground 3 --prompt.foreground 4 --height 5
+echo {1..500} | sed 's/ /\n/g' | gum filter
+echo {1..500} | sed 's/ /\n/g' | gum filter --indicator ">" --placeholder "Pick a number..." --indicator.foreground 1 --text.foreground 2 --match.foreground 3 --prompt.foreground 4 --height 5
 
 # Format
-echo -e "# Header\nBody" | gum format 
-echo -e 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, Gum!")\n}\n' | gum format -t code
-echo -e ":candy:" | gum format -t emoji
-echo -e '{{ Bold "Bold" }}' | gum format -t template
+echo "# Header\nBody" | gum format 
+echo 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, Gum!")\n}\n' | gum format -t code
+echo ":candy:" | gum format -t emoji
+echo '{{ Bold "Bold" }}' | gum format -t template
 
 # Input
 gum input --prompt "Email: " --placeholder "john@doe.com" --prompt.foreground 99 --cursor.foreground 99 --width 50
