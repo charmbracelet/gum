@@ -42,7 +42,7 @@ func main() {
 	gum := &Gum{}
 	ctx := kong.Parse(
 		gum,
-		kong.Description(fmt.Sprintf("Tasty bubble %s for your shell.", bubbleGumPink.Render("gum"))),
+		kong.Description(fmt.Sprintf("A tool for %s shell scripts.", bubbleGumPink.Render("glamorous"))),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
