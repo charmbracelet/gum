@@ -374,7 +374,7 @@ git branch | cut -c 3- | gum choose --no-limit | xargs git branch -D
 List all PRs for the current GitHub repository and checkout the chosen PR (using [`gh`](https://cli.github.com/)).
 
 ```bash
-gh pr list | gum choose | cut -f1 | xargs gh pr checkout
+gh pr list | cut -f1,2 | gum choose | cut -f1 | xargs gh pr checkout
 ```
 
 ## Feedback
