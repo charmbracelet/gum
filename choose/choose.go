@@ -71,6 +71,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "left", "h", "ctrl+b":
 			m.index = clamp(m.index-m.height, 0, len(m.items)-1)
 			m.paginator.PrevPage()
+		case "a":
+			for i := range m.items {
+				m.items[i].selected = true
+			}
+			m.numSelected = len(m.items)
+		case "A":
+			for i := range m.items {
+				m.items[i].selected = false
+			}
+			m.numSelected = 0
 		case "ctrl+c":
 			m.aborted = true
 			m.quitting = true
