@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
@@ -23,6 +24,7 @@ import (
 
 type model struct {
 	textinput      textinput.Model
+	viewport       *viewport.Model
 	choices        []string
 	matches        []fuzzy.Match
 	selected       int
@@ -78,29 +80,38 @@ func (m model) View() string {
 		s.WriteRune('\n')
 	}
 
-	tv := m.textinput.View()
-	results := lipgloss.NewStyle().MaxHeight(m.height - lipgloss.Height(tv)).Render(s.String())
+	m.viewport.SetContent(s.String())
+
 	// View the input and the filtered choices
-	return tv + "\n" + results
+	return m.textinput.View() + "\n" + m.viewport.View()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.height = msg.Height
+		if m.height == 0 || m.height > msg.Height {
+			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
+		}
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc":
 			m.aborted = true
-			fallthrough
+			m.quitting = true
+			return m, tea.Quit
 		case "enter":
 			m.quitting = true
 			return m, tea.Quit
 		case "ctrl+n", "ctrl+j", "down":
 			m.selected = clamp(0, len(m.matches)-1, m.selected+1)
+			if m.selected >= m.viewport.YOffset+m.viewport.Height {
+				m.viewport.LineDown(1)
+			}
 		case "ctrl+p", "ctrl+k", "up":
 			m.selected = clamp(0, len(m.matches)-1, m.selected-1)
+			if m.selected < m.viewport.YOffset {
+				m.viewport.SetYOffset(m.selected)
+			}
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
 

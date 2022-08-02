@@ -7,6 +7,7 @@ import (
 
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
@@ -25,6 +26,8 @@ func (o Options) Run() error {
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
 
+	v := viewport.New(o.Width, o.Height)
+
 	var choices []string
 	if input, _ := stdin.Read(); input != "" {
 		choices = strings.Split(strings.TrimSpace(input), "\n")
@@ -37,9 +40,11 @@ func (o Options) Run() error {
 		indicator:      o.Indicator,
 		matches:        matchAll(choices),
 		textinput:      i,
+		viewport:       &v,
 		indicatorStyle: o.IndicatorStyle.ToLipgloss(),
 		matchStyle:     o.MatchStyle.ToLipgloss(),
 		textStyle:      o.TextStyle.ToLipgloss(),
+		height:         o.Height,
 	}, tea.WithOutput(os.Stderr))
 
 	tm, err := p.StartReturningModel()
