@@ -62,7 +62,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "up", "k", "ctrl+p":
 			m.index = clamp(m.index-1, 0, len(m.items)-1)
-			if m.index <= start {
+			if m.index < start {
 				m.paginator.PrevPage()
 			}
 		case "right", "l", "ctrl+f":
