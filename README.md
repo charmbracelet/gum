@@ -156,6 +156,12 @@ Prompt for input with a simple command.
 gum input > answer.text
 ```
 
+Prompt for sensitive input with the `--password` flag.
+
+```bash
+gum input --password > password.text
+```
+
 <img src="https://stuff.charm.sh/gum/input_1.gif" width="600" alt="Shell running gum input typing Not much, you?" />
 
 #### Write
