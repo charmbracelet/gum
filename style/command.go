@@ -38,11 +38,6 @@ func (o Options) Run() error {
 	return nil
 }
 
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	return HideFlags(ctx)
-}
-
 // HideFlags hides the flags from the usage output. This is used in conjunction
 // with BeforeReset hook.
 func HideFlags(ctx *kong.Context) error {
