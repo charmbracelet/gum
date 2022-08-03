@@ -26,6 +26,7 @@ func (o Options) Run() error {
 	a.Prompt = o.Prompt
 	a.Placeholder = o.Placeholder
 	a.ShowLineNumbers = o.ShowLineNumbers
+	a.CharLimit = o.CharLimit
 
 	style := textarea.Style{
 		Base:             o.BaseStyle.ToLipgloss(),

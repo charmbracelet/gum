@@ -12,6 +12,7 @@ type Options struct {
 	ShowCursorLine  bool   `help:"Show cursor line" default:"false"`
 	ShowLineNumbers bool   `help:"Show line numbers" default:"false"`
 	Value           string `help:"Initial value (can be passed via stdin)" default:""`
+	CharLimit       int    `help:"Maximum value length (0 for no limit)" default:"400"`
 
 	BaseStyle             style.Styles `embed:"" prefix:"base." set:"name=base"`
 	CursorLineNumberStyle style.Styles `embed:"" prefix:"cursor-line-number." set:"defaultForeground=7" set:"name=cursor line number"`
