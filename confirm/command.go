@@ -3,7 +3,9 @@ package confirm
 import (
 	"os"
 
+	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for prompting a user to confirm an
@@ -30,4 +32,9 @@ func (o Options) Run() error {
 	}
 
 	return nil
+}
+
+// BeforeReset hook. Used to unclutter style flags.
+func (o Options) BeforeReset(ctx *kong.Context) error {
+	return style.HideFlags(ctx)
 }

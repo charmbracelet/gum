@@ -18,13 +18,13 @@ import (
 // Gum is the command-line interface for Gum.
 type Gum struct {
 	// Version is a flag that can be used to display the version number.
-	Version kong.VersionFlag `short:"v" help:"Print the version number"`
+	Version kong.VersionFlag `short:"v" help:"Print the version number" env:"-"`
 
 	// Completion generates Gum shell completion scripts.
-	Completion completion.Completion `cmd:"" hidden:"" help:"Request shell completion"`
+	Completion completion.Completion `cmd:"" hidden:"" help:"Request shell completion" env:"-"`
 
 	// Man is a hidden command that generates Gum man pages.
-	Man man.Man `cmd:"" hidden:"" help:"Generate man pages"`
+	Man man.Man `cmd:"" hidden:"" help:"Generate man pages" env:"-"`
 
 	// Choose provides an interface to choose one option from a given list of
 	// options. The options can be provided as (new-line separated) stdin or a

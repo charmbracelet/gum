@@ -6,12 +6,12 @@ import "github.com/charmbracelet/gum/style"
 // nolint:staticcheck
 type Options struct {
 	Indicator      string       `help:"Character for selection" default:"•"`
-	IndicatorStyle style.Styles `embed:"" prefix:"indicator." set:"defaultForeground=212" set:"name=indicator"`
+	IndicatorStyle style.Styles `embed:"" prefix:"indicator." set:"defaultForeground=212"`
 	TextStyle      style.Styles `embed:"" prefix:"text."`
-	MatchStyle     style.Styles `embed:"" prefix:"match." set:"defaultForeground=212" set:"name=matched text"`
+	MatchStyle     style.Styles `embed:"" prefix:"match." set:"defaultForeground=212"`
 	Placeholder    string       `help:"Placeholder value" default:"Filter..."`
 	Prompt         string       `help:"Prompt to display" default:"> "`
-	PromptStyle    style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=240" set:"name=prompt"`
+	PromptStyle    style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=240"`
 	Width          int          `help:"Input width" default:"20"`
 	Height         int          `help:"Input height" default:"0"`
 }
