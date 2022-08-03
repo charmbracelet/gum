@@ -87,7 +87,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.items[i].selected = false
 			}
 			m.numSelected = 0
-		case "ctrl+c":
+		case "ctrl+c", "esc":
 			m.aborted = true
 			m.quitting = true
 			return m, tea.Quit
