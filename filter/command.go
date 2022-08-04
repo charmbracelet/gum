@@ -35,6 +35,11 @@ func (o Options) Run() error {
 		choices = files.List()
 	}
 
+	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
+	if o.Height == 0 {
+		options = append(options, tea.WithAltScreen())
+	}
+
 	p := tea.NewProgram(model{
 		choices:        choices,
 		indicator:      o.Indicator,
@@ -45,11 +50,7 @@ func (o Options) Run() error {
 		matchStyle:     o.MatchStyle.ToLipgloss(),
 		textStyle:      o.TextStyle.ToLipgloss(),
 		height:         o.Height,
-	}, tea.WithOutput(os.Stderr))
-
-	if o.Height == 0 {
-		p.EnterAltScreen()
-	}
+	}, options...)
 
 	tm, err := p.StartReturningModel()
 	m := tm.(model)
