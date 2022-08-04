@@ -9,10 +9,9 @@
 // We can simply prepend a spinner to this task to show it to the user, while
 // performing the task / command in the background.
 //
-//   $ gum spin -t "Taking a nap..." -- sleep 5
+// $ gum spin -t "Taking a nap..." -- sleep 5
 //
 // The spinner will automatically exit when the task is complete.
-//
 package spin
 
 import (

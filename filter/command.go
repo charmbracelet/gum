@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
@@ -53,6 +54,9 @@ func (o Options) Run() error {
 	}, options...)
 
 	tm, err := p.StartReturningModel()
+	if err != nil {
+		return fmt.Errorf("unable to run filter: %w", err)
+	}
 	m := tm.(model)
 
 	if m.aborted {
@@ -62,10 +66,11 @@ func (o Options) Run() error {
 		fmt.Println(m.matches[m.selected].Str)
 	}
 
-	return err
+	return nil
 }
 
 // BeforeReset hook. Used to unclutter style flags.
 func (o Options) BeforeReset(ctx *kong.Context) error {
-	return style.HideFlags(ctx)
+	style.HideFlags(ctx)
+	return nil
 }

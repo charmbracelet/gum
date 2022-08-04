@@ -1,8 +1,9 @@
 package style
 
 import (
-	"github.com/charmbracelet/gum/internal/decode"
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/charmbracelet/gum/internal/decode"
 )
 
 // ToLipgloss takes a Styles flag set and returns the corresponding

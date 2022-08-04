@@ -4,8 +4,7 @@
 // It can be used to prompt the user for some input. The text the user entered
 // will be sent to stdout.
 //
-//   $ gum input --placeholder "What's your favorite gum?" > answer.text
-//
+// $ gum input --placeholder "What's your favorite gum?" > answer.text
 package input
 
 import (
@@ -23,11 +22,11 @@ func (m model) View() string  { return m.textinput.View() }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.Type {
-		case tea.KeyEscape, tea.KeyCtrlC:
+		switch msg.String() {
+		case "ctrl+c", "esc":
 			m.aborted = true
-			fallthrough
-		case tea.KeyEnter:
+			return m, tea.Quit
+		case "enter":
 			return m, tea.Quit
 		}
 	}

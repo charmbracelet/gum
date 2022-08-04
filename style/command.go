@@ -3,24 +3,6 @@
 //
 // It allows you to use Lip Gloss to style text without needing to use Go. All
 // of the styling options are available as flags.
-//
-// Let's make some text glamorous using bash:
-//
-//   $ gum style \
-//  	--foreground 212 --border double --align center \
-//  	--width 50 --margin 2 --padding "2 4" \
-//  	"Bubble Gum (1¢)" "So sweet and so fresh\!"
-//
-//
-//    ╔══════════════════════════════════════════════════╗
-//    ║                                                  ║
-//    ║                                                  ║
-//    ║                 Bubble Gum (1¢)                  ║
-//    ║              So sweet and so fresh!              ║
-//    ║                                                  ║
-//    ║                                                  ║
-//    ╚══════════════════════════════════════════════════╝
-//
 package style
 
 import (
@@ -40,10 +22,10 @@ func (o Options) Run() error {
 
 // HideFlags hides the flags from the usage output. This is used in conjunction
 // with BeforeReset hook.
-func HideFlags(ctx *kong.Context) error {
+func HideFlags(ctx *kong.Context) {
 	n := ctx.Selected()
 	if n == nil {
-		return nil
+		return
 	}
 	for _, f := range n.Flags {
 		if g := f.Group; g != nil && g.Key == groupName {
@@ -52,5 +34,4 @@ func HideFlags(ctx *kong.Context) error {
 			}
 		}
 	}
-	return nil
 }

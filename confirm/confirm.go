@@ -7,8 +7,7 @@
 //
 // I.e. confirm if the user wants to delete a file
 //
-//   $ gum confirm "Are you sure?" && rm file.txt
-//
+// $ gum confirm "Are you sure?" && rm file.txt
 package confirm
 
 import (

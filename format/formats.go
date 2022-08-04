@@ -15,9 +15,13 @@ var code Func = func(input string) (string, error) {
 		glamour.WithWordWrap(0),
 	)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("unable to create renderer: %w", err)
 	}
-	return renderer.Render(fmt.Sprintf("```\n%s\n```", input))
+	output, err := renderer.Render(fmt.Sprintf("```\n%s\n```", input))
+	if err != nil {
+		return "", fmt.Errorf("unable to render: %w", err)
+	}
+	return output, nil
 }
 
 var emoji Func = func(input string) (string, error) {
@@ -25,9 +29,13 @@ var emoji Func = func(input string) (string, error) {
 		glamour.WithEmoji(),
 	)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("unable to create renderer: %w", err)
 	}
-	return renderer.Render(input)
+	output, err := renderer.Render(input)
+	if err != nil {
+		return "", fmt.Errorf("unable to render: %w", err)
+	}
+	return output, nil
 }
 
 var markdown Func = func(input string) (string, error) {
@@ -36,16 +44,20 @@ var markdown Func = func(input string) (string, error) {
 		glamour.WithWordWrap(0),
 	)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("unable to create renderer: %w", err)
 	}
-	return renderer.Render(input)
+	output, err := renderer.Render(input)
+	if err != nil {
+		return "", fmt.Errorf("unable to render: %w", err)
+	}
+	return output, nil
 }
 
 var template Func = func(input string) (string, error) {
 	f := termenv.TemplateFuncs(termenv.ColorProfile())
 	t, err := tpl.New("tpl").Funcs(f).Parse(input)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("unable to parse template: %w", err)
 	}
 
 	var buf bytes.Buffer

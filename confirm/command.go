@@ -1,10 +1,12 @@
 package confirm
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -22,7 +24,7 @@ func (o Options) Run() error {
 	}, tea.WithOutput(os.Stderr)).StartReturningModel()
 
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to run confirm: %w", err)
 	}
 
 	if m.(model).confirmation {
@@ -36,5 +38,6 @@ func (o Options) Run() error {
 
 // BeforeReset hook. Used to unclutter style flags.
 func (o Options) BeforeReset(ctx *kong.Context) error {
-	return style.HideFlags(ctx)
+	style.HideFlags(ctx)
+	return nil
 }

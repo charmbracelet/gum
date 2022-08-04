@@ -7,6 +7,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -40,6 +41,9 @@ func (o Options) Run() error {
 		aborted:   false,
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.StartReturningModel()
+	if err != nil {
+		return fmt.Errorf("failed to run input: %w", err)
+	}
 	m := tm.(model)
 
 	if m.aborted {
@@ -47,10 +51,11 @@ func (o Options) Run() error {
 	}
 
 	fmt.Println(m.textinput.Value())
-	return err
+	return nil
 }
 
 // BeforeReset hook. Used to unclutter style flags.
 func (o Options) BeforeReset(ctx *kong.Context) error {
-	return style.HideFlags(ctx)
+	style.HideFlags(ctx)
+	return nil
 }

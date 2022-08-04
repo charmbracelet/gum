@@ -6,21 +6,21 @@
 // wrap the variable in quotes to ensure the new lines are part of a single
 // argument. Otherwise, the command won't work as expected.
 //
-//   $ gum join --horizontal "$BUBBLE_BOX" "$GUM_BOX"
+// $ gum join --horizontal "$BUBBLE_BOX" "$GUM_BOX"
 //
-//   ╔══════════════════════╗╔═════════════╗
-//   ║                      ║║             ║
-//   ║        Bubble        ║║     Gum     ║
-//   ║                      ║║             ║
-//   ╚══════════════════════╝╚═════════════╝
-//
+// ╔══════════════════════╗╔═════════════╗
+// ║                      ║║             ║
+// ║        Bubble        ║║     Gum     ║
+// ║                      ║║             ║
+// ╚══════════════════════╝╚═════════════╝
 package join
 
 import (
 	"fmt"
 
-	"github.com/charmbracelet/gum/internal/decode"
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/charmbracelet/gum/internal/decode"
 )
 
 // Run is the command-line interface for the joining strings through lipgloss.

@@ -3,7 +3,6 @@ package spin
 import "github.com/charmbracelet/gum/style"
 
 // Options is the customization options for the spin command.
-// nolint:staticcheck
 type Options struct {
 	Command []string `arg:"" help:"Command to run"`
 

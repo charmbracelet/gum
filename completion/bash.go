@@ -21,7 +21,10 @@ func (b Bash) Run(ctx *kong.Context) error {
 	writePostscript(buf, ctx.Model.Name)
 
 	_, err := fmt.Fprint(ctx.Stdout, buf.String())
-	return err
+	if err != nil {
+		return fmt.Errorf("unable to generate bash completion: %v", err)
+	}
+	return nil
 }
 
 // ShellCompDirective is a bit map representing the different behaviors the shell

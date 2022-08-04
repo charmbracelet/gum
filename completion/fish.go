@@ -24,7 +24,10 @@ complete -c gum -f
 	node := ctx.Model.Node
 	f.gen(&buf, node)
 	_, err := fmt.Fprint(ctx.Stdout, buf.String())
-	return err
+	if err != nil {
+		return fmt.Errorf("unable to generate fish completion: %w", err)
+	}
+	return nil
 }
 
 func (f Fish) gen(buf io.StringWriter, cmd *kong.Node) {
