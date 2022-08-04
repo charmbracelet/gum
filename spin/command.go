@@ -22,7 +22,7 @@ func (o Options) Run() error {
 		title:   o.TitleStyle.ToLipgloss().Render(o.Title),
 		command: o.Command,
 	}
-	p := tea.NewProgram(m)
+	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.StartReturningModel()
 	m = mm.(model)
 
