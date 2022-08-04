@@ -96,7 +96,7 @@ Use a package manager:
 brew install gum
 
 # Arch Linux (btw)
-pacman -S gum-bin
+pacman -S gum
 
 # Nix
 nix-env -iA nixpkgs.gum
