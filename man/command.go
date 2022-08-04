@@ -13,7 +13,6 @@ type Man struct{}
 
 // BeforeApply implements Kong BeforeApply hook.
 func (m Man) BeforeApply(ctx *kong.Context) error {
-	ctx.Model.Vars()
 	// Set the correct man pages description without color escape sequences.
 	ctx.Model.Help = "A tool for glamorous shell scripts."
 	man := mangokong.NewManPage(1, ctx.Model)
