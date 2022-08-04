@@ -438,6 +438,24 @@ List all PRs for the current GitHub repository and checkout the chosen PR (using
 gh pr list | cut -f1,2 | gum choose | cut -f1 | xargs gh pr checkout
 ```
 
+#### Pick command from shell history
+
+Pick a previously executed command from your shell history to execute, copy,
+edit, etc...
+
+```bash
+gum filter < $HISTFILE --height 20
+```
+
+#### Sudo password input
+
+See visual feedback when entering password with masked characters with `gum
+input --password`.
+
+```bash
+alias please="gum input --password | sudo -nS"
+```
+
 ## Feedback
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
