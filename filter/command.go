@@ -47,6 +47,10 @@ func (o Options) Run() error {
 		height:         o.Height,
 	}, tea.WithOutput(os.Stderr))
 
+	if o.Height == 0 {
+		p.EnterAltScreen()
+	}
+
 	tm, err := p.StartReturningModel()
 	m := tm.(model)
 
