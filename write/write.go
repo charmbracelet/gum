@@ -1,11 +1,10 @@
 // Package write provides a shell script interface for the text area bubble.
 // https://github.com/charmbracelet/bubbles/tree/master/textarea
 //
-// It can be used to ask the user to write some long form of text
-// (multi-line) input. The text the user entered will be sent to stdout.
+// It can be used to ask the user to write some long form of text (multi-line)
+// input. The text the user entered will be sent to stdout.
 //
-//   $ gum write > output.text
-//
+// $ gum write > output.text
 package write
 
 import (
@@ -29,11 +28,12 @@ func (m model) View() string {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.Type {
-		case tea.KeyCtrlC:
+		switch msg.String() {
+		case "ctrl+c":
 			m.aborted = true
-			fallthrough
-		case tea.KeyEscape, tea.KeyCtrlD:
+			m.quitting = true
+			return m, tea.Quit
+		case "esc", "ctrl+d":
 			m.quitting = true
 			return m, tea.Quit
 		}

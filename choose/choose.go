@@ -7,8 +7,7 @@
 //
 // Let's pick from a list of gum flavors:
 //
-//   $ gum choose "Strawberry" "Banana" "Cherry"
-//
+// $ gum choose "Strawberry" "Banana" "Cherry"
 package choose
 
 import (

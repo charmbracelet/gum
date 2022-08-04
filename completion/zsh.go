@@ -22,7 +22,10 @@ func (z Zsh) Run(ctx *kong.Context) error {
 	fmt.Fprintf(&out, format, ctx.Model.Name)
 	z.gen(&out, ctx.Model.Node)
 	_, err := fmt.Fprint(ctx.Stdout, out.String())
-	return err
+	if err != nil {
+		return fmt.Errorf("unable to generate zsh completion: %w", err)
+	}
+	return nil
 }
 
 func (z Zsh) writeFlag(buf io.StringWriter, f *kong.Flag) {

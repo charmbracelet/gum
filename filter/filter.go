@@ -7,8 +7,7 @@
 //
 // I.e. let's pick from a list of gum flavors:
 //
-//   $ cat flavors.text | gum filter
-//
+// $ cat flavors.text | gum filter
 package filter
 
 import (
@@ -136,6 +135,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func matchAll(options []string) []fuzzy.Match {
+	//nolint:prealloc
 	var matches []fuzzy.Match
 	for _, option := range options {
 		matches = append(matches, fuzzy.Match{Str: option})

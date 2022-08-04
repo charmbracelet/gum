@@ -2,7 +2,7 @@ package stdin
 
 import (
 	"bufio"
-	"errors"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -12,7 +12,7 @@ import (
 func Read() (string, error) {
 	stat, err := os.Stdin.Stat()
 	if err != nil {
-		return "", errors.New("failed to get stdin stat")
+		return "", fmt.Errorf("failed to stat stdin: %w", err)
 	}
 
 	if stat.Mode()&os.ModeNamedPipe == 0 && stat.Size() == 0 {
@@ -29,7 +29,7 @@ func Read() (string, error) {
 		}
 		_, err = b.WriteRune(r)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("failed to write rune: %w", err)
 		}
 	}
 

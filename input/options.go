@@ -3,7 +3,6 @@ package input
 import "github.com/charmbracelet/gum/style"
 
 // Options are the customization options for the input.
-// nolint:staticcheck
 type Options struct {
 	Placeholder string       `help:"Placeholder value" default:"Type something..." env:"GUM_INPUT_PLACEHOLDER"`
 	Prompt      string       `help:"Prompt to display" default:"> " env:"GUM_INPUT_PROMPT"`

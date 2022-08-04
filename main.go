@@ -7,10 +7,13 @@ import (
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
+
+	"github.com/charmbracelet/gum/internal/exit"
 )
+
+const shaLen = 7
 
 var (
 	// Version contains the application version number. It's set via ldflags
@@ -35,8 +38,8 @@ func main() {
 		}
 	}
 	version := fmt.Sprintf("gum version %s", Version)
-	if len(CommitSHA) >= 7 {
-		version += " (" + CommitSHA[:7] + ")"
+	if len(CommitSHA) >= shaLen {
+		version += " (" + CommitSHA[:shaLen] + ")"
 	}
 
 	gum := &Gum{}

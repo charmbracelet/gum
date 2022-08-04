@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
+
 	"github.com/charmbracelet/gum/choose"
 	"github.com/charmbracelet/gum/completion"
 	"github.com/charmbracelet/gum/confirm"
@@ -35,7 +36,7 @@ type Gum struct {
 	//
 	// Let's pick from a list of gum flavors:
 	//
-	//   $ gum choose "Strawberry" "Banana" "Cherry"
+	// $ gum choose "Strawberry" "Banana" "Cherry"
 	//
 	Choose choose.Options `cmd:"" help:"Choose an option from a list of choices"`
 
@@ -49,7 +50,7 @@ type Gum struct {
 	//
 	// I.e. confirm if the user wants to delete a file
 	//
-	//   $ gum confirm "Are you sure?" && rm file.txt
+	// $ gum confirm "Are you sure?" && rm file.txt
 	//
 	Confirm confirm.Options `cmd:"" help:"Ask a user to confirm an action"`
 
@@ -62,7 +63,7 @@ type Gum struct {
 	//
 	// I.e. let's pick from a list of gum flavors:
 	//
-	//   $ cat flavors.text | gum filter
+	// $ cat flavors.text | gum filter
 	//
 	Filter filter.Options `cmd:"" help:"Filter items from a list"`
 
@@ -77,7 +78,7 @@ type Gum struct {
 	// It can be used to prompt the user for some input. The text the user
 	// entered will be sent to stdout.
 	//
-	//   $ gum input --placeholder "What's your favorite gum?" > answer.text
+	// $ gum input --placeholder "What's your favorite gum?" > answer.text
 	//
 	Input input.Options `cmd:"" help:"Prompt for some input"`
 
@@ -89,7 +90,7 @@ type Gum struct {
 	// Note: We wrap the variable in quotes to ensure the new lines are part of a
 	// single argument. Otherwise, the command won't work as expected.
 	//
-	//   $ gum join --horizontal "$BUBBLE_BOX" "$GUM_BOX"
+	// $ gum join --horizontal "$BUBBLE_BOX" "$GUM_BOX"
 	//
 	//   ╔══════════════════════╗╔═════════════╗
 	//   ║                      ║║             ║
@@ -110,7 +111,7 @@ type Gum struct {
 	// We can simply prepend a spinner to this task to show it to the user,
 	// while performing the task / command in the background.
 	//
-	//   $ gum spin -t "Taking a nap..." -- sleep 5
+	// $ gum spin -t "Taking a nap..." -- sleep 5
 	//
 	// The spinner will automatically exit when the task is complete.
 	//
@@ -124,7 +125,7 @@ type Gum struct {
 	//
 	// Let's make some text glamorous using bash:
 	//
-	//   $ gum style \
+	// $ gum style \
 	//  	--foreground 212 --border double --align center \
 	//  	--width 50 --margin 2 --padding "2 4" \
 	//  	"Bubble Gum (1¢)" "So sweet and so fresh\!"
@@ -147,7 +148,7 @@ type Gum struct {
 	// It can be used to ask the user to write some long form of text
 	// (multi-line) input. The text the user entered will be sent to stdout.
 	//
-	//   $ gum write > output.text
+	// $ gum write > output.text
 	//
 	Write write.Options `cmd:"" help:"Prompt for long-form text"`
 }

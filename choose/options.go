@@ -3,7 +3,6 @@ package choose
 import "github.com/charmbracelet/gum/style"
 
 // Options is the customization options for the choose command.
-// nolint:staticcheck
 type Options struct {
 	Options []string `arg:"" optional:"" help:"Options to choose from."`
 

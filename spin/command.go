@@ -7,6 +7,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/style"
 )
@@ -27,7 +28,7 @@ func (o Options) Run() error {
 	m = mm.(model)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to run spin: %w", err)
 	}
 
 	if o.ShowOutput {
@@ -45,5 +46,6 @@ func (o Options) Run() error {
 
 // BeforeReset hook. Used to unclutter style flags.
 func (o Options) BeforeReset(ctx *kong.Context) error {
-	return style.HideFlags(ctx)
+	style.HideFlags(ctx)
+	return nil
 }

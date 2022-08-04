@@ -2,13 +2,12 @@
 //
 // It supports the following types:
 //
-//   1. Markdown
-//   2. Code
-//   3. Emoji
-//   4. Template
+// 1. Markdown
+// 2. Code
+// 3. Emoji
+// 4. Template
 //
 // For more information, see the format/README.md file.
-//
 package format
 
 import (

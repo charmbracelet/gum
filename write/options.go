@@ -3,7 +3,6 @@ package write
 import "github.com/charmbracelet/gum/style"
 
 // Options are the customization options for the textarea.
-// nolint:staticcheck
 type Options struct {
 	Width           int    `help:"Text area width" default:"50" env:"GUM_WRITE_WIDTH"`
 	Height          int    `help:"Text area height" default:"5" env:"GUM_WRITE_HEIGHT"`

@@ -9,10 +9,11 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
-	"github.com/charmbracelet/lipgloss"
 )
 
 var (
@@ -31,9 +32,9 @@ func (o Options) Run() error {
 		o.Options = strings.Split(strings.TrimSpace(input), "\n")
 	}
 
-	var items []item
-	for _, option := range o.Options {
-		items = append(items, item{text: option, selected: false})
+	var items = make([]item, len(o.Options))
+	for i, option := range o.Options {
+		items[i] = item{text: option, selected: false}
 	}
 
 	// We don't need to display prefixes if we are only picking one option.
@@ -79,6 +80,10 @@ func (o Options) Run() error {
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr)).StartReturningModel()
 
+	if err != nil {
+		return fmt.Errorf("failed to start tea program: %w", err)
+	}
+
 	m := tm.(model)
 	if m.aborted {
 		return exit.ErrAborted
@@ -95,10 +100,11 @@ func (o Options) Run() error {
 
 	fmt.Println(strings.TrimSuffix(s.String(), "\n"))
 
-	return err
+	return nil
 }
 
 // BeforeReset hook. Used to unclutter style flags.
 func (o Options) BeforeReset(ctx *kong.Context) error {
-	return style.HideFlags(ctx)
+	style.HideFlags(ctx)
+	return nil
 }
