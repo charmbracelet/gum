@@ -135,10 +135,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func matchAll(options []string) []fuzzy.Match {
-	//nolint:prealloc
-	var matches []fuzzy.Match
-	for _, option := range options {
-		matches = append(matches, fuzzy.Match{Str: option})
+	var matches = make([]fuzzy.Match, len(options))
+	for i, option := range options {
+		matches[i] = fuzzy.Match{Str: option}
 	}
 	return matches
 }
