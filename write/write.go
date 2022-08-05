@@ -3,6 +3,7 @@
 //
 // It can be used to ask the user to write some long form of text (multi-line)
 // input. The text the user entered will be sent to stdout.
+// Text entry is completed with CTRL+D and aborted with CTRL+C or Escape.
 //
 // $ gum write > output.text
 package write

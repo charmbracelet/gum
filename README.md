@@ -61,7 +61,7 @@ gum input --placeholder "Summary of this change"
 Prompt for a detailed (multi-line) explanation of the changes:
 
 ```bash
-gum write --placeholder "Details of this change"
+gum write --placeholder "Details of this change (CTRL+D to finish)"
 ```
 
 Prompt for a confirmation before committing:
@@ -83,7 +83,7 @@ test -n "$SCOPE" && SCOPE="($SCOPE)"
 
 # Pre-populate the input with the type(scope): so that the user may change it
 SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
-DESCRIPTION=$(gum write --placeholder "Details of this change")
+DESCRIPTION=$(gum write --placeholder "Details of this change (CTRL+D to finish)")
 
 # Commit these changes
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
@@ -183,6 +183,8 @@ gum input --password > password.text
 #### Write
 
 Prompt for some multi-line text.
+
+Note: `CTRL+D` is used to complete text entry. `CTRL+C` and `esc` will cancel.
 
 ```bash
 gum write > story.text
@@ -368,7 +370,7 @@ prefix for your commit message.
 
 ```bash
 git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
-           -m "$(gum write --width 80 --placeholder "Details of changes")"
+           -m "$(gum write --width 80 --placeholder "Details of changes (CTRL+D to finish)")"
 ```
 
 #### Open files in your `$EDITOR`
