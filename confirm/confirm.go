@@ -92,21 +92,17 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg, timeoutMessage string
+	var aff, neg, negativeMessage string
 
-	timeoutMessage = fmt.Sprintf("%s %d", m.timeoutmsg, m.timeout)
+	negativeMessage = fmt.Sprintf("%s(%d)", m.negative, m.timeout)
 
 	if m.confirmation {
 		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(m.negative)
+		neg = m.unselectedStyle.Render(negativeMessage)
 	} else {
 		aff = m.unselectedStyle.Render(m.affirmative)
-		neg = m.selectedStyle.Render(m.negative)
+		neg = m.selectedStyle.Render(negativeMessage)
 	}
 
-	return lipgloss.JoinVertical(
-		lipgloss.Center,
-		m.promptStyle.Render(m.prompt),
-		m.promptStyle.Render(timeoutMessage),
-		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
+	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
 }
