@@ -11,6 +11,9 @@
 package confirm
 
 import (
+	"fmt"
+	"time"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -20,6 +23,8 @@ type model struct {
 	affirmative string
 	negative    string
 	quitting    bool
+	timeout     int
+	timeoutmsg  string
 
 	confirmation bool
 
@@ -29,12 +34,34 @@ type model struct {
 	unselectedStyle lipgloss.Style
 }
 
-func (m model) Init() tea.Cmd { return nil }
+type tickMsg struct{}
+
+func tick() tea.Cmd {
+	return tea.Tick(time.Second, func(time.Time) tea.Msg {
+		return tickMsg{}
+	})
+}
+
+func (m model) Init() tea.Cmd { return tick() }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		return m, nil
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "esc", "q", "n", "N":
+			m.confirmation = false
+			m.quitting = true
+			return m, tea.Quit
+		}
+	}
+
+	return updateChoices(msg, m)
+}
+
+func updateChoices(msg tea.Msg, m model) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "left", "h", "ctrl+p", "tab",
@@ -47,11 +74,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			m.confirmation = true
 			return m, tea.Quit
-		case "ctrl+c", "esc", "q", "n", "N":
-			m.confirmation = false
+		}
+	case tickMsg:
+		if m.timeout == 0 {
 			m.quitting = true
+			m.confirmation = false
 			return m, tea.Quit
 		}
+		m.timeout -= 1
+		return m, tick()
 	}
 	return m, nil
 }
@@ -61,7 +92,9 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg string
+	var aff, neg, timeoutMessage string
+
+	timeoutMessage = fmt.Sprintf("%s %d", m.timeoutmsg, m.timeout)
 
 	if m.confirmation {
 		aff = m.selectedStyle.Render(m.affirmative)
@@ -71,5 +104,9 @@ func (m model) View() string {
 		neg = m.selectedStyle.Render(m.negative)
 	}
 
-	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
+	return lipgloss.JoinVertical(
+		lipgloss.Center,
+		m.promptStyle.Render(m.prompt),
+		m.promptStyle.Render(timeoutMessage),
+		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
 }

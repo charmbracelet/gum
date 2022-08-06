@@ -7,6 +7,8 @@ type Options struct {
 	Affirmative string       `help:"The title of the affirmative action" default:"Yes"`
 	Negative    string       `help:"The title of the negative action" default:"No"`
 	Default     bool         `help:"Default confirmation action" default:"true"`
+	Timeout     int          `help:"Timeout for confirmation in seconds" default:"15" env:"GUM_CONFIRM_TIMEOUT"`
+	TimeoutMsg  string       `arg:"" help:"Timeout message" default:"Selecting default options in "`
 	Prompt      string       `arg:"" help:"Prompt to display." default:"Are you sure?"`
 	PromptStyle style.Styles `embed:"" prefix:"prompt." help:"The style of the prompt" set:"defaultMargin=1 0 0 0" envprefix:"GUM_CONFIRM_PROMPT_"`
 	//nolint:staticcheck
