@@ -24,7 +24,6 @@ type model struct {
 	negative    string
 	quitting    bool
 	timeout     int
-	timeoutmsg  string
 
 	confirmation bool
 
