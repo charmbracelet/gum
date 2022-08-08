@@ -58,6 +58,11 @@ func (o Options) Run() error {
 		matches = matchAll(choices)
 	}
 
+	if o.SelectOne && len(matches) == 1 {
+		fmt.Println(matches[0].Str)
+		return nil
+	}
+
 	p := tea.NewProgram(model{
 		choices:        choices,
 		indicator:      o.Indicator,

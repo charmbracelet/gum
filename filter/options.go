@@ -14,4 +14,5 @@ type Options struct {
 	Width          int          `help:"Input width" default:"20" env:"GUM_FILTER_WIDTH"`
 	Height         int          `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
 	Value          string       `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
+	SelectOne      bool         `help:"Auto select single value lists" default:"false" env:"GUM_FILTER_SELECT_ONE"`
 }
