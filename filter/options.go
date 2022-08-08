@@ -13,4 +13,5 @@ type Options struct {
 	PromptStyle    style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=240" envprefix:"GUM_FILTER_PROMPT_"`
 	Width          int          `help:"Input width" default:"20" env:"GUM_FILTER_WIDTH"`
 	Height         int          `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
+	Value          string       `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
 }

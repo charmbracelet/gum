@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -9,6 +10,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/sahilm/fuzzy"
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
@@ -31,9 +33,16 @@ func (o Options) Run() error {
 
 	var choices []string
 	if input, _ := stdin.Read(); input != "" {
-		choices = strings.Split(strings.TrimSpace(input), "\n")
+		input = strings.TrimSpace(input)
+		if input != "" {
+			choices = strings.Split(input, "\n")
+		}
 	} else {
 		choices = files.List()
+	}
+
+	if len(choices) == 0 {
+		return errors.New("no options provided, see `gum filter --help`")
 	}
 
 	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
@@ -41,10 +50,18 @@ func (o Options) Run() error {
 		options = append(options, tea.WithAltScreen())
 	}
 
+	var matches []fuzzy.Match
+	if o.Value != "" {
+		i.SetValue(o.Value)
+		matches = fuzzy.Find(o.Value, choices)
+	} else {
+		matches = matchAll(choices)
+	}
+
 	p := tea.NewProgram(model{
 		choices:        choices,
 		indicator:      o.Indicator,
-		matches:        matchAll(choices),
+		matches:        matches,
 		textinput:      i,
 		viewport:       &v,
 		indicatorStyle: o.IndicatorStyle.ToLipgloss(),
