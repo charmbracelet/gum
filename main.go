@@ -64,9 +64,6 @@ func main() {
 		if errors.Is(err, exit.ErrAborted) {
 			os.Exit(exit.StatusAborted)
 		}
-		if errors.Is(err, exit.ErrEmptyList) {
-			os.Exit(exit.StatusEmptyList)
-		}
 		fmt.Println(err)
 		os.Exit(1)
 	}

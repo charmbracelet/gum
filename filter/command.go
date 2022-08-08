@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -41,7 +42,7 @@ func (o Options) Run() error {
 	}
 
 	if len(choices) == 0 {
-		return exit.ErrEmptyList
+		return errors.New("no options provided, see `gum filter --help`")
 	}
 
 	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
@@ -55,11 +56,6 @@ func (o Options) Run() error {
 		matches = fuzzy.Find(o.Value, choices)
 	} else {
 		matches = matchAll(choices)
-	}
-
-	if o.SelectOne && len(matches) == 1 {
-		fmt.Println(matches[0].Str)
-		return nil
 	}
 
 	p := tea.NewProgram(model{
