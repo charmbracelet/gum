@@ -80,7 +80,7 @@ func updateChoices(msg tea.Msg, m model) (tea.Model, tea.Cmd) {
 			m.confirmation = false
 			return m, tea.Quit
 		}
-		m.timeout -= 1
+		m.timeout--
 		return m, tick()
 	}
 	return m, nil
