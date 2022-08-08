@@ -152,6 +152,21 @@ gum input --cursor.foreground "#FF0" --prompt.foreground "#0FF" --prompt "* " \
     --placeholder "What's up?" --width 80 --value "Not much, hby?"
 ```
 
+You can also use `ENVIRONMENT_VARIABLES` to customize `gum` by default, this is
+useful to keep a consistent theme for all your `gum` commands.
+
+```bash
+export GUM_INPUT_CURSOR_FOREGROUND="#FF0"
+export GUM_INPUT_PROMPT_FOREGROUND="#0FF"
+export GUM_INPUT_PLACEHOLDER="What's up?"
+export GUM_INPUT_PROMPT="* "
+export GUM_INPUT_WIDTH=80
+
+# Uses values configured through environment variables above but can still be
+# overridden with flags.
+gum input
+```
+
 <picture>
   <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/customization.gif">
   <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/customization.gif">
