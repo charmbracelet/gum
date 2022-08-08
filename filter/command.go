@@ -32,9 +32,16 @@ func (o Options) Run() error {
 
 	var choices []string
 	if input, _ := stdin.Read(); input != "" {
-		choices = strings.Split(strings.TrimSpace(input), "\n")
+		input = strings.TrimSpace(input)
+		if input != "" {
+			choices = strings.Split(input, "\n")
+		}
 	} else {
 		choices = files.List()
+	}
+
+	if len(choices) == 0 {
+		return exit.ErrEmptyList
 	}
 
 	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
@@ -48,6 +55,11 @@ func (o Options) Run() error {
 		matches = fuzzy.Find(o.Value, choices)
 	} else {
 		matches = matchAll(choices)
+	}
+
+	if o.SelectOne && len(matches) == 1 {
+		fmt.Println(matches[0].Str)
+		return nil
 	}
 
 	p := tea.NewProgram(model{
