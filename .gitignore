@@ -1,10 +1,12 @@
 # Files
 test
+.DS_Store
 
 # Binaries
 gum
-
 dist
 testdata
+
+# Folders
 completions/
 manpages/
