@@ -23,7 +23,8 @@ type model struct {
 	affirmative string
 	negative    string
 	quitting    bool
-	timeout     int
+	hasTimeout  bool
+	timeout     time.Duration
 
 	confirmation bool
 
@@ -33,15 +34,22 @@ type model struct {
 	unselectedStyle lipgloss.Style
 }
 
+const tickInterval = time.Second
+
 type tickMsg struct{}
 
 func tick() tea.Cmd {
-	return tea.Tick(time.Second, func(time.Time) tea.Msg {
+	return tea.Tick(tickInterval, func(time.Time) tea.Msg {
 		return tickMsg{}
 	})
 }
 
-func (m model) Init() tea.Cmd { return tick() }
+func (m model) Init() tea.Cmd {
+	if m.timeout > 0 {
+		return tick()
+	}
+	return nil
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -75,12 +83,12 @@ func updateChoices(msg tea.Msg, m model) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case tickMsg:
-		if m.timeout == 0 {
+		if m.timeout <= 0 {
 			m.quitting = true
 			m.confirmation = false
 			return m, tea.Quit
 		}
-		m.timeout--
+		m.timeout -= tickInterval
 		return m, tick()
 	}
 	return m, nil
@@ -91,17 +99,26 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg, negativeMessage string
+	var aff, neg, timeout string
 
-	negativeMessage = fmt.Sprintf("%s(%d)", m.negative, m.timeout)
+	if m.hasTimeout {
+		timeout = fmt.Sprintf(" (%d)", max(0, int(m.timeout.Seconds())))
+	}
 
 	if m.confirmation {
 		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(negativeMessage)
+		neg = m.unselectedStyle.Render(m.negative + timeout)
 	} else {
 		aff = m.unselectedStyle.Render(m.affirmative)
-		neg = m.selectedStyle.Render(negativeMessage)
+		neg = m.selectedStyle.Render(m.negative + timeout)
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }

@@ -18,6 +18,7 @@ func (o Options) Run() error {
 		negative:        o.Negative,
 		confirmation:    o.Default,
 		timeout:         o.Timeout,
+		hasTimeout:      o.Timeout > 0,
 		prompt:          o.Prompt,
 		selectedStyle:   o.SelectedStyle.ToLipgloss(),
 		unselectedStyle: o.UnselectedStyle.ToLipgloss(),
