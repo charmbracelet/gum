@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/sahilm/fuzzy"
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
@@ -41,10 +42,18 @@ func (o Options) Run() error {
 		options = append(options, tea.WithAltScreen())
 	}
 
+	var matches []fuzzy.Match
+	if o.Value != "" {
+		i.SetValue(o.Value)
+		matches = fuzzy.Find(o.Value, choices)
+	} else {
+		matches = matchAll(choices)
+	}
+
 	p := tea.NewProgram(model{
 		choices:        choices,
 		indicator:      o.Indicator,
-		matches:        matchAll(choices),
+		matches:        matches,
 		textinput:      i,
 		viewport:       &v,
 		indicatorStyle: o.IndicatorStyle.ToLipgloss(),
