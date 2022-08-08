@@ -11,6 +11,9 @@
 package confirm
 
 import (
+	"fmt"
+	"time"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -20,6 +23,8 @@ type model struct {
 	affirmative string
 	negative    string
 	quitting    bool
+	hasTimeout  bool
+	timeout     time.Duration
 
 	confirmation bool
 
@@ -29,7 +34,22 @@ type model struct {
 	unselectedStyle lipgloss.Style
 }
 
-func (m model) Init() tea.Cmd { return nil }
+const tickInterval = time.Second
+
+type tickMsg struct{}
+
+func tick() tea.Cmd {
+	return tea.Tick(tickInterval, func(time.Time) tea.Msg {
+		return tickMsg{}
+	})
+}
+
+func (m model) Init() tea.Cmd {
+	if m.timeout > 0 {
+		return tick()
+	}
+	return nil
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -37,6 +57,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "ctrl+c", "esc", "q", "n", "N":
+			m.confirmation = false
+			m.quitting = true
+			return m, tea.Quit
 		case "left", "h", "ctrl+p", "tab",
 			"right", "l", "ctrl+n", "shift+tab":
 			m.confirmation = !m.confirmation
@@ -47,11 +71,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			m.confirmation = true
 			return m, tea.Quit
-		case "ctrl+c", "esc", "q", "n", "N":
-			m.confirmation = false
+		}
+	case tickMsg:
+		if m.timeout <= 0 {
 			m.quitting = true
+			m.confirmation = false
 			return m, tea.Quit
 		}
+		m.timeout -= tickInterval
+		return m, tick()
 	}
 	return m, nil
 }
@@ -61,15 +89,26 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg string
+	var aff, neg, timeout string
+
+	if m.hasTimeout {
+		timeout = fmt.Sprintf(" (%d)", max(0, int(m.timeout.Seconds())))
+	}
 
 	if m.confirmation {
 		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(m.negative)
+		neg = m.unselectedStyle.Render(m.negative + timeout)
 	} else {
 		aff = m.unselectedStyle.Render(m.affirmative)
-		neg = m.selectedStyle.Render(m.negative)
+		neg = m.selectedStyle.Render(m.negative + timeout)
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
