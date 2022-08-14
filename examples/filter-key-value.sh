@@ -4,7 +4,8 @@ export LIST=$(cat <<END
 Cow:Moo
 Cat:Meow
 Dog:Woof
-END)
+END
+)
 
 ANIMAL=$(echo "$LIST" | cut -d':' -f1 | gum filter)
 SOUND=$(echo "$LIST" | grep $ANIMAL | cut -d':' -f2)
