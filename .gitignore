@@ -10,3 +10,6 @@ testdata
 # Folders
 completions/
 manpages/
+
+# nix
+result
