@@ -22,18 +22,23 @@ import (
 )
 
 type model struct {
-	textinput      textinput.Model
-	viewport       *viewport.Model
-	choices        []string
-	matches        []fuzzy.Match
-	selected       int
-	indicator      string
-	height         int
-	aborted        bool
-	quitting       bool
-	matchStyle     lipgloss.Style
-	textStyle      lipgloss.Style
-	indicatorStyle lipgloss.Style
+	textinput          textinput.Model
+	viewport           *viewport.Model
+	choices            []string
+	matches            []fuzzy.Match
+	selected           int
+	multiSelection     map[string]interface{}
+	limit              int
+	numSelected        int
+	indicator          string
+	selectionMark      string
+	height             int
+	aborted            bool
+	quitting           bool
+	matchStyle         lipgloss.Style
+	textStyle          lipgloss.Style
+	indicatorStyle     lipgloss.Style
+	selectionMarkStyle lipgloss.Style
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -50,9 +55,16 @@ func (m model) View() string {
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
 		if i == m.selected {
-			s.WriteString(m.indicatorStyle.Render(m.indicator) + " ")
+			s.WriteString(m.indicatorStyle.Render(m.indicator))
 		} else {
-			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)) + " ")
+			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)))
+		}
+
+		// If there are multiple selections mark them, otherwise leave an empty space
+		if _, ok := m.multiSelection[match.Str]; ok {
+			s.WriteString(m.selectionMarkStyle.Render(m.selectionMark))
+		} else {
+			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.selectionMark)))
 		}
 
 		// For this match, there are a certain number of characters that have
@@ -110,6 +122,25 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.selected = clamp(0, len(m.matches)-1, m.selected-1)
 			if m.selected < m.viewport.YOffset {
 				m.viewport.SetYOffset(m.selected)
+			}
+		case "tab":
+			if m.limit == 1 {
+				break // no op
+			}
+
+			// Tab is used to toggle selection of current item in the list
+			if _, ok := m.multiSelection[m.matches[m.selected].Str]; ok {
+				delete(m.multiSelection, m.matches[m.selected].Str)
+				m.numSelected--
+			} else if m.numSelected < m.limit {
+				m.multiSelection[m.matches[m.selected].Str] = nil
+				m.numSelected++
+			}
+
+			// Go down by one line
+			m.selected = clamp(0, len(m.matches)-1, m.selected+1)
+			if m.selected >= m.viewport.YOffset+m.viewport.Height {
+				m.viewport.LineDown(1)
 			}
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
