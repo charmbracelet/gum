@@ -88,8 +88,9 @@ func (o Options) Run() error {
 		return exit.ErrAborted
 	}
 
-	// allSelections contains values only if --no-limit is passed,
-	// hence there is no need to check if the option is enabled
+	// allSelections contains values only if limit is greater
+	// than 1 or if flag --no-limit is passed, hence there is
+	// no need to further checks
 	if len(m.multiSelection) > 0 {
 		for k := range m.multiSelection {
 			fmt.Println(k)
