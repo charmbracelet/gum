@@ -97,6 +97,9 @@ gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 
 ## Installation
 
+<a href="https://repology.org/project/gum-shell-tool/versions">
+    <img src="https://repology.org/badge/vertical-allrepos/gum-shell-tool.svg" alt="Packaging status" align="right">
+</a>
 Use a package manager:
 
 ```bash
@@ -110,7 +113,8 @@ pacman -S gum
 nix-env -iA nixpkgs.gum
 
 # Debian/Ubuntu
-echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' | sudo tee /etc/apt/sources.list.d/charm.list
+echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' \
+    | sudo tee /etc/apt/sources.list.d/charm.list
 sudo apt update && sudo apt install gum
 
 # Fedora
@@ -120,6 +124,9 @@ baseurl=https://repo.charm.sh/yum/
 enabled=1
 gpgcheck=0' | sudo tee /etc/yum.repos.d/charm.repo
 sudo yum install gum
+
+# Termux
+pkg install gum
 ```
 
 Or download it:
