@@ -4,18 +4,18 @@ import "github.com/charmbracelet/gum/style"
 
 // Options is the customization options for the filter command.
 type Options struct {
-	Indicator          string       `help:"Character for selection" default:"•" env:"GUM_FILTER_INDICATOR"`
-	IndicatorStyle     style.Styles `embed:"" prefix:"indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_INDICATOR_"`
-	Limit              int          `help:"Maximum number of options to pick" default:"1" group:"Selection"`
-	NoLimit            bool         `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
-	SelectionMark      string       `help:"Character for selection marks" default:">" env:"GUM_FILTER_SELECTED"`
-	SelectionMarkStyle style.Styles `embed:"" prefix:"selection-mark." set:"defaultForeground=212" envprefix:"GUM_FILTER_SELECTED_"`
-	TextStyle          style.Styles `embed:"" prefix:"text." envprefix:"GUM_FILTER_TEXT_"`
-	MatchStyle         style.Styles `embed:"" prefix:"match." set:"defaultForeground=212" envprefix:"GUM_FILTER_MATCH_"`
-	Placeholder        string       `help:"Placeholder value" default:"Filter..." env:"GUM_FILTER_PLACEHOLDER"`
-	Prompt             string       `help:"Prompt to display" default:"> " env:"GUM_FILTER_PROMPT"`
-	PromptStyle        style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=240" envprefix:"GUM_FILTER_PROMPT_"`
-	Width              int          `help:"Input width" default:"20" env:"GUM_FILTER_WIDTH"`
-	Height             int          `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
-	Value              string       `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
+	Indicator              string       `help:"Character for selection" default:"•" env:"GUM_FILTER_INDICATOR"`
+	IndicatorStyle         style.Styles `embed:"" prefix:"indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_INDICATOR_"`
+	Limit                  int          `help:"Maximum number of options to pick" default:"1" group:"Selection"`
+	NoLimit                bool         `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
+	SelectedIndicator      string       `help:"Character to indicate selected items" default:">" env:"GUM_FILTER_SELECTED_INDICATOR"`
+	SelectedIndicatorStyle style.Styles `embed:"" prefix:"selected-indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_SELECTED_INDICATOR_"`
+	TextStyle              style.Styles `embed:"" prefix:"text." envprefix:"GUM_FILTER_TEXT_"`
+	MatchStyle             style.Styles `embed:"" prefix:"match." set:"defaultForeground=212" envprefix:"GUM_FILTER_MATCH_"`
+	Placeholder            string       `help:"Placeholder value" default:"Filter..." env:"GUM_FILTER_PLACEHOLDER"`
+	Prompt                 string       `help:"Prompt to display" default:"> " env:"GUM_FILTER_PROMPT"`
+	PromptStyle            style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=240" envprefix:"GUM_FILTER_PROMPT_"`
+	Width                  int          `help:"Input width" default:"20" env:"GUM_FILTER_WIDTH"`
+	Height                 int          `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
+	Value                  string       `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
 }

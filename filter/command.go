@@ -63,19 +63,19 @@ func (o Options) Run() error {
 	}
 
 	p := tea.NewProgram(model{
-		choices:            choices,
-		indicator:          o.Indicator,
-		matches:            matches,
-		textinput:          i,
-		viewport:           &v,
-		indicatorStyle:     o.IndicatorStyle.ToLipgloss(),
-		selectionMarkStyle: o.SelectionMarkStyle.ToLipgloss(),
-		selectionMark:      o.SelectionMark,
-		matchStyle:         o.MatchStyle.ToLipgloss(),
-		textStyle:          o.TextStyle.ToLipgloss(),
-		height:             o.Height,
-		multiSelection:     make(map[string]interface{}),
-		limit:              o.Limit,
+		choices:                choices,
+		indicator:              o.Indicator,
+		matches:                matches,
+		textinput:              i,
+		viewport:               &v,
+		indicatorStyle:         o.IndicatorStyle.ToLipgloss(),
+		selectedIndicatorStyle: o.SelectedIndicatorStyle.ToLipgloss(),
+		selectedIndicator:      o.SelectedIndicator,
+		matchStyle:             o.MatchStyle.ToLipgloss(),
+		textStyle:              o.TextStyle.ToLipgloss(),
+		height:                 o.Height,
+		multiSelection:         make(map[string]interface{}),
+		limit:                  o.Limit,
 	}, options...)
 
 	tm, err := p.StartReturningModel()
@@ -95,8 +95,8 @@ func (o Options) Run() error {
 		for k := range m.multiSelection {
 			fmt.Println(k)
 		}
-	} else if len(m.matches) > m.selected && m.selected >= 0 {
-		fmt.Println(m.matches[m.selected].Str)
+	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
+		fmt.Println(m.matches[m.cursor].Str)
 	}
 
 	return nil

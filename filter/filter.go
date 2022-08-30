@@ -22,23 +22,23 @@ import (
 )
 
 type model struct {
-	textinput          textinput.Model
-	viewport           *viewport.Model
-	choices            []string
-	matches            []fuzzy.Match
-	selected           int
-	multiSelection     map[string]interface{}
-	limit              int
-	numSelected        int
-	indicator          string
-	selectionMark      string
-	height             int
-	aborted            bool
-	quitting           bool
-	matchStyle         lipgloss.Style
-	textStyle          lipgloss.Style
-	indicatorStyle     lipgloss.Style
-	selectionMarkStyle lipgloss.Style
+	textinput              textinput.Model
+	viewport               *viewport.Model
+	choices                []string
+	matches                []fuzzy.Match
+	cursor                 int
+	multiSelection         map[string]interface{}
+	limit                  int
+	numSelected            int
+	indicator              string
+	selectedIndicator      string
+	height                 int
+	aborted                bool
+	quitting               bool
+	matchStyle             lipgloss.Style
+	textStyle              lipgloss.Style
+	indicatorStyle         lipgloss.Style
+	selectedIndicatorStyle lipgloss.Style
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -54,7 +54,7 @@ func (m model) View() string {
 	for i, match := range m.matches {
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
-		if i == m.selected {
+		if i == m.cursor {
 			s.WriteString(m.indicatorStyle.Render(m.indicator))
 		} else {
 			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)))
@@ -62,9 +62,9 @@ func (m model) View() string {
 
 		// If there are multiple selections mark them, otherwise leave an empty space
 		if _, ok := m.multiSelection[match.Str]; ok {
-			s.WriteString(m.selectionMarkStyle.Render(m.selectionMark))
+			s.WriteString(m.selectedIndicatorStyle.Render(m.selectedIndicator))
 		} else {
-			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.selectionMark)))
+			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.selectedIndicator)))
 		}
 
 		// For this match, there are a certain number of characters that have
@@ -114,14 +114,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case "ctrl+n", "ctrl+j", "down":
-			m.selected = clamp(0, len(m.matches)-1, m.selected+1)
-			if m.selected >= m.viewport.YOffset+m.viewport.Height {
+			m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+			if m.cursor >= m.viewport.YOffset+m.viewport.Height {
 				m.viewport.LineDown(1)
 			}
 		case "ctrl+p", "ctrl+k", "up":
-			m.selected = clamp(0, len(m.matches)-1, m.selected-1)
-			if m.selected < m.viewport.YOffset {
-				m.viewport.SetYOffset(m.selected)
+			m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+			if m.cursor < m.viewport.YOffset {
+				m.viewport.SetYOffset(m.cursor)
 			}
 		case "tab":
 			if m.limit == 1 {
@@ -129,17 +129,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			// Tab is used to toggle selection of current item in the list
-			if _, ok := m.multiSelection[m.matches[m.selected].Str]; ok {
-				delete(m.multiSelection, m.matches[m.selected].Str)
+			if _, ok := m.multiSelection[m.matches[m.cursor].Str]; ok {
+				delete(m.multiSelection, m.matches[m.cursor].Str)
 				m.numSelected--
 			} else if m.numSelected < m.limit {
-				m.multiSelection[m.matches[m.selected].Str] = nil
+				m.multiSelection[m.matches[m.cursor].Str] = nil
 				m.numSelected++
 			}
 
 			// Go down by one line
-			m.selected = clamp(0, len(m.matches)-1, m.selected+1)
-			if m.selected >= m.viewport.YOffset+m.viewport.Height {
+			m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+			if m.cursor >= m.viewport.YOffset+m.viewport.Height {
 				m.viewport.LineDown(1)
 			}
 		default:
@@ -161,7 +161,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.
-	m.selected = clamp(0, len(m.matches)-1, m.selected)
+	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
 	return m, cmd
 }
 
