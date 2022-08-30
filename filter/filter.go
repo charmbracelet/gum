@@ -27,7 +27,7 @@ type model struct {
 	choices                []string
 	matches                []fuzzy.Match
 	cursor                 int
-	multiSelection         map[string]interface{}
+	multiSelection         map[string]struct{}
 	limit                  int
 	numSelected            int
 	indicator              string
@@ -133,7 +133,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				delete(m.multiSelection, m.matches[m.cursor].Str)
 				m.numSelected--
 			} else if m.numSelected < m.limit {
-				m.multiSelection[m.matches[m.cursor].Str] = nil
+				m.multiSelection[m.matches[m.cursor].Str] = struct{}{}
 				m.numSelected++
 			}
 

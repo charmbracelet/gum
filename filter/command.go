@@ -74,7 +74,7 @@ func (o Options) Run() error {
 		matchStyle:             o.MatchStyle.ToLipgloss(),
 		textStyle:              o.TextStyle.ToLipgloss(),
 		height:                 o.Height,
-		multiSelection:         make(map[string]interface{}),
+		multiSelection:         make(map[string]struct{}),
 		limit:                  o.Limit,
 	}, options...)
 
