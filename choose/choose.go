@@ -89,9 +89,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				break
 			}
 			for i := range m.items {
+				if m.numSelected >= m.limit {
+					break // do not exceed given limit
+				}
+				if m.items[i].selected {
+					continue
+				}
 				m.items[i].selected = true
+				m.numSelected++
 			}
-			m.numSelected = len(m.items)
 		case "A":
 			if m.limit <= 1 {
 				break
