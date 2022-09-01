@@ -29,6 +29,7 @@ type model struct {
 	quitting         bool
 	index            int
 	limit            int
+	optional         bool
 	numSelected      int
 	paginator        paginator.Model
 	aborted          bool
@@ -124,10 +125,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			m.quitting = true
-			// If the user hasn't selected any items in a multi-select.
-			// Then we select the item that they have pressed enter on. If they
-			// have selected items, then we simply return them.
-			if m.numSelected < 1 {
+			// If the user hasn't selected any items in a multi-select,
+			// then we select the item that they have pressed enter on,
+			// except if --optional flag is enabled.
+			// If they have selected items, then we simply return them.
+			if m.numSelected < 1 && !m.optional {
 				m.items[m.index].selected = true
 			}
 			return m, tea.Quit

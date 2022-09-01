@@ -74,6 +74,7 @@ func (o Options) Run() error {
 		cursorPrefix:      o.CursorPrefix,
 		items:             items,
 		limit:             o.Limit,
+		optional:          o.Optional,
 		paginator:         pager,
 		cursorStyle:       o.CursorStyle.ToLipgloss(),
 		itemStyle:         o.ItemStyle.ToLipgloss(),
@@ -98,7 +99,7 @@ func (o Options) Run() error {
 		}
 	}
 
-	fmt.Println(strings.TrimSuffix(s.String(), "\n"))
+	fmt.Print(s.String())
 
 	return nil
 }
