@@ -98,7 +98,7 @@ func (o Options) Run() error {
 		}
 	}
 
-	fmt.Println(strings.TrimSuffix(s.String(), "\n"))
+	fmt.Print(s.String())
 
 	return nil
 }
