@@ -177,6 +177,7 @@ func matchAll(options []string) []fuzzy.Match {
 	return matches
 }
 
+//nolint:unparam
 func clamp(min, max, val int) int {
 	if val < min {
 		return min
