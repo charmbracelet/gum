@@ -58,16 +58,26 @@ func (o Options) Run() error {
 		matches = matchAll(choices)
 	}
 
+	if o.NoLimit {
+		o.Limit = len(choices)
+	}
+
 	p := tea.NewProgram(model{
-		choices:        choices,
-		indicator:      o.Indicator,
-		matches:        matches,
-		textinput:      i,
-		viewport:       &v,
-		indicatorStyle: o.IndicatorStyle.ToLipgloss(),
-		matchStyle:     o.MatchStyle.ToLipgloss(),
-		textStyle:      o.TextStyle.ToLipgloss(),
-		height:         o.Height,
+		choices:               choices,
+		indicator:             o.Indicator,
+		matches:               matches,
+		textinput:             i,
+		viewport:              &v,
+		indicatorStyle:        o.IndicatorStyle.ToLipgloss(),
+		selectedPrefixStyle:   o.SelectedPrefixStyle.ToLipgloss(),
+		selectedPrefix:        o.SelectedPrefix,
+		unselectedPrefixStyle: o.UnselectedPrefixStyle.ToLipgloss(),
+		unselectedPrefix:      o.UnselectedPrefix,
+		matchStyle:            o.MatchStyle.ToLipgloss(),
+		textStyle:             o.TextStyle.ToLipgloss(),
+		height:                o.Height,
+		selected:              make(map[string]struct{}),
+		limit:                 o.Limit,
 	}, options...)
 
 	tm, err := p.StartReturningModel()
@@ -79,8 +89,16 @@ func (o Options) Run() error {
 	if m.aborted {
 		return exit.ErrAborted
 	}
-	if len(m.matches) > m.selected && m.selected >= 0 {
-		fmt.Println(m.matches[m.selected].Str)
+
+	// allSelections contains values only if limit is greater
+	// than 1 or if flag --no-limit is passed, hence there is
+	// no need to further checks
+	if len(m.selected) > 0 {
+		for k := range m.selected {
+			fmt.Println(k)
+		}
+	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
+		fmt.Println(m.matches[m.cursor].Str)
 	}
 
 	return nil

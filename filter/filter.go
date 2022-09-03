@@ -22,18 +22,25 @@ import (
 )
 
 type model struct {
-	textinput      textinput.Model
-	viewport       *viewport.Model
-	choices        []string
-	matches        []fuzzy.Match
-	selected       int
-	indicator      string
-	height         int
-	aborted        bool
-	quitting       bool
-	matchStyle     lipgloss.Style
-	textStyle      lipgloss.Style
-	indicatorStyle lipgloss.Style
+	textinput             textinput.Model
+	viewport              *viewport.Model
+	choices               []string
+	matches               []fuzzy.Match
+	cursor                int
+	selected              map[string]struct{}
+	limit                 int
+	numSelected           int
+	indicator             string
+	selectedPrefix        string
+	unselectedPrefix      string
+	height                int
+	aborted               bool
+	quitting              bool
+	matchStyle            lipgloss.Style
+	textStyle             lipgloss.Style
+	indicatorStyle        lipgloss.Style
+	selectedPrefixStyle   lipgloss.Style
+	unselectedPrefixStyle lipgloss.Style
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -49,10 +56,19 @@ func (m model) View() string {
 	for i, match := range m.matches {
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
-		if i == m.selected {
-			s.WriteString(m.indicatorStyle.Render(m.indicator) + " ")
+		if i == m.cursor {
+			s.WriteString(m.indicatorStyle.Render(m.indicator))
 		} else {
-			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)) + " ")
+			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)))
+		}
+
+		// If there are multiple selections mark them, otherwise leave an empty space
+		if _, ok := m.selected[match.Str]; ok {
+			s.WriteString(m.selectedPrefixStyle.Render(m.selectedPrefix))
+		} else if m.limit > 1 {
+			s.WriteString(m.unselectedPrefixStyle.Render(m.unselectedPrefix))
+		} else {
+			s.WriteString(" ")
 		}
 
 		// For this match, there are a certain number of characters that have
@@ -102,14 +118,33 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case "ctrl+n", "ctrl+j", "down":
-			m.selected = clamp(0, len(m.matches)-1, m.selected+1)
-			if m.selected >= m.viewport.YOffset+m.viewport.Height {
+			m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+			if m.cursor >= m.viewport.YOffset+m.viewport.Height {
 				m.viewport.LineDown(1)
 			}
 		case "ctrl+p", "ctrl+k", "up":
-			m.selected = clamp(0, len(m.matches)-1, m.selected-1)
-			if m.selected < m.viewport.YOffset {
-				m.viewport.SetYOffset(m.selected)
+			m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+			if m.cursor < m.viewport.YOffset {
+				m.viewport.SetYOffset(m.cursor)
+			}
+		case "tab":
+			if m.limit == 1 {
+				break // no op
+			}
+
+			// Tab is used to toggle selection of current item in the list
+			if _, ok := m.selected[m.matches[m.cursor].Str]; ok {
+				delete(m.selected, m.matches[m.cursor].Str)
+				m.numSelected--
+			} else if m.numSelected < m.limit {
+				m.selected[m.matches[m.cursor].Str] = struct{}{}
+				m.numSelected++
+			}
+
+			// Go down by one line
+			m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+			if m.cursor >= m.viewport.YOffset+m.viewport.Height {
+				m.viewport.LineDown(1)
 			}
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
@@ -130,7 +165,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.
-	m.selected = clamp(0, len(m.matches)-1, m.selected)
+	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
 	return m, cmd
 }
 
