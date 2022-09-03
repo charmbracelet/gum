@@ -22,23 +22,25 @@ import (
 )
 
 type model struct {
-	textinput              textinput.Model
-	viewport               *viewport.Model
-	choices                []string
-	matches                []fuzzy.Match
-	cursor                 int
-	multiSelection         map[string]struct{}
-	limit                  int
-	numSelected            int
-	indicator              string
-	selectedIndicator      string
-	height                 int
-	aborted                bool
-	quitting               bool
-	matchStyle             lipgloss.Style
-	textStyle              lipgloss.Style
-	indicatorStyle         lipgloss.Style
-	selectedIndicatorStyle lipgloss.Style
+	textinput             textinput.Model
+	viewport              *viewport.Model
+	choices               []string
+	matches               []fuzzy.Match
+	cursor                int
+	selected              map[string]struct{}
+	limit                 int
+	numSelected           int
+	indicator             string
+	selectedPrefix        string
+	unselectedPrefix      string
+	height                int
+	aborted               bool
+	quitting              bool
+	matchStyle            lipgloss.Style
+	textStyle             lipgloss.Style
+	indicatorStyle        lipgloss.Style
+	selectedPrefixStyle   lipgloss.Style
+	unselectedPrefixStyle lipgloss.Style
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -61,10 +63,12 @@ func (m model) View() string {
 		}
 
 		// If there are multiple selections mark them, otherwise leave an empty space
-		if _, ok := m.multiSelection[match.Str]; ok {
-			s.WriteString(m.selectedIndicatorStyle.Render(m.selectedIndicator))
+		if _, ok := m.selected[match.Str]; ok {
+			s.WriteString(m.selectedPrefixStyle.Render(m.selectedPrefix))
+		} else if m.limit > 1 {
+			s.WriteString(m.unselectedPrefixStyle.Render(m.unselectedPrefix))
 		} else {
-			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.selectedIndicator)))
+			s.WriteString(" ")
 		}
 
 		// For this match, there are a certain number of characters that have
@@ -129,11 +133,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			// Tab is used to toggle selection of current item in the list
-			if _, ok := m.multiSelection[m.matches[m.cursor].Str]; ok {
-				delete(m.multiSelection, m.matches[m.cursor].Str)
+			if _, ok := m.selected[m.matches[m.cursor].Str]; ok {
+				delete(m.selected, m.matches[m.cursor].Str)
 				m.numSelected--
 			} else if m.numSelected < m.limit {
-				m.multiSelection[m.matches[m.cursor].Str] = struct{}{}
+				m.selected[m.matches[m.cursor].Str] = struct{}{}
 				m.numSelected++
 			}
 
