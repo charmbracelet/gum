@@ -48,15 +48,13 @@ func (o Options) Run() error {
 
 	// Keep track of the selected items.
 	currentSelected := 0
-	// Parse the selected items.
-	selectedItems := parseSelectedItems(o.Selected)
 	// Check if selected items should be used.
-	hasSelectedItems := o.Limit > 1 && len(selectedItems) > 0
+	hasSelectedItems := o.Limit > 1 && len(o.Selected) > 0
 
 	var items = make([]item, len(o.Options))
 	for i, option := range o.Options {
 		// Check if the option should be selected.
-		isSelected := hasSelectedItems && currentSelected < o.Limit && arrayContains(selectedItems, option)
+		isSelected := hasSelectedItems && currentSelected < o.Limit && arrayContains(o.Selected, option)
 		// If the option is selected then increment the current selected count.
 		if isSelected {
 			currentSelected++
@@ -121,15 +119,6 @@ func (o Options) Run() error {
 func (o Options) BeforeReset(ctx *kong.Context) error {
 	style.HideFlags(ctx)
 	return nil
-}
-
-// Parse the options that should start selected.
-func parseSelectedItems(selected string) []string {
-	selectedItems := strings.Split(strings.TrimSpace(selected), ",")
-	for i, selected := range selectedItems {
-		selectedItems[i] = strings.TrimSpace(selected)
-	}
-	return selectedItems
 }
 
 // Check if an array contains a value.
