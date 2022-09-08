@@ -108,6 +108,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
 		}
+		m.viewport.Width = msg.Width
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc":
