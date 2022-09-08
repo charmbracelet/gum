@@ -22,8 +22,8 @@ github.com/charmbracelet/glamour v0.5.1-0.20220727184942-e70ff2d969da h1:FGz53GW
 github.com/charmbracelet/glamour v0.5.1-0.20220727184942-e70ff2d969da/go.mod h1:HXz79SMFnF9arKxqeoHWxmo1BhplAH7wehlRhKQIL94=
 github.com/charmbracelet/harmonica v0.2.0/go.mod h1:KSri/1RMQOZLbw7AHqgcBycp8pgJnQMYYT8QZRqZ1Ao=
 github.com/charmbracelet/lipgloss v0.5.0/go.mod h1:EZLha/HbzEt7cYqdFPovlqy5FZPj0xFhg5SaqxScmgs=
-github.com/charmbracelet/lipgloss v0.5.1-0.20220901123808-7bcfa6a70c1f h1:4971eWB9U7k9iQ7bkmq+3dFZOvuyBvLB5NqFSpQcgwk=
-github.com/charmbracelet/lipgloss v0.5.1-0.20220901123808-7bcfa6a70c1f/go.mod h1:Ek+1SCqlTcv+EmSCbyYFCME1gBbjyRImKxlE7h3RiMU=
+github.com/charmbracelet/lipgloss v0.5.1-0.20220908142526-5e4540cf9311 h1:D3DuUJ3GFDisVeDmAAA7DI+p9T1O+E2qcfrauYPZvpY=
+github.com/charmbracelet/lipgloss v0.5.1-0.20220908142526-5e4540cf9311/go.mod h1:Ek+1SCqlTcv+EmSCbyYFCME1gBbjyRImKxlE7h3RiMU=
 github.com/containerd/console v1.0.3 h1:lIr7SlA5PxZyMV30bDW0MGbiOPXwc63yRuCP0ARubLw=
 github.com/containerd/console v1.0.3/go.mod h1:7LqA/THxQ86k76b8c/EMSiaJ3h1eZkMkXar0TQ1gf3U=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
