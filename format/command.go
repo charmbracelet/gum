@@ -41,6 +41,6 @@ func (o Options) Run() error {
 		return err
 	}
 
-	fmt.Println(v)
+	fmt.Print(v)
 	return nil
 }
