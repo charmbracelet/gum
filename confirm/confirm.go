@@ -86,7 +86,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tickMsg:
 		if m.timeout <= 0 {
 			m.quitting = true
-			m.confirmation = false
+			//m.confirmation = false
 			return m, tea.Quit
 		}
 		m.timeout -= tickInterval
@@ -107,8 +107,8 @@ func (m model) View() string {
 	}
 
 	if m.confirmation {
-		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(m.negative + timeout)
+		aff = m.selectedStyle.Render(m.affirmative + timeout)
+		neg = m.unselectedStyle.Render(m.negative)
 	} else {
 		aff = m.unselectedStyle.Render(m.affirmative)
 		neg = m.selectedStyle.Render(m.negative + timeout)
