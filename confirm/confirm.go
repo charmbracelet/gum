@@ -51,7 +51,6 @@ func (m model) Init() tea.Cmd {
 	if m.timeout > 0 {
 		return tick()
 	}
-	m.defaultSelection = m.confirmation
 	return nil
 }
 
