@@ -53,13 +53,21 @@ func main() {
 		}),
 		kong.Vars{
 			"version":                 version,
+			"defaultHeight":           "0",
+			"defaultWidth":            "0",
+			"defaultAlign":            "left",
 			"defaultBorder":           "none",
 			"defaultBorderForeground": "",
+			"defaultBorderBackground": "",
 			"defaultBackground":       "",
 			"defaultForeground":       "",
 			"defaultMargin":           "0 0",
 			"defaultPadding":          "0 0",
 			"defaultUnderline":        "false",
+			"defaultBold":             "false",
+			"defaultFaint":            "false",
+			"defaultItalic":           "false",
+			"defaultStrikethrough":    "false",
 		},
 	)
 	if err := ctx.Run(); err != nil {
