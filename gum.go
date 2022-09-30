@@ -11,8 +11,10 @@ import (
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
 	"github.com/charmbracelet/gum/man"
+	"github.com/charmbracelet/gum/pager"
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
+	"github.com/charmbracelet/gum/table"
 	"github.com/charmbracelet/gum/write"
 )
 
@@ -100,6 +102,12 @@ type Gum struct {
 	//
 	Join join.Options `cmd:"" help:"Join text vertically or horizontally"`
 
+	// Pager provides a shell script interface for the viewport bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/viewport
+	//
+	// It allows the user to scroll through content like a pager.
+	Pager pager.Options `cmd:"" help:"Scroll through a file"`
+
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/spinner
 	//
@@ -141,6 +149,23 @@ type Gum struct {
 	//    ╚══════════════════════════════════════════════════╝
 	//
 	Style style.Options `cmd:"" help:"Apply coloring, borders, spacing to text"`
+
+	// Table provides a shell script interface for the table bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/table
+	//
+	// It is useful to render tabular (CSV) data in a terminal and allows
+	// the user to select a row from the table.
+	//
+	// Let's render a table of gum flavors:
+	//
+	// $ gum table <<< "Flavor,Price\nStrawberry,$0.50\nBanana,$0.99\nCherry,$0.75"
+	//
+	//  Flavor      Price
+	//  Strawberry  $0.50
+	//  Banana      $0.99
+	//  Cherry      $0.75
+	//
+	Table table.Options `cmd:"" help:"Render a table of data"`
 
 	// Write provides a shell script interface for the text area bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/textarea
