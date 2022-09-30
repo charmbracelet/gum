@@ -23,20 +23,20 @@ type Styles struct {
 
 	// Border
 	Border           string `help:"Border Style" enum:"none,hidden,normal,rounded,thick,double" default:"${defaultBorder}" group:"Style Flags" env:"BORDER"`
-	BorderBackground string `help:"Border Background Color" group:"Style Flags" env:"BORDER_BACKGROUND"`
+	BorderBackground string `help:"Border Background Color" group:"Style Flags" default:"${defaultBorderBackground}" env:"BORDER_BACKGROUND"`
 	BorderForeground string `help:"Border Foreground Color" group:"Style Flags" default:"${defaultBorderForeground}" env:"BORDER_FOREGROUND"`
 
 	// Layout
-	Align   string `help:"Text Alignment" enum:"left,center,right,bottom,middle,top" default:"left" group:"Style Flags" env:"ALIGN"`
-	Height  int    `help:"Text height" group:"Style Flags" env:"HEIGHT"`
-	Width   int    `help:"Text width" group:"Style Flags" env:"WIDTH"`
+	Align   string `help:"Text Alignment" enum:"left,center,right,bottom,middle,top" default:"${defaultAlign}" group:"Style Flags" env:"ALIGN"`
+	Height  int    `help:"Text height" default:"${defaultHeight}" group:"Style Flags" env:"HEIGHT"`
+	Width   int    `help:"Text width" default:"${defaultWidth}" group:"Style Flags" env:"WIDTH"`
 	Margin  string `help:"Text margin" default:"${defaultMargin}" group:"Style Flags" env:"MARGIN"`
 	Padding string `help:"Text padding" default:"${defaultPadding}" group:"Style Flags" env:"PADDING"`
 
 	// Format
-	Bold          bool `help:"Bold text" group:"Style Flags" env:"BOLD"`
-	Faint         bool `help:"Faint text" group:"Style Flags" env:"FAINT"`
-	Italic        bool `help:"Italicize text" group:"Style Flags" env:"ITALIC"`
-	Strikethrough bool `help:"Strikethrough text" group:"Style Flags" env:"STRIKETHROUGH"`
+	Bold          bool `help:"Bold text" default:"${defaultBold}" group:"Style Flags" env:"BOLD"`
+	Faint         bool `help:"Faint text" default:"${defaultFaint}" group:"Style Flags" env:"FAINT"`
+	Italic        bool `help:"Italicize text" default:"${defaultItalic}" group:"Style Flags" env:"ITALIC"`
+	Strikethrough bool `help:"Strikethrough text" default:"${defaultStrikethrough}" group:"Style Flags" env:"STRIKETHROUGH"`
 	Underline     bool `help:"Underline text" default:"${defaultUnderline}" group:"Style Flags" env:"UNDERLINE"`
 }
