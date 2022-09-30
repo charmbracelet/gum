@@ -228,6 +228,19 @@ cat flavors.text | gum filter > selection.text
   <img src="https://stuff.charm.sh/gum/filter.gif" alt="Shell running gum filter on different bubble gum flavors" />
 </picture>
 
+You can also select multiple items with the `--limit` flag, which determines
+the maximum number of items that can be chosen.
+
+```bash
+cat flavors.text | gum filter --limit 2
+```
+
+Or, allow any number of selections with the `--no-limit` flag.
+
+```bash
+cat flavors.text | gum filter --no-limit
+```
+
 #### Choose
 
 Choose an option from a list of choices.
