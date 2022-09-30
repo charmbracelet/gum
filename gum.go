@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/gum/choose"
 	"github.com/charmbracelet/gum/completion"
 	"github.com/charmbracelet/gum/confirm"
+	"github.com/charmbracelet/gum/file"
 	"github.com/charmbracelet/gum/filter"
 	"github.com/charmbracelet/gum/format"
 	"github.com/charmbracelet/gum/input"
@@ -55,6 +56,20 @@ type Gum struct {
 	// $ gum confirm "Are you sure?" && rm file.txt
 	//
 	Confirm confirm.Options `cmd:"" help:"Ask a user to confirm an action"`
+
+	// File provides an interface to pick a file from a folder (tree).
+	// The user is provided a file manager-like interface to navigate, to
+	// select a file.
+	//
+	// Let's pick a file from the current directory:
+	//
+	// $ gum file
+	// $ gum file .
+	//
+	// Let's pick a file from the home directory:
+	//
+	// $ gum file $HOME
+	File file.Options `cmd:"" help:"Pick a file from a folder"`
 
 	// Filter provides a fuzzy searching text input to allow filtering a list of
 	// options to select one option.
@@ -106,6 +121,19 @@ type Gum struct {
 	// https://github.com/charmbracelet/bubbles/tree/master/viewport
 	//
 	// It allows the user to scroll through content like a pager.
+	//
+	// ╭────────────────────────────────────────────────╮
+	// │    1 │ Gum Pager                               │
+	// │    2 │ =========                               │
+	// │    3 │                                         │
+	// │    4 │ ```                                     │
+	// │    5 │ gum pager --height 10 --width 25 < text │
+	// │    6 │ ```                                     │
+	// │    7 │                                         │
+	// │    8 │                                         │
+	// ╰────────────────────────────────────────────────╯
+	//  ↑/↓: Navigate • q: Quit
+	//
 	Pager pager.Options `cmd:"" help:"Scroll through a file"`
 
 	// Spin provides a shell script interface for the spinner bubble.
