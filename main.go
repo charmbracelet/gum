@@ -52,12 +52,14 @@ func main() {
 			Summary: false,
 		}),
 		kong.Vars{
-			"version":           version,
-			"defaultBackground": "",
-			"defaultForeground": "",
-			"defaultMargin":     "0 0",
-			"defaultPadding":    "0 0",
-			"defaultUnderline":  "false",
+			"version":                 version,
+			"defaultBorder":           "none",
+			"defaultBorderForeground": "",
+			"defaultBackground":       "",
+			"defaultForeground":       "",
+			"defaultMargin":           "0 0",
+			"defaultPadding":          "0 0",
+			"defaultUnderline":        "false",
 		},
 	)
 	if err := ctx.Run(); err != nil {
