@@ -22,9 +22,9 @@ type Styles struct {
 	Foreground string `help:"Foreground Color" default:"${defaultForeground}" group:"Style Flags" env:"FOREGROUND"`
 
 	// Border
-	Border           string `help:"Border Style" enum:"none,hidden,normal,rounded,thick,double" default:"none" group:"Style Flags" env:"BORDER"`
+	Border           string `help:"Border Style" enum:"none,hidden,normal,rounded,thick,double" default:"${defaultBorder}" group:"Style Flags" env:"BORDER"`
 	BorderBackground string `help:"Border Background Color" group:"Style Flags" env:"BORDER_BACKGROUND"`
-	BorderForeground string `help:"Border Foreground Color" group:"Style Flags" env:"BORDER_FOREGROUND"`
+	BorderForeground string `help:"Border Foreground Color" group:"Style Flags" default:"${defaultBorderForeground}" env:"BORDER_FOREGROUND"`
 
 	// Layout
 	Align   string `help:"Text Alignment" enum:"left,center,right,bottom,middle,top" default:"left" group:"Style Flags" env:"ALIGN"`
