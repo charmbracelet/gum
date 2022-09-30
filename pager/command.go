@@ -1,9 +1,10 @@
 package pager
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -15,24 +16,23 @@ func (o Options) Run() error {
 	var err error
 
 	if o.Content == "" {
-		o.Content, err = stdin.Read()
+		stdin, err := stdin.Read()
 		if err != nil {
 			return err
 		}
+		if stdin != "" {
+			o.Content = stdin
+		} else {
+			return fmt.Errorf("provide some content to display")
+		}
 	}
-
-	renderer, err := glamour.NewTermRenderer(
-		glamour.WithWordWrap(80),
-	)
-	if err != nil {
-		return err
-	}
-	md, err := renderer.Render(o.Content)
-	vp.SetContent(md)
 
 	model := model{
-		viewport:  vp,
-		helpStyle: o.HelpStyle.ToLipgloss(),
+		viewport:        vp,
+		helpStyle:       o.HelpStyle.ToLipgloss(),
+		content:         o.Content,
+		showLineNumbers: o.ShowLineNumbers,
+		lineNumberStyle: o.LineNumberStyle.ToLipgloss(),
 	}
 	if err != nil {
 		return err
