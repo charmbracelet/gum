@@ -8,11 +8,10 @@
 //
 // $ gum table <<< "Flavor,Price\nStrawberry,$0.50\nBanana,$0.99\nCherry,$0.75"
 //
-//  Flavor      Price
-//  Strawberry  $0.50
-//  Banana      $0.99
-//  Cherry      $0.75
-//
+//	Flavor      Price
+//	Strawberry  $0.50
+//	Banana      $0.99
+//	Cherry      $0.75
 package table
 
 import (

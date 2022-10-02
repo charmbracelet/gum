@@ -196,30 +196,34 @@ func (m model) View() string {
 		isSymlink := info.Mode()&fs.ModeSymlink != 0
 		size := humanize.Bytes(uint64(info.Size()))
 		name := f.Name()
+
 		if isSymlink {
 			symlinkPath, _ = filepath.EvalSymlinks(filepath.Join(m.path, name))
 		}
+
 		if m.selected == i {
 			selected := fmt.Sprintf(" %s %"+fmt.Sprint(m.fileSizeStyle.GetWidth())+"s %s", info.Mode().String(), size, name)
 			if isSymlink {
 				selected = fmt.Sprintf("%s → %s", selected, symlinkPath)
 			}
 			s.WriteString(m.cursorStyle.Render(m.cursor) + m.selectedStyle.Render(selected))
-		} else {
-			var style = m.fileStyle
-			if f.IsDir() {
-				style = m.directoryStyle
-			} else if isSymlink {
-				style = m.symlinkStyle
-			}
-
-			fileName := style.Render(name)
-			if isSymlink {
-				fileName = fmt.Sprintf("%s → %s", fileName, symlinkPath)
-			}
-			s.WriteString(fmt.Sprintf("  %s %s %s", m.permissionStyle.Render(info.Mode().String()), m.fileSizeStyle.Render(size), fileName))
+			s.WriteRune('\n')
+			continue
 		}
-		s.WriteString("\n")
+
+		var style = m.fileStyle
+		if f.IsDir() {
+			style = m.directoryStyle
+		} else if isSymlink {
+			style = m.symlinkStyle
+		}
+
+		fileName := style.Render(name)
+		if isSymlink {
+			fileName = fmt.Sprintf("%s → %s", fileName, symlinkPath)
+		}
+		s.WriteString(fmt.Sprintf("  %s %s %s", m.permissionStyle.Render(info.Mode().String()), m.fileSizeStyle.Render(size), fileName))
+		s.WriteRune('\n')
 	}
 
 	return s.String()

@@ -15,11 +15,11 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
-// Run provides a shell script interface for rendering tabular data (CSV)
+// Run provides a shell script interface for rendering tabular data (CSV).
 func (o Options) Run() error {
 	var reader *csv.Reader
 	if o.File != "" {
-		file, err := os.OpenFile(o.File, os.O_RDONLY, 0600)
+		file, err := os.Open(o.File)
 		if err != nil {
 			return fmt.Errorf("could not find file at path %s", o.File)
 		}
@@ -54,7 +54,7 @@ func (o Options) Run() error {
 	if err != nil {
 		return fmt.Errorf("invalid data provided")
 	}
-	var columns []table.Column
+	var columns = make([]table.Column, 0, len(columnNames))
 
 	for i, title := range columnNames {
 		width := runewidth.StringWidth(title)
@@ -75,7 +75,7 @@ func (o Options) Run() error {
 		Selected: defaultStyles.Selected.Inherit(o.SelectedStyle.ToLipgloss()),
 	}
 
-	var rows []table.Row
+	var rows = make([]table.Row, 0, len(data))
 	for _, row := range data {
 		rows = append(rows, table.Row(row))
 	}
@@ -99,7 +99,7 @@ func (o Options) Run() error {
 	}
 
 	m := tm.(model)
-	fmt.Println(strings.Join([]string(m.selected), string(o.Separator)))
+	fmt.Println(strings.Join([]string(m.selected), o.Separator))
 
 	return nil
 }

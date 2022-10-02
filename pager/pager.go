@@ -28,7 +28,7 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.viewport.Height = msg.Height - 2
+		m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
 		m.viewport.Width = msg.Width
 		textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
 		var text strings.Builder

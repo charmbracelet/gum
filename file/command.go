@@ -17,7 +17,7 @@ func (o Options) Run() error {
 
 	path, err := filepath.Abs(o.Path)
 	if err != nil {
-		return err
+		return fmt.Errorf("file not found: %w", err)
 	}
 
 	m := model{
@@ -43,7 +43,7 @@ func (o Options) Run() error {
 
 	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).StartReturningModel()
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 
 	m = tm.(model)

@@ -13,12 +13,11 @@ import (
 func (o Options) Run() error {
 	vp := viewport.New(o.Style.Width, o.Style.Height)
 	vp.Style = o.Style.ToLipgloss()
-	var err error
 
 	if o.Content == "" {
 		stdin, err := stdin.Read()
 		if err != nil {
-			return err
+			return fmt.Errorf("unable to read stdin")
 		}
 		if stdin != "" {
 			o.Content = stdin
@@ -34,9 +33,9 @@ func (o Options) Run() error {
 		showLineNumbers: o.ShowLineNumbers,
 		lineNumberStyle: o.LineNumberStyle.ToLipgloss(),
 	}
+	err := tea.NewProgram(model, tea.WithAltScreen()).Start()
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to start program: %w", err)
 	}
-
-	return tea.NewProgram(model, tea.WithAltScreen()).Start()
+	return nil
 }
