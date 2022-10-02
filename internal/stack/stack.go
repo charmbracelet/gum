@@ -7,7 +7,7 @@ type Stack struct {
 	Length func() int
 }
 
-// NewStack returns a new stack of integers
+// NewStack returns a new stack of integers.
 func NewStack() Stack {
 	slice := make([]int, 0)
 	return Stack{
