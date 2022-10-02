@@ -22,6 +22,7 @@ func (o Options) Run() error {
 		spinner: s,
 		title:   o.TitleStyle.ToLipgloss().Render(o.Title),
 		command: o.Command,
+		align:   o.Align,
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.StartReturningModel()
