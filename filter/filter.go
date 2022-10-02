@@ -147,6 +147,25 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.cursor >= m.viewport.YOffset+m.viewport.Height {
 				m.viewport.LineDown(1)
 			}
+		case "shift+tab":
+			if m.limit == 1 {
+				break // no op
+			}
+
+			// Shift+Tab is used to toggle selection of current item in the list
+			if _, ok := m.selected[m.matches[m.cursor].Str]; ok {
+				delete(m.selected, m.matches[m.cursor].Str)
+				m.numSelected--
+			} else if m.numSelected < m.limit {
+				m.selected[m.matches[m.cursor].Str] = struct{}{}
+				m.numSelected++
+			}
+
+			// Go up by one line
+			m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+			if m.cursor < m.viewport.YOffset {
+				m.viewport.SetYOffset(m.cursor)
+			}
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
 
