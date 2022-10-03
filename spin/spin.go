@@ -15,8 +15,11 @@
 package spin
 
 import (
+	"bufio"
+	"bytes"
 	"os/exec"
 	"strings"
+	"sync"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -32,6 +35,8 @@ type model struct {
 	status int
 	stdout string
 	stderr string
+
+	stdin chan string
 }
 
 type finishCommandMsg struct {
@@ -40,7 +45,7 @@ type finishCommandMsg struct {
 	status int
 }
 
-func commandStart(command []string) tea.Cmd {
+func (m model) commandStart(command []string) tea.Cmd {
 	return func() tea.Msg {
 		var args []string
 		if len(command) > 1 {
@@ -48,11 +53,25 @@ func commandStart(command []string) tea.Cmd {
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
+		// Create stdout, stderr buffers to store final output
 		var outbuf, errbuf strings.Builder
-		cmd.Stdout = &outbuf
-		cmd.Stderr = &errbuf
 
-		_ = cmd.Run()
+		// Create stdout, stderr pipes to read data asynchronously
+		cmdStdoutReader, _ := cmd.StdoutPipe()
+		cmdStderrReader, _ := cmd.StderrPipe()
+		scannerStdout := bufio.NewScanner(cmdStdoutReader)
+		// Setting split function to capture '\n'
+		scannerStdout.Split(splitWithNewLine)
+		scannerStderr := bufio.NewScanner(cmdStderrReader)
+		scannerStderr.Split(splitWithNewLine)
+		var wg sync.WaitGroup
+		// Settings wg = 2 to store data from stdin and stderr of executable file
+		wg.Add(2)
+		go readStdin(&wg, scannerStdout, m.stdin, &outbuf)
+		go readStderr(&wg, scannerStderr, &errbuf)
+		_ = cmd.Start()
+		wg.Wait()
+		_ = cmd.Wait()
 
 		status := cmd.ProcessState.ExitCode()
 
@@ -71,7 +90,7 @@ func commandStart(command []string) tea.Cmd {
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
-		commandStart(m.command),
+		m.commandStart(m.command),
 	)
 }
 func (m model) View() string {
@@ -98,6 +117,45 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	select {
+	case title := <-m.stdin:
+		m.title = title
+	default:
+	}
+
 	m.spinner, cmd = m.spinner.Update(msg)
 	return m, cmd
+}
+
+func readStdin(wg *sync.WaitGroup, scanner *bufio.Scanner, stdin chan<- string, outBuf *strings.Builder) {
+	defer wg.Done()
+	for scanner.Scan() {
+		text := scanner.Text()
+		stdin <- text
+		outBuf.WriteString(text)
+	}
+}
+
+func readStderr(wg *sync.WaitGroup, scanner *bufio.Scanner, errBuf *strings.Builder) {
+	defer wg.Done()
+	for scanner.Scan() {
+		text := scanner.Text()
+		errBuf.WriteString(text)
+	}
+}
+
+func splitWithNewLine(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	if atEOF && len(data) == 0 {
+		return 0, nil, nil
+	}
+	if i := bytes.IndexByte(data, '\n'); i >= 0 {
+		// We have a full newline-terminated line.
+		return i + 1, data[0 : i+1], nil
+	}
+	// If we're at EOF, we have a final, non-terminated line. Return it.
+	if atEOF {
+		return len(data), data, nil
+	}
+	// Request more data.
+	return 0, nil, nil
 }

@@ -23,6 +23,7 @@ func (o Options) Run() error {
 		title:   o.TitleStyle.ToLipgloss().Render(o.Title),
 		command: o.Command,
 		align:   o.Align,
+		stdin:   make(chan string),
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.StartReturningModel()
