@@ -14,6 +14,7 @@ package file
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -44,6 +45,7 @@ type model struct {
 
 	cursor          string
 	cursorStyle     lipgloss.Style
+	symlinkStyle    lipgloss.Style
 	directoryStyle  lipgloss.Style
 	fileStyle       lipgloss.Style
 	permissionStyle lipgloss.Style
@@ -174,19 +176,35 @@ func (m model) View() string {
 			break
 		}
 
+		var symlinkPath string
 		info, _ := f.Info()
+		isSymlink := info.Mode()&fs.ModeSymlink != 0
 		size := humanize.Bytes(uint64(info.Size()))
+		name := f.Name()
+		if isSymlink {
+			symlinkPath, _ = filepath.EvalSymlinks(filepath.Join(m.path, name))
+		}
 		if m.selected == i {
-			s.WriteString(m.cursorStyle.Render(m.cursor) + m.selectedStyle.Render(fmt.Sprintf(" %s %"+fmt.Sprint(m.fileSizeStyle.GetWidth())+"s %s", info.Mode().String(), size, f.Name())))
+			selected := fmt.Sprintf(" %s %"+fmt.Sprint(m.fileSizeStyle.GetWidth())+"s %s", info.Mode().String(), size, name)
+			if isSymlink {
+				selected = fmt.Sprintf("%s -> %s", selected, symlinkPath)
+			}
+			s.WriteString(m.cursorStyle.Render(m.cursor) + m.selectedStyle.Render(selected))
 		} else {
 			var style lipgloss.Style
 			if f.IsDir() {
 				style = m.directoryStyle
+			} else if isSymlink {
+				style = m.symlinkStyle
 			} else {
 				style = m.fileStyle
 			}
 
-			s.WriteString(fmt.Sprintf("  %s %s %s", m.permissionStyle.Render(info.Mode().String()), m.fileSizeStyle.Render(size), style.Render(f.Name())))
+			fileName := style.Render(name)
+			if isSymlink {
+				fileName = fmt.Sprintf("%s -> %s", fileName, symlinkPath)
+			}
+			s.WriteString(fmt.Sprintf("  %s %s %s", m.permissionStyle.Render(info.Mode().String()), m.fileSizeStyle.Render(size), fileName))
 		}
 		s.WriteString("\n")
 	}

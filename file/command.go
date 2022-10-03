@@ -32,6 +32,7 @@ func (o Options) Run() error {
 		minStack:        stack.NewStack(),
 		maxStack:        stack.NewStack(),
 		cursorStyle:     o.CursorStyle.ToLipgloss(),
+		symlinkStyle:    o.SymlinkStyle.ToLipgloss(),
 		directoryStyle:  o.DirectoryStyle.ToLipgloss(),
 		fileStyle:       o.FileStyle.ToLipgloss(),
 		permissionStyle: o.PermissionsStyle.ToLipgloss(),
