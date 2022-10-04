@@ -36,7 +36,8 @@ type model struct {
 	stdout string
 	stderr string
 
-	stdin chan string
+	stdin         chan string
+	readFromStdin bool
 }
 
 type finishCommandMsg struct {
@@ -67,7 +68,7 @@ func (m model) commandStart(command []string) tea.Cmd {
 		var wg sync.WaitGroup
 		// Settings wg = 2 to store data from stdin and stderr of executable file
 		wg.Add(2)
-		go readStdin(&wg, scannerStdout, m.stdin, &outbuf)
+		go readStdin(&wg, scannerStdout, m.stdin, &outbuf, m.readFromStdin)
 		go readStderr(&wg, scannerStderr, &errbuf)
 		_ = cmd.Start()
 		wg.Wait()
@@ -127,11 +128,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func readStdin(wg *sync.WaitGroup, scanner *bufio.Scanner, stdin chan<- string, outBuf *strings.Builder) {
+func readStdin(wg *sync.WaitGroup, scanner *bufio.Scanner, stdin chan<- string, outBuf *strings.Builder, updateTitle bool) {
 	defer wg.Done()
 	for scanner.Scan() {
 		text := scanner.Text()
-		stdin <- text
+		if updateTitle {
+			stdin <- text
+		}
 		outBuf.WriteString(text)
 	}
 }
