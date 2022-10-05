@@ -16,9 +16,20 @@ import (
 
 // Run provides a shell script interface for rendering tabular data (CSV)
 func (o Options) Run() error {
-	csv, err := stdin.Read()
-	if err != nil {
-		return fmt.Errorf("no comma-separated values provided: %w", err)
+	var csv string
+	var err error
+	var b []byte
+	if o.File != "" {
+		b, err = os.ReadFile(o.File)
+		csv = string(b)
+		if err != nil {
+			return fmt.Errorf("could not find file at path %s", o.File)
+		}
+	} else {
+		csv, err = stdin.Read()
+		if err != nil {
+			return fmt.Errorf("no comma-separated values provided: %w", err)
+		}
 	}
 
 	// If no columns are provided we'll use the first row of the CSV as the

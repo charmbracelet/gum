@@ -11,4 +11,5 @@ type Options struct {
 	CellStyle     style.Styles `embed:"" prefix:"cell." envprefix:"GUM_TABLE_CELL"`
 	HeaderStyle   style.Styles `embed:"" prefix:"header." envprefix:"GUM_TABLE_HEADER"`
 	SelectedStyle style.Styles `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_TABLE_SELECTED"`
+	File          string       `short:"f" help:"file path" default:""`
 }
