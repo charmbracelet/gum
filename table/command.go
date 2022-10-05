@@ -18,11 +18,15 @@ import (
 func (o Options) Run() error {
 	csv, err := stdin.Read()
 	if err != nil {
+<<<<<<< HEAD
 		return fmt.Errorf("no data provided: %w", err)
 	}
 
 	if csv == "" {
 		return fmt.Errorf("no data provided")
+=======
+		return fmt.Errorf("no comma-separated values provided: %w", err)
+>>>>>>> next
 	}
 
 	// If no columns are provided we'll use the first row of the CSV as the

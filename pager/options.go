@@ -4,7 +4,10 @@ import "github.com/charmbracelet/gum/style"
 
 // Options are the options for the pager.
 type Options struct {
+<<<<<<< HEAD
 	//nolint:staticcheck
+=======
+>>>>>>> next
 	Style           style.Styles `embed:"" help:"Style the pager" set:"defaultBorder=rounded" set:"defaultPadding=0 1" set:"defaultBorderForeground=212" envprefix:"GUM_PAGER_"`
 	HelpStyle       style.Styles `embed:"" prefix:"help." help:"Style the help text" set:"defaultForeground=241" envprefix:"GUM_PAGER_HELP_"`
 	Content         string       `arg:"" optional:"" help:"Display content to scroll"`

@@ -43,10 +43,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.viewport.SetContent(text.String())
 	case tea.KeyMsg:
 		switch msg.String() {
+<<<<<<< HEAD
 		case "g":
 			m.viewport.GotoTop()
 		case "G":
 			m.viewport.GotoBottom()
+=======
+>>>>>>> next
 		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
 		}

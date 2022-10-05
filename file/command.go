@@ -24,7 +24,10 @@ func (o Options) Run() error {
 		path:            path,
 		cursor:          o.Cursor,
 		selected:        0,
+<<<<<<< HEAD
 		showHidden:      o.All,
+=======
+>>>>>>> next
 		autoHeight:      o.Height == 0,
 		height:          o.Height,
 		max:             0,
@@ -33,7 +36,10 @@ func (o Options) Run() error {
 		minStack:        stack.NewStack(),
 		maxStack:        stack.NewStack(),
 		cursorStyle:     o.CursorStyle.ToLipgloss(),
+<<<<<<< HEAD
 		symlinkStyle:    o.SymlinkStyle.ToLipgloss(),
+=======
+>>>>>>> next
 		directoryStyle:  o.DirectoryStyle.ToLipgloss(),
 		fileStyle:       o.FileStyle.ToLipgloss(),
 		permissionStyle: o.PermissionsStyle.ToLipgloss(),
