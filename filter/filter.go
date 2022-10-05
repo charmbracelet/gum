@@ -119,34 +119,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case "ctrl+n", "ctrl+j", "down":
-			m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
-			if m.cursor >= m.viewport.YOffset+m.viewport.Height {
-				m.viewport.LineDown(1)
-			}
+			m.CursorDown()
 		case "ctrl+p", "ctrl+k", "up":
-			m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
-			if m.cursor < m.viewport.YOffset {
-				m.viewport.SetYOffset(m.cursor)
-			}
+			m.CursorUp()
 		case "tab":
 			if m.limit == 1 {
 				break // no op
 			}
-
-			// Tab is used to toggle selection of current item in the list
-			if _, ok := m.selected[m.matches[m.cursor].Str]; ok {
-				delete(m.selected, m.matches[m.cursor].Str)
-				m.numSelected--
-			} else if m.numSelected < m.limit {
-				m.selected[m.matches[m.cursor].Str] = struct{}{}
-				m.numSelected++
+			m.ToggleSelection()
+			m.CursorDown()
+		case "shift+tab":
+			if m.limit == 1 {
+				break // no op
 			}
-
-			// Go down by one line
-			m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
-			if m.cursor >= m.viewport.YOffset+m.viewport.Height {
-				m.viewport.LineDown(1)
-			}
+			m.ToggleSelection()
+			m.CursorUp()
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
 
@@ -168,6 +155,30 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// that the selected index is within the bounds of the number of matches.
 	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
 	return m, cmd
+}
+
+func (m *model) CursorUp() {
+	m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+	if m.cursor < m.viewport.YOffset {
+		m.viewport.SetYOffset(m.cursor)
+	}
+}
+
+func (m *model) CursorDown() {
+	m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+	if m.cursor >= m.viewport.YOffset+m.viewport.Height {
+		m.viewport.LineDown(1)
+	}
+}
+
+func (m *model) ToggleSelection() {
+	if _, ok := m.selected[m.matches[m.cursor].Str]; ok {
+		delete(m.selected, m.matches[m.cursor].Str)
+		m.numSelected--
+	} else if m.numSelected < m.limit {
+		m.selected[m.matches[m.cursor].Str] = struct{}{}
+		m.numSelected++
+	}
 }
 
 func matchAll(options []string) []fuzzy.Match {

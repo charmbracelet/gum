@@ -14,6 +14,7 @@ package file
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -28,9 +29,10 @@ import (
 const marginBottom = 5
 
 type model struct {
-	quitting bool
-	path     string
-	files    []os.DirEntry
+	quitting   bool
+	path       string
+	files      []os.DirEntry
+	showHidden bool
 
 	selected      int
 	selectedStack stack.Stack
@@ -44,6 +46,7 @@ type model struct {
 
 	cursor          string
 	cursorStyle     lipgloss.Style
+	symlinkStyle    lipgloss.Style
 	directoryStyle  lipgloss.Style
 	fileStyle       lipgloss.Style
 	permissionStyle lipgloss.Style
@@ -53,24 +56,38 @@ type model struct {
 
 type readDirMsg []os.DirEntry
 
-func readDir(path string) tea.Cmd {
+func readDir(path string, showHidden bool) tea.Cmd {
 	return func() tea.Msg {
 		dirEntries, err := os.ReadDir(path)
 		if err != nil {
 			return tea.Quit
 		}
+
 		sort.Slice(dirEntries, func(i, j int) bool {
 			if dirEntries[i].IsDir() == dirEntries[j].IsDir() {
 				return dirEntries[i].Name() < dirEntries[j].Name()
 			}
 			return dirEntries[i].IsDir()
 		})
-		return readDirMsg(dirEntries)
+
+		if showHidden {
+			return readDirMsg(dirEntries)
+		}
+
+		var sanitizedDirEntries []fs.DirEntry
+		for _, dirEntry := range dirEntries {
+			isHidden, _ := IsHidden(dirEntry.Name())
+			if isHidden {
+				continue
+			}
+			sanitizedDirEntries = append(sanitizedDirEntries, dirEntry)
+		}
+		return readDirMsg(sanitizedDirEntries)
 	}
 }
 
 func (m model) Init() tea.Cmd {
-	return readDir(m.path)
+	return readDir(m.path, m.showHidden)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -123,7 +140,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.min = 0
 				m.max = m.height - 1
 			}
-			return m, readDir(m.path)
+			return m, readDir(m.path, m.showHidden)
 		case "l", "right", "enter":
 			if len(m.files) == 0 {
 				break
@@ -137,17 +154,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				break
 			}
 			m.path = filepath.Join(m.path, m.files[m.selected].Name())
-			m.pushView(m.selected, m.min, m.max)
+			m.pushView()
 			m.selected = 0
 			m.min = 0
 			m.max = m.height - 1
-			return m, readDir(m.path)
+			return m, readDir(m.path, m.showHidden)
 		}
 	}
 	return m, nil
 }
 
-func (m model) pushView(selected, min, max int) {
+func (m model) pushView() {
 	m.minStack.Push(m.min)
 	m.maxStack.Push(m.max)
 	m.selectedStack.Push(m.selected)
@@ -174,19 +191,33 @@ func (m model) View() string {
 			break
 		}
 
+		var symlinkPath string
 		info, _ := f.Info()
+		isSymlink := info.Mode()&fs.ModeSymlink != 0
 		size := humanize.Bytes(uint64(info.Size()))
+		name := f.Name()
+		if isSymlink {
+			symlinkPath, _ = filepath.EvalSymlinks(filepath.Join(m.path, name))
+		}
 		if m.selected == i {
-			s.WriteString(m.cursorStyle.Render(m.cursor) + m.selectedStyle.Render(fmt.Sprintf(" %s %"+fmt.Sprint(m.fileSizeStyle.GetWidth())+"s %s", info.Mode().String(), size, f.Name())))
+			selected := fmt.Sprintf(" %s %"+fmt.Sprint(m.fileSizeStyle.GetWidth())+"s %s", info.Mode().String(), size, name)
+			if isSymlink {
+				selected = fmt.Sprintf("%s → %s", selected, symlinkPath)
+			}
+			s.WriteString(m.cursorStyle.Render(m.cursor) + m.selectedStyle.Render(selected))
 		} else {
-			var style lipgloss.Style
+			var style = m.fileStyle
 			if f.IsDir() {
 				style = m.directoryStyle
-			} else {
-				style = m.fileStyle
+			} else if isSymlink {
+				style = m.symlinkStyle
 			}
 
-			s.WriteString(fmt.Sprintf("  %s %s %s", m.permissionStyle.Render(info.Mode().String()), m.fileSizeStyle.Render(size), style.Render(f.Name())))
+			fileName := style.Render(name)
+			if isSymlink {
+				fileName = fmt.Sprintf("%s → %s", fileName, symlinkPath)
+			}
+			s.WriteString(fmt.Sprintf("  %s %s %s", m.permissionStyle.Render(info.Mode().String()), m.fileSizeStyle.Render(size), fileName))
 		}
 		s.WriteString("\n")
 	}

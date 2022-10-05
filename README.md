@@ -287,6 +287,34 @@ gum confirm && rm file.txt || echo "File not removed"
   <img src="https://stuff.charm.sh/gum/confirm_2.gif" alt="Shell running gum confirm" />
 </picture>
 
+#### File
+
+Prompt the user to select a file from the file tree.
+
+```bash
+EDITOR $(gum file $HOME)
+```
+
+<picture>
+  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/file.gif">
+  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/file.gif">
+  <img src="https://stuff.charm.sh/gum/file.gif" alt="Shell running gum file" />
+</picture>
+
+#### Pager
+
+Scroll through a long document with line numbers and a fully customizable viewport.
+
+```bash
+gum pager < README.md
+```
+
+<picture>
+  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/pager.gif">
+  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/pager.gif">
+  <img src="https://stuff.charm.sh/gum/pager.gif" alt="Shell running gum pager" />
+</picture>
+
 #### Spin
 
 Display a spinner while running a script or command. The spinner will
@@ -303,6 +331,20 @@ gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 </picture>
 
 Available spinner types include: `line`, `dot`, `minidot`, `jump`, `pulse`, `points`, `globe`, `moon`, `monkey`, `meter`, `hamburger`.
+
+#### Table
+
+Select a row from some tabular data.
+
+```bash
+gum table < flavors.csv | cut -d ',' -f 1
+```
+
+<picture>
+  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/table.gif">
+  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/table.gif">
+  <img src="https://stuff.charm.sh/gum/table.gif" alt="Shell running gum table" />
+</picture>
 
 ## Styling
 

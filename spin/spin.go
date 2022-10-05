@@ -25,6 +25,7 @@ import (
 type model struct {
 	spinner spinner.Model
 	title   string
+	align   string
 	command []string
 	aborted bool
 
@@ -73,7 +74,13 @@ func (m model) Init() tea.Cmd {
 		commandStart(m.command),
 	)
 }
-func (m model) View() string { return m.spinner.View() + " " + m.title }
+func (m model) View() string {
+	if m.align == "left" {
+		return m.spinner.View() + " " + m.title
+	}
+
+	return m.title + " " + m.spinner.View()
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd

@@ -49,16 +49,23 @@ func (o Options) Run() error {
 	// Keep track of the selected items.
 	currentSelected := 0
 	// Check if selected items should be used.
-	hasSelectedItems := o.Limit > 1 && len(o.Selected) > 0
+	hasSelectedItems := len(o.Selected) > 0
+
+	startingIndex := 0
 
 	var items = make([]item, len(o.Options))
+
 	for i, option := range o.Options {
 		// Check if the option should be selected.
 		isSelected := hasSelectedItems && currentSelected < o.Limit && arrayContains(o.Selected, option)
 		// If the option is selected then increment the current selected count.
 		if isSelected {
 			currentSelected++
+			if o.Limit == 1 {
+				startingIndex = i
+			}
 		}
+
 		items[i] = item{text: option, selected: isSelected}
 	}
 
@@ -78,6 +85,7 @@ func (o Options) Run() error {
 	pager.UsePgUpPgDownKeys = false
 
 	tm, err := tea.NewProgram(model{
+		index:             startingIndex,
 		height:            o.Height,
 		cursor:            o.Cursor,
 		selectedPrefix:    o.SelectedPrefix,
