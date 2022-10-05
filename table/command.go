@@ -14,7 +14,8 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
-func SplitAtDelim(s, delim string) []string {
+// this solves scenarios where a comma may be between quotes
+func splitAtDelim(s, delim string) []string {
 	var res []string
 	var beg int
 	var inString bool
@@ -50,7 +51,7 @@ func (o Options) Run() error {
 	lines := strings.Split(csv, "\n")
 	if len(o.Columns) <= 0 {
 		if len(lines) > 0 {
-			o.Columns = SplitAtDelim(lines[0], o.Separator)
+			o.Columns = splitAtDelim(lines[0], o.Separator)
 			lines = lines[1:]
 		} else {
 			return fmt.Errorf("no columns provided")
@@ -76,7 +77,7 @@ func (o Options) Run() error {
 		if line == "" {
 			continue
 		}
-		row := SplitAtDelim(line, o.Separator)
+		row := splitAtDelim(line, o.Separator)
 		if len(row) != len(columns) {
 			return fmt.Errorf("row %q has %d columns, expected %d", line, len(row), len(columns))
 		}
