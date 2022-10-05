@@ -14,6 +14,26 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
+func SplitAtDelim(s, delim string) []string {
+	var res []string
+	var beg int
+	var inString bool
+
+	for i := 0; i < len(s); i++ {
+		if string(s[i]) == delim && !inString {
+			res = append(res, s[beg:i])
+			beg = i+1
+		} else if s[i] == '"' {
+			if !inString {
+				inString = true
+			} else if i > 0 && s[i-1] != '\\' {
+				inString = false
+			}
+		}
+	}
+	return append(res, s[beg:])
+}
+
 // Run provides a shell script interface for rendering tabular data (CSV)
 func (o Options) Run() error {
 	csv, err := stdin.Read()
@@ -30,7 +50,7 @@ func (o Options) Run() error {
 	lines := strings.Split(csv, "\n")
 	if len(o.Columns) <= 0 {
 		if len(lines) > 0 {
-			o.Columns = strings.Split(lines[0], o.Separator)
+			o.Columns = SplitAtDelim(lines[0], o.Separator)
 			lines = lines[1:]
 		} else {
 			return fmt.Errorf("no columns provided")
@@ -56,7 +76,7 @@ func (o Options) Run() error {
 		if line == "" {
 			continue
 		}
-		row := strings.Split(line, o.Separator)
+		row := SplitAtDelim(line, o.Separator)
 		if len(row) != len(columns) {
 			return fmt.Errorf("row %q has %d columns, expected %d", line, len(row), len(columns))
 		}
