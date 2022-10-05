@@ -14,7 +14,7 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
-// this solves scenarios where a comma may be between quotes
+// this solves scenarios where a comma may be between quotes.
 func splitAtDelim(s, delim string) []string {
 	var res []string
 	var beg int
@@ -23,7 +23,7 @@ func splitAtDelim(s, delim string) []string {
 	for i := 0; i < len(s); i++ {
 		if string(s[i]) == delim && !inString {
 			res = append(res, s[beg:i])
-			beg = i+1
+			beg = i + 1
 		} else if s[i] == '"' {
 			if !inString {
 				inString = true
