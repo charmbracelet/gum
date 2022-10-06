@@ -6,6 +6,7 @@ import "github.com/charmbracelet/gum/style"
 type Options struct {
 	Width           int    `help:"Text area width" default:"50" env:"GUM_WRITE_WIDTH"`
 	Height          int    `help:"Text area height" default:"5" env:"GUM_WRITE_HEIGHT"`
+	Header          string `help:"Header value" default:"" env:"GUM_WRITE_HEADER"`
 	Placeholder     string `help:"Placeholder value" default:"Write something..." env:"GUM_WRITE_PLACEHOLDER"`
 	Prompt          string `help:"Prompt to display" default:"┃ " env:"GUM_WRITE_PROMPT"`
 	ShowCursorLine  bool   `help:"Show cursor line" default:"false" env:"GUM_WRITE_SHOW_CURSOR_LINE"`
@@ -19,6 +20,7 @@ type Options struct {
 	CursorStyle           style.Styles `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_WRITE_CURSOR_"`
 	EndOfBufferStyle      style.Styles `embed:"" prefix:"end-of-buffer." set:"defaultForeground=0" envprefix:"GUM_WRITE_END_OF_BUFFER_"`
 	LineNumberStyle       style.Styles `embed:"" prefix:"line-number." set:"defaultForeground=7" envprefix:"GUM_WRITE_LINE_NUMBER_"`
+	HeaderStyle           style.Styles `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_WRITE_HEADER_"`
 	PlaceholderStyle      style.Styles `embed:"" prefix:"placeholder." set:"defaultForeground=240" envprefix:"GUM_WRITE_PLACEHOLDER_"`
 	PromptStyle           style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=7" envprefix:"GUM_WRITE_PROMPT_"`
 }

@@ -47,7 +47,11 @@ func (o Options) Run() error {
 	a.SetHeight(o.Height)
 	a.SetValue(o.Value)
 
-	p := tea.NewProgram(model{textarea: a}, tea.WithOutput(os.Stderr))
+	p := tea.NewProgram(model{
+		textarea:    a,
+		header:      o.Header,
+		headerStyle: o.HeaderStyle.ToLipgloss(),
+	}, tea.WithOutput(os.Stderr))
 	tm, err := p.StartReturningModel()
 	if err != nil {
 		return fmt.Errorf("failed to run write: %w", err)
