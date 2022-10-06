@@ -115,9 +115,8 @@ func (m model) View() string {
 	// View the input and the filtered choices
 	if m.reverse {
 		return m.viewport.View() + "\n" + m.textinput.View()
-	} else {
-		return m.textinput.View() + "\n" + m.viewport.View()
 	}
+	return m.textinput.View() + "\n" + m.viewport.View()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
