@@ -14,16 +14,17 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
-// this solves scenarios where a comma may be between quotes.
-func splitAtDelim(s, delim string) []string {
-	var res []string
-	var beg int
+// split splits a string at a delimiter while respecting quotation marks and
+// escape characters.
+func split(s, delimiter string) []string {
+	var result []string
+	var start int
 	var inString bool
 
 	for i := 0; i < len(s); i++ {
-		if string(s[i]) == delim && !inString {
-			res = append(res, s[beg:i])
-			beg = i + 1
+		if string(s[i]) == delimiter && !inString {
+			result = append(result, s[start:i])
+			start = i + 1
 		} else if s[i] == '"' {
 			if !inString {
 				inString = true
@@ -32,7 +33,7 @@ func splitAtDelim(s, delim string) []string {
 			}
 		}
 	}
-	return append(res, s[beg:])
+	return append(result, s[start:])
 }
 
 // Run provides a shell script interface for rendering tabular data (CSV)
@@ -51,7 +52,7 @@ func (o Options) Run() error {
 	lines := strings.Split(csv, "\n")
 	if len(o.Columns) <= 0 {
 		if len(lines) > 0 {
-			o.Columns = splitAtDelim(lines[0], o.Separator)
+			o.Columns = split(lines[0], o.Separator)
 			lines = lines[1:]
 		} else {
 			return fmt.Errorf("no columns provided")
@@ -77,7 +78,7 @@ func (o Options) Run() error {
 		if line == "" {
 			continue
 		}
-		row := splitAtDelim(line, o.Separator)
+		row := split(line, o.Separator)
 		if len(row) != len(columns) {
 			return fmt.Errorf("row %q has %d columns, expected %d", line, len(row), len(columns))
 		}
