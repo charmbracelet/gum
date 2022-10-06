@@ -11,12 +11,15 @@ package write
 import (
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
-	aborted  bool
-	quitting bool
-	textarea textarea.Model
+	aborted     bool
+	header      string
+	headerStyle lipgloss.Style
+	quitting    bool
+	textarea    textarea.Model
 }
 
 func (m model) Init() tea.Cmd { return textarea.Blink }
@@ -24,6 +27,13 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
+
+	// Display the header above the text area if it is not empty.
+	if m.header != "" {
+		header := m.headerStyle.Render(m.header)
+		return lipgloss.JoinVertical(lipgloss.Left, header, m.textarea.View())
+	}
+
 	return m.textarea.View()
 }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
