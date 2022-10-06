@@ -63,6 +63,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case "left", "h", "ctrl+p", "tab",
 			"right", "l", "ctrl+n", "shift+tab":
+			if m.negative == "" {
+				break
+			}
 			m.confirmation = !m.confirmation
 		case "enter":
 			m.quitting = true
