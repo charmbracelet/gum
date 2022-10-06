@@ -103,6 +103,11 @@ func (m model) View() string {
 		neg = m.selectedStyle.Render(m.negative + timeout)
 	}
 
+	// If the option is intentionally empty, do not show it.
+	if m.negative == "" {
+		neg = ""
+	}
+
 	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
 }
 
