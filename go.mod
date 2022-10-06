@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/alecthomas/kong v0.6.1
 	github.com/alecthomas/mango-kong v0.1.0
-	github.com/charmbracelet/bubbles v0.14.1-0.20220926062606-e857875f2a75
+	github.com/charmbracelet/bubbles v0.14.1-0.20221006154229-d1775121146a
 	github.com/charmbracelet/bubbletea v0.22.1
 	github.com/charmbracelet/glamour v0.5.1-0.20220727184942-e70ff2d969da
 	github.com/charmbracelet/lipgloss v0.6.0
