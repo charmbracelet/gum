@@ -60,9 +60,13 @@ func (o Options) Run() error {
 		isSelected := hasSelectedItems && currentSelected < o.Limit && arrayContains(o.Selected, option)
 		// If the option is selected then increment the current selected count.
 		if isSelected {
-			currentSelected++
 			if o.Limit == 1 {
+				// When the user can choose only one option don't select the option but
+				// start with the cursor hovering over it.
 				startingIndex = i
+				isSelected = false
+			} else {
+				currentSelected++
 			}
 		}
 
