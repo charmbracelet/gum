@@ -78,6 +78,7 @@ func (o Options) Run() error {
 		height:                o.Height,
 		selected:              make(map[string]struct{}),
 		limit:                 o.Limit,
+		reverse:               o.Reverse,
 	}, options...)
 
 	tm, err := p.StartReturningModel()
