@@ -158,6 +158,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
 
+			// yOffsetFromBottom is the number of lines from the bottom of the
+			// list to the top of the viewport. This is used to keep the viewport
+			// at a constant position when the number of matches are reduced
+			// in the reverse layout.
+			var yOffsetFromBottom int
+			if m.reverse {
+				yOffsetFromBottom = max(0, len(m.matches)-m.viewport.YOffset)
+			}
+
 			// A character was entered, this likely means that the text input
 			// has changed. This suggests that the matches are outdated, so
 			// update them, with a fuzzy finding algorithm provided by
@@ -171,9 +180,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			// For reverse layout, we need to offset the viewport so that the
-			// visible lines are at the bottom of the viewport.
+			// it remains at a constant position relative to the cursor.
 			if m.reverse {
-				m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height)
+				maxYOffset := max(0, len(m.matches)-m.viewport.Height)
+				m.viewport.YOffset = clamp(0, maxYOffset, len(m.matches)-yOffsetFromBottom)
 			}
 		}
 	}
@@ -239,4 +249,11 @@ func clamp(min, max, val int) int {
 		return max
 	}
 	return val
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
