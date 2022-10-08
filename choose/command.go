@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/alecthomas/kong"
@@ -56,10 +57,12 @@ func (o Options) Run() error {
 	hasSelectedItems := len(o.Selected) > 0
 
 	startingIndex := 0
+	currentOrder := 0
 
-	var items = make([]item, len(o.Options))
+	items := make([]item, len(o.Options))
 
 	for i, option := range o.Options {
+		var order int
 		// Check if the option should be selected.
 		isSelected := hasSelectedItems && currentSelected < o.Limit && arrayContains(o.Selected, option)
 		// If the option is selected then increment the current selected count.
@@ -71,10 +74,12 @@ func (o Options) Run() error {
 				isSelected = false
 			} else {
 				currentSelected++
+				order = currentOrder
+				currentOrder++
 			}
 		}
 
-		items[i] = item{text: option, selected: isSelected}
+		items[i] = item{text: option, selected: isSelected, order: order}
 	}
 
 	// Use the pagination model to display the current and total number of
@@ -94,6 +99,7 @@ func (o Options) Run() error {
 
 	tm, err := tea.NewProgram(model{
 		index:             startingIndex,
+		currentOrder:      currentOrder,
 		height:            o.Height,
 		cursor:            o.Cursor,
 		selectedPrefix:    o.SelectedPrefix,
@@ -115,6 +121,12 @@ func (o Options) Run() error {
 	m := tm.(model)
 	if m.aborted {
 		return exit.ErrAborted
+	}
+
+	if o.KeepOrder && o.Limit > 1 {
+		sort.Slice(m.items, func(i, j int) bool {
+			return m.items[i].order < m.items[j].order
+		})
 	}
 
 	var s strings.Builder
