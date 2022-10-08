@@ -90,19 +90,26 @@ func (m model) View() string {
 		// caused the match. i.e. fuzzy matching.
 		// We should indicate to the users which characters are being matched.
 		mi := 0
+		var buf strings.Builder
 		for ci, c := range match.Str {
 			// Check if the current character index matches the current matched
 			// index. If so, color the character to indicate a match.
 			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
+				// Flush text buffer.
+				s.WriteString(m.textStyle.Render(buf.String()))
+				buf.Reset()
+
 				s.WriteString(m.matchStyle.Render(string(c)))
 				// We have matched this character, so we never have to check it
 				// again. Move on to the next match.
 				mi++
 			} else {
-				// Not a match, simply show the character, unstyled.
-				s.WriteString(m.textStyle.Render(string(c)))
+				// Not a match, buffer a regular character.
+				buf.WriteRune(c)
 			}
 		}
+		// Flush text buffer.
+		s.WriteString(m.textStyle.Render(buf.String()))
 
 		// We have finished displaying the match with all of it's matched
 		// characters highlighted and the rest filled in.
