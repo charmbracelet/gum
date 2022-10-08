@@ -11,6 +11,7 @@
 package filter
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -274,6 +275,13 @@ func exactMatches(search string, matches []fuzzy.Match) []fuzzy.Match {
 			exactMatches = append(exactMatches, m)
 		}
 	}
+
+	// we need to sort by name the matches because
+	// they are sorted with the fuzzy ranking
+	sort.Slice(exactMatches, func(i, j int) bool {
+		return exactMatches[i].Str > exactMatches[j].Str
+	})
+
 	return exactMatches
 }
 
