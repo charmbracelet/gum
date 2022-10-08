@@ -46,6 +46,10 @@ func (o Options) Run() error {
 		o.Limit = len(o.Options)
 	}
 
+	if len(o.Selected) > o.Limit {
+		return errors.New("number of selected options cannot be greater than the limit")
+	}
+
 	// Keep track of the selected items.
 	currentSelected := 0
 	// Check if selected items should be used.
