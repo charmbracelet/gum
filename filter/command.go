@@ -79,6 +79,7 @@ func (o Options) Run() error {
 		selected:              make(map[string]struct{}),
 		limit:                 o.Limit,
 		reverse:               o.Reverse,
+		exact:                 o.Exact,
 	}, options...)
 
 	tm, err := p.StartReturningModel()
