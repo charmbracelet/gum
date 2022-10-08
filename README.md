@@ -182,13 +182,13 @@ gum input
 Prompt for input with a simple command.
 
 ```bash
-gum input > answer.text
+gum input > answer.txt
 ```
 
 Prompt for sensitive input with the `--password` flag.
 
 ```bash
-gum input --password > password.text
+gum input --password > password.txt
 ```
 
 <picture>
@@ -204,7 +204,7 @@ Prompt for some multi-line text.
 Note: `CTRL+D` and `esc` are used to complete text entry. `CTRL+C` will cancel.
 
 ```bash
-gum write > story.text
+gum write > story.txt
 ```
 
 <picture>
@@ -218,10 +218,10 @@ gum write > story.text
 Use fuzzy matching to filter a list of values:
 
 ```bash
-echo Strawberry >> flavors.text
-echo Banana >> flavors.text
-echo Cherry >> flavors.text
-cat flavors.text | gum filter > selection.text
+echo Strawberry >> flavors.txt
+echo Banana >> flavors.txt
+echo Cherry >> flavors.txt
+cat flavors.txt | gum filter > selection.txt
 ```
 
 <picture>
@@ -234,13 +234,13 @@ You can also select multiple items with the `--limit` flag, which determines
 the maximum number of items that can be chosen.
 
 ```bash
-cat flavors.text | gum filter --limit 2
+cat flavors.txt | gum filter --limit 2
 ```
 
 Or, allow any number of selections with the `--no-limit` flag.
 
 ```bash
-cat flavors.text | gum filter --no-limit
+cat flavors.txt | gum filter --no-limit
 ```
 
 #### Choose
