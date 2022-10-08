@@ -42,6 +42,7 @@ type model struct {
 	selectedPrefixStyle   lipgloss.Style
 	unselectedPrefixStyle lipgloss.Style
 	reverse               bool
+	exact                 bool
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -180,6 +181,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// https://github.com/sahilm/fuzzy
 			m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
 
+			// For exact search return only the exact matches
+			if m.exact {
+				m.matches = exactMatches(m.textinput.Value(), m.matches)
+			}
+
 			// If the search field is empty, let's not display the matches
 			// (none), but rather display all possible choices.
 			if m.textinput.Value() == "" {
@@ -245,6 +251,30 @@ func matchAll(options []string) []fuzzy.Match {
 		matches[i] = fuzzy.Match{Str: option}
 	}
 	return matches
+}
+
+func exactMatches(search string, matches []fuzzy.Match) []fuzzy.Match {
+	if len(search) < 2 {
+		return matches
+	}
+
+	exactMatches := fuzzy.Matches{}
+	for _, m := range matches {
+		search = strings.ToLower(search)
+		matchedString := strings.ToLower(m.Str)
+
+		index := strings.Index(matchedString, search)
+		if index >= 0 {
+			// we need to override the MatchedIndexes because sometimes
+			// they are not consecutive, but they have to be in the exact search
+			m.MatchedIndexes = []int{}
+			for i := range search {
+				m.MatchedIndexes = append(m.MatchedIndexes, index+i)
+			}
+			exactMatches = append(exactMatches, m)
+		}
+	}
+	return exactMatches
 }
 
 //nolint:unparam
