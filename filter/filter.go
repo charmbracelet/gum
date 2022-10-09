@@ -146,22 +146,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			m.quitting = true
 			return m, tea.Quit
+		case "pgdown":
+			m.CursorPageDown()
+		case "pgup":
+			m.CursorPageUp()
 		case "ctrl+n", "ctrl+j", "down":
-			m.CursorDown()
+			m.CursorDown(1)
 		case "ctrl+p", "ctrl+k", "up":
-			m.CursorUp()
+			m.CursorUp(1)
 		case "tab":
 			if m.limit == 1 {
 				break // no op
 			}
 			m.ToggleSelection()
-			m.CursorDown()
+			m.CursorDown(1)
 		case "shift+tab":
 			if m.limit == 1 {
 				break // no op
 			}
 			m.ToggleSelection()
-			m.CursorUp()
+			m.CursorUp(1)
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
 
@@ -201,32 +205,40 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m *model) CursorUp() {
+func (m *model) CursorUp(n int) {
 	if m.reverse {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+		m.cursor = clamp(0, len(m.matches)-1, m.cursor+n)
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
 			m.viewport.SetYOffset(len(m.matches) - m.cursor - 1)
 		}
 	} else {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+		m.cursor = clamp(0, len(m.matches)-1, m.cursor-n)
 		if m.cursor < m.viewport.YOffset {
 			m.viewport.SetYOffset(m.cursor)
 		}
 	}
 }
 
-func (m *model) CursorDown() {
+func (m *model) CursorDown(n int) {
 	if m.reverse {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+		m.cursor = clamp(0, len(m.matches)-1, m.cursor-n)
 		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
-			m.viewport.LineDown(1)
+			m.viewport.LineDown(n)
 		}
 	} else {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+		m.cursor = clamp(0, len(m.matches)-1, m.cursor+n)
 		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
-			m.viewport.LineDown(1)
+			m.viewport.LineDown(n)
 		}
 	}
+}
+
+func (m *model) CursorPageUp() {
+	m.CursorUp(m.viewport.Height)
+}
+
+func (m *model) CursorPageDown() {
+	m.CursorDown(m.viewport.Height)
 }
 
 func (m *model) ToggleSelection() {
