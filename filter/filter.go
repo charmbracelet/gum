@@ -11,7 +11,6 @@
 package filter
 
 import (
-	"sort"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -179,12 +178,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// A character was entered, this likely means that the text input
 			// has changed. This suggests that the matches are outdated, so
 			// update them, with a fuzzy finding algorithm provided by
-			// https://github.com/sahilm/fuzzy
-			m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
-
-			// For exact search return only the exact matches
+			// https://github.com/sahilm/fuzzy or with an exact match search
 			if m.exact {
-				m.matches = exactMatches(m.textinput.Value(), m.matches)
+				m.matches = exactMatches(m.textinput.Value(), m.choices)
+			} else {
+				m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
 			}
 
 			// If the search field is empty, let's not display the matches
@@ -254,33 +252,25 @@ func matchAll(options []string) []fuzzy.Match {
 	return matches
 }
 
-func exactMatches(search string, matches []fuzzy.Match) []fuzzy.Match {
-	if len(search) < 2 {
-		return matches
-	}
-
+func exactMatches(search string, choices []string) []fuzzy.Match {
 	exactMatches := fuzzy.Matches{}
-	for _, m := range matches {
+	for i, choice := range choices {
 		search = strings.ToLower(search)
-		matchedString := strings.ToLower(m.Str)
+		matchedString := strings.ToLower(choice)
 
 		index := strings.Index(matchedString, search)
 		if index >= 0 {
-			// we need to override the MatchedIndexes because sometimes
-			// they are not consecutive, but they have to be in the exact search
-			m.MatchedIndexes = []int{}
-			for i := range search {
-				m.MatchedIndexes = append(m.MatchedIndexes, index+i)
+			matchedIndexes := []int{}
+			for s := range search {
+				matchedIndexes = append(matchedIndexes, index+s)
 			}
-			exactMatches = append(exactMatches, m)
+			exactMatches = append(exactMatches, fuzzy.Match{
+				Str:            choice,
+				Index:          i,
+				MatchedIndexes: matchedIndexes,
+			})
 		}
 	}
-
-	// we need to sort by name the matches because
-	// they are sorted with the fuzzy ranking
-	sort.Slice(exactMatches, func(i, j int) bool {
-		return exactMatches[i].Str > exactMatches[j].Str
-	})
 
 	return exactMatches
 }
