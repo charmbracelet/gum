@@ -77,6 +77,9 @@ func (o Options) Run() error {
 
 	var rows = make([]table.Row, 0, len(data))
 	for _, row := range data {
+		if len(row) > len(columns) {
+			return fmt.Errorf("invalid number of columns")
+		}
 		rows = append(rows, table.Row(row))
 	}
 
