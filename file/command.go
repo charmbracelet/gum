@@ -32,13 +32,13 @@ func (o Options) Run() error {
 		selectedStack:   stack.NewStack(),
 		minStack:        stack.NewStack(),
 		maxStack:        stack.NewStack(),
-		cursorStyle:     o.CursorStyle.ToLipgloss(),
-		symlinkStyle:    o.SymlinkStyle.ToLipgloss(),
-		directoryStyle:  o.DirectoryStyle.ToLipgloss(),
-		fileStyle:       o.FileStyle.ToLipgloss(),
-		permissionStyle: o.PermissionsStyle.ToLipgloss(),
-		selectedStyle:   o.SelectedStyle.ToLipgloss(),
-		fileSizeStyle:   o.FileSizeStyle.ToLipgloss(),
+		cursorStyle:     o.CursorStyle.ToLipgloss().Inline(true),
+		symlinkStyle:    o.SymlinkStyle.ToLipgloss().Inline(true),
+		directoryStyle:  o.DirectoryStyle.ToLipgloss().Inline(true),
+		fileStyle:       o.FileStyle.ToLipgloss().Inline(true),
+		permissionStyle: o.PermissionsStyle.ToLipgloss().Inline(true),
+		selectedStyle:   o.SelectedStyle.ToLipgloss().Inline(true),
+		fileSizeStyle:   o.FileSizeStyle.ToLipgloss().Inline(true),
 	}
 
 	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).StartReturningModel()
