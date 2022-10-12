@@ -3,5 +3,5 @@
 pkgs.buildGoModule {
   name = "gum";
   src = ./.;
-  vendorSha256="rMqhYZMa0+5F3X4WDm4jE6IwlzOugqm65SAP38bdQx8=";
+  vendorSha256 = "sha256-rOBwhPXo4sTSI3j3rn3c5qWGnGFgkpeFUKgtzKBltbg=";
 }
