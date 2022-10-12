@@ -108,6 +108,8 @@ pacman -S gum
 
 # Nix
 nix-env -iA nixpkgs.gum
+# Or try the latest version
+nix run "github:charmbracelet/gum" -- file
 
 # Debian/Ubuntu
 echo "deb https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
