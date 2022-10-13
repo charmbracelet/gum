@@ -42,7 +42,7 @@ type model struct {
 	selectedPrefixStyle   lipgloss.Style
 	unselectedPrefixStyle lipgloss.Style
 	reverse               bool
-	exact                 bool
+	fuzzy                 bool
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -175,14 +175,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				yOffsetFromBottom = max(0, len(m.matches)-m.viewport.YOffset)
 			}
 
-			// A character was entered, this likely means that the text input
-			// has changed. This suggests that the matches are outdated, so
-			// update them, with a fuzzy finding algorithm provided by
-			// https://github.com/sahilm/fuzzy or with an exact match search
-			if m.exact {
-				m.matches = exactMatches(m.textinput.Value(), m.choices)
-			} else {
+			// A character was entered, this likely means that the text input has
+			// changed. This suggests that the matches are outdated, so update them.
+			if m.fuzzy {
 				m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
+			} else {
+				m.matches = exactMatches(m.textinput.Value(), m.choices)
 			}
 
 			// If the search field is empty, let's not display the matches
@@ -253,7 +251,7 @@ func matchAll(options []string) []fuzzy.Match {
 }
 
 func exactMatches(search string, choices []string) []fuzzy.Match {
-	exactMatches := fuzzy.Matches{}
+	matches := fuzzy.Matches{}
 	for i, choice := range choices {
 		search = strings.ToLower(search)
 		matchedString := strings.ToLower(choice)
@@ -264,7 +262,7 @@ func exactMatches(search string, choices []string) []fuzzy.Match {
 			for s := range search {
 				matchedIndexes = append(matchedIndexes, index+s)
 			}
-			exactMatches = append(exactMatches, fuzzy.Match{
+			matches = append(matches, fuzzy.Match{
 				Str:            choice,
 				Index:          i,
 				MatchedIndexes: matchedIndexes,
@@ -272,7 +270,7 @@ func exactMatches(search string, choices []string) []fuzzy.Match {
 		}
 	}
 
-	return exactMatches
+	return matches
 }
 
 //nolint:unparam
