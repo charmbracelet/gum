@@ -108,7 +108,7 @@ pacman -S gum
 
 # Nix
 nix-env -iA nixpkgs.gum
-# Or try the latest version
+# Or, with flakes
 nix run "github:charmbracelet/gum" -- --help
 
 # Debian/Ubuntu
