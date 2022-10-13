@@ -145,15 +145,36 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if len(m.files) == 0 {
 				break
 			}
-			if !m.files[m.selected].IsDir() {
+
+			f := m.files[m.selected]
+			info, err := f.Info()
+			if err != nil {
+				break
+			}
+			isSymlink := info.Mode()&fs.ModeSymlink != 0
+			isDir := f.IsDir()
+
+			if isSymlink {
+				symlinkPath, _ := filepath.EvalSymlinks(filepath.Join(m.path, f.Name()))
+				info, err := os.Stat(symlinkPath)
+				if err != nil {
+					break
+				}
+				if info.IsDir() {
+					isDir = true
+				}
+			}
+
+			if !isDir {
 				if msg.String() == "enter" {
-					m.path = filepath.Join(m.path, m.files[m.selected].Name())
+					m.path = filepath.Join(m.path, f.Name())
 					m.quitting = true
 					return m, tea.Quit
 				}
 				break
 			}
-			m.path = filepath.Join(m.path, m.files[m.selected].Name())
+
+			m.path = filepath.Join(m.path, f.Name())
 			m.pushView()
 			m.selected = 0
 			m.min = 0
