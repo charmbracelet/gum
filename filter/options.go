@@ -21,5 +21,5 @@ type Options struct {
 	Height                int          `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
 	Value                 string       `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
 	Reverse               bool         `help:"Display from the bottom of the screen" env:"GUM_FILTER_REVERSE"`
-	Exact                 bool         `help:"Enable exact-match" env:"GUM_FILTER_EXACT"`
+	Fuzzy                 bool         `help:"Enable fuzzy matching" default:"true" env:"GUM_FILTER_FUZZY" negatable:""`
 }
