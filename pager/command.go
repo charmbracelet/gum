@@ -3,9 +3,11 @@ package pager
 import (
 	"fmt"
 
+	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for the viewport bubble.
@@ -37,5 +39,11 @@ func (o Options) Run() error {
 	if err != nil {
 		return fmt.Errorf("unable to start program: %w", err)
 	}
+	return nil
+}
+
+// BeforeReset hook. Used to unclutter style flags.
+func (o Options) BeforeReset(ctx *kong.Context) error {
+	style.HideFlags(ctx)
 	return nil
 }

@@ -5,8 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stack"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run is the interface to picking a file.
@@ -54,5 +56,11 @@ func (o Options) Run() error {
 
 	fmt.Println(m.path)
 
+	return nil
+}
+
+// BeforeReset hook. Used to unclutter style flags.
+func (o Options) BeforeReset(ctx *kong.Context) error {
+	style.HideFlags(ctx)
 	return nil
 }
