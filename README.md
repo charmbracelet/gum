@@ -113,19 +113,13 @@ nix run "github:charmbracelet/gum" -- --help
 
 # Debian/Ubuntu
 echo "deb https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-
 curl https://repo.charm.sh/apt/gpg.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/charm.gpg
-
 sudo apt update && sudo apt install gum
-
 
 # Debian/Ubuntu (legacy < Debian 11 and < Ubuntu 22.04)
 ## If the "apt-key is deprecated" warning is shown, should use the other Debian method.
- 
 echo "deb https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-
 curl https://repo.charm.sh/apt/gpg.key | sudo apt-key add -
-
 sudo apt update && sudo apt install gum
 
 # Fedora
