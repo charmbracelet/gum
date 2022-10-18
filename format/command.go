@@ -17,30 +17,30 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
-// Func is a function that formats some text.
-type Func func(string) (string, error)
-
-var formatType = map[string]Func{
-	"code":     code,
-	"emoji":    emoji,
-	"markdown": markdown,
-	"template": template,
-}
-
 // Run runs the format command.
 func (o Options) Run() error {
-	var input string
+	var input, output string
+	var err error
 	if len(o.Template) > 0 {
 		input = strings.Join(o.Template, "\n")
 	} else {
 		input, _ = stdin.Read()
 	}
 
-	v, err := formatType[o.Type](input)
+	switch o.Type {
+	case "code":
+		output, err = code(input)
+	case "emoji":
+		output, err = emoji(input)
+	case "template":
+		output, err = template(input)
+	default:
+		output, err = markdown(input, o.Theme)
+	}
 	if err != nil {
 		return err
 	}
 
-	fmt.Print(v)
+	fmt.Print(output)
 	return nil
 }
