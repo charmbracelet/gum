@@ -29,10 +29,12 @@ import (
 const marginBottom = 5
 
 type model struct {
-	quitting   bool
-	path       string
-	files      []os.DirEntry
-	showHidden bool
+	quitting    bool
+	path        string
+	files       []os.DirEntry
+	showHidden  bool
+	dirAllowed  bool
+	fileAllowed bool
 
 	selected      int
 	selectedStack stack.Stack
@@ -165,12 +167,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 
-			if !isDir {
+			if (!isDir && m.fileAllowed) || (isDir && m.dirAllowed) {
 				if msg.String() == "enter" {
 					m.path = filepath.Join(m.path, f.Name())
 					m.quitting = true
 					return m, tea.Quit
 				}
+			}
+
+			if !isDir {
 				break
 			}
 

@@ -7,8 +7,10 @@ type Options struct {
 	// Path is the path to the folder / directory to begin traversing.
 	Path string `arg:"" optional:"" name:"path" help:"The path to the folder to begin traversing"`
 	// Cursor is the character to display in front of the current selected items.
-	Cursor string `short:"c" help:"The cursor character" default:">"`
-	All    bool   `short:"a" help:"Show hidden and 'dot' files" default:"true"`
+	Cursor    string `short:"c" help:"The cursor character" default:">"`
+	All       bool   `short:"a" help:"Show hidden and 'dot' files" default:"true"`
+	File      bool   `help:"Allow files selection" default:"true"`
+	Directory bool   `help:"Allow directories selection" default:"false"`
 
 	Height           int          `help:"Maximum number of files to display" default:"0"`
 	CursorStyle      style.Styles `embed:"" prefix:"cursor." help:"The cursor style" set:"defaultForeground=212" envprefix:"GUM_FILE_CURSOR_"`
