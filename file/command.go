@@ -1,6 +1,7 @@
 package file
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -13,6 +14,10 @@ import (
 
 // Run is the interface to picking a file.
 func (o Options) Run() error {
+	if !o.File && !o.Directory {
+		return errors.New("at least one between --file and --directory must be set")
+	}
+
 	if o.Path == "" {
 		o.Path = "."
 	}
@@ -27,6 +32,8 @@ func (o Options) Run() error {
 		cursor:          o.Cursor,
 		selected:        0,
 		showHidden:      o.All,
+		dirAllowed:      o.Directory,
+		fileAllowed:     o.File,
 		autoHeight:      o.Height == 0,
 		height:          o.Height,
 		max:             0,
