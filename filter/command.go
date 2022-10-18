@@ -82,7 +82,7 @@ func (o Options) Run() error {
 		fuzzy:                 o.Fuzzy,
 	}, options...)
 
-	tm, err := p.StartReturningModel()
+	tm, err := p.Run()
 	if err != nil {
 		return fmt.Errorf("unable to run filter: %w", err)
 	}

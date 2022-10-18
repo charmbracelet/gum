@@ -23,7 +23,7 @@ func (o Options) Run() error {
 		selectedStyle:   o.SelectedStyle.ToLipgloss(),
 		unselectedStyle: o.UnselectedStyle.ToLipgloss(),
 		promptStyle:     o.PromptStyle.ToLipgloss(),
-	}, tea.WithOutput(os.Stderr)).StartReturningModel()
+	}, tea.WithOutput(os.Stderr)).Run()
 
 	if err != nil {
 		return fmt.Errorf("unable to run confirm: %w", err)

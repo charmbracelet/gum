@@ -91,7 +91,7 @@ func (o Options) Run() error {
 		table.WithStyles(styles),
 	)
 
-	tm, err := tea.NewProgram(model{table: table}, tea.WithOutput(os.Stderr)).StartReturningModel()
+	tm, err := tea.NewProgram(model{table: table}, tea.WithOutput(os.Stderr)).Run()
 
 	if err != nil {
 		return fmt.Errorf("failed to start tea program: %w", err)

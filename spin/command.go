@@ -25,7 +25,7 @@ func (o Options) Run() error {
 		align:   o.Align,
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
-	mm, err := p.StartReturningModel()
+	mm, err := p.Run()
 	m = mm.(model)
 
 	if err != nil {

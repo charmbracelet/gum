@@ -43,7 +43,7 @@ func (o Options) Run() error {
 		fileSizeStyle:   o.FileSizeStyle.ToLipgloss().Inline(true),
 	}
 
-	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).StartReturningModel()
+	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}

@@ -40,7 +40,7 @@ func (o Options) Run() error {
 		textinput: i,
 		aborted:   false,
 	}, tea.WithOutput(os.Stderr))
-	tm, err := p.StartReturningModel()
+	tm, err := p.Run()
 	if err != nil {
 		return fmt.Errorf("failed to run input: %w", err)
 	}

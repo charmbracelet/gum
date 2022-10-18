@@ -52,7 +52,7 @@ func (o Options) Run() error {
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr))
-	tm, err := p.StartReturningModel()
+	tm, err := p.Run()
 	if err != nil {
 		return fmt.Errorf("failed to run write: %w", err)
 	}
