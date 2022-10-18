@@ -35,7 +35,7 @@ func (o Options) Run() error {
 		showLineNumbers: o.ShowLineNumbers,
 		lineNumberStyle: o.LineNumberStyle.ToLipgloss(),
 	}
-	err := tea.NewProgram(model, tea.WithAltScreen()).Start()
+	_, err := tea.NewProgram(model, tea.WithAltScreen()).Run()
 	if err != nil {
 		return fmt.Errorf("unable to start program: %w", err)
 	}
