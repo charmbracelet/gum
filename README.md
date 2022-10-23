@@ -135,8 +135,8 @@ pkg install gum
 
 Or download it:
 
-* [Packages][releases] are available in Debian and RPM formats
-* [Binaries][releases] are available for Linux, macOS, and Windows
+* [Packages][releases] are available in Debian, RPM, and Alpine formats
+* [Binaries][releases] are available for Linux, macOS, Windows, FreeBSD, OpenBSD, and NetBSD
 
 Or just install it with `go`:
 
