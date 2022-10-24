@@ -560,14 +560,14 @@ alias please="gum input --password | sudo -nS"
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
 * [Twitter](https://twitter.com/charmcli)
-* [The Fediverse](https://mastodon.technology/@charm)
-* [Slack](https://charm.sh/slack)
+* [The Fediverse](https://mastodon.social/@charmcli)
+* [Discord](https://charm.sh/chat)
 
 ## License
 
 [MIT](https://github.com/charmbracelet/gum/raw/main/LICENSE)
 
----
+***
 
 Part of [Charm](https://charm.sh).
 
