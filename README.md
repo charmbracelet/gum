@@ -14,11 +14,7 @@ A tool for glamorous shell scripts. Leverage the power of
 Gloss](https://github.com/charmbracelet/lipgloss) in your scripts and aliases
 without writing any Go code!
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/demo.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/demo.gif">
-  <img alt="Shell running the ./demo.sh script" src="https://stuff.charm.sh/gum/demo.gif">
-</picture>
+<img alt="Shell running the ./demo.sh script" width="600" src="https://stuff.charm.sh/gum/demo.gif">
 
 The above example is running from a single shell script ([source](./examples/demo.sh)).
 
@@ -89,11 +85,7 @@ DESCRIPTION=$(gum write --placeholder "Details of this change (CTRL+D to finish)
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/commit_2.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/commit_2.gif">
-  <img alt="Running the ./examples/commit.sh script to commit to git" src="https://stuff.charm.sh/gum/commit_2.gif">
-</picture>
+<img alt="Running the ./examples/commit.sh script to commit to git" width="600" src="https://stuff.charm.sh/gum/commit_2.gif">
 
 ## Installation
 
@@ -178,11 +170,7 @@ export GUM_INPUT_WIDTH=80
 gum input
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/customization.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/customization.gif">
-  <img alt="Gum input displaying most customization options" src="https://stuff.charm.sh/gum/customization.gif">
-</picture>
+<img alt="Gum input displaying most customization options" width="600" src="https://stuff.charm.sh/gum/customization.gif">
 
 ## Interaction
 
@@ -200,11 +188,7 @@ Prompt for sensitive input with the `--password` flag.
 gum input --password > password.txt
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/input_1.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/input_1.gif">
-  <img src="https://stuff.charm.sh/gum/input_1.gif" alt="Shell running gum input typing Not much, you?" />
-</picture>
+<img src="https://stuff.charm.sh/gum/input_1.gif" width="600" alt="Shell running gum input typing Not much, you?" />
 
 #### Write
 
@@ -216,11 +200,7 @@ Note: `CTRL+D` and `esc` are used to complete text entry. `CTRL+C` will cancel.
 gum write > story.txt
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/write.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/write.gif">
-  <img src="https://stuff.charm.sh/gum/write.gif" alt="Shell running gum write typing a story" />
-</picture>
+<img src="https://stuff.charm.sh/gum/write.gif" width="600" alt="Shell running gum write typing a story" />
 
 #### Filter
 
@@ -233,11 +213,7 @@ echo Cherry >> flavors.txt
 cat flavors.txt | gum filter > selection.txt
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/filter.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/filter.gif">
-  <img src="https://stuff.charm.sh/gum/filter.gif" alt="Shell running gum filter on different bubble gum flavors" />
-</picture>
+<img src="https://stuff.charm.sh/gum/filter.gif" width="600" alt="Shell running gum filter on different bubble gum flavors" />
 
 You can also select multiple items with the `--limit` flag, which determines
 the maximum number of items that can be chosen.
@@ -277,11 +253,7 @@ echo "What do you need from the grocery store?"
 cat foods.txt | gum choose --no-limit
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/choose.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/choose.gif">
-  <img src="https://stuff.charm.sh/gum/choose.gif" alt="Shell running gum choose with numbers and gum flavors" />
-</picture>
+<img src="https://stuff.charm.sh/gum/choose.gif" width="600" alt="Shell running gum choose with numbers and gum flavors" />
 
 #### Confirm
 
@@ -292,11 +264,7 @@ Confirm whether to perform an action. Exits with code `0` (affirmative) or `1`
 gum confirm && rm file.txt || echo "File not removed"
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/confirm_2.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/confirm_2.gif">
-  <img src="https://stuff.charm.sh/gum/confirm_2.gif" alt="Shell running gum confirm" />
-</picture>
+<img src="https://stuff.charm.sh/gum/confirm_2.gif" width="600" alt="Shell running gum confirm" />
 
 #### File
 
@@ -306,11 +274,7 @@ Prompt the user to select a file from the file tree.
 EDITOR $(gum file $HOME)
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/file.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/file.gif">
-  <img src="https://stuff.charm.sh/gum/file.gif" alt="Shell running gum file" />
-</picture>
+<img src="https://stuff.charm.sh/gum/file.gif" width="600" alt="Shell running gum file" />
 
 #### Pager
 
@@ -320,11 +284,7 @@ Scroll through a long document with line numbers and a fully customizable viewpo
 gum pager < README.md
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/pager.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/pager.gif">
-  <img src="https://stuff.charm.sh/gum/pager.gif" alt="Shell running gum pager" />
-</picture>
+<img src="https://stuff.charm.sh/gum/pager.gif" width="600" alt="Shell running gum pager" />
 
 #### Spin
 
@@ -335,11 +295,7 @@ automatically stop after the given command exits.
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/spin.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/spin.gif">
-  <img src="https://stuff.charm.sh/gum/spin.gif" alt="Shell running gum spin while sleeping for 5 seconds" />
-</picture>
+<img src="https://stuff.charm.sh/gum/spin.gif" width="600" alt="Shell running gum spin while sleeping for 5 seconds" />
 
 Available spinner types include: `line`, `dot`, `minidot`, `jump`, `pulse`, `points`, `globe`, `moon`, `monkey`, `meter`, `hamburger`.
 
@@ -351,11 +307,7 @@ Select a row from some tabular data.
 gum table < flavors.csv | cut -d ',' -f 1
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/table.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/table.gif">
-  <img src="https://stuff.charm.sh/gum/table.gif" alt="Shell running gum table" />
-</picture>
+<img src="https://stuff.charm.sh/gum/table.gif" width="600" alt="Shell running gum table" />
 
 ## Styling
 
@@ -370,11 +322,7 @@ gum style \
 	'Bubble Gum (1¢)' 'So sweet and so fresh!'
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/style.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/style.gif">
-  <img src="https://stuff.charm.sh/gum/style.gif" alt="Bubble Gum, So sweet and so fresh!" />
-</picture>
+<img src="https://stuff.charm.sh/gum/style.gif" width="600" alt="Bubble Gum, So sweet and so fresh!" />
 
 ## Layout
 
@@ -397,11 +345,7 @@ BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
 gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/join.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/join.gif">
-  <img src="https://stuff.charm.sh/gum/join.gif" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
-</picture>
+<img src="https://stuff.charm.sh/gum/join.gif" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
 
 ## Format
 
@@ -428,11 +372,7 @@ For more information on template helpers, see the [Termenv
 docs](https://github.com/muesli/termenv#template-helpers). For a full list of
 named emojis see the [GitHub API](https://api.github.com/emojis).
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/format.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/format.gif">
-  <img src="https://stuff.charm.sh/gum/format.gif" alt="Running gum format for different types of formats" />
-</picture>
+<img src="https://stuff.charm.sh/gum/format.gif" width="600" alt="Running gum format for different types of formats" />
 
 ## Examples
 
@@ -475,11 +415,7 @@ SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session..."
 tmux switch-client -t $SESSION || tmux attach -t $SESSION
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/pick-tmux-session.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/pick-tmux-session.gif">
-<img src="https://stuff.charm.sh/gum/pick-tmux-session.gif" alt="Picking a tmux session with gum filter" />
-</picture>
+<img src="https://stuff.charm.sh/gum/pick-tmux-session.gif" width="600" alt="Picking a tmux session with gum filter" />
 
 #### Pick commit hash from your Git history
 
@@ -490,11 +426,7 @@ commit hash of the commit you select.
 git log --oneline | gum filter | cut -d' ' -f1 # | copy
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/pick-commit.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/pick-commit.gif">
-  <img src="https://stuff.charm.sh/gum/pick-commit.gif" alt="Picking a commit with gum filter" />
-</picture>
+<img src="https://stuff.charm.sh/gum/pick-commit.gif" width="600" alt="Picking a commit with gum filter" />
 
 #### Skate Passwords
 
@@ -506,11 +438,7 @@ Save all your passwords to [Skate](https://github.com/charmbracelet/skate) with 
 skate list -k | gum filter | xargs skate get
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://stuff.charm.sh/gum/skate-pass.gif">
-  <source media="(min-width: 600px)" width="600" srcset="https://stuff.charm.sh/gum/skate-pass.gif">
-  <img src="https://stuff.charm.sh/gum/skate-pass.gif" alt="Selecting a skate value with gum" />
-</picture>
+<img src="https://stuff.charm.sh/gum/skate-pass.gif" width="600" alt="Selecting a skate value with gum" />
 
 #### Choose packages to uninstall
 
