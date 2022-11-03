@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/table"
@@ -102,7 +101,11 @@ func (o Options) Run() error {
 	}
 
 	m := tm.(model)
-	fmt.Println(strings.Join([]string(m.selected), o.Separator))
+
+	w := csv.NewWriter(os.Stdout)
+	w.Comma = reader.Comma
+	w.Write([]string(m.selected))
+	w.Flush()
 
 	return nil
 }
