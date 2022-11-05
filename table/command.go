@@ -105,8 +105,7 @@ func (o Options) Run() error {
 
 	m := tm.(model)
 
-	err = writer.Write([]string(m.selected))
-	if err != nil {
+	if err = writer.Write([]string(m.selected)); err != nil {
 		return fmt.Errorf("failed to write selected row: %w", err)
 	}
 
