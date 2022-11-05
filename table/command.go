@@ -36,6 +36,9 @@ func (o Options) Run() error {
 	}
 	reader.Comma = separatorRunes[0]
 
+	writer := csv.NewWriter(os.Stdout)
+	writer.Comma = separatorRunes[0]
+
 	var columnNames []string
 	var err error
 	// If no columns are provided we'll use the first row of the CSV as the
@@ -102,10 +105,12 @@ func (o Options) Run() error {
 
 	m := tm.(model)
 
-	w := csv.NewWriter(os.Stdout)
-	w.Comma = reader.Comma
-	w.Write([]string(m.selected))
-	w.Flush()
+	err = writer.Write([]string(m.selected))
+	if err != nil {
+		return fmt.Errorf("failed to write selected row: %w", err)
+	}
+
+	writer.Flush()
 
 	return nil
 }
