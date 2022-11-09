@@ -8,6 +8,9 @@ type Options struct {
 
 	Limit             int          `help:"Maximum number of options to pick" default:"1" group:"Selection"`
 	NoLimit           bool         `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
+	AllowInput        bool         `help:"Allow the Input of additional value" group:"Selection"`
+	Placeholder       string       `help:"Placeholder value asking for user Input of additional value" default:"Type something..." env:"GUM_INPUT_PLACEHOLDER"`
+	Prompt            string       `help:"Prompt to display as extra List Item" default:"> " env:"GUM_INPUT_PROMPT"`
 	Height            int          `help:"Height of the list" default:"10" env:"GUM_CHOOSE_HEIGHT"`
 	Cursor            string       `help:"Prefix to show on item that corresponds to the cursor position" default:"> " env:"GUM_CHOOSE_CURSOR"`
 	CursorPrefix      string       `help:"Prefix to show on the cursor item (hidden if limit is 1)" default:"○ " env:"GUM_CHOOSE_CURSOR_PREFIX"`

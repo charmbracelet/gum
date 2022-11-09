@@ -11,28 +11,36 @@
 package choose
 
 import (
+	"github.com/charmbracelet/bubbles/textinput"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
 )
 
-type model struct {
-	height           int
-	cursor           string
-	selectedPrefix   string
-	unselectedPrefix string
-	cursorPrefix     string
-	items            []item
-	quitting         bool
-	index            int
-	limit            int
-	numSelected      int
-	paginator        paginator.Model
-	aborted          bool
+type InputStyle int64
 
+const (
+	SELECT InputStyle = iota
+	COMBOBOX
+	INPUT
+)
+
+type model struct {
+	height               int
+	cursor               string
+	selectedPrefix       string
+	unselectedPrefix     string
+	cursorPrefix         string
+	items                []item
+	quitting             bool
+	index                int
+	limit                int
+	numSelected          int
+	allowAdditionalValue bool
+	inputModel           InputModels
+	aborted              bool
 	// styles
 	cursorStyle       lipgloss.Style
 	itemStyle         lipgloss.Style
@@ -47,95 +55,120 @@ type item struct {
 func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		return m, nil
 
 	case tea.KeyMsg:
-		start, end := m.paginator.GetSliceBounds(len(m.items))
-		switch keypress := msg.String(); keypress {
-		case "down", "j", "ctrl+n":
-			m.index++
-			if m.index >= len(m.items) {
-				m.index = 0
-				m.paginator.Page = 0
-			}
-			if m.index >= end {
-				m.paginator.NextPage()
-			}
-		case "up", "k", "ctrl+p":
-			m.index--
-			if m.index < 0 {
+		if m.inputModel.inputState == SELECT {
+			start, end := m.inputModel.paginator.GetSliceBounds(len(m.items))
+			switch keypress := msg.String(); keypress {
+			case "down", "j", "ctrl+n":
+				m.index++
+				if m.index >= len(m.items) {
+					m.index = 0
+					m.inputModel.paginator.Page = 0
+				}
+				if m.index >= end {
+					m.inputModel.paginator.NextPage()
+				}
+			case "up", "k", "ctrl+p":
+				m.index--
+				if m.index < 0 {
+					m.index = len(m.items) - 1
+					m.inputModel.paginator.Page = m.inputModel.paginator.TotalPages - 1
+				}
+				if m.index < start {
+					m.inputModel.paginator.PrevPage()
+				}
+			case "right", "l", "ctrl+f":
+				m.index = clamp(m.index+m.height, 0, len(m.items)-1)
+				m.inputModel.paginator.NextPage()
+			case "left", "h", "ctrl+b":
+				m.index = clamp(m.index-m.height, 0, len(m.items)-1)
+				m.inputModel.paginator.PrevPage()
+			case "G":
 				m.index = len(m.items) - 1
-				m.paginator.Page = m.paginator.TotalPages - 1
-			}
-			if m.index < start {
-				m.paginator.PrevPage()
-			}
-		case "right", "l", "ctrl+f":
-			m.index = clamp(m.index+m.height, 0, len(m.items)-1)
-			m.paginator.NextPage()
-		case "left", "h", "ctrl+b":
-			m.index = clamp(m.index-m.height, 0, len(m.items)-1)
-			m.paginator.PrevPage()
-		case "G":
-			m.index = len(m.items) - 1
-			m.paginator.Page = m.paginator.TotalPages - 1
-		case "g":
-			m.index = 0
-			m.paginator.Page = 0
-		case "a":
-			if m.limit <= 1 {
-				break
-			}
-			for i := range m.items {
-				if m.numSelected >= m.limit {
-					break // do not exceed given limit
+				m.inputModel.paginator.Page = m.inputModel.paginator.TotalPages - 1
+			case "g":
+				m.index = 0
+				m.inputModel.paginator.Page = 0
+			case "a":
+				if m.limit <= 1 {
+					break
 				}
-				if m.items[i].selected {
-					continue
+				for i := range m.items {
+					if m.numSelected >= m.limit {
+						break // do not exceed given limit
+					}
+					if m.items[i].selected {
+						continue
+					}
+					m.items[i].selected = true
+					m.numSelected++
 				}
-				m.items[i].selected = true
-				m.numSelected++
-			}
-		case "A":
-			if m.limit <= 1 {
-				break
-			}
-			for i := range m.items {
-				m.items[i].selected = false
-			}
-			m.numSelected = 0
-		case "ctrl+c", "esc":
-			m.aborted = true
-			m.quitting = true
-			return m, tea.Quit
-		case " ", "tab", "x":
-			if m.limit == 1 {
-				break // no op
-			}
+			case "A":
+				if m.limit <= 1 {
+					break
+				}
+				for i := range m.items {
+					m.items[i].selected = false
+				}
+				m.numSelected = 0
+			case "ctrl+c", "esc":
+				m.aborted = true
+				m.quitting = true
+				return m, tea.Quit
+			case " ", "tab", "x":
+				if m.limit == 1 {
+					break // no op
+				}
 
-			if m.items[m.index].selected {
-				m.items[m.index].selected = false
-				m.numSelected--
-			} else if m.numSelected < m.limit {
-				m.items[m.index].selected = true
-				m.numSelected++
+				if m.items[m.index].selected {
+					m.items[m.index].selected = false
+					m.numSelected--
+				} else if m.numSelected < m.limit {
+					m.items[m.index].selected = true
+					m.numSelected++
+				}
+
+			case "enter":
+				if m.allowAdditionalValue && m.index == len(m.items)-1 {
+					m.inputModel.inputState = INPUT
+					m.inputModel.input.Focus()
+					m.inputModel.input.CharLimit = 30
+					return m, textinput.Blink
+				} else {
+					m.quitting = true
+					// If the user hasn't selected any items in a multi-select.
+					// Then we select the item that they have pressed enter on. If they
+					// have selected items, then we simply return them.
+					if m.numSelected < 1 {
+						m.items[m.index].selected = true
+					}
+					return m, tea.Quit
+				}
+
 			}
-		case "enter":
-			m.quitting = true
-			// If the user hasn't selected any items in a multi-select.
-			// Then we select the item that they have pressed enter on. If they
-			// have selected items, then we simply return them.
-			if m.numSelected < 1 {
-				m.items[m.index].selected = true
+		} else if m.inputModel.inputState == INPUT {
+			switch keypress := msg.String(); keypress {
+			case "enter":
+				value := m.inputModel.input.Value()
+				if len(value) == 0 {
+					m.inputModel.inputState = SELECT
+				} else {
+					m.items[m.index] = item{text: value, selected: true}
+					m.inputModel.inputState = SELECT
+					return m, tea.Quit
+				}
 			}
-			return m, tea.Quit
 		}
 	}
 
 	var cmd tea.Cmd
-	m.paginator, cmd = m.paginator.Update(msg)
+
+	cmd = m.inputModel.Update(msg)
 	return m, cmd
 }
 
@@ -144,9 +177,13 @@ func (m model) View() string {
 		return ""
 	}
 
+	if m.inputModel.inputState == INPUT {
+		return m.inputModel.input.View()
+	}
+
 	var s strings.Builder
 
-	start, end := m.paginator.GetSliceBounds(len(m.items))
+	start, end := m.inputModel.paginator.GetSliceBounds(len(m.items))
 	for i, item := range m.items[start:end] {
 		if i == m.index%m.height {
 			s.WriteString(m.cursorStyle.Render(m.cursor))
@@ -166,12 +203,12 @@ func (m model) View() string {
 		}
 	}
 
-	if m.paginator.TotalPages <= 1 {
+	if m.inputModel.paginator.TotalPages <= 1 {
 		return s.String()
 	}
 
-	s.WriteString(strings.Repeat("\n", m.height-m.paginator.ItemsOnPage(len(m.items))+1))
-	s.WriteString("  " + m.paginator.View())
+	s.WriteString(strings.Repeat("\n", m.height-m.inputModel.paginator.ItemsOnPage(len(m.items))+1))
+	s.WriteString("  " + m.inputModel.paginator.View())
 
 	return s.String()
 }

@@ -3,6 +3,7 @@ package choose
 import (
 	"errors"
 	"fmt"
+	"github.com/charmbracelet/bubbles/textinput"
 	"os"
 	"strings"
 
@@ -77,6 +78,11 @@ func (o Options) Run() error {
 		items[i] = item{text: option, selected: isSelected}
 	}
 
+	// Adding an extra Field which can be selected in order to enter a new value
+	if o.AllowInput {
+		items = append(items, item{text: o.Prompt, selected: false})
+	}
+
 	// Use the pagination model to display the current and total number of
 	// pages.
 	pager := paginator.New()
@@ -92,20 +98,24 @@ func (o Options) Run() error {
 	pager.UseJKKeys = false
 	pager.UsePgUpPgDownKeys = false
 
+	input := textinput.New()
+	input.Placeholder = o.Placeholder
+
 	tm, err := tea.NewProgram(model{
-		index:             startingIndex,
-		height:            o.Height,
-		cursor:            o.Cursor,
-		selectedPrefix:    o.SelectedPrefix,
-		unselectedPrefix:  o.UnselectedPrefix,
-		cursorPrefix:      o.CursorPrefix,
-		items:             items,
-		limit:             o.Limit,
-		paginator:         pager,
-		cursorStyle:       o.CursorStyle.ToLipgloss(),
-		itemStyle:         o.ItemStyle.ToLipgloss(),
-		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
-		numSelected:       currentSelected,
+		index:                startingIndex,
+		height:               o.Height,
+		cursor:               o.Cursor,
+		selectedPrefix:       o.SelectedPrefix,
+		unselectedPrefix:     o.UnselectedPrefix,
+		cursorPrefix:         o.CursorPrefix,
+		items:                items,
+		limit:                o.Limit,
+		inputModel:           InputModels{paginator: pager, input: input, inputState: SELECT},
+		cursorStyle:          o.CursorStyle.ToLipgloss(),
+		itemStyle:            o.ItemStyle.ToLipgloss(),
+		selectedItemStyle:    o.SelectedItemStyle.ToLipgloss(),
+		numSelected:          currentSelected,
+		allowAdditionalValue: o.AllowInput,
 	}, tea.WithOutput(os.Stderr)).Run()
 
 	if err != nil {
