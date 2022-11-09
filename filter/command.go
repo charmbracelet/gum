@@ -102,7 +102,7 @@ func (o Options) Run() error {
 		fmt.Println(m.matches[m.cursor].Str)
 	}
 
-	if o.NoMatchNeeded && len(m.textinput.Value()) != 0 && len(m.matches) == 0 {
+	if !o.Strict && len(m.textinput.Value()) != 0 && len(m.matches) == 0 {
 		fmt.Println(m.textinput.Value())
 	}
 	return nil
