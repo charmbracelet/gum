@@ -87,7 +87,6 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to run filter: %w", err)
 	}
 	m := tm.(model)
-
 	if m.aborted {
 		return exit.ErrAborted
 	}
@@ -103,6 +102,9 @@ func (o Options) Run() error {
 		fmt.Println(m.matches[m.cursor].Str)
 	}
 
+	if o.NoMatchNeeded && len(m.textinput.Value()) != 0 {
+		fmt.Println(m.textinput.Value())
+	}
 	return nil
 }
 
