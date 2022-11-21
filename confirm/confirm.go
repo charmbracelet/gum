@@ -20,7 +20,8 @@ import (
 
 type selectionType int
 
-// Type of user selection
+// Type of user selection.:w
+
 const (
 	Confirmed selectionType = iota
 	Negative

@@ -10,6 +10,8 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
+const CTRL_C = 130
+
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
@@ -54,7 +56,8 @@ func (o Options) Run() error {
 	case Negative:
 		os.Exit(1)
 	case Cancel:
-		os.Exit(130)
+
+		os.Exit(CTRL_C)
 	}
 
 	return nil
