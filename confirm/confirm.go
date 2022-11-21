@@ -18,15 +18,22 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type model struct {
-	prompt      string
-	affirmative string
-	negative    string
-	quitting    bool
-	hasTimeout  bool
-	timeout     time.Duration
+type Confirmation int
 
-	confirmation bool
+const (
+	Confirmed Confirmation = iota
+	Negative
+	Cancel
+)
+
+type model struct {
+	prompt     string
+	options    []string
+	quitting   bool
+	hasTimeout bool
+	timeout    time.Duration
+
+	selectedOption Confirmation
 
 	// styles
 	promptStyle     lipgloss.Style
@@ -51,34 +58,52 @@ func (m model) Init() tea.Cmd {
 	return nil
 }
 
+func (m *model) NextOption() {
+	m.selectedOption++
+	if (int)(m.selectedOption) >= len(m.options) {
+		m.selectedOption = 0
+	}
+}
+
+func (m *model) PrevOption() {
+	m.selectedOption--
+	if (int)(m.selectedOption) < 0 {
+		m.selectedOption = Confirmation(len(m.options) - 1)
+	}
+}
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		return m, nil
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc", "q", "n", "N":
-			m.confirmation = false
+		case "esc", "q", "n", "N":
+			if m.options[Negative] != "" {
+				m.selectedOption = Negative
+				m.quitting = true
+			}
+		case "ctrl+c":
+			m.selectedOption = Cancel
 			m.quitting = true
 			return m, tea.Quit
-		case "left", "h", "ctrl+p", "tab",
-			"right", "l", "ctrl+n", "shift+tab":
-			if m.negative == "" {
-				break
-			}
-			m.confirmation = !m.confirmation
+		case "right", "l", "ctrl+p", "tab":
+			m.NextOption()
+		case
+			"left", "h", "ctrl+n", "shift+tab":
+			m.PrevOption()
 		case "enter":
 			m.quitting = true
 			return m, tea.Quit
 		case "y", "Y":
 			m.quitting = true
-			m.confirmation = true
+			m.selectedOption = Confirmed
 			return m, tea.Quit
 		}
 	case tickMsg:
 		if m.timeout <= 0 {
 			m.quitting = true
-			m.confirmation = false
+			m.selectedOption = Negative
 			return m, tea.Quit
 		}
 		m.timeout -= tickInterval
@@ -92,26 +117,22 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg, timeout string
+	var timeout string
 
 	if m.hasTimeout {
 		timeout = fmt.Sprintf(" (%d)", max(0, int(m.timeout.Seconds())))
 	}
 
-	if m.confirmation {
-		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(m.negative + timeout)
-	} else {
-		aff = m.unselectedStyle.Render(m.affirmative)
-		neg = m.selectedStyle.Render(m.negative + timeout)
+	var renderedOptions []string
+	for i, value := range m.options {
+		if (int)(m.selectedOption) == i {
+			renderedOptions = append(renderedOptions, m.selectedStyle.Render(value))
+		} else {
+			renderedOptions = append(renderedOptions, m.unselectedStyle.Render(value+timeout))
+		}
 	}
 
-	// If the option is intentionally empty, do not show it.
-	if m.negative == "" {
-		neg = ""
-	}
-
-	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
+	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, renderedOptions...))
 }
 
 func max(a, b int) int {

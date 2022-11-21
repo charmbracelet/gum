@@ -13,10 +13,29 @@ import (
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
+	var (
+		options        []string
+		selectedOption Confirmation
+	)
+	// set options
+	options = append(options, o.Affirmative)
+	if o.Negative != "" {
+		options = append(options, o.Negative)
+	}
+	if o.Canceled != "" && o.WithCancel {
+		options = append(options, o.Canceled)
+	}
+
+	// what is default
+	if !o.Default && o.Negative != "" {
+		selectedOption = Negative
+	} else {
+		selectedOption = Confirmed
+	}
+
 	m, err := tea.NewProgram(model{
-		affirmative:     o.Affirmative,
-		negative:        o.Negative,
-		confirmation:    o.Default,
+		options:         options,
+		selectedOption:  selectedOption,
 		timeout:         o.Timeout,
 		hasTimeout:      o.Timeout > 0,
 		prompt:          o.Prompt,
@@ -29,10 +48,13 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to run confirm: %w", err)
 	}
 
-	if m.(model).confirmation {
+	switch m.(model).selectedOption {
+	case Confirmed:
 		os.Exit(0)
-	} else {
+	case Negative:
 		os.Exit(1)
+	case Cancel:
+		os.Exit(130)
 	}
 
 	return nil

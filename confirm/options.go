@@ -10,8 +10,10 @@ import (
 type Options struct {
 	Affirmative string        `help:"The title of the affirmative action" default:"Yes"`
 	Negative    string        `help:"The title of the negative action" default:"No"`
-	Default     bool          `help:"Default confirmation action" default:"true"`
-	Timeout     time.Duration `help:"Timeout for confirmation" default:"0" env:"GUM_CONFIRM_TIMEOUT"`
+	Canceled    string        `help:"The title of the canceled action" default:"Cancel"`
+	Default     bool          `help:"Default selectedOption action" default:"true"`
+	WithCancel  bool          `help:"Display Cancel option" default:"false"`
+	Timeout     time.Duration `help:"Timeout for selectedOption" default:"0" env:"GUM_CONFIRM_TIMEOUT"`
 	Prompt      string        `arg:"" help:"Prompt to display." default:"Are you sure?"`
 	PromptStyle style.Styles  `embed:"" prefix:"prompt." help:"The style of the prompt" set:"defaultMargin=1 0 0 0" envprefix:"GUM_CONFIRM_PROMPT_"`
 	//nolint:staticcheck
