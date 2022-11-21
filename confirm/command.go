@@ -10,8 +10,8 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
-// Ctrl_c Default Return code in case of ctrl-c by user.
-const Ctrl_c = 130
+// CtrlC Default Return code in case of ctrl-c by user.
+const CtrlC = 130
 
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
@@ -58,7 +58,7 @@ func (o Options) Run() error {
 		os.Exit(1)
 	case Cancel:
 
-		os.Exit(Ctrl_c)
+		os.Exit(CtrlC)
 	}
 
 	return nil
