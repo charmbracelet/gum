@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
+// CTRL_C Default Return code in case of ctrl-c by user.
 const CTRL_C = 130
 
 // Run provides a shell script interface for prompting a user to confirm an
