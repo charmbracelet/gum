@@ -24,7 +24,11 @@ func (o Options) Run() error {
 	// set options
 	options = append(options, o.Affirmative)
 	options = append(options, o.Negative)
-	options = append(options, o.Canceled)
+	if o.WithCancel {
+		options = append(options, o.Canceled)
+	} else {
+		options = append(options, "")
+	}
 
 	// what is default
 	theDefault = o.Default
