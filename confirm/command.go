@@ -15,7 +15,7 @@ import (
 func (o Options) Run() error {
 	var (
 		options        []string
-		selectedOption Confirmation
+		selectedOption selectionType
 	)
 	// set options
 	options = append(options, o.Affirmative)

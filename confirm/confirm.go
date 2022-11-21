@@ -18,10 +18,10 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type Confirmation int
+type selectionType int
 
 const (
-	Confirmed Confirmation = iota
+	Confirmed selectionType = iota
 	Negative
 	Cancel
 )
@@ -33,7 +33,7 @@ type model struct {
 	hasTimeout bool
 	timeout    time.Duration
 
-	selectedOption Confirmation
+	selectedOption selectionType
 
 	// styles
 	promptStyle     lipgloss.Style
@@ -68,7 +68,7 @@ func (m *model) NextOption() {
 func (m *model) PrevOption() {
 	m.selectedOption--
 	if (int)(m.selectedOption) < 0 {
-		m.selectedOption = Confirmation(len(m.options) - 1)
+		m.selectedOption = selectionType(len(m.options) - 1)
 	}
 }
 
