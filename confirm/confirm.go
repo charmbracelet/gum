@@ -34,7 +34,8 @@ type model struct {
 	hasTimeout bool
 	timeout    time.Duration
 
-	selectedOption selectionType
+	selectedOption   selectionType
+	defaultSelection bool
 
 	// styles
 	promptStyle     lipgloss.Style
@@ -60,16 +61,26 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m *model) NextOption() {
-	m.selectedOption++
-	if (int)(m.selectedOption) >= len(m.options) {
-		m.selectedOption = 0
+	for {
+		m.selectedOption++
+		if (int)(m.selectedOption) >= len(m.options) {
+			m.selectedOption = 0
+		}
+		if m.options[m.selectedOption] != "" {
+			break
+		}
 	}
 }
 
 func (m *model) PrevOption() {
-	m.selectedOption--
-	if (int)(m.selectedOption) < 0 {
-		m.selectedOption = selectionType(len(m.options) - 1)
+	for {
+		m.selectedOption--
+		if (int)(m.selectedOption) < 0 {
+			m.selectedOption = selectionType(len(m.options) - 1)
+		}
+		if m.options[m.selectedOption] != "" {
+			break
+		}
 	}
 }
 
@@ -104,7 +115,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tickMsg:
 		if m.timeout <= 0 {
 			m.quitting = true
-			m.selectedOption = Negative
+			if !m.defaultSelection && m.options[Negative] != "" {
+				m.selectedOption = Negative
+			} else {
+				m.selectedOption = Confirmed
+			}
 			return m, tea.Quit
 		}
 		m.timeout -= tickInterval
@@ -126,10 +141,18 @@ func (m model) View() string {
 
 	var renderedOptions []string
 	for i, value := range m.options {
+		if m.options[i] == "" {
+			continue
+		}
+		if m.hasTimeout {
+			if (m.defaultSelection && i == (int)(Confirmed)) || (!m.defaultSelection && i == (int)(Negative)) {
+				value = value + timeout
+			}
+		}
 		if (int)(m.selectedOption) == i {
 			renderedOptions = append(renderedOptions, m.selectedStyle.Render(value))
 		} else {
-			renderedOptions = append(renderedOptions, m.unselectedStyle.Render(value+timeout))
+			renderedOptions = append(renderedOptions, m.unselectedStyle.Render(value))
 		}
 	}
 

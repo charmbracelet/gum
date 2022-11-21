@@ -19,32 +19,32 @@ func (o Options) Run() error {
 	var (
 		options        []string
 		selectedOption selectionType
+		theDefault     bool
 	)
 	// set options
 	options = append(options, o.Affirmative)
-	if o.Negative != "" {
-		options = append(options, o.Negative)
-	}
-	if o.Canceled != "" && o.WithCancel {
-		options = append(options, o.Canceled)
-	}
+	options = append(options, o.Negative)
+	options = append(options, o.Canceled)
 
 	// what is default
+	theDefault = o.Default
 	if !o.Default && o.Negative != "" {
 		selectedOption = Negative
 	} else {
 		selectedOption = Confirmed
+		theDefault = true
 	}
 
 	m, err := tea.NewProgram(model{
-		options:         options,
-		selectedOption:  selectedOption,
-		timeout:         o.Timeout,
-		hasTimeout:      o.Timeout > 0,
-		prompt:          o.Prompt,
-		selectedStyle:   o.SelectedStyle.ToLipgloss(),
-		unselectedStyle: o.UnselectedStyle.ToLipgloss(),
-		promptStyle:     o.PromptStyle.ToLipgloss(),
+		options:          options,
+		selectedOption:   selectedOption,
+		timeout:          o.Timeout,
+		hasTimeout:       o.Timeout > 0,
+		prompt:           o.Prompt,
+		defaultSelection: theDefault,
+		selectedStyle:    o.SelectedStyle.ToLipgloss(),
+		unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
+		promptStyle:      o.PromptStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr)).Run()
 
 	if err != nil {
@@ -57,7 +57,6 @@ func (o Options) Run() error {
 	case Negative:
 		os.Exit(1)
 	case Cancel:
-
 		os.Exit(CtrlC)
 	}
 
