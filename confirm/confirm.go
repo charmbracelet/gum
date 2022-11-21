@@ -20,6 +20,7 @@ import (
 
 type selectionType int
 
+// Type of user selection
 const (
 	Confirmed selectionType = iota
 	Negative
