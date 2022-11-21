@@ -94,6 +94,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.options[Negative] != "" {
 				m.selectedOption = Negative
 				m.quitting = true
+				return m, tea.Quit
 			}
 		case "ctrl+c":
 			m.selectedOption = Cancel
