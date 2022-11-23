@@ -3,9 +3,10 @@ package choose
 import (
 	"errors"
 	"fmt"
-	"github.com/charmbracelet/bubbles/textinput"
 	"os"
 	"strings"
+
+	"github.com/charmbracelet/bubbles/textinput"
 
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/paginator"
