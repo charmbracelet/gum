@@ -47,11 +47,6 @@ type item struct {
 
 func (m model) Init() tea.Cmd { return nil }
 
-func (m *model) handleSelectKeys(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
-
-	return nil, nil
-}
-
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {

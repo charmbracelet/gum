@@ -8,8 +8,8 @@ import (
 
 type inputStyle int64
 
-// SELECT User is selecting one of the options
-// INPUT User enters into input field
+// SELECT User is selecting one of the options.
+// INPUT User enters into input field.
 const (
 	SELECT inputStyle = iota
 	INPUT
