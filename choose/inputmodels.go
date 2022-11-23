@@ -6,20 +6,22 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type InputType int
+type inputStyle int64
 
+// SELECT User is selecting one of the options
+// INPUT User enters into input field
 const (
-	Select InputType = iota
-	Input
+	SELECT inputStyle = iota
+	INPUT
 )
 
-type InputModels struct {
-	inputState InputStyle
+type inputModels struct {
+	inputState inputStyle
 	paginator  paginator.Model
 	input      textinput.Model
 }
 
-func (m *InputModels) Update(msg tea.Msg) tea.Cmd {
+func (m *inputModels) Update(msg tea.Msg) tea.Cmd {
 	var cmd tea.Cmd
 	switch m.inputState {
 	case SELECT:

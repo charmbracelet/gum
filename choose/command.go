@@ -111,7 +111,7 @@ func (o Options) Run() error {
 		cursorPrefix:         o.CursorPrefix,
 		items:                items,
 		limit:                o.Limit,
-		inputModel:           InputModels{paginator: pager, input: input, inputState: SELECT},
+		inputModel:           inputModels{paginator: pager, input: input, inputState: SELECT},
 		cursorStyle:          o.CursorStyle.ToLipgloss(),
 		itemStyle:            o.ItemStyle.ToLipgloss(),
 		selectedItemStyle:    o.SelectedItemStyle.ToLipgloss(),

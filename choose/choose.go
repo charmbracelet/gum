@@ -20,14 +20,6 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
-type InputStyle int64
-
-const (
-	SELECT InputStyle = iota
-	COMBOBOX
-	INPUT
-)
-
 type model struct {
 	height               int
 	cursor               string
@@ -40,7 +32,7 @@ type model struct {
 	limit                int
 	numSelected          int
 	allowAdditionalValue bool
-	inputModel           InputModels
+	inputModel           inputModels
 	aborted              bool
 	// styles
 	cursorStyle       lipgloss.Style
@@ -54,6 +46,11 @@ type item struct {
 }
 
 func (m model) Init() tea.Cmd { return nil }
+
+func (m *model) handleSelectKeys(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+
+	return nil, nil
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
@@ -140,17 +137,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.inputModel.input.Focus()
 					m.inputModel.input.CharLimit = 30
 					return m, textinput.Blink
-				} else {
-					m.quitting = true
-					// If the user hasn't selected any items in a multi-select.
-					// Then we select the item that they have pressed enter on. If they
-					// have selected items, then we simply return them.
-					if m.numSelected < 1 {
-						m.items[m.index].selected = true
-					}
-					return m, tea.Quit
 				}
-
+				m.quitting = true
+				// If the user hasn't selected any items in a multi-select.
+				// Then we select the item that they have pressed enter on. If they
+				// have selected items, then we simply return them.
+				if m.numSelected < 1 {
+					m.items[m.index].selected = true
+				}
+				return m, tea.Quit
 			}
 		} else if m.inputModel.inputState == INPUT {
 			switch keypress := msg.String(); keypress {
