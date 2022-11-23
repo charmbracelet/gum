@@ -47,6 +47,97 @@ type item struct {
 
 func (m model) Init() tea.Cmd { return nil }
 
+func (m *model) handleSelectKeys(msg tea.KeyMsg) tea.Cmd {
+	start, end := m.inputModel.paginator.GetSliceBounds(len(m.items))
+	switch keypress := msg.String(); keypress {
+	case "down", "j", "ctrl+n":
+		m.index++
+		if m.index >= len(m.items) {
+			m.index = 0
+			m.inputModel.paginator.Page = 0
+		}
+		if m.index >= end {
+			m.inputModel.paginator.NextPage()
+		}
+	case "up", "k", "ctrl+p":
+		m.index--
+		if m.index < 0 {
+			m.index = len(m.items) - 1
+			m.inputModel.paginator.Page = m.inputModel.paginator.TotalPages - 1
+		}
+		if m.index < start {
+			m.inputModel.paginator.PrevPage()
+		}
+	case "right", "l", "ctrl+f":
+		m.index = clamp(m.index+m.height, 0, len(m.items)-1)
+		m.inputModel.paginator.NextPage()
+	case "left", "h", "ctrl+b":
+		m.index = clamp(m.index-m.height, 0, len(m.items)-1)
+		m.inputModel.paginator.PrevPage()
+	case "G":
+		m.index = len(m.items) - 1
+		m.inputModel.paginator.Page = m.inputModel.paginator.TotalPages - 1
+	case "g":
+		m.index = 0
+		m.inputModel.paginator.Page = 0
+	case "a":
+		if m.limit <= 1 {
+			break
+		}
+		for i := range m.items {
+			if m.numSelected >= m.limit {
+				break // do not exceed given limit
+			}
+			if m.items[i].selected {
+				continue
+			}
+			m.items[i].selected = true
+			m.numSelected++
+		}
+	case "A":
+		if m.limit <= 1 {
+			break
+		}
+		for i := range m.items {
+			m.items[i].selected = false
+		}
+		m.numSelected = 0
+	case "ctrl+c", "esc":
+		m.aborted = true
+		m.quitting = true
+		return tea.Quit
+	case " ", "tab", "x":
+		if m.limit == 1 {
+			break // no op
+		}
+
+		if m.items[m.index].selected {
+			m.items[m.index].selected = false
+			m.numSelected--
+		} else if m.numSelected < m.limit {
+			m.items[m.index].selected = true
+			m.numSelected++
+		}
+
+	case "enter":
+		if m.allowAdditionalValue && m.index == len(m.items)-1 {
+			m.inputModel.inputState = INPUT
+			m.inputModel.input.Focus()
+			m.inputModel.input.CharLimit = 30
+			return textinput.Blink
+		}
+		m.quitting = true
+		// If the user hasn't selected any items in a multi-select.
+		// Then we select the item that they have pressed enter on. If they
+		// have selected items, then we simply return them.
+		if m.numSelected < 1 {
+			m.items[m.index].selected = true
+		}
+		return tea.Quit
+	}
+	return nil
+}
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
@@ -55,92 +146,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		if m.inputModel.inputState == SELECT {
-			start, end := m.inputModel.paginator.GetSliceBounds(len(m.items))
-			switch keypress := msg.String(); keypress {
-			case "down", "j", "ctrl+n":
-				m.index++
-				if m.index >= len(m.items) {
-					m.index = 0
-					m.inputModel.paginator.Page = 0
-				}
-				if m.index >= end {
-					m.inputModel.paginator.NextPage()
-				}
-			case "up", "k", "ctrl+p":
-				m.index--
-				if m.index < 0 {
-					m.index = len(m.items) - 1
-					m.inputModel.paginator.Page = m.inputModel.paginator.TotalPages - 1
-				}
-				if m.index < start {
-					m.inputModel.paginator.PrevPage()
-				}
-			case "right", "l", "ctrl+f":
-				m.index = clamp(m.index+m.height, 0, len(m.items)-1)
-				m.inputModel.paginator.NextPage()
-			case "left", "h", "ctrl+b":
-				m.index = clamp(m.index-m.height, 0, len(m.items)-1)
-				m.inputModel.paginator.PrevPage()
-			case "G":
-				m.index = len(m.items) - 1
-				m.inputModel.paginator.Page = m.inputModel.paginator.TotalPages - 1
-			case "g":
-				m.index = 0
-				m.inputModel.paginator.Page = 0
-			case "a":
-				if m.limit <= 1 {
-					break
-				}
-				for i := range m.items {
-					if m.numSelected >= m.limit {
-						break // do not exceed given limit
-					}
-					if m.items[i].selected {
-						continue
-					}
-					m.items[i].selected = true
-					m.numSelected++
-				}
-			case "A":
-				if m.limit <= 1 {
-					break
-				}
-				for i := range m.items {
-					m.items[i].selected = false
-				}
-				m.numSelected = 0
-			case "ctrl+c", "esc":
-				m.aborted = true
-				m.quitting = true
-				return m, tea.Quit
-			case " ", "tab", "x":
-				if m.limit == 1 {
-					break // no op
-				}
-
-				if m.items[m.index].selected {
-					m.items[m.index].selected = false
-					m.numSelected--
-				} else if m.numSelected < m.limit {
-					m.items[m.index].selected = true
-					m.numSelected++
-				}
-
-			case "enter":
-				if m.allowAdditionalValue && m.index == len(m.items)-1 {
-					m.inputModel.inputState = INPUT
-					m.inputModel.input.Focus()
-					m.inputModel.input.CharLimit = 30
-					return m, textinput.Blink
-				}
-				m.quitting = true
-				// If the user hasn't selected any items in a multi-select.
-				// Then we select the item that they have pressed enter on. If they
-				// have selected items, then we simply return them.
-				if m.numSelected < 1 {
-					m.items[m.index].selected = true
-				}
-				return m, tea.Quit
+			if c := m.handleSelectKeys(msg); c != nil {
+				return m, c
 			}
 		} else if m.inputModel.inputState == INPUT {
 			switch keypress := msg.String(); keypress {
