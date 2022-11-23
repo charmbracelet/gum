@@ -6,16 +6,27 @@
 package style
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/alecthomas/kong"
+	"github.com/charmbracelet/gum/internal/stdin"
 )
 
 // Run provides a shell script interface for the Lip Gloss styling.
 // https://github.com/charmbracelet/lipgloss
 func (o Options) Run() error {
-	text := strings.Join(o.Text, "\n")
+	var text string
+	if len(o.Text) > 0 {
+		text = strings.Join(o.Text, "\n")
+	} else {
+		text, _ = stdin.Read()
+		if text == "" {
+			return errors.New("no input provided, see `gum style --help`")
+		}
+		text = strings.TrimSuffix(text, "\n")
+	}
 	fmt.Println(o.Style.ToLipgloss().Render(text))
 	return nil
 }
