@@ -20,8 +20,8 @@ github.com/aymerick/douceur v0.2.0/go.mod h1:wlT5vV2O3h55X9m7iVYN0TBM0NH/MmbLnd3
 github.com/charmbracelet/bubbles v0.14.1-0.20221006154229-d1775121146a h1:/prXWlDbR4CWT1FaTvkU8WhLfpZv3eOrN9PtL8oDdDU=
 github.com/charmbracelet/bubbles v0.14.1-0.20221006154229-d1775121146a/go.mod h1:5rZgJTHmgWISQnxnzzIJtQt3GC1bfJfNmr4SEtRDtTQ=
 github.com/charmbracelet/bubbletea v0.22.1/go.mod h1:8/7hVvbPN6ZZPkczLiB8YpLkLJ0n7DMho5Wvfd2X1C0=
-github.com/charmbracelet/bubbletea v0.22.2-0.20221016150627-cbe309d6241c h1:pIUO+t+apSfbM0QBWokE8TeeE2WkEkMqKq2LNjhS9d8=
-github.com/charmbracelet/bubbletea v0.22.2-0.20221016150627-cbe309d6241c/go.mod h1:JAfGK/3/pPKHTnAS8JIE2u9f61BjWTQY57RbT25aMXU=
+github.com/charmbracelet/bubbletea v0.23.1 h1:CYdteX1wCiCzKNUlwm25ZHBIc1GXlYFyUIte8WPvhck=
+github.com/charmbracelet/bubbletea v0.23.1/go.mod h1:JAfGK/3/pPKHTnAS8JIE2u9f61BjWTQY57RbT25aMXU=
 github.com/charmbracelet/glamour v0.5.1-0.20220727184942-e70ff2d969da h1:FGz53GWQRiKQ/5xUsoCCkewSQIC7u81Scaxx2nUy3nM=
 github.com/charmbracelet/glamour v0.5.1-0.20220727184942-e70ff2d969da/go.mod h1:HXz79SMFnF9arKxqeoHWxmo1BhplAH7wehlRhKQIL94=
 github.com/charmbracelet/harmonica v0.2.0/go.mod h1:KSri/1RMQOZLbw7AHqgcBycp8pgJnQMYYT8QZRqZ1Ao=
