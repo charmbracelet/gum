@@ -19,6 +19,7 @@ type model struct {
 	helpStyle       lipgloss.Style
 	showLineNumbers bool
 	lineNumberStyle lipgloss.Style
+	softWrap        bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -32,12 +33,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.viewport.Width = msg.Width
 		textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
 		var text strings.Builder
+
+		// Determine max width of a line
+		maxLineWidth := m.viewport.Width
+		if m.softWrap {
+			vpStyle := m.viewport.Style
+			maxLineWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
+			if m.showLineNumbers {
+				maxLineWidth -= len("     │ ")
+			}
+		}
+
 		for i, line := range strings.Split(m.content, "\n") {
 			line = strings.ReplaceAll(line, "\t", "    ")
 			if m.showLineNumbers {
 				text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 			}
-			text.WriteString(textStyle.Render(runewidth.Truncate(line, m.viewport.Width, "")))
+			for m.softWrap && len(line) > maxLineWidth {
+				truncatedLine := runewidth.Truncate(line, maxLineWidth, "")
+				text.WriteString(textStyle.Render(truncatedLine))
+				text.WriteString("\n")
+				if m.showLineNumbers {
+					text.WriteString(m.lineNumberStyle.Render("     │ "))
+				}
+				line = strings.Replace(line, truncatedLine, "", 1)
+			}
+			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
 			text.WriteString("\n")
 		}
 
