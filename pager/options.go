@@ -10,4 +10,5 @@ type Options struct {
 	Content         string       `arg:"" optional:"" help:"Display content to scroll"`
 	ShowLineNumbers bool         `help:"Show line numbers" default:"true"`
 	LineNumberStyle style.Styles `embed:"" prefix:"line-number." help:"Style the line numbers" set:"defaultForeground=237" envprefix:"GUM_PAGER_LINE_NUMBER_"`
+	SoftWrap        bool         `help:"Soft wrap lines" default:"false"`
 }
