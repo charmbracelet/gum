@@ -7,7 +7,7 @@ require (
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
 	github.com/charmbracelet/bubbles v0.14.1-0.20221006154229-d1775121146a
-	github.com/charmbracelet/bubbletea v0.22.2-0.20221016150627-cbe309d6241c
+	github.com/charmbracelet/bubbletea v0.23.1
 	github.com/charmbracelet/glamour v0.5.1-0.20220727184942-e70ff2d969da
 	github.com/charmbracelet/lipgloss v0.6.1-0.20220930064401-ae7c84f7b158
 	github.com/dlclark/regexp2 v1.7.0 // indirect
