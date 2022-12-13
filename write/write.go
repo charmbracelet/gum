@@ -36,6 +36,7 @@ func (m model) View() string {
 
 	return m.textarea.View()
 }
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
