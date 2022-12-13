@@ -23,6 +23,7 @@ type model struct {
 	affirmative string
 	negative    string
 	quitting    bool
+	aborted     bool
 	hasTimeout  bool
 	timeout     time.Duration
 
@@ -57,7 +58,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc", "q", "n", "N":
+		case "ctrl+c", "esc":
+			m.confirmation = false
+			m.aborted = true
+			m.quitting = true
+			return m, tea.Quit
+		case "q", "n", "N":
 			m.confirmation = false
 			m.quitting = true
 			return m, tea.Quit
