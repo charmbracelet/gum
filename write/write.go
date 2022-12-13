@@ -41,11 +41,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c":
+		case "ctrl+c", "esc":
 			m.aborted = true
 			m.quitting = true
 			return m, tea.Quit
-		case "esc", "ctrl+d":
+		case "ctrl+d":
 			m.quitting = true
 			return m, tea.Quit
 		}
