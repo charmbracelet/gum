@@ -12,4 +12,6 @@ type Options struct {
 	CharLimit   int          `help:"Maximum value length (0 for no limit)" default:"400"`
 	Width       int          `help:"Input width" default:"40" env:"GUM_INPUT_WIDTH"`
 	Password    bool         `help:"Mask input characters" default:"false"`
+	Header      string       `help:"Header value" default:"" env:"GUM_INPUT_HEADER"`
+	HeaderStyle style.Styles `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_INPUT_HEADER_"`
 }

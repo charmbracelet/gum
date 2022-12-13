@@ -37,8 +37,10 @@ func (o Options) Run() error {
 	}
 
 	p := tea.NewProgram(model{
-		textinput: i,
-		aborted:   false,
+		textinput:   i,
+		aborted:     false,
+		header:      o.Header,
+		headerStyle: o.HeaderStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
 	if err != nil {
