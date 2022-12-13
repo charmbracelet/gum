@@ -33,7 +33,7 @@ func (o Options) Run() error {
 
 	var choices []string
 	if input, _ := stdin.Read(); input != "" {
-		input = strings.TrimSpace(input)
+		input = strings.TrimSuffix(input, "\n")
 		if input != "" {
 			choices = strings.Split(input, "\n")
 		}

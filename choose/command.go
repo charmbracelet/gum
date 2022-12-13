@@ -29,7 +29,7 @@ func (o Options) Run() error {
 		if input == "" {
 			return errors.New("no options provided, see `gum choose --help`")
 		}
-		o.Options = strings.Split(strings.TrimSpace(input), "\n")
+		o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
 	}
 
 	// We don't need to display prefixes if we are only picking one option.
