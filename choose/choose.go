@@ -54,7 +54,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		start, end := m.paginator.GetSliceBounds(len(m.items))
 		switch keypress := msg.String(); keypress {
-		case "down", "j", "ctrl+n":
+		case "down", "j", "ctrl+j", "ctrl+n":
 			m.index++
 			if m.index >= len(m.items) {
 				m.index = 0
@@ -63,7 +63,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.index >= end {
 				m.paginator.NextPage()
 			}
-		case "up", "k", "ctrl+p":
+		case "up", "k", "ctrl+k", "ctrl+p":
 			m.index--
 			if m.index < 0 {
 				m.index = len(m.items) - 1
