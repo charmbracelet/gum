@@ -29,7 +29,9 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to run confirm: %w", err)
 	}
 
-	if m.(model).confirmation {
+	if m.(model).aborted {
+		os.Exit(130)
+	} else if m.(model).confirmation {
 		os.Exit(0)
 	} else {
 		os.Exit(1)
