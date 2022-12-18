@@ -123,6 +123,9 @@ apk add gum
 
 # Android (via termux)
 pkg install gum
+
+# Windows (via Scoop)
+scoop install charm-gum
 ```
 
 Or download it:
