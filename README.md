@@ -103,6 +103,9 @@ nix-env -iA nixpkgs.gum
 # Or, with flakes
 nix run "github:charmbracelet/gum" -- --help
 
+# Windows (with Scoop)
+scoop install charm-gum
+
 # Debian/Ubuntu
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
