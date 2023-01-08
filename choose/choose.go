@@ -11,9 +11,10 @@
 package choose
 
 import (
-	"github.com/charmbracelet/gum/timeout"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"

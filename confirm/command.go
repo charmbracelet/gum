@@ -2,8 +2,9 @@ package confirm
 
 import (
 	"fmt"
-	"github.com/charmbracelet/gum/internal/exit"
 	"os"
+
+	"github.com/charmbracelet/gum/internal/exit"
 
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"

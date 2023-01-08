@@ -14,13 +14,14 @@ package file
 
 import (
 	"fmt"
-	"github.com/charmbracelet/gum/timeout"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stack"

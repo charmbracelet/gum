@@ -8,11 +8,12 @@
 package input
 
 import (
+	"time"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
-	"time"
 )
 
 type model struct {

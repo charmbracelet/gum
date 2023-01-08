@@ -15,10 +15,11 @@
 package spin
 
 import (
-	"github.com/charmbracelet/gum/timeout"
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"

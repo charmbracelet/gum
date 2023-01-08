@@ -2,8 +2,9 @@ package timeout
 
 import (
 	"fmt"
-	tea "github.com/charmbracelet/bubbletea"
 	"time"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // CmdOptions Common Timeout Option.

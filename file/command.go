@@ -3,9 +3,10 @@ package file
 import (
 	"errors"
 	"fmt"
-	"github.com/charmbracelet/gum/internal/exit"
 	"os"
 	"path/filepath"
+
+	"github.com/charmbracelet/gum/internal/exit"
 
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"

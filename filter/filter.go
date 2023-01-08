@@ -11,9 +11,10 @@
 package filter
 
 import (
-	"github.com/charmbracelet/gum/timeout"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"

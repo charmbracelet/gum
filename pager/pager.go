@@ -5,9 +5,10 @@ package pager
 
 import (
 	"fmt"
-	"github.com/charmbracelet/gum/timeout"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"

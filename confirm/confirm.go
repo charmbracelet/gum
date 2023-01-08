@@ -11,8 +11,9 @@
 package confirm
 
 import (
-	"github.com/charmbracelet/gum/timeout"
 	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
