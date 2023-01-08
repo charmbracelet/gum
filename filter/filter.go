@@ -136,7 +136,7 @@ func (m model) View() string {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
-	case timeout.TimeoutMsg:
+	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
 			m.aborted = true

@@ -80,7 +80,7 @@ func (m model) Init() tea.Cmd {
 	)
 }
 func (m model) View() string {
-	var str string = ""
+	var str string
 	if m.hasTimeout {
 		str = timeout.TimeoutStr(m.timeout)
 	}
@@ -95,7 +95,7 @@ func (m model) View() string {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
-	case timeout.TimeoutMsg:
+	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.status = 130
 			return m, tea.Quit

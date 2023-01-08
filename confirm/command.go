@@ -2,6 +2,7 @@ package confirm
 
 import (
 	"fmt"
+	"github.com/charmbracelet/gum/internal/exit"
 	"os"
 
 	"github.com/alecthomas/kong"
@@ -31,7 +32,7 @@ func (o Options) Run() error {
 	}
 
 	if m.(model).aborted {
-		os.Exit(130)
+		os.Exit(exit.StatusAborted)
 	} else if m.(model).confirmation {
 		os.Exit(0)
 	} else {

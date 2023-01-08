@@ -32,7 +32,7 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case timeout.TimeoutMsg:
+	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			return m, tea.Quit
 		}

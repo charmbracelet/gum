@@ -35,7 +35,7 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
-	var timeStr string = ""
+	var timeStr string
 	if m.hasTimeout {
 		timeStr = timeout.TimeoutStr(m.timeout)
 	}
@@ -49,7 +49,7 @@ func (m model) View() string {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case timeout.TimeoutMsg:
+	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
 			m.aborted = true

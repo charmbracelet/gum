@@ -56,7 +56,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		return m, nil
-	case timeout.TimeoutMsg:
+	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
 			return m, tea.Quit
@@ -158,7 +158,7 @@ func (m model) View() string {
 	}
 
 	var s strings.Builder
-	var timeoutStr string = ""
+	var timeoutStr string
 
 	start, end := m.paginator.GetSliceBounds(len(m.items))
 	for i, item := range m.items[start:end] {
