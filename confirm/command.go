@@ -17,6 +17,7 @@ func (o Options) Run() error {
 		affirmative:     o.Affirmative,
 		negative:        o.Negative,
 		confirmation:    o.Default,
+		defvalue:        o.Default,
 		timeout:         o.Timeout,
 		hasTimeout:      o.HasTimeout(),
 		prompt:          o.Prompt,

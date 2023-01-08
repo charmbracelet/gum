@@ -18,6 +18,10 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+type defaultVal struct {
+	Value bool
+}
+
 type model struct {
 	prompt       string
 	affirmative  string
@@ -27,6 +31,7 @@ type model struct {
 	hasTimeout   bool
 	timeout      time.Duration
 	confirmation bool
+	defvalue     bool
 	// styles
 	promptStyle     lipgloss.Style
 	selectedStyle   lipgloss.Style
@@ -34,7 +39,7 @@ type model struct {
 }
 
 func (m model) Init() tea.Cmd {
-	return timeout.Init(m.timeout, m.confirmation)
+	return timeout.Init(m.timeout, defaultVal{Value: m.confirmation})
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -67,9 +72,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case timeout.TimeoutMsg:
+
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
-			m.confirmation = false
+			if v, ok := msg.Data.(defaultVal); ok {
+				m.confirmation = v.Value
+			} else {
+				m.confirmation = false
+			}
+
 			return m, tea.Quit
 		}
 
@@ -84,18 +95,23 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg, timeoutStr string
-
+	var aff, neg, timeoutStrYes, timeoutStrNo string
+	timeoutStrNo = ""
+	timeoutStrYes = ""
 	if m.hasTimeout {
-		timeoutStr = timeout.TimeoutStr(m.timeout)
+		if m.defvalue {
+			timeoutStrYes = timeout.TimeoutStr(m.timeout)
+		} else {
+			timeoutStrNo = timeout.TimeoutStr(m.timeout)
+		}
 	}
 
 	if m.confirmation {
-		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(m.negative + timeoutStr)
+		aff = m.selectedStyle.Render(m.affirmative + timeoutStrYes)
+		neg = m.unselectedStyle.Render(m.negative + timeoutStrNo)
 	} else {
-		aff = m.unselectedStyle.Render(m.affirmative)
-		neg = m.selectedStyle.Render(m.negative + timeoutStr)
+		aff = m.unselectedStyle.Render(m.affirmative + timeoutStrYes)
+		neg = m.selectedStyle.Render(m.negative + timeoutStrNo)
 	}
 
 	// If the option is intentionally empty, do not show it.
