@@ -52,12 +52,12 @@ func Tick(timeoutValue time.Duration, data interface{}) tea.Cmd {
 	})
 }
 
-// TimeoutStr produce Timeout String to be rendered.
-func TimeoutStr(timeout time.Duration) string {
-	return fmt.Sprintf(" (%d)", Max(0, int(timeout.Seconds())))
+// Str produce Timeout String to be rendered.
+func Str(timeout time.Duration) string {
+	return fmt.Sprintf(" (%d)", max(0, int(timeout.Seconds())))
 }
 
-func Max(a, b int) int {
+func max(a, b int) int {
 	if a > b {
 		return a
 	}

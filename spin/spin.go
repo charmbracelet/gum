@@ -83,7 +83,7 @@ func (m model) Init() tea.Cmd {
 func (m model) View() string {
 	var str string
 	if m.hasTimeout {
-		str = timeout.TimeoutStr(m.timeout)
+		str = timeout.Str(m.timeout)
 	}
 
 	if m.align == "left" {

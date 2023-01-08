@@ -92,9 +92,9 @@ func (m model) View() string {
 	timeoutStrYes = ""
 	if m.hasTimeout {
 		if m.defvalue {
-			timeoutStrYes = timeout.TimeoutStr(m.timeout)
+			timeoutStrYes = timeout.Str(m.timeout)
 		} else {
-			timeoutStrNo = timeout.TimeoutStr(m.timeout)
+			timeoutStrNo = timeout.Str(m.timeout)
 		}
 	}
 

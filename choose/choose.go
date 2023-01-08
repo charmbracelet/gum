@@ -171,7 +171,7 @@ func (m model) View() string {
 
 		if item.selected {
 			if m.hasTimeout {
-				timeoutStr = timeout.TimeoutStr(m.timeout)
+				timeoutStr = timeout.Str(m.timeout)
 			}
 			s.WriteString(m.selectedItemStyle.Render(m.selectedPrefix + item.text + timeoutStr))
 		} else if i == m.index%m.height {

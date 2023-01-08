@@ -38,7 +38,7 @@ func (m model) View() string {
 	}
 	var timeStr string
 	if m.hasTimeout {
-		timeStr = timeout.TimeoutStr(m.timeout)
+		timeStr = timeout.Str(m.timeout)
 	}
 	if m.header != "" {
 		header := m.headerStyle.Render(m.header)

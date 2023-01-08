@@ -98,7 +98,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	var timeoutStr string
 	if m.hasTimeout {
-		timeoutStr = timeout.TimeoutStr(m.timeout) + " "
+		timeoutStr = timeout.Str(m.timeout) + " "
 	}
 	return m.viewport.View() + m.helpStyle.Render("\n"+timeoutStr+"↑/↓: Navigate • q: Quit")
 }
