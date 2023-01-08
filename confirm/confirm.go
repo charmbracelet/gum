@@ -18,10 +18,6 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type defaultVal struct {
-	Value bool
-}
-
 type model struct {
 	prompt       string
 	affirmative  string
@@ -39,7 +35,7 @@ type model struct {
 }
 
 func (m model) Init() tea.Cmd {
-	return timeout.Init(m.timeout, defaultVal{Value: m.confirmation})
+	return timeout.Init(m.timeout, m.defvalue)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -75,12 +71,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
-			if v, ok := msg.Data.(defaultVal); ok {
-				m.confirmation = v.Value
-			} else {
-				m.confirmation = false
-			}
-
+			m.confirmation = m.defvalue
 			return m, tea.Quit
 		}
 
