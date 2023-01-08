@@ -1,6 +1,9 @@
 package filter
 
-import "github.com/charmbracelet/gum/style"
+import (
+	"github.com/charmbracelet/gum/style"
+	"github.com/charmbracelet/gum/timeout"
+)
 
 // Options is the customization options for the filter command.
 type Options struct {
@@ -23,4 +26,5 @@ type Options struct {
 	Value                 string       `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
 	Reverse               bool         `help:"Display from the bottom of the screen" env:"GUM_FILTER_REVERSE"`
 	Fuzzy                 bool         `help:"Enable fuzzy matching" default:"true" env:"GUM_FILTER_FUZZY" negatable:""`
+	timeout.CmdOptions
 }

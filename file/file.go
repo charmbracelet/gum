@@ -14,11 +14,13 @@ package file
 
 import (
 	"fmt"
+	"github.com/charmbracelet/gum/timeout"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stack"
@@ -30,6 +32,7 @@ const marginBottom = 5
 
 type model struct {
 	quitting    bool
+	aborted     bool
 	path        string
 	files       []os.DirEntry
 	showHidden  bool
@@ -54,6 +57,8 @@ type model struct {
 	permissionStyle lipgloss.Style
 	selectedStyle   lipgloss.Style
 	fileSizeStyle   lipgloss.Style
+	timeout         time.Duration
+	hasTimeout      bool
 }
 
 type readDirMsg []os.DirEntry
@@ -89,13 +94,25 @@ func readDir(path string, showHidden bool) tea.Cmd {
 }
 
 func (m model) Init() tea.Cmd {
-	return readDir(m.path, m.showHidden)
+	return tea.Batch(
+		timeout.Init(m.timeout, nil),
+		readDir(m.path, m.showHidden),
+	)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case readDirMsg:
 		m.files = msg
+	case timeout.TimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			m.quitting = true
+			m.aborted = true
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
+
 	case tea.WindowSizeMsg:
 		if m.autoHeight {
 			m.height = msg.Height - marginBottom

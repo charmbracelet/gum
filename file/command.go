@@ -3,6 +3,7 @@ package file
 import (
 	"errors"
 	"fmt"
+	"github.com/charmbracelet/gum/internal/exit"
 	"os"
 	"path/filepath"
 
@@ -48,6 +49,9 @@ func (o Options) Run() error {
 		permissionStyle: o.PermissionsStyle.ToLipgloss().Inline(true),
 		selectedStyle:   o.SelectedStyle.ToLipgloss().Inline(true),
 		fileSizeStyle:   o.FileSizeStyle.ToLipgloss().Inline(true),
+		timeout:         o.Timeout,
+		hasTimeout:      o.HasTimeout(),
+		aborted:         false,
 	}
 
 	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
@@ -56,7 +60,9 @@ func (o Options) Run() error {
 	}
 
 	m = tm.(model)
-
+	if m.aborted {
+		return exit.ErrAborted
+	}
 	if m.path == "" {
 		os.Exit(1)
 	}

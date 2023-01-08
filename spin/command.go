@@ -19,10 +19,12 @@ func (o Options) Run() error {
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
 	m := model{
-		spinner: s,
-		title:   o.TitleStyle.ToLipgloss().Render(o.Title),
-		command: o.Command,
-		align:   o.Align,
+		spinner:    s,
+		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
+		command:    o.Command,
+		align:      o.Align,
+		timeout:    o.Timeout,
+		hasTimeout: o.HasTimeout(),
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.Run()

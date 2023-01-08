@@ -80,6 +80,8 @@ func (o Options) Run() error {
 		limit:                 o.Limit,
 		reverse:               o.Reverse,
 		fuzzy:                 o.Fuzzy,
+		timeout:               o.Timeout,
+		hasTimeout:            o.HasTimeout(),
 	}, options...)
 
 	tm, err := p.Run()

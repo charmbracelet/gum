@@ -5,7 +5,9 @@ package pager
 
 import (
 	"fmt"
+	"github.com/charmbracelet/gum/timeout"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -20,14 +22,23 @@ type model struct {
 	showLineNumbers bool
 	lineNumberStyle lipgloss.Style
 	softWrap        bool
+	timeout         time.Duration
+	hasTimeout      bool
 }
 
 func (m model) Init() tea.Cmd {
-	return nil
+	return timeout.Init(m.timeout, nil)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case timeout.TimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
+
 	case tea.WindowSizeMsg:
 		m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
 		m.viewport.Width = msg.Width
@@ -84,5 +95,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return m.viewport.View() + m.helpStyle.Render("\n ↑/↓: Navigate • q: Quit")
+	var timeoutStr string
+	if m.hasTimeout {
+		timeoutStr = timeout.TimeoutStr(m.timeout) + " "
+	}
+	return m.viewport.View() + m.helpStyle.Render("\n"+timeoutStr+"↑/↓: Navigate • q: Quit")
 }

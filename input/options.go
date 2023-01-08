@@ -1,6 +1,9 @@
 package input
 
-import "github.com/charmbracelet/gum/style"
+import (
+	"github.com/charmbracelet/gum/style"
+	"github.com/charmbracelet/gum/timeout"
+)
 
 // Options are the customization options for the input.
 type Options struct {
@@ -14,4 +17,5 @@ type Options struct {
 	Password    bool         `help:"Mask input characters" default:"false"`
 	Header      string       `help:"Header value" default:"" env:"GUM_INPUT_HEADER"`
 	HeaderStyle style.Styles `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_INPUT_HEADER_"`
+	timeout.CmdOptions
 }

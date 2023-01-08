@@ -15,8 +15,10 @@
 package spin
 
 import (
+	"github.com/charmbracelet/gum/timeout"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -29,9 +31,11 @@ type model struct {
 	command []string
 	aborted bool
 
-	status int
-	stdout string
-	stderr string
+	status     int
+	stdout     string
+	stderr     string
+	timeout    time.Duration
+	hasTimeout bool
 }
 
 type finishCommandMsg struct {
@@ -72,19 +76,32 @@ func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
 		commandStart(m.command),
+		timeout.Init(m.timeout, nil),
 	)
 }
 func (m model) View() string {
-	if m.align == "left" {
-		return m.spinner.View() + " " + m.title
+	var str string = ""
+	if m.hasTimeout {
+		str = timeout.TimeoutStr(m.timeout)
 	}
 
-	return m.title + " " + m.spinner.View()
+	if m.align == "left" {
+		return m.spinner.View() + " " + m.title + str
+	}
+
+	return str + " " + m.title + " " + m.spinner.View()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	case timeout.TimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			m.status = 130
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case finishCommandMsg:
 		m.stdout = msg.stdout
 		m.stderr = msg.stderr

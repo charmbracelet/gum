@@ -11,7 +11,9 @@
 package choose
 
 import (
+	"github.com/charmbracelet/gum/timeout"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
@@ -37,6 +39,8 @@ type model struct {
 	cursorStyle       lipgloss.Style
 	itemStyle         lipgloss.Style
 	selectedItemStyle lipgloss.Style
+	hasTimeout        bool
+	timeout           time.Duration
 }
 
 type item struct {
@@ -44,13 +48,21 @@ type item struct {
 	selected bool
 }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd {
+	return timeout.Init(m.timeout, nil)
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		return m, nil
-
+	case timeout.TimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			m.quitting = true
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case tea.KeyMsg:
 		start, end := m.paginator.GetSliceBounds(len(m.items))
 		switch keypress := msg.String(); keypress {
@@ -110,6 +122,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.aborted = true
 			m.quitting = true
 			return m, tea.Quit
+
 		case " ", "tab", "x":
 			if m.limit == 1 {
 				break // no op
@@ -145,6 +158,7 @@ func (m model) View() string {
 	}
 
 	var s strings.Builder
+	var timeoutStr string = ""
 
 	start, end := m.paginator.GetSliceBounds(len(m.items))
 	for i, item := range m.items[start:end] {
@@ -155,7 +169,10 @@ func (m model) View() string {
 		}
 
 		if item.selected {
-			s.WriteString(m.selectedItemStyle.Render(m.selectedPrefix + item.text))
+			if m.hasTimeout {
+				timeoutStr = timeout.TimeoutStr(m.timeout)
+			}
+			s.WriteString(m.selectedItemStyle.Render(m.selectedPrefix + item.text + timeoutStr))
 		} else if i == m.index%m.height {
 			s.WriteString(m.cursorStyle.Render(m.cursorPrefix + item.text))
 		} else {
