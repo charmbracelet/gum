@@ -123,7 +123,7 @@ func (o Options) Run() error {
 		return exit.ErrAborted
 	}
 
-	if o.KeepOrder && o.Limit > 1 {
+	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
 			return m.items[i].order < m.items[j].order
 		})
