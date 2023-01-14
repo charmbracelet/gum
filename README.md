@@ -304,7 +304,7 @@ Available spinner types include: `line`, `dot`, `minidot`, `jump`, `pulse`, `poi
 Select a row from some tabular data.
 
 ```bash
-gum table < flavors.csv | cut -d ',' -f 1
+gum table -s , < flavors.csv
 ```
 
 <img src="https://stuff.charm.sh/gum/table.gif" width="600" alt="Shell running gum table" />
