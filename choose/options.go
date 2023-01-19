@@ -22,5 +22,5 @@ type Options struct {
 	CursorStyle       style.Styles  `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_CURSOR_"`
 	ItemStyle         style.Styles  `embed:"" prefix:"item." hidden:"" envprefix:"GUM_CHOOSE_ITEM_"`
 	SelectedItemStyle style.Styles  `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_SELECTED_"`
-	Timeout           time.Duration `help:"Timeout until command exits" default:"0" env:"GUM_CONFIRM_TIMEOUT"` // including timeout command options [Timeout,...]
+	Timeout           time.Duration `help:"Timeout until choose returns selected element" default:"0" env:"GUM_CCHOOSE_TIMEOUT"` // including timeout command options [Timeout,...]
 }

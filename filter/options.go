@@ -27,5 +27,5 @@ type Options struct {
 	Value                 string        `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
 	Reverse               bool          `help:"Display from the bottom of the screen" env:"GUM_FILTER_REVERSE"`
 	Fuzzy                 bool          `help:"Enable fuzzy matching" default:"true" env:"GUM_FILTER_FUZZY" negatable:""`
-	Timeout               time.Duration `help:"Timeout until command exits" default:"0" env:"GUM_CONFIRM_TIMEOUT"`
+	Timeout               time.Duration `help:"Timeout until filter command aborts" default:"0" env:"GUM_FILTER_TIMEOUT"`
 }
