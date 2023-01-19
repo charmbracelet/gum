@@ -33,6 +33,7 @@ type model struct {
 	index            int
 	limit            int
 	numSelected      int
+	currentOrder     int
 	paginator        paginator.Model
 	aborted          bool
 
@@ -47,6 +48,7 @@ type model struct {
 type item struct {
 	text     string
 	selected bool
+	order    int
 }
 
 func (m model) Init() tea.Cmd {
@@ -115,7 +117,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					continue
 				}
 				m.items[i].selected = true
+				m.items[i].order = m.currentOrder
 				m.numSelected++
+				m.currentOrder++
 			}
 		case "A":
 			if m.limit <= 1 {
@@ -123,8 +127,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			for i := range m.items {
 				m.items[i].selected = false
+				m.items[i].order = 0
 			}
 			m.numSelected = 0
+			m.currentOrder = 0
 		case "ctrl+c", "esc":
 			m.aborted = true
 			m.quitting = true
@@ -140,7 +146,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.numSelected--
 			} else if m.numSelected < m.limit {
 				m.items[m.index].selected = true
+				m.items[m.index].order = m.currentOrder
 				m.numSelected++
+				m.currentOrder++
 			}
 		case "enter":
 			m.quitting = true
