@@ -17,5 +17,5 @@ type Options struct {
 	Password    bool         `help:"Mask input characters" default:"false"`
 	Header      string       `help:"Header value" default:"" env:"GUM_INPUT_HEADER"`
 	HeaderStyle style.Styles `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_INPUT_HEADER_"`
-	timeout.CmdOptions
+	timeout.Options
 }

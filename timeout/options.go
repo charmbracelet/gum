@@ -7,13 +7,13 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-// CmdOptions Common Timeout Option.
-type CmdOptions struct {
+// Options Common Timeout Option.
+type Options struct {
 	Timeout time.Duration `help:"Timeout until command exits" default:"0" env:"GUM_CONFIRM_TIMEOUT"`
 }
 
 // HasTimeout checks for a given timeout parameter.
-func (o CmdOptions) HasTimeout() (hasTimeout bool) {
+func (o Options) HasTimeout() (hasTimeout bool) {
 	return o.Timeout > 0
 }
 

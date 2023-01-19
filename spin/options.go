@@ -15,5 +15,5 @@ type Options struct {
 	Title        string       `help:"Text to display to user while spinning" default:"Loading..." env:"GUM_SPIN_TITLE"`
 	TitleStyle   style.Styles `embed:"" prefix:"title." envprefix:"GUM_SPIN_TITLE_"`
 	Align        string       `help:"Alignment of spinner with regard to the title" short:"a" type:"align" enum:"left,right" default:"left" env:"GUM_SPIN_ALIGN"`
-	timeout.CmdOptions
+	timeout.Options
 }
