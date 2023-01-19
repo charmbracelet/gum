@@ -1,8 +1,9 @@
 package input
 
 import (
-	"github.com/charmbracelet/gum/style"
 	"time"
+
+	"github.com/charmbracelet/gum/style"
 )
 
 // Options are the customization options for the input.

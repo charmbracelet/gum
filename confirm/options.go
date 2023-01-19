@@ -1,8 +1,9 @@
 package confirm
 
 import (
-	"github.com/charmbracelet/gum/style"
 	"time"
+
+	"github.com/charmbracelet/gum/style"
 )
 
 // Options is the customization timeout for the confirm command.

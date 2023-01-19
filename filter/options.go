@@ -1,8 +1,9 @@
 package filter
 
 import (
-	"github.com/charmbracelet/gum/style"
 	"time"
+
+	"github.com/charmbracelet/gum/style"
 )
 
 // Options is the customization options for the filter command.
