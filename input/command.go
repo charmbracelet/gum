@@ -42,7 +42,7 @@ func (o Options) Run() error {
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
 		timeout:     o.Timeout,
-		hasTimeout:  o.HasTimeout(),
+		hasTimeout:  o.Timeout > 0,
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
 	if err != nil {

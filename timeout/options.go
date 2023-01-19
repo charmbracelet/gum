@@ -7,16 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-// Options Common Timeout Option.
-type Options struct {
-	Timeout time.Duration `help:"Timeout until command exits" default:"0" env:"GUM_CONFIRM_TIMEOUT"`
-}
-
-// HasTimeout checks for a given timeout parameter.
-func (o Options) HasTimeout() (hasTimeout bool) {
-	return o.Timeout > 0
-}
-
 // Tick interval.
 const tickInterval = time.Second
 

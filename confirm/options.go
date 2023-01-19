@@ -2,7 +2,7 @@ package confirm
 
 import (
 	"github.com/charmbracelet/gum/style"
-	"github.com/charmbracelet/gum/timeout"
+	"time"
 )
 
 // Options is the customization timeout for the confirm command.
@@ -15,6 +15,6 @@ type Options struct {
 	//nolint:staticcheck
 	SelectedStyle style.Styles `embed:"" prefix:"selected." help:"The style of the selected action" set:"defaultBackground=212" set:"defaultForeground=230" set:"defaultPadding=0 3" set:"defaultMargin=1 1" envprefix:"GUM_CONFIRM_SELECTED_"`
 	//nolint:staticcheck
-	UnselectedStyle style.Styles `embed:"" prefix:"unselected." help:"The style of the unselected action" set:"defaultBackground=235" set:"defaultForeground=254" set:"defaultPadding=0 3" set:"defaultMargin=1 1" envprefix:"GUM_CONFIRM_UNSELECTED_"`
-	timeout.Options              // including timeout command options [Timeout,...]
+	UnselectedStyle style.Styles  `embed:"" prefix:"unselected." help:"The style of the unselected action" set:"defaultBackground=235" set:"defaultForeground=254" set:"defaultPadding=0 3" set:"defaultMargin=1 1" envprefix:"GUM_CONFIRM_UNSELECTED_"`
+	Timeout         time.Duration `help:"Timeout until command exits" default:"0" env:"GUM_CONFIRM_TIMEOUT"`
 }

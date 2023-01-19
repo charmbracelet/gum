@@ -51,7 +51,7 @@ func (o Options) Run() error {
 		selectedStyle:   o.SelectedStyle.ToLipgloss().Inline(true),
 		fileSizeStyle:   o.FileSizeStyle.ToLipgloss().Inline(true),
 		timeout:         o.Timeout,
-		hasTimeout:      o.HasTimeout(),
+		hasTimeout:      o.Timeout > 0,
 		aborted:         false,
 	}
 

@@ -81,7 +81,7 @@ func (o Options) Run() error {
 		reverse:               o.Reverse,
 		fuzzy:                 o.Fuzzy,
 		timeout:               o.Timeout,
-		hasTimeout:            o.HasTimeout(),
+		hasTimeout:            o.Timeout > 0,
 	}, options...)
 
 	tm, err := p.Run()

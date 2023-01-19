@@ -36,16 +36,12 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
-	var timeStr string
-	if m.hasTimeout {
-		timeStr = timeout.Str(m.timeout)
-	}
 	if m.header != "" {
 		header := m.headerStyle.Render(m.header)
-		return lipgloss.JoinVertical(lipgloss.Left, header, m.textinput.View()+" "+timeStr)
+		return lipgloss.JoinVertical(lipgloss.Left, header, m.textinput.View())
 	}
 
-	return timeStr + " " + m.textinput.View()
+	return m.textinput.View()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

@@ -24,7 +24,7 @@ func (o Options) Run() error {
 		command:    o.Command,
 		align:      o.Align,
 		timeout:    o.Timeout,
-		hasTimeout: o.HasTimeout(),
+		hasTimeout: o.Timeout > 0,
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.Run()
