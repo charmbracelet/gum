@@ -36,7 +36,7 @@ func (o Options) Run() error {
 		lineNumberStyle: o.LineNumberStyle.ToLipgloss(),
 		softWrap:        o.SoftWrap,
 		timeout:         o.Timeout,
-		hasTimeout:      o.HasTimeout(),
+		hasTimeout:      o.Timeout > 0,
 	}
 	_, err := tea.NewProgram(model, tea.WithAltScreen()).Run()
 	if err != nil {
