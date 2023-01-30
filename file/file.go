@@ -129,6 +129,30 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.min--
 				m.max--
 			}
+		case "J", "pgdown":
+			m.selected += m.height
+			if m.selected >= len(m.files) {
+				m.selected = len(m.files) - 1
+			}
+			m.min += m.height
+			m.max += m.height
+
+			if m.max >= len(m.files) {
+				m.max = len(m.files) - 1
+				m.min = m.max - m.height
+			}
+		case "K", "pgup":
+			m.selected -= m.height
+			if m.selected < 0 {
+				m.selected = 0
+			}
+			m.min -= m.height
+			m.max -= m.height
+
+			if m.min < 0 {
+				m.min = 0
+				m.max = m.min + m.height
+			}
 		case "ctrl+c", "q":
 			m.path = ""
 			m.quitting = true
