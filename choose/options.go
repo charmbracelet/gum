@@ -8,6 +8,7 @@ type Options struct {
 
 	Limit             int          `help:"Maximum number of options to pick" default:"1" group:"Selection"`
 	NoLimit           bool         `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
+	AllowUnchoosen    bool         `help:"Allow gum choose to proceed when pressing enter without selecting anything" group:"Selection"`
 	Ordered           bool         `help:"Maintain the order of the selected options" env:"GUM_CHOOSE_ORDERED"`
 	Height            int          `help:"Height of the list" default:"10" env:"GUM_CHOOSE_HEIGHT"`
 	Cursor            string       `help:"Prefix to show on item that corresponds to the cursor position" default:"> " env:"GUM_CHOOSE_CURSOR"`
