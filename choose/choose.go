@@ -136,7 +136,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Then we select the item that they have pressed enter on. If they
 			// have selected items, then we simply return them.
 			if m.numSelected < 1 {
-	           if o.AllowUnchoosen == false {
+	           if o.AllowUnchosen == false {
 				m.items[m.index].selected = true
 	           }
 			}
