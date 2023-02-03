@@ -16,7 +16,7 @@ clear; echo "What should I do with this information?"; sleep 1
 READ="Read"; THINK="Think"; DISCARD="Discard"
 ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[✓] " --no-limit "$READ" "$THINK" "$DISCARD")
 
-clear; echo "One moment, please."
+clear; echo "One moment, please."; sleep 1
 
 grep -q "$READ" <<< "$ACTIONS" && gum spin -s line --title "Reading the secret..." -- sleep 1
 grep -q "$THINK" <<< "$ACTIONS" && gum spin -s pulse --title "Thinking about your secret..." -- sleep 1

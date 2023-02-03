@@ -43,10 +43,10 @@ gum write
 gum write --width 40 --height 3 --placeholder "Type whatever you want" --prompt "| " --show-cursor-line --show-line-numbers --value "Something..." --base.padding 1 --cursor.foreground 99 --prompt.foreground 99
 
 # Table
-gum table < table/example.csv
+gum table < ~/gum/table/example.csv
 
 # Pager
-gum pager < README.md
+gum pager < ~/gum/README.md
 
 # File
 gum file
