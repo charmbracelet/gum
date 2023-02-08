@@ -163,6 +163,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.ToggleSelection()
 			m.CursorUp()
+		case "ctrl+@":
+			if m.limit == 1 {
+				break // no op
+			}
+			m.ToggleSelection()
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
 
