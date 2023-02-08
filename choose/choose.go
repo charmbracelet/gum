@@ -116,7 +116,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.aborted = true
 			m.quitting = true
 			return m, tea.Quit
-		case " ", "tab", "x":
+		case " ", "tab", "x", "ctrl+@":
 			if m.limit == 1 {
 				break // no op
 			}
