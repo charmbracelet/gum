@@ -14,15 +14,16 @@ import (
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
 	m, err := tea.NewProgram(model{
-		affirmative:     o.Affirmative,
-		negative:        o.Negative,
-		confirmation:    o.Default,
-		timeout:         o.Timeout,
-		hasTimeout:      o.Timeout > 0,
-		prompt:          o.Prompt,
-		selectedStyle:   o.SelectedStyle.ToLipgloss(),
-		unselectedStyle: o.UnselectedStyle.ToLipgloss(),
-		promptStyle:     o.PromptStyle.ToLipgloss(),
+		affirmative:      o.Affirmative,
+		negative:         o.Negative,
+		confirmation:     o.Default,
+		defaultSelection: o.Default,
+		timeout:          o.Timeout,
+		hasTimeout:       o.Timeout > 0,
+		prompt:           o.Prompt,
+		selectedStyle:    o.SelectedStyle.ToLipgloss(),
+		unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
+		promptStyle:      o.PromptStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr)).Run()
 
 	if err != nil {

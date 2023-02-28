@@ -29,6 +29,8 @@ type model struct {
 
 	confirmation bool
 
+	defaultSelection bool
+
 	// styles
 	promptStyle     lipgloss.Style
 	selectedStyle   lipgloss.Style
@@ -86,7 +88,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tickMsg:
 		if m.timeout <= 0 {
 			m.quitting = true
-			m.confirmation = false
+			m.confirmation = m.defaultSelection
 			return m, tea.Quit
 		}
 		m.timeout -= tickInterval
@@ -100,18 +102,27 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg, timeout string
+	var aff, neg, timeout, affirmativeTimeout, negativeTimeout string
 
 	if m.hasTimeout {
 		timeout = fmt.Sprintf(" (%d)", max(0, int(m.timeout.Seconds())))
 	}
 
-	if m.confirmation {
-		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(m.negative + timeout)
+	// set timer based on defaultSelection
+	if m.defaultSelection {
+		affirmativeTimeout = m.affirmative + timeout
+		negativeTimeout = m.negative
 	} else {
-		aff = m.unselectedStyle.Render(m.affirmative)
-		neg = m.selectedStyle.Render(m.negative + timeout)
+		affirmativeTimeout = m.affirmative
+		negativeTimeout = m.negative + timeout
+	}
+
+	if m.confirmation {
+		aff = m.selectedStyle.Render(affirmativeTimeout)
+		neg = m.unselectedStyle.Render(negativeTimeout)
+	} else {
+		aff = m.unselectedStyle.Render(affirmativeTimeout)
+		neg = m.selectedStyle.Render(negativeTimeout)
 	}
 
 	// If the option is intentionally empty, do not show it.
