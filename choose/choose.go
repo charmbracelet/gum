@@ -132,10 +132,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			m.quitting = true
-			// If the user hasn't selected any items in a multi-select.
-			// Then we select the item that they have pressed enter on. If they
-			// have selected items, then we simply return them.
-			if m.numSelected < 1 {
+			if m.limit <= 1 && m.numSelected < 1 {
 				m.items[m.index].selected = true
 			}
 			return m, tea.Quit
