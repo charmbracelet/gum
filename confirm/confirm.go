@@ -88,6 +88,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tickMsg:
 		if m.timeout <= 0 {
 			m.quitting = true
+			m.confirmation = m.defaultSelection
 			return m, tea.Quit
 		}
 		m.timeout -= tickInterval
