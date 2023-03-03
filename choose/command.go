@@ -90,13 +90,9 @@ func (o Options) Run() error {
 	pager.Type = paginator.Dots
 	pager.ActiveDot = subduedStyle.Render("•")
 	pager.InactiveDot = verySubduedStyle.Render("•")
+	pager.KeyMap = paginator.KeyMap{}
 
 	// Disable Keybindings since we will control it ourselves.
-	pager.UseHLKeys = false
-	pager.UseLeftRightKeys = false
-	pager.UseJKKeys = false
-	pager.UsePgUpPgDownKeys = false
-
 	tm, err := tea.NewProgram(model{
 		index:             startingIndex,
 		currentOrder:      currentOrder,
