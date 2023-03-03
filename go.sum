@@ -23,6 +23,8 @@ github.com/charmbracelet/bubbles v0.14.1-0.20221006154229-d1775121146a h1:/prXWl
 github.com/charmbracelet/bubbles v0.14.1-0.20221006154229-d1775121146a/go.mod h1:5rZgJTHmgWISQnxnzzIJtQt3GC1bfJfNmr4SEtRDtTQ=
 github.com/charmbracelet/bubbles v0.15.0 h1:c5vZ3woHV5W2b8YZI1q7v4ZNQaPetfHuoHzx+56Z6TI=
 github.com/charmbracelet/bubbles v0.15.0/go.mod h1:Y7gSFbBzlMpUDR/XM9MhZI374Q+1p1kluf1uLl8iK74=
+github.com/charmbracelet/bubbles v0.15.1-0.20230303175231-2694acc38055 h1:4zkjfTm5xydSP+cZjgWyAmrjJXlx0E0E2DWu4x3r0vM=
+github.com/charmbracelet/bubbles v0.15.1-0.20230303175231-2694acc38055/go.mod h1:2ZpQTAUWMFMWM5lx7FvucnwMOE+/JKP9d/Su1MKpZbo=
 github.com/charmbracelet/bubbletea v0.22.1/go.mod h1:8/7hVvbPN6ZZPkczLiB8YpLkLJ0n7DMho5Wvfd2X1C0=
 github.com/charmbracelet/bubbletea v0.23.1/go.mod h1:JAfGK/3/pPKHTnAS8JIE2u9f61BjWTQY57RbT25aMXU=
 github.com/charmbracelet/bubbletea v0.23.2 h1:vuUJ9HJ7b/COy4I30e8xDVQ+VRDUEFykIjryPfgsdps=

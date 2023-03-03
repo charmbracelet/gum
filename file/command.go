@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 
 	"github.com/alecthomas/kong"
+	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/internal/stack"
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -27,28 +27,25 @@ func (o Options) Run() error {
 		return fmt.Errorf("file not found: %w", err)
 	}
 
-	m := model{
-		path:            path,
-		cursor:          o.Cursor,
-		selected:        0,
-		showHidden:      o.All,
-		dirAllowed:      o.Directory,
-		fileAllowed:     o.File,
-		autoHeight:      o.Height == 0,
-		height:          o.Height,
-		max:             0,
-		min:             0,
-		selectedStack:   stack.NewStack(),
-		minStack:        stack.NewStack(),
-		maxStack:        stack.NewStack(),
-		cursorStyle:     o.CursorStyle.ToLipgloss().Inline(true),
-		symlinkStyle:    o.SymlinkStyle.ToLipgloss().Inline(true),
-		directoryStyle:  o.DirectoryStyle.ToLipgloss().Inline(true),
-		fileStyle:       o.FileStyle.ToLipgloss().Inline(true),
-		permissionStyle: o.PermissionsStyle.ToLipgloss().Inline(true),
-		selectedStyle:   o.SelectedStyle.ToLipgloss().Inline(true),
-		fileSizeStyle:   o.FileSizeStyle.ToLipgloss().Inline(true),
+	fp := filepicker.New()
+	fp.Path = path
+	fp.Height = o.Height
+	fp.AutoHeight = o.Height == 0
+	fp.Cursor = o.Cursor
+	fp.DirAllowed = o.Directory
+	fp.FileAllowed = o.File
+	fp.ShowHidden = o.All
+	fp.Styles = filepicker.Styles{
+		Cursor:     o.CursorStyle.ToLipgloss(),
+		Symlink:    o.SymlinkStyle.ToLipgloss(),
+		Directory:  o.DirectoryStyle.ToLipgloss(),
+		File:       o.FileStyle.ToLipgloss(),
+		Permission: o.PermissionsStyle.ToLipgloss(),
+		Selected:   o.SelectedStyle.ToLipgloss(),
+		FileSize:   o.FileSizeStyle.ToLipgloss(),
 	}
+
+	m := model{filepicker: fp}
 
 	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
@@ -57,11 +54,11 @@ func (o Options) Run() error {
 
 	m = tm.(model)
 
-	if m.path == "" {
+	if m.selectedPath == "" {
 		os.Exit(1)
 	}
 
-	fmt.Println(m.path)
+	fmt.Println(m.selectedPath)
 
 	return nil
 }
