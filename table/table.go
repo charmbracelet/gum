@@ -39,7 +39,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.selected = m.table.SelectedRow()
 			m.quitting = true
 			return m, tea.Quit
-		case "ctrl+c", "q":
+		case "ctrl+c", "q", "esc":
 			m.quitting = true
 			return m, tea.Quit
 		}
