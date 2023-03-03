@@ -29,10 +29,6 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case filepicker.FileSelectedMsg:
-		m.selectedPath = msg.Path
-		m.quitting = true
-		return m, tea.Quit
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
@@ -41,6 +37,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 	var cmd tea.Cmd
 	m.filepicker, cmd = m.filepicker.Update(msg)
+	if didSelect, path := m.filepicker.DidSelectFile(msg); didSelect {
+		m.selectedPath = path
+		m.quitting = true
+		return m, tea.Quit
+	}
 	return m, cmd
 }
 
