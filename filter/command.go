@@ -53,8 +53,13 @@ func (o Options) Run() error {
 	var matches []fuzzy.Match
 	if o.Value != "" {
 		i.SetValue(o.Value)
+	}
+	switch {
+	case o.Value != "" && o.Fuzzy:
 		matches = fuzzy.Find(o.Value, choices)
-	} else {
+	case o.Value != "" && !o.Fuzzy:
+		matches = exactMatches(o.Value, choices)
+	default:
 		matches = matchAll(choices)
 	}
 
