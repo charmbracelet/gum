@@ -3,6 +3,7 @@ package write
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textarea"
@@ -18,7 +19,7 @@ import (
 func (o Options) Run() error {
 	in, _ := stdin.Read()
 	if in != "" && o.Value == "" {
-		o.Value = in
+		o.Value = strings.Replace(in, "\r", "", -1)
 	}
 
 	a := textarea.New()
