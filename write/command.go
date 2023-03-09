@@ -19,7 +19,7 @@ import (
 func (o Options) Run() error {
 	in, _ := stdin.Read()
 	if in != "" && o.Value == "" {
-		o.Value = strings.Replace(in, "\r", "", -1)
+		o.Value = strings.ReplaceAll(in, "\r", "")
 	}
 
 	a := textarea.New()
