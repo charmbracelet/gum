@@ -19,12 +19,13 @@ func (o Options) Run() error {
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
 	m := model{
-		spinner: s,
-		title:   o.TitleStyle.ToLipgloss().Render(o.Title),
-		command: o.Command,
-		align:   o.Align,
+		spinner:    s,
+		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
+		command:    o.Command,
+		align:      o.Align,
+		showOutput: (o.LiveOutput && o.ShowOutput),
 	}
-	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
+	p := tea.NewProgram(m)
 	mm, err := p.Run()
 	m = mm.(model)
 
@@ -32,7 +33,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("failed to run spin: %w", err)
 	}
 
-	if o.ShowOutput {
+	if o.ShowOutput && !o.LiveOutput {
 		fmt.Fprint(os.Stdout, m.stdout)
 		fmt.Fprint(os.Stderr, m.stderr)
 	}

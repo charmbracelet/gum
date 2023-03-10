@@ -22,12 +22,15 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+var liveBuffer strings.Builder
+
 type model struct {
-	spinner spinner.Model
-	title   string
-	align   string
-	command []string
-	aborted bool
+	spinner    spinner.Model
+	title      string
+	align      string
+	command    []string
+	aborted    bool
+	showOutput bool
 
 	status int
 	stdout string
@@ -40,7 +43,7 @@ type finishCommandMsg struct {
 	status int
 }
 
-func commandStart(command []string) tea.Cmd {
+func commandStart(command []string, showOutput bool) tea.Cmd {
 	return func() tea.Msg {
 		var args []string
 		if len(command) > 1 {
@@ -49,7 +52,11 @@ func commandStart(command []string) tea.Cmd {
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
 		var outbuf, errbuf strings.Builder
-		cmd.Stdout = &outbuf
+		if showOutput {
+			cmd.Stdout = &liveBuffer
+		} else {
+			cmd.Stdout = &outbuf
+		}
 		cmd.Stderr = &errbuf
 
 		_ = cmd.Run()
@@ -71,15 +78,15 @@ func commandStart(command []string) tea.Cmd {
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
-		commandStart(m.command),
+		commandStart(m.command, m.showOutput),
 	)
 }
 func (m model) View() string {
 	if m.align == "left" {
-		return m.spinner.View() + " " + m.title
+		return m.spinner.View() + " " + m.title + "\n" + liveBuffer.String()
 	}
 
-	return m.title + " " + m.spinner.View()
+	return m.title + " " + m.spinner.View() + "\n" + liveBuffer.String()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
