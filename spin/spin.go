@@ -83,9 +83,14 @@ func (m model) Init() tea.Cmd {
 }
 func (m model) View() string {
 	if m.align == "left" {
+		if !m.showOutput {
+			return m.spinner.View() + " " + m.title
+		}
 		return m.spinner.View() + " " + m.title + "\n" + liveBuffer.String()
 	}
-
+	if !m.showOutput {
+		return m.title + " " + m.spinner.View()
+	}
 	return m.title + " " + m.spinner.View() + "\n" + liveBuffer.String()
 }
 
