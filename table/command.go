@@ -53,7 +53,7 @@ func (o Options) Run() error {
 	}
 
 	data, err := reader.ReadAll()
-	if err != nil {
+	if err != nil || len(data) == 0 {
 		return fmt.Errorf("invalid data provided")
 	}
 	var columns = make([]table.Column, 0, len(columnNames))
