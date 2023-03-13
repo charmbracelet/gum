@@ -2,12 +2,12 @@ package pager
 
 import (
 	"fmt"
-
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
+	"regexp"
 )
 
 // Run provides a shell script interface for the viewport bubble.
@@ -22,7 +22,9 @@ func (o Options) Run() error {
 			return fmt.Errorf("unable to read stdin")
 		}
 		if stdin != "" {
-			o.Content = stdin
+			// Sanitize the input from stdin by removing backspace sequences.
+			backspace := regexp.MustCompile(".\x08")
+			o.Content = backspace.ReplaceAllString(stdin, "")
 		} else {
 			return fmt.Errorf("provide some content to display")
 		}
