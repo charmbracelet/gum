@@ -2,6 +2,7 @@ package pager
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -22,7 +23,9 @@ func (o Options) Run() error {
 			return fmt.Errorf("unable to read stdin")
 		}
 		if stdin != "" {
-			o.Content = stdin
+			// Sanitize the input from stdin by removing backspace sequences.
+			backspace := regexp.MustCompile(".\x08")
+			o.Content = backspace.ReplaceAllString(stdin, "")
 		} else {
 			return fmt.Errorf("provide some content to display")
 		}
