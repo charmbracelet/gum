@@ -25,6 +25,7 @@ type model struct {
 	selectedPrefix   string
 	unselectedPrefix string
 	cursorPrefix     string
+	header           string
 	items            []item
 	quitting         bool
 	index            int
@@ -36,6 +37,7 @@ type model struct {
 
 	// styles
 	cursorStyle       lipgloss.Style
+	headerStyle       lipgloss.Style
 	itemStyle         lipgloss.Style
 	selectedItemStyle lipgloss.Style
 }
@@ -171,12 +173,15 @@ func (m model) View() string {
 		}
 	}
 
-	if m.paginator.TotalPages <= 1 {
-		return s.String()
+	if m.paginator.TotalPages > 1 {
+		s.WriteString(strings.Repeat("\n", m.height-m.paginator.ItemsOnPage(len(m.items))+1))
+		s.WriteString("  " + m.paginator.View())
 	}
 
-	s.WriteString(strings.Repeat("\n", m.height-m.paginator.ItemsOnPage(len(m.items))+1))
-	s.WriteString("  " + m.paginator.View())
+	if m.header != "" {
+		header := m.headerStyle.Render(m.header)
+		return lipgloss.JoinVertical(lipgloss.Left, header, s.String())
+	}
 
 	return s.String()
 }
