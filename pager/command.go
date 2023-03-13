@@ -2,12 +2,13 @@ package pager
 
 import (
 	"fmt"
+	"regexp"
+
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
-	"regexp"
 )
 
 // Run provides a shell script interface for the viewport bubble.
