@@ -123,22 +123,18 @@ func (m model) View() string {
 	m.viewport.SetContent(s.String())
 
 	// View the input and the filtered choices
-	var view string
+	header := m.headerStyle.Render(m.header)
 	if m.reverse {
-		view = m.viewport.View() + "\n" + m.textinput.View()
-	} else {
-		view = m.textinput.View() + "\n" + m.viewport.View()
-	}
-
-	if m.header != "" {
-		header := m.headerStyle.Render(m.header)
-		if m.reverse {
-			view = lipgloss.JoinVertical(lipgloss.Left, view, header)
+		view := m.viewport.View() + "\n" + m.textinput.View()
+		if m.header != "" {
+			return lipgloss.JoinVertical(lipgloss.Left, view, header)
 		}
-		view = lipgloss.JoinVertical(lipgloss.Left, header, view)
+
+		return view
 	}
 
-	return view
+	view := m.textinput.View() + "\n" + m.viewport.View()
+	return lipgloss.JoinVertical(lipgloss.Left, header, view)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
