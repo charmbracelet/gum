@@ -147,7 +147,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// Make place in the view port if header is set
 		if m.header != "" {
-			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.header)
+			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.headerStyle.Render(m.header))
 		}
 		m.viewport.Width = msg.Width
 		if m.reverse {
