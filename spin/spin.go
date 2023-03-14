@@ -30,6 +30,7 @@ type model struct {
 	align      string
 	command    []string
 	aborted    bool
+	liveOutput bool
 	showOutput bool
 
 	status int
@@ -43,7 +44,7 @@ type finishCommandMsg struct {
 	status int
 }
 
-func commandStart(command []string, showOutput bool) tea.Cmd {
+func commandStart(command []string, liveOutput bool, showOutput bool) tea.Cmd {
 	return func() tea.Msg {
 		var args []string
 		if len(command) > 1 {
@@ -52,7 +53,7 @@ func commandStart(command []string, showOutput bool) tea.Cmd {
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
 		var outbuf, errbuf strings.Builder
-		if showOutput {
+		if liveOutput {
 			cmd.Stdout = &liveBuffer
 		} else {
 			cmd.Stdout = &outbuf
@@ -67,6 +68,10 @@ func commandStart(command []string, showOutput bool) tea.Cmd {
 			status = 1
 		}
 
+		if showOutput {
+			outbuf.WriteString(liveBuffer.String())
+		}
+
 		return finishCommandMsg{
 			stdout: outbuf.String(),
 			stderr: errbuf.String(),
@@ -78,17 +83,17 @@ func commandStart(command []string, showOutput bool) tea.Cmd {
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
-		commandStart(m.command, m.showOutput),
+		commandStart(m.command, m.liveOutput, m.showOutput),
 	)
 }
 func (m model) View() string {
 	if m.align == "left" {
-		if !m.showOutput {
+		if !m.liveOutput {
 			return m.spinner.View() + " " + m.title
 		}
 		return m.spinner.View() + " " + m.title + "\n" + liveBuffer.String()
 	}
-	if !m.showOutput {
+	if !m.liveOutput {
 		return m.title + " " + m.spinner.View()
 	}
 	return m.title + " " + m.spinner.View() + "\n" + liveBuffer.String()
