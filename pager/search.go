@@ -44,6 +44,7 @@ func (s *Search) Execute(m *model) {
 
 func (s *Search) Done() {
 	s.Active = false
+	s.CurMatch = 0
 
 }
 

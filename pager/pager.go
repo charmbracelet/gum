@@ -104,9 +104,9 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
 		}
+		m.viewport, cmd = m.viewport.Update(key)
 	}
 
-	m.viewport, cmd = m.viewport.Update(key)
 	return m, cmd
 }
 
