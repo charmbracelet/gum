@@ -20,6 +20,7 @@ type model struct {
 	showLineNumbers bool
 	lineNumberStyle lipgloss.Style
 	softWrap        bool
+	search          Search
 }
 
 func (m model) Init() tea.Cmd {
@@ -69,20 +70,51 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.viewport.SetContent(text.String())
 	case tea.KeyMsg:
-		switch msg.String() {
+		return m.KeyHandler(msg)
+	}
+
+	return m, nil
+}
+
+func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
+	var cmd tea.Cmd
+	if m.search.Active {
+		switch key.String() {
+		case "enter":
+			if m.search.Input.Value() != "" {
+				m.search.Execute(&m)
+			} else {
+				m.search.Done()
+			}
+		case "ctrl+d", "ctrl+c", "esc":
+			m.search.Done()
+		default:
+			m.search.Input, cmd = m.search.Input.Update(key)
+		}
+	} else {
+		switch key.String() {
 		case "g":
 			m.viewport.GotoTop()
 		case "G":
 			m.viewport.GotoBottom()
+		case "/":
+			m.search.Begin()
+		case "n":
+			m.search.NextMatch(&m)
 		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
 		}
 	}
-	var cmd tea.Cmd
-	m.viewport, cmd = m.viewport.Update(msg)
+
+	m.viewport, cmd = m.viewport.Update(key)
 	return m, cmd
 }
 
 func (m model) View() string {
-	return m.viewport.View() + m.helpStyle.Render("\n ↑/↓: Navigate • q: Quit")
+	helpMsg := "\n ↑/↓: Navigate • q: Quit"
+	if m.search.Active {
+		return m.viewport.View() + m.helpStyle.Render(helpMsg) + "\n" + m.search.Input.View()
+	}
+
+	return m.viewport.View() + m.helpStyle.Render(helpMsg)
 }
