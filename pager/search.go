@@ -49,7 +49,7 @@ func (s *Search) Done() {
 }
 
 func (s *Search) NextMatch(m *model) {
-	if len(s.Matches) < 0 {
+	if len(s.Matches) <= 0 {
 		return
 	}
 	if s.CurMatch > len(s.Matches)-1 {
