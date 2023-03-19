@@ -44,7 +44,7 @@ func (s *Search) Execute(m *model) {
 	matches := unique(queryRe.FindAllString(m.content, -1))
 	for _, match := range matches {
 		replacement := m.matchStyle.Render(match)
-		m.content = string(queryRe.ReplaceAll([]byte(m.content), []byte(replacement)))
+		m.content = strings.ReplaceAll(m.content, match, replacement)
 	}
 }
 
