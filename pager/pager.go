@@ -87,7 +87,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 		case "enter":
 			if m.search.Input.Value() != "" {
 				m.search.Execute(&m)
-				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height, Width: m.viewport.Width})
+				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
 			} else {
 				m.search.Done()
 			}

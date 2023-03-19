@@ -35,15 +35,29 @@ func (s *Search) Execute(m *model) {
 	}
 
 	queryRe := regexp.MustCompile(s.Input.Value())
-	//matches := queryRe.FindAllIndex([]byte(m.content), -1)
 	for i, line := range strings.Split(m.content, "\n") {
 		if queryRe.Match([]byte(line)) {
 			s.Matches = append(s.Matches, i)
 		}
 	}
 
-	replacement := m.matchStyle.Render("tar")
-	m.content = string(queryRe.ReplaceAll([]byte(m.content), []byte(replacement)))
+	matches := unique(queryRe.FindAllString(m.content, -1))
+	for _, match := range matches {
+		replacement := m.matchStyle.Render(match)
+		m.content = string(queryRe.ReplaceAll([]byte(m.content), []byte(replacement)))
+	}
+}
+
+func unique(strings []string) []string {
+	keys := make(map[string]bool)
+	var list []string
+	for _, s := range strings {
+		if _, uniq := keys[s]; !uniq {
+			keys[s] = true
+			list = append(list, s)
+		}
+	}
+	return list
 }
 
 func (s *Search) Done() {
