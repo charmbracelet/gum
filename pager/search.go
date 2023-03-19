@@ -41,6 +41,9 @@ func (s *Search) Execute(m *model) {
 			s.Matches = append(s.Matches, i)
 		}
 	}
+
+	replacement := m.matchStyle.Render("tar")
+	m.content = string(queryRe.ReplaceAll([]byte(m.content), []byte(replacement)))
 }
 
 func (s *Search) Done() {

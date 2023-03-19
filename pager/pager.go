@@ -5,12 +5,11 @@ package pager
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
+	"strings"
 )
 
 type model struct {
@@ -21,6 +20,7 @@ type model struct {
 	lineNumberStyle lipgloss.Style
 	softWrap        bool
 	search          Search
+	matchStyle      lipgloss.Style
 }
 
 func (m model) Init() tea.Cmd {
@@ -30,50 +30,54 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
-		m.viewport.Width = msg.Width
-		textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
-		var text strings.Builder
-
-		// Determine max width of a line
-		maxLineWidth := m.viewport.Width
-		if m.softWrap {
-			vpStyle := m.viewport.Style
-			maxLineWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
-			if m.showLineNumbers {
-				maxLineWidth -= len("     │ ")
-			}
-		}
-
-		for i, line := range strings.Split(m.content, "\n") {
-			line = strings.ReplaceAll(line, "\t", "    ")
-			if m.showLineNumbers {
-				text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
-			}
-			for m.softWrap && len(line) > maxLineWidth {
-				truncatedLine := runewidth.Truncate(line, maxLineWidth, "")
-				text.WriteString(textStyle.Render(truncatedLine))
-				text.WriteString("\n")
-				if m.showLineNumbers {
-					text.WriteString(m.lineNumberStyle.Render("     │ "))
-				}
-				line = strings.Replace(line, truncatedLine, "", 1)
-			}
-			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
-			text.WriteString("\n")
-		}
-
-		diffHeight := m.viewport.Height - lipgloss.Height(text.String())
-		if diffHeight > 0 && m.showLineNumbers {
-			remainingLines := "   ~ │ " + strings.Repeat("\n   ~ │ ", diffHeight-1)
-			text.WriteString(m.lineNumberStyle.Render(remainingLines))
-		}
-		m.viewport.SetContent(text.String())
+		m.ProcessText(msg)
 	case tea.KeyMsg:
 		return m.KeyHandler(msg)
 	}
 
 	return m, nil
+}
+
+func (m *model) ProcessText(msg tea.WindowSizeMsg) {
+	m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
+	m.viewport.Width = msg.Width
+	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
+	var text strings.Builder
+
+	// Determine max width of a line
+	maxLineWidth := m.viewport.Width
+	if m.softWrap {
+		vpStyle := m.viewport.Style
+		maxLineWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
+		if m.showLineNumbers {
+			maxLineWidth -= len("     │ ")
+		}
+	}
+
+	for i, line := range strings.Split(m.content, "\n") {
+		line = strings.ReplaceAll(line, "\t", "    ")
+		if m.showLineNumbers {
+			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
+		}
+		for m.softWrap && len(line) > maxLineWidth {
+			truncatedLine := runewidth.Truncate(line, maxLineWidth, "")
+			text.WriteString(textStyle.Render(truncatedLine))
+			text.WriteString("\n")
+			if m.showLineNumbers {
+				text.WriteString(m.lineNumberStyle.Render("     │ "))
+			}
+			line = strings.Replace(line, truncatedLine, "", 1)
+		}
+		text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
+		text.WriteString("\n")
+	}
+
+	diffHeight := m.viewport.Height - lipgloss.Height(text.String())
+	if diffHeight > 0 && m.showLineNumbers {
+		remainingLines := "   ~ │ " + strings.Repeat("\n   ~ │ ", diffHeight-1)
+		text.WriteString(m.lineNumberStyle.Render(remainingLines))
+	}
+	m.viewport.SetContent(text.String())
 }
 
 func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
@@ -83,6 +87,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 		case "enter":
 			if m.search.Input.Value() != "" {
 				m.search.Execute(&m)
+				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height, Width: m.viewport.Width})
 			} else {
 				m.search.Done()
 			}
