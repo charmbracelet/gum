@@ -2,6 +2,7 @@ package pager
 
 import (
 	"github.com/charmbracelet/bubbles/textinput"
+	"math"
 	"regexp"
 	"strings"
 )
@@ -57,6 +58,15 @@ func (s *Search) NextMatch(m *model) {
 	m.viewport.LineDown(pos)
 }
 
+func (s *Search) PrevMatch(m *model) {
+	if len(s.Matches) <= 0 {
+		return
+	}
+
+	pos := m.viewport.YOffset - m.search.Matches[s.findPrev(&m)]
+	m.viewport.LineUp(int(math.Abs(float64(pos))))
+}
+
 func (s *Search) findNext(m **model) int {
 	if s.CurMatch == len(s.Matches)-1 {
 		(*m).viewport.GotoTop()
@@ -72,4 +82,21 @@ func (s *Search) findNext(m **model) int {
 	}
 
 	return 0
+}
+
+func (s *Search) findPrev(m **model) int {
+	if s.CurMatch == 0 {
+		(*m).viewport.GotoBottom()
+		s.CurMatch = len(s.Matches) - 1
+		return s.CurMatch
+	}
+
+	for i := len(s.Matches) - 1; i >= 0; i-- {
+		if s.Matches[i] < (*m).viewport.YOffset {
+			s.CurMatch = i
+			return i
+		}
+	}
+
+	return len(s.Matches) - 1
 }

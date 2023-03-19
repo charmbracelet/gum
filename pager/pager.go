@@ -99,6 +99,8 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			m.viewport.GotoBottom()
 		case "/":
 			m.search.Begin()
+		case "p":
+			m.search.PrevMatch(&m)
 		case "n":
 			m.search.NextMatch(&m)
 		case "q", "ctrl+c", "esc":
