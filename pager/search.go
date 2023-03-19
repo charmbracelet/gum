@@ -52,12 +52,24 @@ func (s *Search) NextMatch(m *model) {
 	if len(s.Matches) <= 0 {
 		return
 	}
-	if s.CurMatch > len(s.Matches)-1 {
+
+	pos := m.search.Matches[s.findNext(&m)] - m.viewport.YOffset
+	m.viewport.LineDown(pos)
+}
+
+func (s *Search) findNext(m **model) int {
+	if s.CurMatch == len(s.Matches)-1 {
+		(*m).viewport.GotoTop()
 		s.CurMatch = 0
-		m.viewport.GotoTop()
+		return 0
 	}
 
-	pos := m.search.Matches[s.CurMatch] - m.viewport.YOffset
-	s.CurMatch++
-	m.viewport.LineDown(pos)
+	for i, match := range s.Matches {
+		if match > (*m).viewport.YOffset {
+			s.CurMatch = i
+			return i
+		}
+	}
+
+	return 0
 }
