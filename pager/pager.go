@@ -14,6 +14,7 @@ import (
 
 type model struct {
 	content         string
+	origContent     string
 	viewport        viewport.Model
 	helpStyle       lipgloss.Style
 	showLineNumbers bool
@@ -54,13 +55,14 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 		}
 	}
 
+	origLines := strings.Split(m.origContent, "\n")
 	for i, line := range strings.Split(m.content, "\n") {
 		line = strings.ReplaceAll(line, "\t", "    ")
 		if m.showLineNumbers {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
 		for m.softWrap && len(line) > maxLineWidth {
-			truncatedLine := runewidth.Truncate(line, maxLineWidth, "")
+			truncatedLine := runewidth.Truncate(line, maxLineWidth+(len(line)-len(origLines[i])), "")
 			text.WriteString(textStyle.Render(truncatedLine))
 			text.WriteString("\n")
 			if m.showLineNumbers {
@@ -68,7 +70,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			}
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
+		text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth+(len(line)-len(origLines[i])), "")))
 		text.WriteString("\n")
 	}
 
@@ -86,6 +88,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 		switch key.String() {
 		case "enter":
 			if m.search.Input.Value() != "" {
+				m.content = m.origContent
 				m.search.Execute(&m)
 				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
 			} else {

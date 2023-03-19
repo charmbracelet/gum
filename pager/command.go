@@ -35,6 +35,7 @@ func (o Options) Run() error {
 		viewport:        vp,
 		helpStyle:       o.HelpStyle.ToLipgloss(),
 		content:         o.Content,
+		origContent:     o.Content,
 		showLineNumbers: o.ShowLineNumbers,
 		lineNumberStyle: o.LineNumberStyle.ToLipgloss(),
 		softWrap:        o.SoftWrap,
