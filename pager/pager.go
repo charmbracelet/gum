@@ -85,10 +85,10 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 
 func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 	var cmd tea.Cmd
-	if m.search.Active {
+	if m.search.active {
 		switch key.String() {
 		case "enter":
-			if m.search.Input.Value() != "" {
+			if m.search.input.Value() != "" {
 				m.content = m.origContent
 				m.search.Execute(&m)
 				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
@@ -98,7 +98,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 		case "ctrl+d", "ctrl+c", "esc":
 			m.search.Done()
 		default:
-			m.search.Input, cmd = m.search.Input.Update(key)
+			m.search.input, cmd = m.search.input.Update(key)
 		}
 	} else {
 		switch key.String() {
@@ -123,8 +123,8 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 
 func (m model) View() string {
 	helpMsg := "\n ↑/↓: Navigate • q: Quit • /: Search • n: Next Match • p: Previous Match"
-	if m.search.Active {
-		return m.viewport.View() + m.helpStyle.Render(helpMsg) + "\n" + m.search.Input.View()
+	if m.search.active {
+		return m.viewport.View() + m.helpStyle.Render(helpMsg) + "\n" + m.search.input.View()
 	}
 
 	return m.viewport.View() + m.helpStyle.Render(helpMsg)

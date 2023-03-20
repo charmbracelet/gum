@@ -8,40 +8,40 @@ import (
 )
 
 type search struct {
-	Active   bool
-	Input    textinput.Model
-	Matches  []int
-	CurMatch int
+	active   bool
+	input    textinput.Model
+	matches  []int
+	curMatch int
 }
 
-func (s *search) New() {
+func (s *search) new() {
 	input := textinput.New()
 	input.Placeholder = "search"
 	input.Prompt = "/"
-	s.Input = input
+	s.input = input
 }
 
 func (s *search) Begin() {
-	s.New()
-	s.Matches = s.Matches[0:0]
-	s.Active = true
-	s.Input.Focus()
+	s.new()
+	s.matches = s.matches[0:0]
+	s.active = true
+	s.input.Focus()
 }
 
 func (s *search) Execute(m *model) {
 	defer s.Done()
-	if s.Input.Value() == "" {
+	if s.input.Value() == "" {
 		return
 	}
 
-	queryRe := regexp.MustCompile(s.Input.Value())
+	query := regexp.MustCompile(s.input.Value())
 	for i, line := range strings.Split(m.content, "\n") {
-		if queryRe.Match([]byte(line)) {
-			s.Matches = append(s.Matches, i)
+		if query.Match([]byte(line)) {
+			s.matches = append(s.matches, i)
 		}
 	}
 
-	matches := unique(queryRe.FindAllString(m.content, -1))
+	matches := unique(query.FindAllString(m.content, -1))
 	for _, match := range matches {
 		replacement := m.matchStyle.Render(match)
 		m.content = strings.ReplaceAll(m.content, match, replacement)
@@ -61,48 +61,48 @@ func unique(strings []string) []string {
 }
 
 func (s *search) Done() {
-	s.Active = false
-	s.CurMatch = 0
+	s.active = false
+	s.curMatch = 0
 }
 
 func (s *search) NextMatch(m *model) {
 	switch {
-	case len(s.Matches) <= 0:
+	case len(s.matches) <= 0:
 		return
-	case s.CurMatch == len(s.Matches)-1:
+	case s.curMatch == len(s.matches)-1:
 		(*m).viewport.GotoTop()
-		s.CurMatch = 0
+		s.curMatch = 0
 	case (*m).viewport.AtBottom():
-		s.CurMatch++
+		s.curMatch++
 	default:
-		for i, match := range s.Matches {
+		for i, match := range s.matches {
 			if match > (*m).viewport.YOffset {
-				s.CurMatch = i
+				s.curMatch = i
 				break
 			}
 		}
 	}
 
-	m.viewport.SetYOffset(m.search.Matches[s.CurMatch])
+	m.viewport.SetYOffset(m.search.matches[s.curMatch])
 }
 
 func (s *search) PrevMatch(m *model) {
 	switch {
-	case len(s.Matches) <= 0:
+	case len(s.matches) <= 0:
 		return
-	case s.CurMatch == 0:
+	case s.curMatch == 0:
 		(*m).viewport.GotoBottom()
-		s.CurMatch = len(s.Matches) - 1
+		s.curMatch = len(s.matches) - 1
 	case (*m).viewport.AtBottom():
-		s.CurMatch--
+		s.curMatch--
 	default:
-		for i := len(s.Matches) - 1; i >= 0; i-- {
-			if s.Matches[i] < (*m).viewport.YOffset {
-				s.CurMatch = i
+		for i := len(s.matches) - 1; i >= 0; i-- {
+			if s.matches[i] < (*m).viewport.YOffset {
+				s.curMatch = i
 				break
 			}
 		}
 	}
 
-	m.viewport.SetYOffset(m.search.Matches[s.CurMatch])
+	m.viewport.SetYOffset(m.search.matches[s.curMatch])
 }
