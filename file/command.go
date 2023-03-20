@@ -9,6 +9,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -53,6 +54,9 @@ func (o Options) Run() error {
 	}
 
 	m = tm.(model)
+	if m.aborted {
+		return exit.ErrAborted
+	}
 
 	if m.selectedPath == "" {
 		os.Exit(1)
