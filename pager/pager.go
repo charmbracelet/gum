@@ -5,11 +5,12 @@ package pager
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
-	"strings"
 )
 
 type model struct {
@@ -20,7 +21,7 @@ type model struct {
 	showLineNumbers bool
 	lineNumberStyle lipgloss.Style
 	softWrap        bool
-	search          Search
+	search          search
 	matchStyle      lipgloss.Style
 }
 

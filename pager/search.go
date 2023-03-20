@@ -1,33 +1,34 @@
 package pager
 
 import (
-	"github.com/charmbracelet/bubbles/textinput"
 	"regexp"
 	"strings"
+
+	"github.com/charmbracelet/bubbles/textinput"
 )
 
-type Search struct {
+type search struct {
 	Active   bool
 	Input    textinput.Model
 	Matches  []int
 	CurMatch int
 }
 
-func (s *Search) New() {
+func (s *search) New() {
 	input := textinput.New()
-	input.Placeholder = "Search"
+	input.Placeholder = "search"
 	input.Prompt = "/"
 	s.Input = input
 }
 
-func (s *Search) Begin() {
+func (s *search) Begin() {
 	s.New()
 	s.Matches = s.Matches[0:0]
 	s.Active = true
 	s.Input.Focus()
 }
 
-func (s *Search) Execute(m *model) {
+func (s *search) Execute(m *model) {
 	defer s.Done()
 	if s.Input.Value() == "" {
 		return
@@ -59,66 +60,49 @@ func unique(strings []string) []string {
 	return list
 }
 
-func (s *Search) Done() {
+func (s *search) Done() {
 	s.Active = false
 	s.CurMatch = 0
-
 }
 
-func (s *Search) NextMatch(m *model) {
-	if len(s.Matches) <= 0 {
+func (s *search) NextMatch(m *model) {
+	switch {
+	case len(s.Matches) <= 0:
 		return
-	}
-
-	m.viewport.SetYOffset(m.search.Matches[s.findNext(&m)])
-}
-
-func (s *Search) PrevMatch(m *model) {
-	if len(s.Matches) <= 0 {
-		return
-	}
-
-	m.viewport.SetYOffset(m.search.Matches[s.findPrev(&m)])
-}
-
-func (s *Search) findNext(m **model) int {
-	if s.CurMatch == len(s.Matches)-1 {
+	case s.CurMatch == len(s.Matches)-1:
 		(*m).viewport.GotoTop()
 		s.CurMatch = 0
-		return 0
-	}
-	if (*m).viewport.AtBottom() {
+	case (*m).viewport.AtBottom():
 		s.CurMatch++
-		return s.CurMatch
-	}
-
-	for i, match := range s.Matches {
-		if match > (*m).viewport.YOffset {
-			s.CurMatch = i
-			return i
+	default:
+		for i, match := range s.Matches {
+			if match > (*m).viewport.YOffset {
+				s.CurMatch = i
+				break
+			}
 		}
 	}
 
-	return 0
+	m.viewport.SetYOffset(m.search.Matches[s.CurMatch])
 }
 
-func (s *Search) findPrev(m **model) int {
-	if s.CurMatch == 0 {
+func (s *search) PrevMatch(m *model) {
+	switch {
+	case len(s.Matches) <= 0:
+		return
+	case s.CurMatch == 0:
 		(*m).viewport.GotoBottom()
 		s.CurMatch = len(s.Matches) - 1
-		return s.CurMatch
-	}
-	if (*m).viewport.AtBottom() {
+	case (*m).viewport.AtBottom():
 		s.CurMatch--
-		return s.CurMatch
-	}
-
-	for i := len(s.Matches) - 1; i >= 0; i-- {
-		if s.Matches[i] < (*m).viewport.YOffset {
-			s.CurMatch = i
-			return i
+	default:
+		for i := len(s.Matches) - 1; i >= 0; i-- {
+			if s.Matches[i] < (*m).viewport.YOffset {
+				s.CurMatch = i
+				break
+			}
 		}
 	}
 
-	return len(s.Matches) - 1
+	m.viewport.SetYOffset(m.search.Matches[s.CurMatch])
 }
