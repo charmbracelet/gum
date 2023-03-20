@@ -91,6 +91,8 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			if m.search.input.Value() != "" {
 				m.content = m.origContent
 				m.search.Execute(&m)
+
+				// Trigger a view update to highlight the found matches
 				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
 			} else {
 				m.search.Done()

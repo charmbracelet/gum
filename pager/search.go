@@ -28,6 +28,7 @@ func (s *search) Begin() {
 	s.input.Focus()
 }
 
+// Execute find all lines in the model with a match
 func (s *search) Execute(m *model) {
 	defer s.Done()
 	if s.input.Value() == "" {
@@ -41,6 +42,7 @@ func (s *search) Execute(m *model) {
 		}
 	}
 
+	// Find all regex matches within the content and then loop over the unique matches and style them
 	matches := unique(query.FindAllString(m.content, -1))
 	for _, match := range matches {
 		replacement := m.matchStyle.Render(match)
