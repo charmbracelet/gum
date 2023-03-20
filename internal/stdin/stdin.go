@@ -19,13 +19,17 @@ func Read() (string, error) {
 
 	for {
 		r, _, err := reader.ReadRune()
-		if err != nil && err == io.EOF {
+		if err != nil || err == io.EOF {
 			break
 		}
 		_, err = b.WriteRune(r)
 		if err != nil {
 			return "", fmt.Errorf("failed to write rune: %w", err)
 		}
+	}
+
+	if len(b.String()) <= 0 {
+		return "", fmt.Errorf("stdin is empty")
 	}
 
 	return b.String(), nil
