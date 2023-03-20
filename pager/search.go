@@ -108,6 +108,10 @@ func (s *Search) findPrev(m **model) int {
 		s.CurMatch = len(s.Matches) - 1
 		return s.CurMatch
 	}
+	if (*m).viewport.AtBottom() {
+		s.CurMatch--
+		return s.CurMatch
+	}
 
 	for i := len(s.Matches) - 1; i >= 0; i-- {
 		if s.Matches[i] < (*m).viewport.YOffset {
