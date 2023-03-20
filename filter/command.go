@@ -32,14 +32,16 @@ func (o Options) Run() error {
 	v := viewport.New(o.Width, o.Height)
 
 	var choices []string
-	if input, err := stdin.Read(); input != "" && err == nil {
+	input, err := stdin.Read()
+	switch {
+	case err != nil:
+		return fmt.Errorf("%v", err)
+	case input != "":
 		input = strings.TrimSuffix(input, "\n")
 		if input != "" {
 			choices = strings.Split(input, "\n")
 		}
-	} else if err != nil {
-		return fmt.Errorf("%v", err)
-	} else {
+	default:
 		choices = files.List()
 	}
 
