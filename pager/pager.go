@@ -10,7 +10,6 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/mattn/go-runewidth"
 )
 
 type model struct {
@@ -52,19 +51,17 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 		vpStyle := m.viewport.Style
 		maxLineWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
 		if m.showLineNumbers {
-			maxLineWidth -= len("     │ ")
+			maxLineWidth -= lipgloss.Width("     │ ")
 		}
 	}
 
-	origLines := strings.Split(m.origContent, "\n")
 	for i, line := range strings.Split(m.content, "\n") {
 		line = strings.ReplaceAll(line, "\t", "    ")
 		if m.showLineNumbers {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
-		lineDiff := len(line) - len(origLines[i])
-		for m.softWrap && len(line) > maxLineWidth+lineDiff {
-			truncatedLine := runewidth.Truncate(line, maxLineWidth+lineDiff, "")
+		for m.softWrap && lipgloss.Width(line) > maxLineWidth {
+			truncatedLine := lipglossTruncate(line, maxLineWidth)
 			text.WriteString(textStyle.Render(truncatedLine))
 			text.WriteString("\n")
 			if m.showLineNumbers {
@@ -72,11 +69,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			}
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		if !m.softWrap {
-			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth+lineDiff, "")))
-		} else {
-			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
-		}
+		text.WriteString(textStyle.Render(lipglossTruncate(line, maxLineWidth)))
 		text.WriteString("\n")
 	}
 
@@ -86,6 +79,13 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 		text.WriteString(m.lineNumberStyle.Render(remainingLines))
 	}
 	m.viewport.SetContent(text.String())
+}
+
+func lipglossTruncate(s string, width int) string {
+	var i int
+	for i = 0; i < len(s) && lipgloss.Width(s[:i]) < width; i++ {
+	}
+	return s[:i]
 }
 
 func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
