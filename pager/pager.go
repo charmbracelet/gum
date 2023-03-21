@@ -71,7 +71,11 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			}
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth+(len(line)-len(origLines[i])), "")))
+		if !m.softWrap {
+			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth+(len(line)-len(origLines[i])), "")))
+		} else {
+			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
+		}
 		text.WriteString("\n")
 	}
 
