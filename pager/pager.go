@@ -62,8 +62,9 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 		if m.showLineNumbers {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
-		for m.softWrap && len(line) > maxLineWidth {
-			truncatedLine := runewidth.Truncate(line, maxLineWidth+(len(line)-len(origLines[i])), "")
+		lineDiff := len(line) - len(origLines[i])
+		for m.softWrap && len(line) > maxLineWidth+lineDiff {
+			truncatedLine := runewidth.Truncate(line, maxLineWidth+lineDiff, "")
 			text.WriteString(textStyle.Render(truncatedLine))
 			text.WriteString("\n")
 			if m.showLineNumbers {
@@ -72,7 +73,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
 		if !m.softWrap {
-			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth+(len(line)-len(origLines[i])), "")))
+			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth+lineDiff, "")))
 		} else {
 			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
 		}
