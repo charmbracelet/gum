@@ -84,7 +84,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 func lipglossTruncate(s string, width int) string {
 	var i int
 	for i = 0; i < len(s) && lipgloss.Width(s[:i]) < width; i++ {
-	}
+	} //revive:disable-line:empty-block
 	return s[:i]
 }
 
