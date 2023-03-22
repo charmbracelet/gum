@@ -28,10 +28,6 @@ func Read() (string, error) {
 		}
 	}
 
-	if len(b.String()) <= 0 {
-		return "", fmt.Errorf("stdin is empty")
-	}
-
 	return b.String(), nil
 }
 
