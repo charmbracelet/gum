@@ -1,6 +1,7 @@
 package pager
 
 import (
+	"github.com/charmbracelet/lipgloss"
 	"regexp"
 	"strings"
 
@@ -36,7 +37,20 @@ func (s *search) Execute(m *model) {
 	}
 
 	query := regexp.MustCompile(s.input.Value())
-	for i, line := range strings.Split(m.content, "\n") {
+
+	text := strings.Builder{}
+	for _, line := range strings.Split(m.content, "\n") {
+		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
+			truncatedLine := lipglossTruncate(line, m.maxWidth)
+			text.WriteString(truncatedLine)
+			text.WriteString("\n")
+			line = strings.Replace(line, truncatedLine, "", 1)
+		}
+		text.WriteString(lipglossTruncate(line, m.maxWidth))
+		text.WriteString("\n")
+	}
+
+	for i, line := range strings.Split(text.String(), "\n") {
 		if query.Match([]byte(line)) {
 			s.matches = append(s.matches, i)
 		}
