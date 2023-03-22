@@ -134,7 +134,10 @@ func (m model) View() string {
 	}
 
 	view := m.textinput.View() + "\n" + m.viewport.View()
-	return lipgloss.JoinVertical(lipgloss.Left, header, view)
+	if m.header != "" {
+		return lipgloss.JoinVertical(lipgloss.Left, header, view)
+	}
+	return view
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
