@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/gum/internal/utils"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -41,12 +42,12 @@ func (s *search) Execute(m *model) {
 	text := strings.Builder{}
 	for _, line := range strings.Split(m.content, "\n") {
 		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
-			truncatedLine := lipglossTruncate(line, m.maxWidth)
+			truncatedLine := utils.LipglossTruncate(line, m.maxWidth)
 			text.WriteString(truncatedLine)
 			text.WriteString("\n")
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(lipglossTruncate(line, m.maxWidth))
+		text.WriteString(utils.LipglossTruncate(line, m.maxWidth))
 		text.WriteString("\n")
 	}
 
@@ -57,23 +58,11 @@ func (s *search) Execute(m *model) {
 	}
 
 	// Find all regex matches within the content and then loop over the unique matches and style them
-	matches := unique(query.FindAllString(m.content, -1))
+	matches := utils.UniqueStrings(query.FindAllString(m.content, -1))
 	for _, match := range matches {
 		replacement := m.matchStyle.Render(match)
 		m.content = strings.ReplaceAll(m.content, match, replacement)
 	}
-}
-
-func unique(strings []string) []string {
-	keys := make(map[string]bool)
-	var list []string
-	for _, s := range strings {
-		if _, uniq := keys[s]; !uniq {
-			keys[s] = true
-			list = append(list, s)
-		}
-	}
-	return list
 }
 
 func (s *search) Done() {

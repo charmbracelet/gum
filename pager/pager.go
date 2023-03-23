@@ -9,6 +9,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/utils"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -62,7 +63,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
 		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
-			truncatedLine := lipglossTruncate(line, m.maxWidth)
+			truncatedLine := utils.LipglossTruncate(line, m.maxWidth)
 			text.WriteString(textStyle.Render(truncatedLine))
 			text.WriteString("\n")
 			if m.showLineNumbers {
@@ -70,7 +71,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			}
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(textStyle.Render(lipglossTruncate(line, m.maxWidth)))
+		text.WriteString(textStyle.Render(utils.LipglossTruncate(line, m.maxWidth)))
 		text.WriteString("\n")
 	}
 
@@ -80,13 +81,6 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 		text.WriteString(m.lineNumberStyle.Render(remainingLines))
 	}
 	m.viewport.SetContent(text.String())
-}
-
-func lipglossTruncate(s string, width int) string {
-	var i int
-	for i = 0; i < len(s) && lipgloss.Width(s[:i]) < width; i++ {
-	} //revive:disable-line:empty-block
-	return s[:i]
 }
 
 func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
