@@ -1,11 +1,11 @@
 package pager
 
 import (
-	"github.com/charmbracelet/lipgloss"
 	"regexp"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type search struct {

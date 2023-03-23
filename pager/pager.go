@@ -22,6 +22,7 @@ type model struct {
 	softWrap        bool
 	search          search
 	matchStyle      lipgloss.Style
+	maxWidth        int
 }
 
 func (m model) Init() tea.Cmd {
@@ -46,12 +47,12 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 	var text strings.Builder
 
 	// Determine max width of a line
-	maxLineWidth := m.viewport.Width
+	m.maxWidth = m.viewport.Width
 	if m.softWrap {
 		vpStyle := m.viewport.Style
-		maxLineWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
+		m.maxWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
 		if m.showLineNumbers {
-			maxLineWidth -= lipgloss.Width("     │ ")
+			m.maxWidth -= lipgloss.Width("     │ ")
 		}
 	}
 
@@ -60,8 +61,8 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 		if m.showLineNumbers {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
-		for m.softWrap && lipgloss.Width(line) > maxLineWidth {
-			truncatedLine := lipglossTruncate(line, maxLineWidth)
+		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
+			truncatedLine := lipglossTruncate(line, m.maxWidth)
 			text.WriteString(textStyle.Render(truncatedLine))
 			text.WriteString("\n")
 			if m.showLineNumbers {
@@ -69,7 +70,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			}
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(textStyle.Render(lipglossTruncate(line, maxLineWidth)))
+		text.WriteString(textStyle.Render(lipglossTruncate(line, m.maxWidth)))
 		text.WriteString("\n")
 	}
 
