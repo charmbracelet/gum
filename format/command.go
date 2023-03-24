@@ -29,7 +29,7 @@ func (o Options) Run() error {
 
 	switch o.Type {
 	case "code":
-		output, err = code(input)
+		output, err = code(input, o.Language)
 	case "emoji":
 		output, err = emoji(input)
 	case "template":
