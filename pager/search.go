@@ -57,7 +57,7 @@ func (s *search) Execute(m *model) {
 		}
 	}
 
-	// Find all regex matches within the content and then loop over the unique matches and style them
+	// Find all regex matches within the content and then loop over the unique matches and style them.
 	matches := utils.UniqueStrings(query.FindAllString(m.content, -1))
 	for _, match := range matches {
 		replacement := m.matchStyle.Render(match)
