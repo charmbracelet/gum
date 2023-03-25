@@ -23,7 +23,6 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
-		liveOutput: (o.LiveOutput),
 		showOutput: (o.ShowOutput),
 	}
 	p := tea.NewProgram(m)
@@ -35,7 +34,6 @@ func (o Options) Run() error {
 	}
 
 	if o.ShowOutput {
-		fmt.Fprint(os.Stdout, m.stdout)
 		fmt.Fprint(os.Stderr, m.stderr)
 	}
 
