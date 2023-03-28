@@ -22,7 +22,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-var liveBuffer strings.Builder
+var outbuf strings.Builder
 
 type model struct {
 	spinner    spinner.Model
@@ -31,15 +31,10 @@ type model struct {
 	command    []string
 	aborted    bool
 	showOutput bool
-
-	status int
-	stdout string
-	stderr string
+	status     int
 }
 
 type finishCommandMsg struct {
-	stdout string
-	stderr string
 	status int
 }
 
@@ -51,13 +46,8 @@ func commandStart(command []string, showOutput bool) tea.Cmd {
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
-		var outbuf, errbuf strings.Builder
-		if showOutput {
-			cmd.Stdout = &liveBuffer
-		} else {
-			cmd.Stdout = &outbuf
-		}
-		cmd.Stderr = &errbuf
+		cmd.Stdout = &outbuf
+		cmd.Stderr = &outbuf
 
 		_ = cmd.Run()
 
@@ -67,13 +57,7 @@ func commandStart(command []string, showOutput bool) tea.Cmd {
 			status = 1
 		}
 
-		if showOutput {
-			outbuf.WriteString(liveBuffer.String())
-		}
-
 		return finishCommandMsg{
-			stdout: outbuf.String(),
-			stderr: errbuf.String(),
 			status: status,
 		}
 	}
@@ -90,20 +74,18 @@ func (m model) View() string {
 		if !m.showOutput {
 			return m.spinner.View() + " " + m.title
 		}
-		return m.spinner.View() + " " + m.title + "\n" + liveBuffer.String()
+		return m.spinner.View() + " " + m.title + "\n" + outbuf.String()
 	}
 	if !m.showOutput {
 		return m.title + " " + m.spinner.View()
 	}
-	return m.title + " " + m.spinner.View() + "\n" + liveBuffer.String()
+	return m.title + " " + m.spinner.View() + "\n" + outbuf.String()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case finishCommandMsg:
-		m.stdout = msg.stdout
-		m.stderr = msg.stderr
 		m.status = msg.status
 		return m, tea.Quit
 	case tea.KeyMsg:
