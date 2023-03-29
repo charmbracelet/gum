@@ -126,7 +126,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 func (m model) View() string {
 	helpMsg := "\n ↑/↓: Navigate • q: Quit • /: Search • n: Next Match • p: Previous Match"
 	if m.search.active {
-		return m.viewport.View() + m.helpStyle.Render(helpMsg) + "\n" + m.search.input.View()
+		return m.viewport.View() + "\n" + m.search.input.View()
 	}
 
 	return m.viewport.View() + m.helpStyle.Render(helpMsg)
