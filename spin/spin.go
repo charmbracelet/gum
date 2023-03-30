@@ -40,7 +40,7 @@ type finishCommandMsg struct {
 	status int
 }
 
-func commandStart(command []string, showOutput bool) tea.Cmd {
+func commandStart(command []string) tea.Cmd {
 	return func() tea.Msg {
 		var args []string
 		if len(command) > 1 {
@@ -69,7 +69,7 @@ func commandStart(command []string, showOutput bool) tea.Cmd {
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
-		commandStart(m.command, m.showOutput),
+		commandStart(m.command),
 	)
 }
 func (m model) View() string {

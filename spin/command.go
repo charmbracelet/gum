@@ -23,7 +23,7 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
-		showOutput: (o.ShowOutput),
+		showOutput: o.ShowOutput,
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.Run()
@@ -44,7 +44,10 @@ func (o Options) Run() error {
 
 	if o.ShowOutput {
 		if info.Mode()&os.ModeCharDevice != os.ModeCharDevice {
-			os.Stdout.WriteString(m.stdout)
+			_, err := os.Stdout.WriteString(m.stdout)
+			if err != nil {
+				return fmt.Errorf("failed to write to stdout: %w", err)
+			}
 		}
 	}
 
