@@ -25,7 +25,7 @@ func (o Options) Run() error {
 		align:      o.Align,
 		showOutput: (o.ShowOutput),
 	}
-	p := tea.NewProgram(m)
+	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.Run()
 	m = mm.(model)
 
@@ -35,6 +35,17 @@ func (o Options) Run() error {
 
 	if m.aborted {
 		return exit.ErrAborted
+	}
+
+	info, err := os.Stdout.Stat()
+	if err != nil {
+		return fmt.Errorf("failed to access stdout: %w", err)
+	}
+
+	if o.ShowOutput {
+		if info.Mode()&os.ModeCharDevice != os.ModeCharDevice {
+			os.Stdout.WriteString(m.stdout)
+		}
 	}
 
 	os.Exit(m.status)
