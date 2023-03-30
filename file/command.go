@@ -29,6 +29,7 @@ func (o Options) Run() error {
 	}
 
 	fp := filepicker.New()
+	fp.CurrentDirectory = path
 	fp.Path = path
 	fp.Height = o.Height
 	fp.AutoHeight = o.Height == 0
