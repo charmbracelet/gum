@@ -14,16 +14,17 @@ import (
 )
 
 type model struct {
-	content         string
-	origContent     string
-	viewport        viewport.Model
-	helpStyle       lipgloss.Style
-	showLineNumbers bool
-	lineNumberStyle lipgloss.Style
-	softWrap        bool
-	search          search
-	matchStyle      lipgloss.Style
-	maxWidth        int
+	content             string
+	origContent         string
+	viewport            viewport.Model
+	helpStyle           lipgloss.Style
+	showLineNumbers     bool
+	lineNumberStyle     lipgloss.Style
+	softWrap            bool
+	search              search
+	matchStyle          lipgloss.Style
+	matchHighlightStyle lipgloss.Style
+	maxWidth            int
 }
 
 func (m model) Init() tea.Cmd {
@@ -112,8 +113,10 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			m.search.Begin()
 		case "p", "N":
 			m.search.PrevMatch(&m)
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
 		case "n":
 			m.search.NextMatch(&m)
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
 		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
 		}
