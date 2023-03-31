@@ -13,6 +13,7 @@ type search struct {
 	input        textinput.Model
 	query        *regexp.Regexp
 	lastMatchLoc int
+	prevMatch    string
 }
 
 func (s *search) new() {
@@ -46,6 +47,7 @@ func (s *search) Execute(m *model) {
 
 func (s *search) Done() {
 	s.active = false
+	s.prevMatch = ""
 }
 
 func (s *search) NextMatch(m *model) {
@@ -54,8 +56,13 @@ func (s *search) NextMatch(m *model) {
 		return
 	}
 
+	if s.prevMatch != "" {
+		leftPadding, rightPadding := utils.LipglossLengthPadding(s.prevMatch, m.matchHighlightStyle)
+		m.content = m.content[:s.lastMatchLoc-len(s.prevMatch)-leftPadding] + s.prevMatch + m.content[s.lastMatchLoc+rightPadding:]
+	}
 	// Find the string to highlight.
 	nextMatch := s.query.FindString(m.content[s.lastMatchLoc:])
+	s.prevMatch = nextMatch
 	if nextMatch == "" {
 		// Start the search from the beginning of the document.
 		s.lastMatchLoc = 0
