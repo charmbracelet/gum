@@ -122,7 +122,7 @@ func (s *search) PrevMatch(m *model) {
 	}
 
 	// Highliht the current match.
-  //m.content = m.content[:i - len(nextMatch) -1] + m.matchHighlightStyle.Render(nextMatch) + m.content[i + len(nextMatch) -1:]
+	m.content = m.content[:i] + strings.Replace(m.content[i:], nextMatch, m.matchHighlightStyle.Render(nextMatch), 1)
 
 	// Update the postion of the last found match.
 	for i = 0; s.query.FindString(m.content[i:s.lastMatchLoc]) != ""; i++ {
