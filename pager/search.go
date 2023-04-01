@@ -38,12 +38,14 @@ func (s *search) Execute(m *model) {
 		return
 	}
 
-	s.query = regexp.MustCompile(fmt.Sprintf("(%s)", s.input.Value()))
-	m.content = s.query.ReplaceAllString(m.content, m.matchStyle.Render("$1"))
+	s.query = regexp.MustCompile(s.input.Value())
+	query := regexp.MustCompile(fmt.Sprintf("(%s)", s.query.String()))
+	m.content = query.ReplaceAllString(m.content, m.matchStyle.Render("$1"))
 }
 
 func (s *search) Done() {
 	s.active = false
+	s.lastMatchLoc = 0
 	s.prevMatch = ""
 }
 
@@ -53,9 +55,12 @@ func (s *search) NextMatch(m *model) {
 		return
 	}
 
+	// Removed last highlight.
 	if s.prevMatch != "" {
 		leftPadding, rightPadding := utils.LipglossLengthPadding(s.prevMatch, m.matchHighlightStyle)
-		m.content = m.content[:s.lastMatchLoc-len(s.prevMatch)-leftPadding] + s.prevMatch + m.content[s.lastMatchLoc+rightPadding:]
+		metastring := regexp.QuoteMeta(m.matchHighlightStyle.Render(s.query.String()))
+		query := regexp.MustCompile("(" + metastring[:leftPadding+1] + ")(" + s.query.String() + ")(" + metastring[len(metastring)-rightPadding-1:] + ")")
+		m.content = query.ReplaceAllString(m.content, "$2")
 	}
 	// Find the string to highlight.
 	nextMatch := s.query.FindString(m.content[s.lastMatchLoc:])
@@ -84,7 +89,7 @@ func (s *search) NextMatch(m *model) {
 	}
 
 	// Only update if the match is not within the viewport
-	if line > m.viewport.YOffset+m.viewport.VisibleLineCount()-1 {
+	if line > m.viewport.YOffset+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
 		m.viewport.SetYOffset(line)
 	}
 }
