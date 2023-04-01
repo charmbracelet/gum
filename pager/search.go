@@ -1,6 +1,7 @@
 package pager
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -37,12 +38,8 @@ func (s *search) Execute(m *model) {
 		return
 	}
 
-	s.query = regexp.MustCompile(s.input.Value())
-	matches := utils.UniqueStrings(s.query.FindAllString(m.content, -1))
-	for _, match := range matches {
-		replacement := m.matchStyle.Render(match)
-		m.content = strings.ReplaceAll(m.content, match, replacement)
-	}
+	s.query = regexp.MustCompile(fmt.Sprintf("(%s)", s.input.Value()))
+	m.content = s.query.ReplaceAllString(m.content, m.matchStyle.Render("$1"))
 }
 
 func (s *search) Done() {
