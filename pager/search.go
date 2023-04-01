@@ -111,20 +111,22 @@ func (s *search) PrevMatch(m *model) {
 	var i int
 	var nextMatch string
 	for i = 0; s.query.FindString(m.content[i:s.lastMatchLoc]) != ""; i++ {
-		nextMatch = s.query.FindString(m.content[:s.lastMatchLoc])
+		nextMatch = s.query.FindString(m.content[i:s.lastMatchLoc])
 	}
 	s.prevMatch = nextMatch
 	if nextMatch == "" {
 		// Start the search from the beginning of the document.
-		s.lastMatchLoc = m.viewport.TotalLineCount()
-		m.viewport.GotoTop()
+		s.lastMatchLoc = len(m.content) - 1
+		m.viewport.GotoBottom()
 		return
 	}
-	// m.content = strings.Replace(m.content[:i], nextMatch, m.matchHighlightStyle.Render(nextMatch), 1) + m.content[i:]
+
+	// Highliht the current match.
+  //m.content = m.content[:i - len(nextMatch) -1] + m.matchHighlightStyle.Render(nextMatch) + m.content[i + len(nextMatch) -1:]
 
 	// Update the postion of the last found match.
 	for i = 0; s.query.FindString(m.content[i:s.lastMatchLoc]) != ""; i++ {
-	}
+	} //revive:disable-line:empty-block
 
 	s.lastMatchLoc = i
 
@@ -143,11 +145,4 @@ func (s *search) PrevMatch(m *model) {
 	if line > m.viewport.YOffset+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
 		m.viewport.SetYOffset(line)
 	}
-}
-
-func Reverse(s string) (result string) {
-	for _, v := range s {
-		result = string(v) + result
-	}
-	return
 }
