@@ -21,16 +21,3 @@ func LipglossLengthPadding(s string, style lipgloss.Style) (int, int) {
 	after := len(render) - len(s) - before
 	return before, after
 }
-
-// UniqueStrings returns a list of unique strings given a list of strings.
-func UniqueStrings(strings []string) []string {
-	keys := make(map[string]bool)
-	var list []string
-	for _, s := range strings {
-		if _, uniq := keys[s]; !uniq {
-			keys[s] = true
-			list = append(list, s)
-		}
-	}
-	return list
-}
