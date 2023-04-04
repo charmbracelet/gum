@@ -107,28 +107,25 @@ func (s *search) PrevMatch(m *model) {
 		query := regexp.MustCompile("(" + metastring[:leftPadding+1] + ")(" + s.query.String() + ")(" + metastring[len(metastring)-rightPadding-1:] + ")")
 		m.content = query.ReplaceAllString(m.content, "$2")
 	}
-	// Find the string to highlight.
-	var i int
-	var nextMatch string
-	for i = 0; s.query.FindString(m.content[i:s.lastMatchLoc]) != ""; i++ {
-		nextMatch = s.query.FindString(m.content[i:s.lastMatchLoc])
+
+	var prev []int
+	leftPadding, _ := utils.LipglossLengthPadding(s.prevMatch, m.matchHighlightStyle)
+	allMatches := s.query.FindAllSubmatchIndex([]byte(m.content), -1)
+	for i, subm := range allMatches {
+		if prev != nil && subm[1]+leftPadding == s.lastMatchLoc {
+			// Highliht the current match.
+			m.content = m.content[:prev[0]] + strings.Replace(m.content[prev[0]:], m.content[prev[0]:prev[1]], m.matchHighlightStyle.Render(m.content[prev[0]:prev[1]]), 1)
+			s.lastMatchLoc = prev[1] + leftPadding
+			break
+		}
+
+		// If reaching this at the end of the loop we have looked through all matches.
+		if i == len(allMatches)-1 {
+			m.content = m.content[:subm[0]] + strings.Replace(m.content[subm[0]:], m.content[subm[0]:subm[1]], m.matchHighlightStyle.Render(m.content[subm[0]:subm[1]]), 1)
+			s.lastMatchLoc = subm[1] + leftPadding
+		}
+		prev = subm
 	}
-	s.prevMatch = nextMatch
-	if nextMatch == "" {
-		// Start the search from the beginning of the document.
-		s.lastMatchLoc = len(m.content) - 1
-		m.viewport.GotoBottom()
-		return
-	}
-
-	// Highliht the current match.
-	m.content = m.content[:i] + strings.Replace(m.content[i:], nextMatch, m.matchHighlightStyle.Render(nextMatch), 1)
-
-	// Update the postion of the last found match.
-	for i = 0; s.query.FindString(m.content[i:s.lastMatchLoc]) != ""; i++ {
-	} //revive:disable-line:empty-block
-
-	s.lastMatchLoc = i
 
 	// Update the viewport position.
 	line := 0
