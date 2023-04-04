@@ -31,7 +31,7 @@ func (s *search) Begin() {
 	s.input.Focus()
 }
 
-// Execute find all lines in the model with a match
+// Execute find all lines in the model with a match.
 func (s *search) Execute(m *model) {
 	defer s.Done()
 	if s.input.Value() == "" {
@@ -94,7 +94,7 @@ func (s *search) NextMatch(m *model) {
 		}
 	}
 
-	// Only update if the match is not within the viewport
+	// Only update if the match is not within the viewport.
 	if line > m.viewport.YOffset+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
 		m.viewport.SetYOffset(line)
 	}
@@ -144,7 +144,7 @@ func (s *search) PrevMatch(m *model) {
 		}
 	}
 
-	// Only update if the match is not within the viewport
+	// Only update if the match is not within the viewport.
 	if line > m.viewport.YOffset+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
 		m.viewport.SetYOffset(line)
 	}

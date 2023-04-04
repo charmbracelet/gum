@@ -48,7 +48,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
 	var text strings.Builder
 
-	// Determine max width of a line
+	// Determine max width of a line.
 	m.maxWidth = m.viewport.Width
 	if m.softWrap {
 		vpStyle := m.viewport.Style
@@ -93,7 +93,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 				m.content = m.origContent
 				m.search.Execute(&m)
 
-				// Trigger a view update to highlight the found matches
+        // Trigger a view update to highlight the found matches.
 				m.search.NextMatch(&m)
 				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
 			} else {
