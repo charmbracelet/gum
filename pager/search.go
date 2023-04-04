@@ -7,6 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/gum/internal/utils"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type search struct {
@@ -84,7 +85,7 @@ func (s *search) NextMatch(m *model) {
 
 	// Update the viewport position.
 	line := 0
-	for i, c := range m.content {
+	for i, c := range softWrapEm(m.content, m.maxWidth, m.softWrap) {
 		if c == '\n' {
 			line++
 		}
@@ -134,7 +135,7 @@ func (s *search) PrevMatch(m *model) {
 
 	// Update the viewport position.
 	line := 0
-	for i, c := range m.content {
+	for i, c := range softWrapEm(m.content, m.maxWidth, m.softWrap) {
 		if c == '\n' {
 			line++
 		}
@@ -147,4 +148,20 @@ func (s *search) PrevMatch(m *model) {
 	if line > m.viewport.YOffset+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
 		m.viewport.SetYOffset(line)
 	}
+}
+
+func softWrapEm(str string, maxWidth int, softWrap bool) string {
+	var text strings.Builder
+	for _, line := range strings.Split(str, "\n") {
+		for softWrap && lipgloss.Width(line) > maxWidth {
+			truncatedLine := utils.LipglossTruncate(line, maxWidth)
+			text.WriteString(truncatedLine)
+			text.WriteString("\n")
+			line = strings.Replace(line, truncatedLine, "", 1)
+		}
+		text.WriteString(utils.LipglossTruncate(line, maxWidth))
+		text.WriteString("\n")
+	}
+
+	return text.String()
 }
