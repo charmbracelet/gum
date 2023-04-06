@@ -115,7 +115,7 @@ func (s *search) PrevMatch(m *model) {
 
 	s.matchIndex = (s.matchIndex - 1) % len(allMatches)
 	if s.matchIndex < 0 {
-		s.matchIndex = 0
+		s.matchIndex = len(allMatches) - 1
 	}
 
 	leftPad, rightPad := utils.LipglossPadding(m.matchStyle)
