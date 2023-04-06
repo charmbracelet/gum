@@ -83,18 +83,15 @@ func (s *search) NextMatch(m *model) {
 	m.content = lhs + strings.Replace(rhs, m.content[match[0]:match[1]], s.matchLipglossStr, 1)
 
 	// Update the viewport position.
-	line := 0
-	for i, c := range softWrapEm(m.content, m.maxWidth, m.softWrap) {
-		if c == '\n' {
-			line++
-		}
-		if i == match[0]+len(s.matchLipglossStr) {
-			break
-		}
+	var line int
+	formatStr := softWrapEm(m.content, m.maxWidth, m.softWrap)
+	index := strings.Index(formatStr, s.matchLipglossStr)
+	if index != -1 {
+		line = strings.Count(formatStr[:index], "\n")
 	}
 
 	// Only update if the match is not within the viewport.
-	if line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
+	if index != -1 && (line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset) {
 		m.viewport.SetYOffset(line)
 	}
 }
@@ -128,18 +125,15 @@ func (s *search) PrevMatch(m *model) {
 	m.content = lhs + strings.Replace(rhs, m.content[match[0]:match[1]], s.matchLipglossStr, 1)
 
 	// Update the viewport position.
-	line := 0
-	for i, c := range softWrapEm(m.content, m.maxWidth, m.softWrap) {
-		if c == '\n' {
-			line++
-		}
-		if i == match[0]+len(s.matchLipglossStr) {
-			break
-		}
+	var line int
+	formatStr := softWrapEm(m.content, m.maxWidth, m.softWrap)
+	index := strings.Index(formatStr, s.matchLipglossStr)
+	if index != -1 {
+		line = strings.Count(formatStr[:index], "\n")
 	}
 
 	// Only update if the match is not within the viewport.
-	if line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
+	if index != -1 && (line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset) {
 		m.viewport.SetYOffset(line)
 	}
 }
