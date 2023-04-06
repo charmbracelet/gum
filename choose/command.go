@@ -11,7 +11,9 @@ import (
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/mattn/go-isatty"
 
+	"github.com/charmbracelet/gum/ansi"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -136,7 +138,11 @@ func (o Options) Run() error {
 		}
 	}
 
-	fmt.Print(s.String())
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		fmt.Print(s.String())
+	} else {
+		fmt.Print(ansi.Strip(s.String()))
+	}
 
 	return nil
 }
