@@ -78,7 +78,7 @@ func (s *search) NextMatch(m *model) {
 	lhs := m.content[:match[0]]
 	rhs := m.content[match[0]:]
 	s.matchString = m.content[match[0]:match[1]]
-	s.matchLipglossStr = m.matchHighlightStyle.Render(s.matchString[leftPad : len(s.matchString)-(len(s.matchString)-leftPad-rightPad)])
+	s.matchLipglossStr = m.matchHighlightStyle.Render(s.matchString[leftPad : len(s.matchString)-rightPad])
 	m.content = lhs + strings.Replace(rhs, m.content[match[0]:match[1]], s.matchLipglossStr, 1)
 
 	// Update the viewport position.
@@ -123,7 +123,7 @@ func (s *search) PrevMatch(m *model) {
 	lhs := m.content[:match[0]]
 	rhs := m.content[match[0]:]
 	s.matchString = m.content[match[0]:match[1]]
-	s.matchLipglossStr = m.matchHighlightStyle.Render(s.matchString[leftPad : len(s.matchString)-(len(s.matchString)-leftPad-rightPad)])
+	s.matchLipglossStr = m.matchHighlightStyle.Render(s.matchString[leftPad : len(s.matchString)-rightPad])
 	m.content = lhs + strings.Replace(rhs, m.content[match[0]:match[1]], s.matchLipglossStr, 1)
 
 	// Update the viewport position.
