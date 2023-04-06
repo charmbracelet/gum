@@ -15,6 +15,10 @@ import (
 // Run provides a shell script interface for the spinner bubble.
 // https://github.com/charmbracelet/bubbles/spinner
 func (o Options) Run() error {
+	var isTTY bool
+	info, err := os.Stdout.Stat()
+	isTTY = info.Mode()&os.ModeCharDevice == os.ModeCharDevice
+
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
@@ -23,7 +27,7 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
-		showOutput: o.ShowOutput,
+		showOutput: o.ShowOutput && isTTY,
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.Run()
@@ -37,13 +41,12 @@ func (o Options) Run() error {
 		return exit.ErrAborted
 	}
 
-	info, err := os.Stdout.Stat()
 	if err != nil {
 		return fmt.Errorf("failed to access stdout: %w", err)
 	}
 
 	if o.ShowOutput {
-		if info.Mode()&os.ModeCharDevice != os.ModeCharDevice {
+		if !isTTY {
 			_, err := os.Stdout.WriteString(m.stdout)
 			if err != nil {
 				return fmt.Errorf("failed to write to stdout: %w", err)
