@@ -23,6 +23,7 @@ func (s *search) new() {
 	input := textinput.New()
 	input.Placeholder = "search"
 	input.Prompt = "/"
+	input.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 	s.input = input
 }
 
