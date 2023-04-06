@@ -15,9 +15,9 @@ func LipglossTruncate(s string, width int) string {
 }
 
 // LipglossLengthPadding calculated calculates how much padding a string is given by a style.
-func LipglossLengthPadding(s string, style lipgloss.Style) (int, int) {
-	render := style.Render(s)
-	before := strings.Index(render, s)
-	after := len(render) - len(s) - before
+func LipglossPadding(style lipgloss.Style) (int, int) {
+	render := style.Render(" ")
+	before := strings.Index(render, " ")
+	after := len(render) - len(" ") - before
 	return before, after
 }

@@ -45,9 +45,9 @@ func (s *search) Execute(m *model) {
 	m.content = query.ReplaceAllString(m.content, m.matchStyle.Render("$1"))
 
 	// Recompile the regex to match the an replace the highlights.
-	leftPad, rightPad := utils.LipglossLengthPadding("", m.matchStyle)
-	metaString := m.matchStyle.Render("")
-	s.query = regexp.MustCompile(regexp.QuoteMeta(metaString[:leftPad]) + s.query.String() + regexp.QuoteMeta(metaString[rightPad:]))
+	leftPad, _ := utils.LipglossPadding(m.matchStyle)
+	matchingString := regexp.QuoteMeta(m.matchStyle.Render()[:leftPad]) + s.query.String() + regexp.QuoteMeta(m.matchStyle.Render()[leftPad:])
+	s.query = regexp.MustCompile(matchingString)
 }
 
 func (s *search) Done() {
@@ -68,6 +68,10 @@ func (s *search) NextMatch(m *model) {
 
 	// Highlight the next match.
 	allMatches := s.query.FindAllStringIndex(m.content, -1)
+	if len(allMatches) == 0 {
+		return
+	}
+
 	s.matchIndex = (s.matchIndex + 1) % len(allMatches)
 	match := allMatches[s.matchIndex]
 	lhs := m.content[:match[0]]
@@ -104,6 +108,10 @@ func (s *search) PrevMatch(m *model) {
 
 	// Highlight the previous match.
 	allMatches := s.query.FindAllStringIndex(m.content, -1)
+	if len(allMatches) == 0 {
+		return
+	}
+
 	s.matchIndex = (s.matchIndex - 1) % len(allMatches)
 	if s.matchIndex < 0 {
 		s.matchIndex = 0
