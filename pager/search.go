@@ -41,14 +41,22 @@ func (s *search) Execute(m *model) {
 		return
 	}
 
-	s.query = regexp.MustCompile(s.input.Value())
+	var err error
+	s.query, err = regexp.Compile(s.input.Value())
+	if err != nil {
+		s.query = nil
+		return
+	}
 	query := regexp.MustCompile(fmt.Sprintf("(%s)", s.query.String()))
 	m.content = query.ReplaceAllString(m.content, m.matchStyle.Render("$1"))
 
 	// Recompile the regex to match the an replace the highlights.
 	leftPad, _ := utils.LipglossPadding(m.matchStyle)
 	matchingString := regexp.QuoteMeta(m.matchStyle.Render()[:leftPad]) + s.query.String() + regexp.QuoteMeta(m.matchStyle.Render()[leftPad:])
-	s.query = regexp.MustCompile(matchingString)
+	s.query, err = regexp.Compile(matchingString)
+	if err != nil {
+		s.query = nil
+	}
 }
 
 func (s *search) Done() {
