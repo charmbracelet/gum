@@ -197,7 +197,7 @@ gum input --password > password.txt
 
 Prompt for some multi-line text.
 
-Note: `CTRL+D` and `esc` are used to complete text entry. `CTRL+C` will cancel.
+Note: `CTRL+D` is used to complete text entry. `CTRL+C` and `esc` will cancel.
 
 ```bash
 gum write > story.txt

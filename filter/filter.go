@@ -30,6 +30,7 @@ type model struct {
 	choices               []string
 	matches               []fuzzy.Match
 	cursor                int
+	header                string
 	selected              map[string]struct{}
 	limit                 int
 	numSelected           int
@@ -39,6 +40,7 @@ type model struct {
 	height                int
 	aborted               bool
 	quitting              bool
+	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style
 	textStyle             lipgloss.Style
 	indicatorStyle        lipgloss.Style
@@ -128,10 +130,21 @@ func (m model) View() string {
 	m.viewport.SetContent(s.String())
 
 	// View the input and the filtered choices
+	header := m.headerStyle.Render(m.header)
 	if m.reverse {
-		return m.viewport.View() + "\n" + m.textinput.View()
+		view := m.viewport.View() + "\n" + m.textinput.View()
+		if m.header != "" {
+			return lipgloss.JoinVertical(lipgloss.Left, view, header)
+		}
+
+		return view
 	}
-	return m.textinput.View() + "\n" + m.viewport.View()
+
+	view := m.textinput.View() + "\n" + m.viewport.View()
+	if m.header != "" {
+		return lipgloss.JoinVertical(lipgloss.Left, header, view)
+	}
+	return view
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -149,6 +162,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
+		}
+
+		// Make place in the view port if header is set
+		if m.header != "" {
+			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.headerStyle.Render(m.header))
 		}
 		m.viewport.Width = msg.Width
 		if m.reverse {
@@ -179,6 +197,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.ToggleSelection()
 			m.CursorUp()
+		case "ctrl+@":
+			if m.limit == 1 {
+				break // no op
+			}
+			m.ToggleSelection()
 		default:
 			m.textinput, cmd = m.textinput.Update(msg)
 

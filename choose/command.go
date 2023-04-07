@@ -11,7 +11,9 @@ import (
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/mattn/go-isatty"
 
+	"github.com/charmbracelet/gum/ansi"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -90,18 +92,15 @@ func (o Options) Run() error {
 	pager.Type = paginator.Dots
 	pager.ActiveDot = subduedStyle.Render("•")
 	pager.InactiveDot = verySubduedStyle.Render("•")
+	pager.KeyMap = paginator.KeyMap{}
 
 	// Disable Keybindings since we will control it ourselves.
-	pager.UseHLKeys = false
-	pager.UseLeftRightKeys = false
-	pager.UseJKKeys = false
-	pager.UsePgUpPgDownKeys = false
-
 	tm, err := tea.NewProgram(model{
 		index:             startingIndex,
 		currentOrder:      currentOrder,
 		height:            o.Height,
 		cursor:            o.Cursor,
+		header:            o.Header,
 		selectedPrefix:    o.SelectedPrefix,
 		unselectedPrefix:  o.UnselectedPrefix,
 		cursorPrefix:      o.CursorPrefix,
@@ -109,6 +108,7 @@ func (o Options) Run() error {
 		limit:             o.Limit,
 		paginator:         pager,
 		cursorStyle:       o.CursorStyle.ToLipgloss(),
+		headerStyle:       o.HeaderStyle.ToLipgloss(),
 		itemStyle:         o.ItemStyle.ToLipgloss(),
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
 		numSelected:       currentSelected,
@@ -140,7 +140,11 @@ func (o Options) Run() error {
 		}
 	}
 
-	fmt.Print(s.String())
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		fmt.Print(s.String())
+	} else {
+		fmt.Print(ansi.Strip(s.String()))
+	}
 
 	return nil
 }

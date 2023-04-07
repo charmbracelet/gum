@@ -20,15 +20,18 @@ import (
 )
 
 type model struct {
-	prompt       string
-	affirmative  string
-	negative     string
-	quitting     bool
-	aborted      bool
-	hasTimeout   bool
-	timeout      time.Duration
+	prompt      string
+	affirmative string
+	negative    string
+	quitting    bool
+	aborted     bool
+	hasTimeout  bool
+	timeout     time.Duration
+
 	confirmation bool
-	defvalue     bool
+
+	defaultSelection bool
+
 	// styles
 	promptStyle     lipgloss.Style
 	selectedStyle   lipgloss.Style
@@ -36,7 +39,7 @@ type model struct {
 }
 
 func (m model) Init() tea.Cmd {
-	return timeout.Init(m.timeout, m.defvalue)
+	return timeout.Init(m.timeout, m.defaultSelection)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -74,7 +77,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
-			m.confirmation = m.defvalue
+			m.confirmation = m.defaultSelection
 			return m, tea.Quit
 		}
 
@@ -93,7 +96,7 @@ func (m model) View() string {
 	timeoutStrNo = ""
 	timeoutStrYes = ""
 	if m.hasTimeout {
-		if m.defvalue {
+		if m.defaultSelection {
 			timeoutStrYes = timeout.Str(m.timeout)
 		} else {
 			timeoutStrNo = timeout.Str(m.timeout)

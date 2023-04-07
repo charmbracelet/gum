@@ -28,7 +28,7 @@ func (o Options) Run() error {
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
 	i.PromptStyle = o.PromptStyle.ToLipgloss()
-	i.CursorStyle = o.CursorStyle.ToLipgloss()
+	i.Cursor.Style = o.CursorStyle.ToLipgloss()
 	i.CharLimit = o.CharLimit
 
 	if o.Password {

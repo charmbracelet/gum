@@ -10,6 +10,10 @@
 #
 # alias gcm='git commit -m "$(gum input)" -m "$(gum write)"'
 
+if [ -z "$(git status -s -uno | grep -v '^ ' | awk '{print $2}')" ]; then
+    gum confirm "Stage all?" && git add .
+fi
+
 TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
 SCOPE=$(gum input --placeholder "scope")
 

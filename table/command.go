@@ -74,7 +74,7 @@ func (o Options) Run() error {
 	styles := table.Styles{
 		Cell:     defaultStyles.Cell.Inherit(o.CellStyle.ToLipgloss()),
 		Header:   defaultStyles.Header.Inherit(o.HeaderStyle.ToLipgloss()),
-		Selected: defaultStyles.Selected.Inherit(o.SelectedStyle.ToLipgloss()),
+		Selected: o.SelectedStyle.ToLipgloss(),
 	}
 
 	var rows = make([]table.Row, 0, len(data))

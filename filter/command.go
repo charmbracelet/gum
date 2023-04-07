@@ -10,8 +10,10 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/mattn/go-isatty"
 	"github.com/sahilm/fuzzy"
 
+	"github.com/charmbracelet/gum/ansi"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
@@ -53,8 +55,13 @@ func (o Options) Run() error {
 	var matches []fuzzy.Match
 	if o.Value != "" {
 		i.SetValue(o.Value)
+	}
+	switch {
+	case o.Value != "" && o.Fuzzy:
 		matches = fuzzy.Find(o.Value, choices)
-	} else {
+	case o.Value != "" && !o.Fuzzy:
+		matches = exactMatches(o.Value, choices)
+	default:
 		matches = matchAll(choices)
 	}
 
@@ -66,6 +73,7 @@ func (o Options) Run() error {
 		choices:               choices,
 		indicator:             o.Indicator,
 		matches:               matches,
+		header:                o.Header,
 		textinput:             i,
 		viewport:              &v,
 		indicatorStyle:        o.IndicatorStyle.ToLipgloss(),
@@ -74,6 +82,7 @@ func (o Options) Run() error {
 		unselectedPrefixStyle: o.UnselectedPrefixStyle.ToLipgloss(),
 		unselectedPrefix:      o.UnselectedPrefix,
 		matchStyle:            o.MatchStyle.ToLipgloss(),
+		headerStyle:           o.HeaderStyle.ToLipgloss(),
 		textStyle:             o.TextStyle.ToLipgloss(),
 		height:                o.Height,
 		selected:              make(map[string]struct{}),
@@ -93,15 +102,25 @@ func (o Options) Run() error {
 		return exit.ErrAborted
 	}
 
+	isTTY := isatty.IsTerminal(os.Stdout.Fd())
+
 	// allSelections contains values only if limit is greater
 	// than 1 or if flag --no-limit is passed, hence there is
 	// no need to further checks
 	if len(m.selected) > 0 {
 		for k := range m.selected {
-			fmt.Println(k)
+			if isTTY {
+				fmt.Println(k)
+			} else {
+				fmt.Println(ansi.Strip(k))
+			}
 		}
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
-		fmt.Println(m.matches[m.cursor].Str)
+		if isTTY {
+			fmt.Println(m.matches[m.cursor].Str)
+		} else {
+			fmt.Println(ansi.Strip(m.matches[m.cursor].Str))
+		}
 	}
 
 	if !o.Strict && len(m.textinput.Value()) != 0 && len(m.matches) == 0 {

@@ -28,7 +28,7 @@ var (
 var bubbleGumPink = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 
 func main() {
-	lipgloss.SetColorProfile(termenv.ANSI256)
+	lipgloss.SetColorProfile(termenv.NewOutput(os.Stderr).Profile)
 
 	if Version == "" {
 		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
