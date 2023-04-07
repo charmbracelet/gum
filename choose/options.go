@@ -1,14 +1,14 @@
 package choose
 
 import (
-	"github.com/charmbracelet/gum/style"
 	"time"
+
+	"github.com/charmbracelet/gum/style"
 )
 
 // Options is the customization options for the choose command.
 type Options struct {
-	Options []string `arg:"" optional:"" help:"Options to choose from."`
-
+	Options           []string      `arg:"" optional:"" help:"Options to choose from."`
 	Limit             int           `help:"Maximum number of options to pick" default:"1" group:"Selection"`
 	NoLimit           bool          `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
 	Ordered           bool          `help:"Maintain the order of the selected options" env:"GUM_CHOOSE_ORDERED"`

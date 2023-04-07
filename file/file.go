@@ -13,10 +13,11 @@
 package file
 
 import (
+	"time"
+
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/timeout"
-	"time"
 )
 
 type model struct {
@@ -33,7 +34,6 @@ func (m model) Init() tea.Cmd {
 		timeout.Init(m.timeout, nil),
 		m.filepicker.Init(),
 	)
-
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
