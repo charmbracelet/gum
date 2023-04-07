@@ -108,13 +108,7 @@ func (o Options) Run() error {
 	// than 1 or if flag --no-limit is passed, hence there is
 	// no need to further checks
 	if len(m.selected) > 0 {
-		for k := range m.selected {
-			if isTTY {
-				fmt.Println(k)
-			} else {
-				fmt.Println(ansi.Strip(k))
-			}
-		}
+		o.checkSelected(m, isTTY)
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
 		if isTTY {
 			fmt.Println(m.matches[m.cursor].Str)
@@ -127,6 +121,16 @@ func (o Options) Run() error {
 		fmt.Println(m.textinput.Value())
 	}
 	return nil
+}
+
+func (o Options) checkSelected(m model, isTTY bool) {
+	for k := range m.selected {
+		if isTTY {
+			fmt.Println(k)
+		} else {
+			fmt.Println(ansi.Strip(k))
+		}
+	}
 }
 
 // BeforeReset hook. Used to unclutter style flags.
