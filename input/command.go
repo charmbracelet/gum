@@ -41,6 +41,7 @@ func (o Options) Run() error {
 		aborted:     false,
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
+		autoWidth:   o.Width < 1,
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
 	if err != nil {
