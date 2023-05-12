@@ -11,7 +11,6 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/mattn/go-runewidth"
 )
 
 type model struct {
@@ -41,7 +40,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.autoWidth {
-			m.textinput.Width = msg.Width - runewidth.StringWidth(m.textinput.Prompt) - 1
+			m.textinput.Width = msg.Width - lipgloss.Width(m.textinput.Prompt) - 1
 		}
 	case tea.KeyMsg:
 		switch msg.String() {

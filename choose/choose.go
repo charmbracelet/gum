@@ -16,7 +16,6 @@ import (
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/mattn/go-runewidth"
 )
 
 type model struct {
@@ -158,7 +157,7 @@ func (m model) View() string {
 		if i == m.index%m.height {
 			s.WriteString(m.cursorStyle.Render(m.cursor))
 		} else {
-			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.cursor)))
+			s.WriteString(strings.Repeat(" ", lipgloss.Width(m.cursor)))
 		}
 
 		if item.selected {

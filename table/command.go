@@ -8,7 +8,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/mattn/go-runewidth"
+	"github.com/charmbracelet/lipgloss"
 
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -59,7 +59,7 @@ func (o Options) Run() error {
 	var columns = make([]table.Column, 0, len(columnNames))
 
 	for i, title := range columnNames {
-		width := runewidth.StringWidth(title)
+		width := lipgloss.Width(title)
 		if len(o.Widths) > i {
 			width = o.Widths[i]
 		}
