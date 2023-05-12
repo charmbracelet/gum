@@ -16,7 +16,7 @@ func (m Man) BeforeApply(ctx *kong.Context) error {
 	// Set the correct man pages description without color escape sequences.
 	ctx.Model.Help = "A tool for glamorous shell scripts."
 	man := mangokong.NewManPage(1, ctx.Model)
-	man = man.WithSection("Copyright", "(C) 2021-2023 Charmbracelet, Inc.\n"+
+	man = man.WithSection("Copyright", "(C) 2022-2023 Charmbracelet, Inc.\n"+
 		"Released under MIT license.")
 	fmt.Fprint(ctx.Stdout, man.Build(roff.NewDocument()))
 	ctx.Exit(0)
