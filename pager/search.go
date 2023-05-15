@@ -72,7 +72,7 @@ func (s *search) NextMatch(m *model) {
 		return
 	}
 
-	// Remove Previvous highlight.
+	// Remove previous highlight.
 	m.content = strings.Replace(m.content, s.matchLipglossStr, s.matchString, 1)
 
 	// Highlight the next match.
@@ -110,7 +110,7 @@ func (s *search) PrevMatch(m *model) {
 		return
 	}
 
-	// Remove Previvous highlight.
+	// Remove previous highlight.
 	m.content = strings.Replace(m.content, s.matchLipglossStr, s.matchString, 1)
 
 	// Highlight the previous match.
