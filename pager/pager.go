@@ -9,17 +9,22 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/utils"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/mattn/go-runewidth"
 )
 
 type model struct {
-	content         string
-	viewport        viewport.Model
-	helpStyle       lipgloss.Style
-	showLineNumbers bool
-	lineNumberStyle lipgloss.Style
-	softWrap        bool
+	content             string
+	origContent         string
+	viewport            viewport.Model
+	helpStyle           lipgloss.Style
+	showLineNumbers     bool
+	lineNumberStyle     lipgloss.Style
+	softWrap            bool
+	search              search
+	matchStyle          lipgloss.Style
+	matchHighlightStyle lipgloss.Style
+	maxWidth            int
 }
 
 func (m model) Init() tea.Cmd {
@@ -29,60 +34,108 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
-		m.viewport.Width = msg.Width
-		textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
-		var text strings.Builder
-
-		// Determine max width of a line
-		maxLineWidth := m.viewport.Width
-		if m.softWrap {
-			vpStyle := m.viewport.Style
-			maxLineWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
-			if m.showLineNumbers {
-				maxLineWidth -= len("     │ ")
-			}
-		}
-
-		for i, line := range strings.Split(m.content, "\n") {
-			line = strings.ReplaceAll(line, "\t", "    ")
-			if m.showLineNumbers {
-				text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
-			}
-			for m.softWrap && len(line) > maxLineWidth {
-				truncatedLine := runewidth.Truncate(line, maxLineWidth, "")
-				text.WriteString(textStyle.Render(truncatedLine))
-				text.WriteString("\n")
-				if m.showLineNumbers {
-					text.WriteString(m.lineNumberStyle.Render("     │ "))
-				}
-				line = strings.Replace(line, truncatedLine, "", 1)
-			}
-			text.WriteString(textStyle.Render(runewidth.Truncate(line, maxLineWidth, "")))
-			text.WriteString("\n")
-		}
-
-		diffHeight := m.viewport.Height - lipgloss.Height(text.String())
-		if diffHeight > 0 && m.showLineNumbers {
-			remainingLines := "   ~ │ " + strings.Repeat("\n   ~ │ ", diffHeight-1)
-			text.WriteString(m.lineNumberStyle.Render(remainingLines))
-		}
-		m.viewport.SetContent(text.String())
+		m.ProcessText(msg)
 	case tea.KeyMsg:
-		switch msg.String() {
+		return m.KeyHandler(msg)
+	}
+
+	return m, nil
+}
+
+func (m *model) ProcessText(msg tea.WindowSizeMsg) {
+	m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
+	m.viewport.Width = msg.Width
+	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
+	var text strings.Builder
+
+	// Determine max width of a line.
+	m.maxWidth = m.viewport.Width
+	if m.softWrap {
+		vpStyle := m.viewport.Style
+		m.maxWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
+		if m.showLineNumbers {
+			m.maxWidth -= lipgloss.Width("     │ ")
+		}
+	}
+
+	for i, line := range strings.Split(m.content, "\n") {
+		line = strings.ReplaceAll(line, "\t", "    ")
+		if m.showLineNumbers {
+			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
+		}
+		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
+			truncatedLine := utils.LipglossTruncate(line, m.maxWidth)
+			text.WriteString(textStyle.Render(truncatedLine))
+			text.WriteString("\n")
+			if m.showLineNumbers {
+				text.WriteString(m.lineNumberStyle.Render("     │ "))
+			}
+			line = strings.Replace(line, truncatedLine, "", 1)
+		}
+		text.WriteString(textStyle.Render(utils.LipglossTruncate(line, m.maxWidth)))
+		text.WriteString("\n")
+	}
+
+	diffHeight := m.viewport.Height - lipgloss.Height(text.String())
+	if diffHeight > 0 && m.showLineNumbers {
+		remainingLines := "   ~ │ " + strings.Repeat("\n   ~ │ ", diffHeight-1)
+		text.WriteString(m.lineNumberStyle.Render(remainingLines))
+	}
+	m.viewport.SetContent(text.String())
+}
+
+func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
+	var cmd tea.Cmd
+	if m.search.active {
+		switch key.String() {
+		case "enter":
+			if m.search.input.Value() != "" {
+				m.content = m.origContent
+				m.search.Execute(&m)
+
+				// Trigger a view update to highlight the found matches.
+				m.search.NextMatch(&m)
+				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
+			} else {
+				m.search.Done()
+			}
+		case "ctrl+d", "ctrl+c", "esc":
+			m.search.Done()
+		default:
+			m.search.input, cmd = m.search.input.Update(key)
+		}
+	} else {
+		switch key.String() {
 		case "g":
 			m.viewport.GotoTop()
 		case "G":
 			m.viewport.GotoBottom()
+		case "/":
+			m.search.Begin()
+		case "p", "N":
+			m.search.PrevMatch(&m)
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
+		case "n":
+			m.search.NextMatch(&m)
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
 		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
 		}
+		m.viewport, cmd = m.viewport.Update(key)
 	}
-	var cmd tea.Cmd
-	m.viewport, cmd = m.viewport.Update(msg)
+
 	return m, cmd
 }
 
 func (m model) View() string {
-	return m.viewport.View() + m.helpStyle.Render("\n ↑/↓: Navigate • q: Quit")
+	helpMsg := "\n ↑/↓: Navigate • q: Quit • /: Search "
+	if m.search.query != nil {
+		helpMsg += "• n: Next Match "
+		helpMsg += "• N: Prev Match "
+	}
+	if m.search.active {
+		return m.viewport.View() + "\n " + m.search.input.View()
+	}
+
+	return m.viewport.View() + m.helpStyle.Render(helpMsg)
 }

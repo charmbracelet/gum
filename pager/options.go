@@ -11,4 +11,6 @@ type Options struct {
 	ShowLineNumbers bool         `help:"Show line numbers" default:"true"`
 	LineNumberStyle style.Styles `embed:"" prefix:"line-number." help:"Style the line numbers" set:"defaultForeground=237" envprefix:"GUM_PAGER_LINE_NUMBER_"`
 	SoftWrap        bool         `help:"Soft wrap lines" default:"false"`
+	MatchStyle      style.Styles `embed:"" prefix:"match." help:"Style the matched text" set:"defaultForeground=212" set:"defaultBold=true" envprefix:"GUM_PAGER_MATCH_"` //nolint:staticcheck
+	MatchHighlightStyle      style.Styles `embed:"" prefix:"match-highlight." help:"Style the matched highlight text" set:"defaultForeground=235" set:"defaultBackground=225" set:"defaultBold=true" envprefix:"GUM_PAGER_MATCH_HIGH_"` //nolint:staticcheck
 }
