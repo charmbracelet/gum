@@ -9,8 +9,8 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/internal/utils"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/muesli/reflow/truncate"
 )
 
 type model struct {
@@ -64,7 +64,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
 		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
-			truncatedLine := utils.LipglossTruncate(line, m.maxWidth)
+			truncatedLine := truncate.String(line, uint(m.maxWidth))
 			text.WriteString(textStyle.Render(truncatedLine))
 			text.WriteString("\n")
 			if m.showLineNumbers {
@@ -72,7 +72,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 			}
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(textStyle.Render(utils.LipglossTruncate(line, m.maxWidth)))
+		text.WriteString(textStyle.Render(truncate.String(line, uint(m.maxWidth))))
 		text.WriteString("\n")
 	}
 

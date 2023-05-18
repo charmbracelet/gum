@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/gum/internal/utils"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/muesli/reflow/truncate"
 )
 
 type search struct {
@@ -150,12 +151,12 @@ func softWrapEm(str string, maxWidth int, softWrap bool) string {
 	var text strings.Builder
 	for _, line := range strings.Split(str, "\n") {
 		for softWrap && lipgloss.Width(line) > maxWidth {
-			truncatedLine := utils.LipglossTruncate(line, maxWidth)
+			truncatedLine := truncate.String(line, uint(maxWidth))
 			text.WriteString(truncatedLine)
 			text.WriteString("\n")
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(utils.LipglossTruncate(line, maxWidth))
+		text.WriteString(truncate.String(line, uint(maxWidth)))
 		text.WriteString("\n")
 	}
 
