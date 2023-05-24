@@ -84,6 +84,7 @@ func (o Options) Run() error {
 		matchStyle:            o.MatchStyle.ToLipgloss(),
 		headerStyle:           o.HeaderStyle.ToLipgloss(),
 		textStyle:             o.TextStyle.ToLipgloss(),
+		cursorTextStyle:       o.CursorTextStyle.ToLipgloss(),
 		height:                o.Height,
 		selected:              make(map[string]struct{}),
 		limit:                 o.Limit,
