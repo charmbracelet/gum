@@ -16,6 +16,7 @@ type Options struct {
 	HeaderStyle           style.Styles `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_FILTER_HEADER_"`
 	Header                string       `help:"Header value" default:"" env:"GUM_FILTER_HEADER"`
 	TextStyle             style.Styles `embed:"" prefix:"text." envprefix:"GUM_FILTER_TEXT_"`
+	CursorTextStyle       style.Styles `embed:"" prefix:"cursor-text." envprefix:"GUM_FILTER_CURSOR_TEXT_"`
 	MatchStyle            style.Styles `embed:"" prefix:"match." set:"defaultForeground=212" envprefix:"GUM_FILTER_MATCH_"`
 	Placeholder           string       `help:"Placeholder value" default:"Filter..." env:"GUM_FILTER_PLACEHOLDER"`
 	Prompt                string       `help:"Prompt to display" default:"> " env:"GUM_FILTER_PROMPT"`
