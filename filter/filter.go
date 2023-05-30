@@ -44,6 +44,7 @@ type model struct {
 	unselectedPrefixStyle lipgloss.Style
 	reverse               bool
 	fuzzy                 bool
+	sort                  bool
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -200,7 +201,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// A character was entered, this likely means that the text input has
 			// changed. This suggests that the matches are outdated, so update them.
 			if m.fuzzy {
-				m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
+				if m.sort {
+					m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
+				} else {
+					m.matches = fuzzy.FindNoSort(m.textinput.Value(), m.choices)
+				}
 			} else {
 				m.matches = exactMatches(m.textinput.Value(), m.choices)
 			}
