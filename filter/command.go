@@ -89,6 +89,7 @@ func (o Options) Run() error {
 		limit:                 o.Limit,
 		reverse:               o.Reverse,
 		fuzzy:                 o.Fuzzy,
+		sort:                  o.Sort,
 	}, options...)
 
 	tm, err := p.Run()
