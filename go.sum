@@ -1,6 +1,8 @@
 github.com/alecthomas/assert/v2 v2.1.0 h1:tbredtNcQnoSd3QBhQWI7QZ3XHOVkw1Moklp2ojoH/0=
 github.com/alecthomas/chroma v0.10.0 h1:7XDcGkCQopCNKjZHfYrNLraA+M7e0fMiJ/Mfikbfjek=
 github.com/alecthomas/chroma v0.10.0/go.mod h1:jtJATyUxlIORhUOFNA9NZDWGAQ8wpxQQqNSB4rjA/1s=
+github.com/alecthomas/chroma/v2 v2.7.0 h1:hm1rY6c/Ob4eGclpQ7X/A3yhqBOZNUTk9q+yhyLIViI=
+github.com/alecthomas/chroma/v2 v2.7.0/go.mod h1:yrkMI9807G1ROx13fhe1v6PN2DDeaR73L3d+1nmYQtw=
 github.com/alecthomas/kong v0.7.1 h1:azoTh0IOfwlAX3qN9sHWTxACE2oV8Bg2gAwBsMwDQY4=
 github.com/alecthomas/kong v0.7.1/go.mod h1:n1iCIO2xS46oE8ZfYCNDqdR0b0wZNrXAIAqro/2132U=
 github.com/alecthomas/mango-kong v0.1.0 h1:iFVfP1k1K4qpml3JUQmD5I8MCQYfIvsD9mRdrw7jJC4=
@@ -19,6 +21,10 @@ github.com/charmbracelet/bubbletea v0.24.1 h1:LpdYfnu+Qc6XtvMz6d/6rRY71yttHTP5Ht
 github.com/charmbracelet/bubbletea v0.24.1/go.mod h1:rK3g/2+T8vOSEkNHvtq40umJpeVYDn6bLaqbgzhL/hg=
 github.com/charmbracelet/glamour v0.6.0 h1:wi8fse3Y7nfcabbbDuwolqTqMQPMnVPeZhDM273bISc=
 github.com/charmbracelet/glamour v0.6.0/go.mod h1:taqWV4swIMMbWALc0m7AfE9JkPSU8om2538k9ITBxOc=
+github.com/charmbracelet/glamour v0.6.1-0.20230531150050-63cd3b88ae05 h1:+68qHQWQIn8WsZ0NiKpYlxLPkAEYgq8RkgahsJz3Wqg=
+github.com/charmbracelet/glamour v0.6.1-0.20230531150050-63cd3b88ae05/go.mod h1:swCB3CXFsh22H1ESDYdY1tirLiNqCziulDyJ1B6Nt7Q=
+github.com/charmbracelet/glamour v0.6.1-0.20230531150759-6d5b52861a9d h1:S4Ejl/M2VrryIgDrDbiuvkwMUDa67/t/H3Wz3i2/vUw=
+github.com/charmbracelet/glamour v0.6.1-0.20230531150759-6d5b52861a9d/go.mod h1:swCB3CXFsh22H1ESDYdY1tirLiNqCziulDyJ1B6Nt7Q=
 github.com/charmbracelet/lipgloss v0.7.2-0.20230316100548-06dd20ee5707 h1:dXv2HjaDlJZj7wLpTjg1P4B68bdvoXfx7+VXF2/RelY=
 github.com/charmbracelet/lipgloss v0.7.2-0.20230316100548-06dd20ee5707/go.mod h1:BDceYFEeE5FBoGZeuApZ+V4wSgi8AOIHoryyjYbCTHM=
 github.com/containerd/console v1.0.4-0.20230313162750-1ae8d489ac81 h1:q2hJAaP1k2wIvVRd/hEHD7lacgqrCPS+k8g1MndzfWY=
