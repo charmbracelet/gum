@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
 
+	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -43,6 +44,7 @@ func (o Options) Run() error {
 	a.BlurredStyle = style
 	a.FocusedStyle = style
 	a.Cursor.Style = o.CursorStyle.ToLipgloss()
+	a.Cursor.SetMode(cursor.Modes[o.CursorMode])
 
 	a.SetWidth(o.Width)
 	a.SetHeight(o.Height)
