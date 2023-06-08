@@ -20,9 +20,11 @@ import (
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 var outbuf strings.Builder
+var errbuf strings.Builder
 
 type model struct {
 	spinner    spinner.Model
@@ -49,7 +51,7 @@ func commandStart(command []string) tea.Cmd {
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
 		cmd.Stdout = &outbuf
-		cmd.Stderr = &outbuf
+		cmd.Stderr = &errbuf
 
 		_ = cmd.Run()
 
@@ -73,16 +75,18 @@ func (m model) Init() tea.Cmd {
 	)
 }
 func (m model) View() string {
-	if m.align == "left" {
-		if !m.showOutput {
-			return m.spinner.View() + " " + m.title
-		}
-		return m.spinner.View() + " " + m.title + "\n" + outbuf.String()
-	}
+	var header string = m.spinner.View() + " " + m.title
+	var leftHeader string = m.title + " " + m.spinner.View()
 	if !m.showOutput {
-		return m.title + " " + m.spinner.View()
+		if m.align == "left" {
+			return leftHeader
+		}
+		return header
 	}
-	return m.title + " " + m.spinner.View() + "\n" + outbuf.String()
+	if m.align == "left" {
+		return lipgloss.JoinVertical(lipgloss.Top, leftHeader, errbuf.String(), outbuf.String())
+	}
+	return lipgloss.JoinVertical(lipgloss.Top, header, errbuf.String(), outbuf.String())
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
