@@ -32,6 +32,11 @@ func (o Options) Run() error {
 		return fmt.Errorf("failed to run spin: %w", err)
 	}
 
+	if o.OutputOnError && m.status != 0 {
+		fmt.Fprint(os.Stdout, m.stdout)
+		fmt.Fprint(os.Stderr, m.stderr)
+	}
+
 	if o.ShowOutput {
 		fmt.Fprint(os.Stdout, m.stdout)
 		fmt.Fprint(os.Stderr, m.stderr)
