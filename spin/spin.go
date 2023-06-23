@@ -23,19 +23,19 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-var outbuf strings.Builder
-var errbuf strings.Builder
-
 type model struct {
 	spinner    spinner.Model
 	title      string
 	align      string
 	command    []string
 	aborted    bool
-	showOutput bool
 	status     int
 	stdout     string
+	showOutput bool
 }
+
+var outbuf strings.Builder
+var errbuf strings.Builder
 
 type finishCommandMsg struct {
 	stdout string
@@ -75,16 +75,14 @@ func (m model) Init() tea.Cmd {
 	)
 }
 func (m model) View() string {
-	var header string = m.spinner.View() + " " + m.title
-	var leftHeader string = m.title + " " + m.spinner.View()
-	if !m.showOutput {
-		if m.align == "left" {
-			return leftHeader
-		}
-		return header
-	}
+	var header string
 	if m.align == "left" {
-		return lipgloss.JoinVertical(lipgloss.Top, leftHeader, errbuf.String(), outbuf.String())
+		header = m.spinner.View() + " " + m.title
+	} else {
+		header = m.title + " " + m.spinner.View()
+	}
+	if !m.showOutput {
+		return header
 	}
 	return lipgloss.JoinVertical(lipgloss.Top, header, errbuf.String(), outbuf.String())
 }

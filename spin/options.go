@@ -6,7 +6,7 @@ import "github.com/charmbracelet/gum/style"
 type Options struct {
 	Command []string `arg:"" help:"Command to run"`
 
-	ShowOutput   bool         `help:"Show output of command during execution" default:"false" env:"GUM_SPIN_SHOW_OUTPUT"`
+	ShowOutput   bool         `help:"Show or pipe output of command during execution" default:"false" env:"GUM_SPIN_SHOW_OUTPUT"`
 	Spinner      string       `help:"Spinner type" short:"s" type:"spinner" enum:"line,dot,minidot,jump,pulse,points,globe,moon,monkey,meter,hamburger" default:"dot" env:"GUM_SPIN_SPINNER"`
 	SpinnerStyle style.Styles `embed:"" prefix:"spinner." set:"defaultForeground=212" envprefix:"GUM_SPIN_SPINNER_"`
 	Title        string       `help:"Text to display to user while spinning" default:"Loading..." env:"GUM_SPIN_TITLE"`
