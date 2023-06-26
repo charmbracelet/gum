@@ -17,19 +17,19 @@ import (
 )
 
 type model struct {
-	content         string
+	content             string
 	origContent         string
-	viewport        viewport.Model
-	helpStyle       lipgloss.Style
-	showLineNumbers bool
-	lineNumberStyle lipgloss.Style
-	softWrap        bool
+	viewport            viewport.Model
+	helpStyle           lipgloss.Style
+	showLineNumbers     bool
+	lineNumberStyle     lipgloss.Style
+	softWrap            bool
 	search              search
 	matchStyle          lipgloss.Style
 	matchHighlightStyle lipgloss.Style
 	maxWidth            int
-	timeout         time.Duration
-	hasTimeout      bool
+	timeout             time.Duration
+	hasTimeout          bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -144,7 +144,7 @@ func (m model) View() string {
 	if m.hasTimeout {
 		timeoutStr = timeout.Str(m.timeout) + " "
 	}
-	helpMsg := "\n"+timeoutStr+" ↑/↓: Navigate • q: Quit • /: Search "
+	helpMsg := "\n" + timeoutStr + " ↑/↓: Navigate • q: Quit • /: Search "
 	if m.search.query != nil {
 		helpMsg += "• n: Next Match "
 		helpMsg += "• N: Prev Match "
