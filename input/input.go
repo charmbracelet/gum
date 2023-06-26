@@ -17,6 +17,7 @@ import (
 )
 
 type model struct {
+	autoWidth   bool
 	header      string
 	headerStyle lipgloss.Style
 	textinput   textinput.Model
@@ -46,6 +47,10 @@ func (m model) View() string {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		if m.autoWidth {
+			m.textinput.Width = msg.Width - lipgloss.Width(m.textinput.Prompt) - 1
+		}
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true

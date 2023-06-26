@@ -15,6 +15,7 @@ import (
 )
 
 type model struct {
+	autoWidth   bool
 	aborted     bool
 	header      string
 	headerStyle lipgloss.Style
@@ -39,6 +40,10 @@ func (m model) View() string {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		if m.autoWidth {
+			m.textarea.SetWidth(msg.Width)
+		}
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc":

@@ -4,7 +4,7 @@ import "github.com/charmbracelet/gum/style"
 
 // Options are the customization options for the textarea.
 type Options struct {
-	Width           int    `help:"Text area width" default:"50" env:"GUM_WRITE_WIDTH"`
+	Width           int    `help:"Text area width (0 for terminal width)" default:"50" env:"GUM_WRITE_WIDTH"`
 	Height          int    `help:"Text area height" default:"5" env:"GUM_WRITE_HEIGHT"`
 	Header          string `help:"Header value" default:"" env:"GUM_WRITE_HEADER"`
 	Placeholder     string `help:"Placeholder value" default:"Write something..." env:"GUM_WRITE_PLACEHOLDER"`
@@ -13,6 +13,7 @@ type Options struct {
 	ShowLineNumbers bool   `help:"Show line numbers" default:"false" env:"GUM_WRITE_SHOW_LINE_NUMBERS"`
 	Value           string `help:"Initial value (can be passed via stdin)" default:"" env:"GUM_WRITE_VALUE"`
 	CharLimit       int    `help:"Maximum value length (0 for no limit)" default:"400"`
+	CursorMode      string `prefix:"cursor." name:"mode" help:"Cursor mode" default:"blink" enum:"blink,hide,static" env:"GUM_WRITE_CURSOR_MODE"`
 
 	BaseStyle             style.Styles `embed:"" prefix:"base." envprefix:"GUM_WRITE_BASE_"`
 	CursorLineNumberStyle style.Styles `embed:"" prefix:"cursor-line-number." set:"defaultForeground=7" envprefix:"GUM_WRITE_CURSOR_LINE_NUMBER_"`

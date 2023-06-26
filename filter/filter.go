@@ -20,7 +20,6 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/mattn/go-runewidth"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -50,6 +49,7 @@ type model struct {
 	fuzzy                 bool
 	timeout               time.Duration
 	hasTimeout            bool
+	sort                  bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -84,7 +84,7 @@ func (m model) View() string {
 		if i == m.cursor {
 			s.WriteString(m.indicatorStyle.Render(m.indicator))
 		} else {
-			s.WriteString(strings.Repeat(" ", runewidth.StringWidth(m.indicator)))
+			s.WriteString(strings.Repeat(" ", lipgloss.Width(m.indicator)))
 		}
 
 		// If there are multiple selections mark them, otherwise leave an empty space
@@ -217,7 +217,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// A character was entered, this likely means that the text input has
 			// changed. This suggests that the matches are outdated, so update them.
 			if m.fuzzy {
-				m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
+				if m.sort {
+					m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
+				} else {
+					m.matches = fuzzy.FindNoSort(m.textinput.Value(), m.choices)
+				}
 			} else {
 				m.matches = exactMatches(m.textinput.Value(), m.choices)
 			}

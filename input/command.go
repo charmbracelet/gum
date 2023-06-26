@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 
+	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -29,6 +30,7 @@ func (o Options) Run() error {
 	i.Width = o.Width
 	i.PromptStyle = o.PromptStyle.ToLipgloss()
 	i.Cursor.Style = o.CursorStyle.ToLipgloss()
+	i.Cursor.SetMode(cursor.Modes[o.CursorMode])
 	i.CharLimit = o.CharLimit
 
 	if o.Password {
@@ -43,6 +45,7 @@ func (o Options) Run() error {
 		headerStyle: o.HeaderStyle.ToLipgloss(),
 		timeout:     o.Timeout,
 		hasTimeout:  o.Timeout > 0,
+		autoWidth:   o.Width < 1,
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
 	if err != nil {

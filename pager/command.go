@@ -35,9 +35,12 @@ func (o Options) Run() error {
 		viewport:        vp,
 		helpStyle:       o.HelpStyle.ToLipgloss(),
 		content:         o.Content,
+		origContent:     o.Content,
 		showLineNumbers: o.ShowLineNumbers,
 		lineNumberStyle: o.LineNumberStyle.ToLipgloss(),
 		softWrap:        o.SoftWrap,
+		matchStyle:          o.MatchStyle.ToLipgloss(),
+		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
 		timeout:         o.Timeout,
 		hasTimeout:      o.Timeout > 0,
 	}

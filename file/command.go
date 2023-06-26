@@ -38,15 +38,14 @@ func (o Options) Run() error {
 	fp.DirAllowed = o.Directory
 	fp.FileAllowed = o.File
 	fp.ShowHidden = o.All
-	fp.Styles = filepicker.Styles{
-		Cursor:     o.CursorStyle.ToLipgloss(),
-		Symlink:    o.SymlinkStyle.ToLipgloss(),
-		Directory:  o.DirectoryStyle.ToLipgloss(),
-		File:       o.FileStyle.ToLipgloss(),
-		Permission: o.PermissionsStyle.ToLipgloss(),
-		Selected:   o.SelectedStyle.ToLipgloss(),
-		FileSize:   o.FileSizeStyle.ToLipgloss(),
-	}
+	fp.Styles = filepicker.DefaultStyles()
+	fp.Styles.Cursor = o.CursorStyle.ToLipgloss()
+	fp.Styles.Symlink = o.SymlinkStyle.ToLipgloss()
+	fp.Styles.Directory = o.DirectoryStyle.ToLipgloss()
+	fp.Styles.File = o.FileStyle.ToLipgloss()
+	fp.Styles.Permission = o.PermissionsStyle.ToLipgloss()
+	fp.Styles.Selected = o.SelectedStyle.ToLipgloss()
+	fp.Styles.FileSize = o.FileSizeStyle.ToLipgloss()
 
 	m := model{
 		filepicker: fp,
