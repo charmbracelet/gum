@@ -7,6 +7,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/mattn/go-isatty"
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/style"
@@ -15,9 +16,7 @@ import (
 // Run provides a shell script interface for the spinner bubble.
 // https://github.com/charmbracelet/bubbles/spinner
 func (o Options) Run() error {
-	var isTTY bool
-	info, err := os.Stdout.Stat()
-	isTTY = info.Mode()&os.ModeCharDevice == os.ModeCharDevice
+	isTTY := isatty.IsTerminal(os.Stdout.Fd())
 
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()

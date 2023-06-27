@@ -20,7 +20,6 @@ import (
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
@@ -84,7 +83,7 @@ func (m model) View() string {
 	if !m.showOutput {
 		return header
 	}
-	return lipgloss.JoinVertical(lipgloss.Top, header, errbuf.String(), outbuf.String())
+	return header + errbuf.String() + "\n" + outbuf.String()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
