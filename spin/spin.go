@@ -34,14 +34,16 @@ type model struct {
 
 	status     int
 	stdout     string
-	stderr     string
 	timeout    time.Duration
 	hasTimeout bool
+	showOutput bool
 }
+
+var outbuf strings.Builder
+var errbuf strings.Builder
 
 type finishCommandMsg struct {
 	stdout string
-	stderr string
 	status int
 }
 
@@ -53,7 +55,6 @@ func commandStart(command []string) tea.Cmd {
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
-		var outbuf, errbuf strings.Builder
 		cmd.Stdout = &outbuf
 		cmd.Stderr = &errbuf
 
@@ -67,7 +68,6 @@ func commandStart(command []string) tea.Cmd {
 
 		return finishCommandMsg{
 			stdout: outbuf.String(),
-			stderr: errbuf.String(),
 			status: status,
 		}
 	}
@@ -80,17 +80,18 @@ func (m model) Init() tea.Cmd {
 		timeout.Init(m.timeout, nil),
 	)
 }
+
 func (m model) View() string {
-	var str string
-	if m.hasTimeout {
-		str = timeout.Str(m.timeout)
-	}
-
+	var header string
 	if m.align == "left" {
-		return m.spinner.View() + " " + m.title + str
+		header = m.spinner.View() + " " + m.title
+	} else {
+		header = m.title + " " + m.spinner.View()
 	}
-
-	return str + " " + m.title + " " + m.spinner.View()
+	if !m.showOutput {
+		return header
+	}
+	return header + errbuf.String() + "\n" + outbuf.String()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -105,7 +106,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case finishCommandMsg:
 		m.stdout = msg.stdout
-		m.stderr = msg.stderr
 		m.status = msg.status
 		return m, tea.Quit
 	case tea.KeyMsg:

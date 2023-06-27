@@ -42,6 +42,7 @@ type model struct {
 	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style
 	textStyle             lipgloss.Style
+	cursorTextStyle       lipgloss.Style
 	indicatorStyle        lipgloss.Style
 	selectedPrefixStyle   lipgloss.Style
 	unselectedPrefixStyle lipgloss.Style
@@ -61,6 +62,7 @@ func (m model) View() string {
 	}
 
 	var s strings.Builder
+	var lineTextStyle lipgloss.Style
 
 	// For reverse layout, if the number of matches is less than the viewport
 	// height, we need to offset the matches so that the first match is at the
@@ -81,10 +83,14 @@ func (m model) View() string {
 
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
+		// The line's text style is set depending on whether or not the cursor
+		// points to this line.
 		if i == m.cursor {
 			s.WriteString(m.indicatorStyle.Render(m.indicator))
+			lineTextStyle = m.cursorTextStyle
 		} else {
 			s.WriteString(strings.Repeat(" ", lipgloss.Width(m.indicator)))
+			lineTextStyle = m.textStyle
 		}
 
 		// If there are multiple selections mark them, otherwise leave an empty space
@@ -106,7 +112,7 @@ func (m model) View() string {
 			// index. If so, color the character to indicate a match.
 			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
 				// Flush text buffer.
-				s.WriteString(m.textStyle.Render(buf.String()))
+				s.WriteString(lineTextStyle.Render(buf.String()))
 				buf.Reset()
 
 				s.WriteString(m.matchStyle.Render(string(c)))
@@ -119,7 +125,7 @@ func (m model) View() string {
 			}
 		}
 		// Flush text buffer.
-		s.WriteString(m.textStyle.Render(buf.String()))
+		s.WriteString(lineTextStyle.Render(buf.String()))
 
 		// We have finished displaying the match with all of it's matched
 		// characters highlighted and the rest filled in.
