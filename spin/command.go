@@ -15,14 +15,19 @@ import (
 // Run provides a shell script interface for the spinner bubble.
 // https://github.com/charmbracelet/bubbles/spinner
 func (o Options) Run() error {
+	var isTTY bool
+	info, err := os.Stdout.Stat()
+	isTTY = info.Mode()&os.ModeCharDevice == os.ModeCharDevice
+
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
 	m := model{
-		spinner: s,
-		title:   o.TitleStyle.ToLipgloss().Render(o.Title),
-		command: o.Command,
-		align:   o.Align,
+		spinner:    s,
+		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
+		command:    o.Command,
+		align:      o.Align,
+		showOutput: o.ShowOutput && isTTY,
 	}
 	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
 	mm, err := p.Run()
@@ -32,13 +37,21 @@ func (o Options) Run() error {
 		return fmt.Errorf("failed to run spin: %w", err)
 	}
 
-	if o.ShowOutput {
-		fmt.Fprint(os.Stdout, m.stdout)
-		fmt.Fprint(os.Stderr, m.stderr)
-	}
-
 	if m.aborted {
 		return exit.ErrAborted
+	}
+
+	if err != nil {
+		return fmt.Errorf("failed to access stdout: %w", err)
+	}
+
+	if o.ShowOutput {
+		if !isTTY {
+			_, err := os.Stdout.WriteString(m.stdout)
+			if err != nil {
+				return fmt.Errorf("failed to write to stdout: %w", err)
+			}
+		}
 	}
 
 	os.Exit(m.status)
