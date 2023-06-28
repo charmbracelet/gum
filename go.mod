@@ -12,7 +12,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/roff v0.1.0
-	github.com/muesli/termenv v0.15.2-0.20230323153104-73a40463ff25
+	github.com/muesli/termenv v0.15.2
 	github.com/sahilm/fuzzy v0.1.1-0.20230530133925-c48e322e2a8f
 )
 
@@ -38,7 +38,7 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 )
