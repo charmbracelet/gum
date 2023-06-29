@@ -84,9 +84,10 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 	m.viewport.SetContent(text.String())
 }
 
+const heightOffset = 2
+
 func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 	var cmd tea.Cmd
-	const HeightOffset = 2
 	if m.search.active {
 		switch key.String() {
 		case "enter":
@@ -96,7 +97,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 
 				// Trigger a view update to highlight the found matches.
 				m.search.NextMatch(&m)
-				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + HeightOffset, Width: m.viewport.Width})
+				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 			} else {
 				m.search.Done()
 			}
@@ -115,10 +116,10 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			m.search.Begin()
 		case "p", "N":
 			m.search.PrevMatch(&m)
-			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + HeightOffset, Width: m.viewport.Width})
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 		case "n":
 			m.search.NextMatch(&m)
-			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + HeightOffset, Width: m.viewport.Width})
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
 		}

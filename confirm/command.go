@@ -7,11 +7,9 @@ import (
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/style"
 )
-
-// Aborted is the exit code when the user aborts the confirmation.
-const Aborted = 130
 
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
@@ -34,7 +32,7 @@ func (o Options) Run() error {
 	}
 
 	if m.(model).aborted {
-		os.Exit(Aborted)
+		os.Exit(exit.StatusAborted)
 	} else if m.(model).confirmation {
 		os.Exit(0)
 	} else {
