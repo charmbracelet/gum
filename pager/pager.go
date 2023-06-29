@@ -146,13 +146,13 @@ func (m model) View() string {
 	if m.hasTimeout {
 		timeoutStr = timeout.Str(m.timeout) + " "
 	}
-	helpMsg := "\n"+timeoutStr+" ↑/↓: Navigate • q: Quit • /: Search "
+	helpMsg := "\n" + timeoutStr + " ↑/↓: Navigate • q: Quit • /: Search "
 	if m.search.query != nil {
 		helpMsg += "• n: Next Match "
 		helpMsg += "• N: Prev Match "
 	}
 	if m.search.active {
-		return m.viewport.View() + "\n"+timeoutStr+ " "+ m.search.input.View()
+		return m.viewport.View() + "\n" + timeoutStr + " " + m.search.input.View()
 	}
 
 	return m.viewport.View() + m.helpStyle.Render(helpMsg)
