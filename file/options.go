@@ -1,6 +1,10 @@
 package file
 
-import "github.com/charmbracelet/gum/style"
+import (
+	"time"
+
+	"github.com/charmbracelet/gum/style"
+)
 
 // Options are the options for the file command.
 type Options struct {
@@ -21,5 +25,6 @@ type Options struct {
 	//nolint:staticcheck
 	SelectedStyle style.Styles `embed:"" prefix:"selected." help:"The style to use for the selected item" set:"defaultBold=true" set:"defaultForeground=212" envprefix:"GUM_FILE_SELECTED_"`
 	//nolint:staticcheck
-	FileSizeStyle style.Styles `embed:"" prefix:"file-size." help:"The style to use for file sizes" set:"defaultWidth=8" set:"defaultAlign=right" set:"defaultForeground=240"  envprefix:"GUM_FILE_FILE_SIZE_"`
+	FileSizeStyle style.Styles  `embed:"" prefix:"file-size." help:"The style to use for file sizes" set:"defaultWidth=8" set:"defaultAlign=right" set:"defaultForeground=240"  envprefix:"GUM_FILE_FILE_SIZE_"`
+	Timeout       time.Duration `help:"Timeout until command aborts without a selection" default:"0" env:"GUM_FILE_TIMEOUT"`
 }
