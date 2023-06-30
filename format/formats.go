@@ -54,7 +54,7 @@ func markdown(input string, theme string) (string, error) {
 }
 
 func template(input string) (string, error) {
-	f := termenv.TemplateFuncs(termenv.ColorProfile())
+	f := termenv.TemplateFuncs(termenv.EnvColorProfile())
 	t, err := tpl.New("tpl").Funcs(f).Parse(input)
 	if err != nil {
 		return "", fmt.Errorf("unable to parse template: %w", err)
