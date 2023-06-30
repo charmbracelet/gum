@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/gum/style"
 )
 
-// Options is the customization timeout for the confirm command.
+// Options is the customization options for the confirm command.
 type Options struct {
 	Default     bool         `help:"Default confirmation action" default:"true"`
 	Affirmative string       `help:"The title of the affirmative action" default:"Yes"`
