@@ -112,6 +112,8 @@ func (o Options) Run() error {
 		itemStyle:         o.ItemStyle.ToLipgloss(),
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
 		numSelected:       currentSelected,
+		hasTimeout:        o.Timeout > 0,
+		timeout:           o.Timeout,
 	}, tea.WithOutput(os.Stderr)).Run()
 
 	if err != nil {
