@@ -11,8 +11,9 @@
 package confirm
 
 import (
-	"fmt"
 	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -37,21 +38,8 @@ type model struct {
 	unselectedStyle lipgloss.Style
 }
 
-const tickInterval = time.Second
-
-type tickMsg struct{}
-
-func tick() tea.Cmd {
-	return tea.Tick(tickInterval, func(time.Time) tea.Msg {
-		return tickMsg{}
-	})
-}
-
 func (m model) Init() tea.Cmd {
-	if m.timeout > 0 {
-		return tick()
-	}
-	return nil
+	return timeout.Init(m.timeout, m.defaultSelection)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -61,6 +49,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
+			m.confirmation = false
 			m.aborted = true
 			fallthrough
 		case "esc":
@@ -85,14 +74,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.confirmation = true
 			return m, tea.Quit
 		}
-	case tickMsg:
-		if m.timeout <= 0 {
+	case timeout.TickTimeoutMsg:
+
+		if msg.TimeoutValue <= 0 {
 			m.quitting = true
 			m.confirmation = m.defaultSelection
 			return m, tea.Quit
 		}
-		m.timeout -= tickInterval
-		return m, tick()
+
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	}
 	return m, nil
 }
@@ -102,27 +93,23 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg, timeout, affirmativeTimeout, negativeTimeout string
-
+	var aff, neg, timeoutStrYes, timeoutStrNo string
+	timeoutStrNo = ""
+	timeoutStrYes = ""
 	if m.hasTimeout {
-		timeout = fmt.Sprintf(" (%d)", max(0, int(m.timeout.Seconds())))
-	}
-
-	// set timer based on defaultSelection
-	if m.defaultSelection {
-		affirmativeTimeout = m.affirmative + timeout
-		negativeTimeout = m.negative
-	} else {
-		affirmativeTimeout = m.affirmative
-		negativeTimeout = m.negative + timeout
+		if m.defaultSelection {
+			timeoutStrYes = timeout.Str(m.timeout)
+		} else {
+			timeoutStrNo = timeout.Str(m.timeout)
+		}
 	}
 
 	if m.confirmation {
-		aff = m.selectedStyle.Render(affirmativeTimeout)
-		neg = m.unselectedStyle.Render(negativeTimeout)
+		aff = m.selectedStyle.Render(m.affirmative + timeoutStrYes)
+		neg = m.unselectedStyle.Render(m.negative + timeoutStrNo)
 	} else {
-		aff = m.unselectedStyle.Render(affirmativeTimeout)
-		neg = m.selectedStyle.Render(negativeTimeout)
+		aff = m.unselectedStyle.Render(m.affirmative + timeoutStrYes)
+		neg = m.selectedStyle.Render(m.negative + timeoutStrNo)
 	}
 
 	// If the option is intentionally empty, do not show it.
@@ -131,11 +118,4 @@ func (m model) View() string {
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }

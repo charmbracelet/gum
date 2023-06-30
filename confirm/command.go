@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/gum/internal/exit"
+
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/style"
 )
 
