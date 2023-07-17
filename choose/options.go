@@ -19,6 +19,7 @@ type Options struct {
 	SelectedPrefix    string        `help:"Prefix to show on selected items (hidden if limit is 1)" default:"◉ " env:"GUM_CHOOSE_SELECTED_PREFIX"`
 	UnselectedPrefix  string        `help:"Prefix to show on unselected items (hidden if limit is 1)" default:"○ " env:"GUM_CHOOSE_UNSELECTED_PREFIX"`
 	Selected          []string      `help:"Options that should start as selected" default:"" env:"GUM_CHOOSE_SELECTED"`
+	SelectIfOne       bool          `help:"Select the given option if there is only one" group:"Selection"`
 	CursorStyle       style.Styles  `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_CURSOR_"`
 	HeaderStyle       style.Styles  `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_CHOOSE_HEADER_"`
 	ItemStyle         style.Styles  `embed:"" prefix:"item." hidden:"" envprefix:"GUM_CHOOSE_ITEM_"`

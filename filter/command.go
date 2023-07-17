@@ -45,6 +45,15 @@ func (o Options) Run() error {
 		return errors.New("no options provided, see `gum filter --help`")
 	}
 
+	if o.SelectIfOne && len(choices) == 1 {
+		if isatty.IsTerminal(os.Stdout.Fd()) {
+			fmt.Print(choices[0])
+		} else {
+			fmt.Print(ansi.Strip(choices[0]))
+		}
+		return nil
+	}
+
 	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
 	if o.Height == 0 {
 		options = append(options, tea.WithAltScreen())

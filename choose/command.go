@@ -35,6 +35,11 @@ func (o Options) Run() error {
 		o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
 	}
 
+	if o.SelectIfOne && len(o.Options) == 1 {
+		print(o.Options[0])
+		return nil
+	}
+
 	// We don't need to display prefixes if we are only picking one option.
 	// Simply displaying the cursor is enough.
 	if o.Limit == 1 && !o.NoLimit {
@@ -141,11 +146,7 @@ func (o Options) Run() error {
 		}
 	}
 
-	if isatty.IsTerminal(os.Stdout.Fd()) {
-		fmt.Print(s.String())
-	} else {
-		fmt.Print(ansi.Strip(s.String()))
-	}
+	print(s.String())
 
 	return nil
 }
@@ -154,6 +155,14 @@ func (o Options) Run() error {
 func (o Options) BeforeReset(ctx *kong.Context) error {
 	style.HideFlags(ctx)
 	return nil
+}
+
+func print(s string) {
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		fmt.Print(s)
+	} else {
+		fmt.Print(ansi.Strip(s))
+	}
 }
 
 // Check if an array contains a value.
