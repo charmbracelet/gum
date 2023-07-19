@@ -124,7 +124,8 @@ apk add gum
 # Android (via termux)
 pkg install gum
 
-# Windows (via Scoop)
+# Windows (via WinGet or Scoop)
+winget install charmbracelet.gum
 scoop install charm-gum
 ```
 
