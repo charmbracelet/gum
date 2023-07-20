@@ -41,6 +41,8 @@ func (o Options) Run() error {
 		softWrap:            o.SoftWrap,
 		matchStyle:          o.MatchStyle.ToLipgloss(),
 		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
+		timeout:             o.Timeout,
+		hasTimeout:          o.Timeout > 0,
 	}
 	_, err := tea.NewProgram(model, tea.WithAltScreen()).Run()
 	if err != nil {

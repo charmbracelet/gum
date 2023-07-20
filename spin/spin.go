@@ -17,26 +17,33 @@ package spin
 import (
 	"os/exec"
 	"strings"
+	"time"
+
+	"github.com/charmbracelet/gum/internal/exit"
+	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
-	spinner spinner.Model
-	title   string
-	align   string
-	command []string
-	aborted bool
-
-	status int
-	stdout string
-	stderr string
+	spinner    spinner.Model
+	title      string
+	align      string
+	command    []string
+	aborted    bool
+	status     int
+	stdout     string
+	showOutput bool
+	timeout    time.Duration
+	hasTimeout bool
 }
+
+var outbuf strings.Builder
+var errbuf strings.Builder
 
 type finishCommandMsg struct {
 	stdout string
-	stderr string
 	status int
 }
 
@@ -48,7 +55,6 @@ func commandStart(command []string) tea.Cmd {
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
-		var outbuf, errbuf strings.Builder
 		cmd.Stdout = &outbuf
 		cmd.Stderr = &errbuf
 
@@ -62,7 +68,6 @@ func commandStart(command []string) tea.Cmd {
 
 		return finishCommandMsg{
 			stdout: outbuf.String(),
-			stderr: errbuf.String(),
 			status: status,
 		}
 	}
@@ -72,22 +77,38 @@ func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
 		commandStart(m.command),
+		timeout.Init(m.timeout, nil),
 	)
 }
 func (m model) View() string {
-	if m.align == "left" {
-		return m.spinner.View() + " " + m.title
+	var str string
+	if m.hasTimeout {
+		str = timeout.Str(m.timeout)
 	}
-
-	return m.title + " " + m.spinner.View()
+	var header string
+	if m.align == "left" {
+		header = m.spinner.View() + str + " " + m.title
+	} else {
+		header = str + " " + m.title + " " + m.spinner.View()
+	}
+	if !m.showOutput {
+		return header
+	}
+	return header + errbuf.String() + "\n" + outbuf.String()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	case timeout.TickTimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			m.status = exit.StatusAborted
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case finishCommandMsg:
 		m.stdout = msg.stdout
-		m.stderr = msg.stderr
 		m.status = msg.status
 		return m, tea.Quit
 	case tea.KeyMsg:

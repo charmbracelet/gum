@@ -294,6 +294,8 @@ gum pager < README.md
 Display a spinner while running a script or command. The spinner will
 automatically stop after the given command exits.
 
+To view or pipe the command's output, use the `--show-output` flag.
+
 ```bash
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```

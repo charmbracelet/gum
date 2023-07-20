@@ -12,6 +12,9 @@ package filter
 
 import (
 	"strings"
+	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -39,21 +42,27 @@ type model struct {
 	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style
 	textStyle             lipgloss.Style
+	cursorTextStyle       lipgloss.Style
 	indicatorStyle        lipgloss.Style
 	selectedPrefixStyle   lipgloss.Style
 	unselectedPrefixStyle lipgloss.Style
 	reverse               bool
 	fuzzy                 bool
 	sort                  bool
+	timeout               time.Duration
+	hasTimeout            bool
 }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd {
+	return timeout.Init(m.timeout, nil)
+}
 func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
 
 	var s strings.Builder
+	var lineTextStyle lipgloss.Style
 
 	// For reverse layout, if the number of matches is less than the viewport
 	// height, we need to offset the matches so that the first match is at the
@@ -74,10 +83,14 @@ func (m model) View() string {
 
 		// If this is the current selected index, we add a small indicator to
 		// represent it. Otherwise, simply pad the string.
+		// The line's text style is set depending on whether or not the cursor
+		// points to this line.
 		if i == m.cursor {
 			s.WriteString(m.indicatorStyle.Render(m.indicator))
+			lineTextStyle = m.cursorTextStyle
 		} else {
 			s.WriteString(strings.Repeat(" ", lipgloss.Width(m.indicator)))
+			lineTextStyle = m.textStyle
 		}
 
 		// If there are multiple selections mark them, otherwise leave an empty space
@@ -99,7 +112,7 @@ func (m model) View() string {
 			// index. If so, color the character to indicate a match.
 			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
 				// Flush text buffer.
-				s.WriteString(m.textStyle.Render(buf.String()))
+				s.WriteString(lineTextStyle.Render(buf.String()))
 				buf.Reset()
 
 				s.WriteString(m.matchStyle.Render(string(c)))
@@ -112,7 +125,7 @@ func (m model) View() string {
 			}
 		}
 		// Flush text buffer.
-		s.WriteString(m.textStyle.Render(buf.String()))
+		s.WriteString(lineTextStyle.Render(buf.String()))
 
 		// We have finished displaying the match with all of it's matched
 		// characters highlighted and the rest filled in.
@@ -143,6 +156,15 @@ func (m model) View() string {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	case timeout.TickTimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			m.quitting = true
+			m.aborted = true
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
+
 	case tea.WindowSizeMsg:
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())

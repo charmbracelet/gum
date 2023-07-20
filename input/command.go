@@ -43,6 +43,8 @@ func (o Options) Run() error {
 		aborted:     false,
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
+		timeout:     o.Timeout,
+		hasTimeout:  o.Timeout > 0,
 		autoWidth:   o.Width < 1,
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
