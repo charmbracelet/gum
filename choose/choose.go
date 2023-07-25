@@ -100,10 +100,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "left", "h", "ctrl+b":
 			m.index = clamp(m.index-m.height, 0, len(m.items)-1)
 			m.paginator.PrevPage()
-		case "G":
+		case "G", "end":
 			m.index = len(m.items) - 1
 			m.paginator.Page = m.paginator.TotalPages - 1
-		case "g":
+		case "g", "home":
 			m.index = 0
 			m.paginator.Page = 0
 		case "a":
