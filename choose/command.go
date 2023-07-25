@@ -46,7 +46,7 @@ func (o Options) Run() error {
 	// If we've set no limit then we can simply select as many options as there
 	// are so let's set the limit to the number of options.
 	if o.NoLimit {
-		o.Limit = len(o.Options)
+		o.Limit = len(o.Options) + 1
 	}
 
 	if len(o.Selected) > o.Limit {
