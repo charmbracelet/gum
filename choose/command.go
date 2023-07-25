@@ -93,6 +93,7 @@ func (o Options) Run() error {
 	pager.ActiveDot = subduedStyle.Render("•")
 	pager.InactiveDot = verySubduedStyle.Render("•")
 	pager.KeyMap = paginator.KeyMap{}
+	pager.Page = startingIndex / o.Height
 
 	// Disable Keybindings since we will control it ourselves.
 	tm, err := tea.NewProgram(model{
