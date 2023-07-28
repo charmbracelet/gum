@@ -46,7 +46,7 @@ func (o Options) Run() error {
 	}
 
 	if o.ShowOutput {
-		if !isTTY {
+		if isTTY {
 			_, err := os.Stdout.WriteString(m.stdout)
 			if err != nil {
 				return fmt.Errorf("failed to write to stdout: %w", err)
