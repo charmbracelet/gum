@@ -26,6 +26,7 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
+		showOutput: o.ShowOutput && isTTY,
 		timeout:    o.Timeout,
 		hasTimeout: o.Timeout > 0,
 	}
@@ -46,7 +47,7 @@ func (o Options) Run() error {
 	}
 
 	if o.ShowOutput {
-		if isTTY {
+		if !isTTY {
 			_, err := os.Stdout.WriteString(m.stdout)
 			if err != nil {
 				return fmt.Errorf("failed to write to stdout: %w", err)
