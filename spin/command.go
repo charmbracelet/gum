@@ -47,6 +47,8 @@ func (o Options) Run() error {
 	}
 
 	if o.ShowOutput {
+		// BubbleTea writes the View() to stderr.
+		// If the program is being piped then put the accumulated output in stdout.
 		if !isTTY {
 			_, err := os.Stdout.WriteString(m.stdout)
 			if err != nil {
