@@ -105,7 +105,7 @@ func (o Options) Run() error {
 
 	m := tm.(model)
 
-	if o.ReturnColumn > 0 && o.ReturnColumn < len(m.selected) {
+	if o.ReturnColumn > 0 && o.ReturnColumn <= len(m.selected) {
 		if err = writer.Write([]string{m.selected[o.ReturnColumn-1]}); err != nil {
 			return fmt.Errorf("failed to write col %d of selected row: %w", o.ReturnColumn, err)
 		}
