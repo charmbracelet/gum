@@ -105,8 +105,14 @@ func (o Options) Run() error {
 
 	m := tm.(model)
 
-	if err = writer.Write([]string(m.selected)); err != nil {
-		return fmt.Errorf("failed to write selected row: %w", err)
+	if o.ReturnColumn > 0 && o.ReturnColumn < len(m.selected) {
+		if err = writer.Write([]string{m.selected[o.ReturnColumn-1]}); err != nil {
+			return fmt.Errorf("failed to write col %d of selected row: %w", o.ReturnColumn, err)
+		}
+	} else {
+		if err = writer.Write([]string(m.selected)); err != nil {
+			return fmt.Errorf("failed to write selected row: %w", err)
+		}
 	}
 
 	writer.Flush()
