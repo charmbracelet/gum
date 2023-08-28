@@ -471,9 +471,9 @@ List all PRs for the current GitHub repository and checkout the chosen PR (using
 gh pr list | cut -f1,2 | gum choose | cut -f1 | xargs gh pr checkout
 ```
 
-#### Choose which azure account to use
+#### Choose which Azure Account to use
 
-Choose which Azure Account you want to use.
+Choose an Azure account from a list and set the chosen account.
 
 ```bash
 selection=$(az account list -o tsv --query "[].name" | gum choose) && az account set --name $selection
