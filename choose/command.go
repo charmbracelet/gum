@@ -46,7 +46,7 @@ func (o Options) Run() error {
 	// If we've set no limit then we can simply select as many options as there
 	// are so let's set the limit to the number of options.
 	if o.NoLimit {
-		o.Limit = len(o.Options)
+		o.Limit = len(o.Options) + 1
 	}
 
 	if len(o.Selected) > o.Limit {
@@ -93,6 +93,7 @@ func (o Options) Run() error {
 	pager.ActiveDot = subduedStyle.Render("•")
 	pager.InactiveDot = verySubduedStyle.Render("•")
 	pager.KeyMap = paginator.KeyMap{}
+	pager.Page = startingIndex / o.Height
 
 	// Disable Keybindings since we will control it ourselves.
 	tm, err := tea.NewProgram(model{
@@ -112,6 +113,8 @@ func (o Options) Run() error {
 		itemStyle:         o.ItemStyle.ToLipgloss(),
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
 		numSelected:       currentSelected,
+		hasTimeout:        o.Timeout > 0,
+		timeout:           o.Timeout,
 	}, tea.WithOutput(os.Stderr)).Run()
 
 	if err != nil {

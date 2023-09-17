@@ -13,8 +13,11 @@
 package file
 
 import (
+	"time"
+
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/timeout"
 )
 
 type model struct {
@@ -22,10 +25,15 @@ type model struct {
 	selectedPath string
 	aborted      bool
 	quitting     bool
+	timeout      time.Duration
+	hasTimeout   bool
 }
 
 func (m model) Init() tea.Cmd {
-	return m.filepicker.Init()
+	return tea.Batch(
+		timeout.Init(m.timeout, nil),
+		m.filepicker.Init(),
+	)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -37,6 +45,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		}
+	case timeout.TickTimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			m.quitting = true
+			m.aborted = true
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	}
 	var cmd tea.Cmd
 	m.filepicker, cmd = m.filepicker.Update(msg)

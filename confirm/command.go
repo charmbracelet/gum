@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/gum/internal/exit"
+
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -31,7 +33,7 @@ func (o Options) Run() error {
 	}
 
 	if m.(model).aborted {
-		os.Exit(130)
+		os.Exit(exit.StatusAborted)
 	} else if m.(model).confirmation {
 		os.Exit(0)
 	} else {

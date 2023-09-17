@@ -6,10 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/charmbracelet/gum/internal/exit"
+
 	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -46,7 +47,12 @@ func (o Options) Run() error {
 	fp.Styles.Selected = o.SelectedStyle.ToLipgloss()
 	fp.Styles.FileSize = o.FileSizeStyle.ToLipgloss()
 
-	m := model{filepicker: fp}
+	m := model{
+		filepicker: fp,
+		timeout:    o.Timeout,
+		hasTimeout: o.Timeout > 0,
+		aborted:    false,
+	}
 
 	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {

@@ -6,6 +6,9 @@ package pager
 import (
 	"fmt"
 	"strings"
+	"time"
+
+	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -25,14 +28,23 @@ type model struct {
 	matchStyle          lipgloss.Style
 	matchHighlightStyle lipgloss.Style
 	maxWidth            int
+	timeout             time.Duration
+	hasTimeout          bool
 }
 
 func (m model) Init() tea.Cmd {
-	return nil
+	return timeout.Init(m.timeout, nil)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case timeout.TickTimeoutMsg:
+		if msg.TimeoutValue <= 0 {
+			return m, tea.Quit
+		}
+		m.timeout = msg.TimeoutValue
+		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
+
 	case tea.WindowSizeMsg:
 		m.ProcessText(msg)
 	case tea.KeyMsg:
@@ -84,6 +96,8 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 	m.viewport.SetContent(text.String())
 }
 
+const heightOffset = 2
+
 func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 	var cmd tea.Cmd
 	if m.search.active {
@@ -95,7 +109,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 
 				// Trigger a view update to highlight the found matches.
 				m.search.NextMatch(&m)
-				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
+				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 			} else {
 				m.search.Done()
 			}
@@ -114,10 +128,10 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			m.search.Begin()
 		case "p", "N":
 			m.search.PrevMatch(&m)
-			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 		case "n":
 			m.search.NextMatch(&m)
-			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + 2, Width: m.viewport.Width})
+			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
 		}
@@ -128,13 +142,17 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 }
 
 func (m model) View() string {
-	helpMsg := "\n ↑/↓: Navigate • q: Quit • /: Search "
+	var timeoutStr string
+	if m.hasTimeout {
+		timeoutStr = timeout.Str(m.timeout) + " "
+	}
+	helpMsg := "\n" + timeoutStr + " ↑/↓: Navigate • q: Quit • /: Search "
 	if m.search.query != nil {
 		helpMsg += "• n: Next Match "
 		helpMsg += "• N: Prev Match "
 	}
 	if m.search.active {
-		return m.viewport.View() + "\n " + m.search.input.View()
+		return m.viewport.View() + "\n" + timeoutStr + " " + m.search.input.View()
 	}
 
 	return m.viewport.View() + m.helpStyle.Render(helpMsg)
