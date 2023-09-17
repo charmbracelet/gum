@@ -42,9 +42,7 @@ func (o Options) Run() error {
 	}
 
 	choices = make([]string, len(o.Options))
-	for i, option := range o.Options {
-		choices[i] = option
-	}
+	copy(choices, o.Options)
 
 	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
 	if o.Height == 0 {
