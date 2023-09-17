@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -34,17 +33,17 @@ func (o Options) Run() error {
 	v := viewport.New(o.Width, o.Height)
 
 	var choices []string
-	if input, _ := stdin.Read(); input != "" {
-		input = strings.TrimSuffix(input, "\n")
-		if input != "" {
-			choices = strings.Split(input, "\n")
+	if len(o.Options) == 0 {
+		if input, _ := stdin.Read(); input != "" {
+			o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
+		} else {
+			o.Options = files.List()
 		}
-	} else {
-		choices = files.List()
 	}
 
-	if len(choices) == 0 {
-		return errors.New("no options provided, see `gum filter --help`")
+	choices = make([]string, len(o.Options))
+	for i, option := range o.Options {
+		choices[i] = option
 	}
 
 	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}

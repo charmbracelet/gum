@@ -4,6 +4,8 @@ import "github.com/charmbracelet/gum/style"
 
 // Options is the customization options for the filter command.
 type Options struct {
+	Options []string `arg:"" optional:"" help:"Options to filter."`
+
 	Indicator             string       `help:"Character for selection" default:"•" env:"GUM_FILTER_INDICATOR"`
 	IndicatorStyle        style.Styles `embed:"" prefix:"indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_INDICATOR_"`
 	Limit                 int          `help:"Maximum number of options to pick" default:"1" group:"Selection"`
