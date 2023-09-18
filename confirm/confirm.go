@@ -82,6 +82,7 @@ type model struct {
 	help        help.Model
 	keys        keymap
 
+	showOutput   bool
 	confirmation bool
 
 	defaultSelection bool

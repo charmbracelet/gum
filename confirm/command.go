@@ -19,6 +19,7 @@ func (o Options) Run() error {
 	m := model{
 		affirmative:      o.Affirmative,
 		negative:         o.Negative,
+		showOutput:       o.ShowOutput,
 		confirmation:     o.Default,
 		defaultSelection: o.Default,
 		keys:             defaultKeymap(o.Affirmative, o.Negative),
