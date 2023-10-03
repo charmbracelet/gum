@@ -33,17 +33,15 @@ func (o Options) Run() error {
 
 	v := viewport.New(o.Width, o.Height)
 
-	var choices []string
-	if input, _ := stdin.Read(); input != "" {
-		input = strings.TrimSuffix(input, "\n")
-		if input != "" {
-			choices = strings.Split(input, "\n")
+	if len(o.Options) == 0 {
+		if input, _ := stdin.Read(); input != "" {
+			o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
+		} else {
+			o.Options = files.List()
 		}
-	} else {
-		choices = files.List()
 	}
 
-	if len(choices) == 0 {
+	if len(o.Options) == 0 {
 		return errors.New("no options provided, see `gum filter --help`")
 	}
 
@@ -58,19 +56,19 @@ func (o Options) Run() error {
 	}
 	switch {
 	case o.Value != "" && o.Fuzzy:
-		matches = fuzzy.Find(o.Value, choices)
+		matches = fuzzy.Find(o.Value, o.Options)
 	case o.Value != "" && !o.Fuzzy:
-		matches = exactMatches(o.Value, choices)
+		matches = exactMatches(o.Value, o.Options)
 	default:
-		matches = matchAll(choices)
+		matches = matchAll(o.Options)
 	}
 
 	if o.NoLimit {
-		o.Limit = len(choices)
+		o.Limit = len(o.Options)
 	}
 
 	p := tea.NewProgram(model{
-		choices:               choices,
+		choices:               o.Options,
 		indicator:             o.Indicator,
 		matches:               matches,
 		header:                o.Header,
