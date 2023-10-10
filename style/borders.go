@@ -2,8 +2,8 @@ package style
 
 import "github.com/charmbracelet/lipgloss"
 
-// border maps strings to `lipgloss.Border`s.
-var border map[string]lipgloss.Border = map[string]lipgloss.Border{
+// Border maps strings to `lipgloss.Border`s.
+var Border map[string]lipgloss.Border = map[string]lipgloss.Border{
 	"double":  lipgloss.DoubleBorder(),
 	"hidden":  lipgloss.HiddenBorder(),
 	"none":    {},
