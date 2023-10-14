@@ -45,8 +45,8 @@ func (o Options) Run() error {
 		return fmt.Errorf("failed to access stdout: %w", err)
 	}
 
-	// If the command succeed, and we are printing output and we are in a TTY then push the STDOUT we got
-	// to the actual STDOUT for piping or other things.
+	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
+	// STDOUT for piping or other things.
 	if m.status == 0 {
 		if o.ShowOutput {
 			if isTTY {
