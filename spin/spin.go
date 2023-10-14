@@ -15,6 +15,7 @@
 package spin
 
 import (
+	"io"
 	"os/exec"
 	"strings"
 	"time"
@@ -34,16 +35,22 @@ type model struct {
 	aborted    bool
 	status     int
 	stdout     string
+	stderr     string
+	output     string
 	showOutput bool
+	showError  bool
 	timeout    time.Duration
 	hasTimeout bool
 }
 
+var bothbuf strings.Builder
 var outbuf strings.Builder
 var errbuf strings.Builder
 
 type finishCommandMsg struct {
 	stdout string
+	stderr string
+	output string
 	status int
 }
 
@@ -55,8 +62,11 @@ func commandStart(command []string) tea.Cmd {
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
-		cmd.Stdout = &outbuf
-		cmd.Stderr = &errbuf
+		stdout := io.MultiWriter(&bothbuf, &errbuf)
+		stderr := io.MultiWriter(&bothbuf, &outbuf)
+
+		cmd.Stdout = stdout
+		cmd.Stderr = stderr
 
 		_ = cmd.Run()
 
@@ -68,6 +78,8 @@ func commandStart(command []string) tea.Cmd {
 
 		return finishCommandMsg{
 			stdout: outbuf.String(),
+			stderr: errbuf.String(),
+			output: bothbuf.String(),
 			status: status,
 		}
 	}
@@ -109,6 +121,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case finishCommandMsg:
 		m.stdout = msg.stdout
+		m.stderr = msg.stderr
+		m.output = msg.output
 		m.status = msg.status
 		return m, tea.Quit
 	case tea.KeyMsg:
