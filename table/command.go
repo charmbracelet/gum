@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	ltable "github.com/charmbracelet/lipgloss/table"
 
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -83,6 +84,28 @@ func (o Options) Run() error {
 			return fmt.Errorf("invalid number of columns")
 		}
 		rows = append(rows, table.Row(row))
+	}
+
+	if o.Print {
+		headers := make([]any, 0, len(columnNames))
+		for _, name := range columnNames {
+			headers = append(headers, name)
+		}
+
+		table := ltable.New().
+			Headers(headers...).
+			Rows(data...).
+			BorderStyle(o.BorderStyle.ToLipgloss()).
+			Border(style.Border[o.Border]).
+			StyleFunc(func(row, col int) lipgloss.Style {
+				if row == 0 {
+					return styles.Header
+				}
+				return styles.Cell
+			})
+
+		fmt.Println(table.Render())
+		return nil
 	}
 
 	table := table.New(

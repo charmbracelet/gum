@@ -15,7 +15,7 @@ func (s Styles) ToLipgloss() lipgloss.Style {
 		BorderBackground(lipgloss.Color(s.BorderBackground)).
 		BorderForeground(lipgloss.Color(s.BorderForeground)).
 		Align(decode.Align[s.Align]).
-		Border(border[s.Border]).
+		Border(Border[s.Border]).
 		Height(s.Height).
 		Width(s.Width).
 		Margin(parseMargin(s.Margin)).
