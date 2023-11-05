@@ -18,10 +18,10 @@ import (
 // https://github.com/charmbracelet/bubbles/textinput
 func (o Options) Run() error {
 	i := textinput.New()
-	if in, _ := stdin.Read(); in != "" && o.Value == "" {
-		i.SetValue(in)
-	} else {
+	if o.Value != "" {
 		i.SetValue(o.Value)
+	} else if in, _ := stdin.Read(); in != "" {
+		i.SetValue(in)
 	}
 
 	i.Focus()
