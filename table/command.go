@@ -87,7 +87,7 @@ func (o Options) Run() error {
 	}
 
 	if o.Print {
-		headers := make([]any, 0, len(columnNames))
+		headers := make([]string, 0, len(columnNames))
 		for _, name := range columnNames {
 			headers = append(headers, name)
 		}
