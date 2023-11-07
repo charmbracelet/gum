@@ -80,56 +80,27 @@ func (o Options) Run() error {
 		}
 	}
 
-	switch o.Level {
-	case "none":
-		if o.Format {
-			l.Printf(arg0, args...)
-		} else if o.Structured {
-			l.Print(arg0, args...)
-		} else {
-			l.Print(strings.Join(o.Text, " "))
-		}
-	case "debug":
-		if o.Format {
-			l.Debugf(arg0, args...)
-		} else if o.Structured {
-			l.Debug(arg0, args...)
-		} else {
-			l.Debug(strings.Join(o.Text, " "))
-		}
-	case "info":
-		if o.Format {
-			l.Infof(arg0, args...)
-		} else if o.Structured {
-			l.Info(arg0, args...)
-		} else {
-			l.Info(strings.Join(o.Text, " "))
-		}
-	case "warn":
-		if o.Format {
-			l.Warnf(arg0, args...)
-		} else if o.Structured {
-			l.Warn(arg0, args...)
-		} else {
-			l.Warn(strings.Join(o.Text, " "))
-		}
-	case "error":
-		if o.Format {
-			l.Errorf(arg0, args...)
-		} else if o.Structured {
-			l.Error(arg0, args...)
-		} else {
-			l.Error(strings.Join(o.Text, " "))
-		}
-	case "fatal":
-		if o.Format {
-			l.Fatalf(arg0, args...)
-		} else if o.Structured {
-			l.Fatal(arg0, args...)
-		} else {
-			l.Fatal(strings.Join(o.Text, " "))
-		}
+	logger := map[string]logger{
+		"none":  {printf: l.Printf, print: l.Print},
+		"debug": {printf: l.Debugf, print: l.Debug},
+		"info":  {printf: l.Infof, print: l.Info},
+		"warn":  {printf: l.Warnf, print: l.Warn},
+		"error": {printf: l.Errorf, print: l.Error},
+		"fatal": {printf: l.Fatalf, print: l.Fatal},
+	}[o.Level]
+
+	if o.Format {
+		logger.printf(arg0, args...)
+	} else if o.Structured {
+		logger.print(arg0, args...)
+	} else {
+		logger.print(strings.Join(o.Text, " "))
 	}
 
 	return nil
+}
+
+type logger struct {
+	printf func(string, ...interface{})
+	print  func(interface{}, ...interface{})
 }
