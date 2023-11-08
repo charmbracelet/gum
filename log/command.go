@@ -5,6 +5,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
@@ -26,8 +27,36 @@ func (o Options) Run() error {
 
 	l.SetPrefix(o.Prefix)
 	l.SetLevel(-math.MaxInt32) // log all levels
-	l.SetReportTimestamp(o.Time)
-	l.SetTimeFormat(o.TimeFormat)
+	l.SetReportTimestamp(o.Time != "")
+
+	timeFormats := map[string]string{
+		"layout":      time.Layout,
+		"ansic":       time.ANSIC,
+		"unixdate":    time.UnixDate,
+		"rubydate":    time.RubyDate,
+		"rfc822":      time.RFC822,
+		"rfc822z":     time.RFC822Z,
+		"rfc850":      time.RFC850,
+		"rfc1123":     time.RFC1123,
+		"rfc1123z":    time.RFC1123Z,
+		"rfc3339":     time.RFC3339,
+		"rfc3339nano": time.RFC3339Nano,
+		"kitchen":     time.Kitchen,
+		"stamp":       time.Stamp,
+		"stampmilli":  time.StampMilli,
+		"stampmicro":  time.StampMicro,
+		"stampnano":   time.StampNano,
+		"datetime":    "2006-01-02 15:04:05",
+		"dateonly":    "2006-01-02",
+		"timeonly":    "15:04:05",
+	}
+
+	tf, ok := timeFormats[strings.ToLower(o.Time)]
+	if ok {
+		l.SetTimeFormat(tf)
+	} else {
+		l.SetTimeFormat(o.Time)
+	}
 
 	st := log.DefaultStyles()
 	defaultColors := map[log.Level]lipgloss.Color{
