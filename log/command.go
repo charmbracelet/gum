@@ -27,7 +27,35 @@ func (o Options) Run() error {
 	l.SetPrefix(o.Prefix)
 	l.SetLevel(-math.MaxInt32) // log all levels
 	l.SetReportTimestamp(o.Time)
-	l.SetTimeFormat(o.TimeFormat)
+
+	timeFormats := map[string]string{
+		"layout":      "01/02 03:04:05PM '06 -0700",
+		"ansic":       "Mon Jan _2 15:04:05 2006",
+		"unixdate":    "Mon Jan _2 15:04:05 MST 2006",
+		"rubydate":    "Mon Jan 02 15:04:05 -0700 2006",
+		"rfc822":      "02 Jan 06 15:04 MST",
+		"rfc822z":     "02 Jan 06 15:04 -0700",
+		"rfc850":      "Monday, 02-Jan-06 15:04:05 MST",
+		"rfc1123":     "Mon, 02 Jan 2006 15:04:05 MST",
+		"rfc1123z":    "Mon, 02 Jan 2006 15:04:05 -0700",
+		"rfc3339":     "2006-01-02T15:04:05Z07:00",
+		"rfc3339nano": "2006-01-02T15:04:05.999999999Z07:00",
+		"kitchen":     "3:04PM",
+		"stamp":       "Jan _2 15:04:05",
+		"stampmilli":  "Jan _2 15:04:05.000",
+		"stampmicro":  "Jan _2 15:04:05.000000",
+		"stampnano":   "Jan _2 15:04:05.000000000",
+		"datetime":    "2006-01-02 15:04:05",
+		"dateonly":    "2006-01-02",
+		"timeonly":    "15:04:05",
+	}
+
+	tf, ok := timeFormats[strings.ToLower(o.TimeFormat)]
+	if ok {
+		l.SetTimeFormat(tf)
+	} else {
+		l.SetTimeFormat(o.TimeFormat)
+	}
 
 	st := log.DefaultStyles()
 	defaultColors := map[log.Level]lipgloss.Color{
