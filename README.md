@@ -380,6 +380,23 @@ named emojis see the [GitHub API](https://api.github.com/emojis).
 
 <img src="https://stuff.charm.sh/gum/format.gif" width="600" alt="Running gum format for different types of formats" />
 
+## Log
+
+`log` logs messages to the terminal at using different levels and styling using
+the [`charmbracelet/log`](https://github.com/charmbracelet/log) library.
+
+```bash
+# Log some debug information.
+gum log --structured --level debug "Creating file..." name file.txt
+# DEBUG Unable to create file. name=temp.txt
+
+# Log some error.
+gum log --structured --level error "Unable to create file." name file.txt
+# ERROR Unable to create file. name=temp.txt
+```
+
+See [`charmbracelet/log`](https://github.com/charmbracelet/log) for more usage.
+
 ## Examples
 
 See the [examples](./examples/) directory for more real world use cases.
