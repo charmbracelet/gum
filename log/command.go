@@ -61,7 +61,7 @@ func (o Options) Run() error {
 	st := log.DefaultStyles()
 	defaultColors := map[log.Level]lipgloss.Color{
 		log.DebugLevel: lipgloss.Color("63"),
-		log.InfoLevel:  lipgloss.Color("83"),
+		log.InfoLevel:  lipgloss.Color("86"), 
 		log.WarnLevel:  lipgloss.Color("192"),
 		log.ErrorLevel: lipgloss.Color("204"),
 		log.FatalLevel: lipgloss.Color("134"),
