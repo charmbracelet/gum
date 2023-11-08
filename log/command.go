@@ -59,20 +59,12 @@ func (o Options) Run() error {
 	}
 
 	st := log.DefaultStyles()
-	defaultColors := map[log.Level]lipgloss.Color{
-		log.DebugLevel: lipgloss.Color("63"),
-		log.InfoLevel:  lipgloss.Color("86"), 
-		log.WarnLevel:  lipgloss.Color("192"),
-		log.ErrorLevel: lipgloss.Color("204"),
-		log.FatalLevel: lipgloss.Color("134"),
-	}
-
+	lvl := levelToLog[o.Level]
 	lvlStyle := o.LevelStyle.ToLipgloss()
 	if lvlStyle.GetForeground() == lipgloss.Color("") {
-		lvlStyle = lvlStyle.Foreground(defaultColors[levelToLog[o.Level]])
+		lvlStyle = lvlStyle.Foreground(st.Levels[lvl].GetForeground())
 	}
 
-	lvl := levelToLog[o.Level]
 	st.Levels[lvl] = lvlStyle.
 		SetString(strings.ToUpper(lvl.String())).
 		Inline(true)
