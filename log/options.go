@@ -12,11 +12,11 @@ type Options struct {
 	File       string `short:"o" help:"Log to file"`
 	Format     bool   `short:"f" help:"Format message using printf" xor:"format,structured"`
 	Formatter  string `help:"The log formatter to use" enum:"json,logfmt,text" default:"text"`
-	Level      string `help:"The log level to use" enum:"none,debug,info,warn,error,fatal" default:"none"`
+	Level      string `short:"l" help:"The log level to use" enum:"none,debug,info,warn,error,fatal" default:"none"`
 	Prefix     string `help:"Prefix to print before the message"`
 	Structured bool   `short:"s" help:"Use structured logging" xor:"format,structured"`
-	Time       bool   `help:"Whether to print the time"`
-	TimeFormat string `help:"The time format to use" default:"2006/01/02 15:04:05"`
+	Time       bool   `short:"t" help:"Whether to print the time"`
+	TimeFormat string `help:"The time format to use" default:"15:04:05"`
 
 	LevelStyle     style.Styles `embed:"" prefix:"level." help:"The style of the level being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_"` //nolint:staticcheck
 	TimeStyle      style.Styles `embed:"" prefix:"time." help:"The style of the time" envprefix:"GUM_LOG_TIME_"`
