@@ -1,6 +1,7 @@
 package log
 
 import (
+	"errors"
 	"math"
 	"os"
 	"strings"
@@ -14,12 +15,12 @@ func (o Options) Run() error {
 	l := log.New(os.Stderr)
 
 	if o.File != "" {
-		f, err := os.OpenFile(o.File, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		f, err := os.OpenFile(o.File, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
 		if err != nil {
-			return err
+			return errors.New("error opening file")
 		}
 
-		defer f.Close() // nolint: errcheck
+		defer f.Close() //nolint:errcheck
 		l.SetOutput(f)
 	}
 
