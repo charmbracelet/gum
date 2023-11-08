@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 )
 
@@ -28,21 +29,24 @@ func (o Options) Run() error {
 	l.SetTimeFormat(o.TimeFormat)
 
 	st := log.DefaultStyles()
-	st.Levels[log.DebugLevel] = o.LevelDebugStyle.ToLipgloss().
-		Inline(true).
-		SetString(strings.ToUpper(log.DebugLevel.String()))
-	st.Levels[log.InfoLevel] = o.LevelInfoStyle.ToLipgloss().
-		Inline(true).
-		SetString(strings.ToUpper(log.InfoLevel.String()))
-	st.Levels[log.WarnLevel] = o.LevelWarnStyle.ToLipgloss().
-		Inline(true).
-		SetString(strings.ToUpper(log.WarnLevel.String()))
-	st.Levels[log.ErrorLevel] = o.LevelErrorStyle.ToLipgloss().
-		Inline(true).
-		SetString(strings.ToUpper(log.ErrorLevel.String()))
-	st.Levels[log.FatalLevel] = o.LevelFatalStyle.ToLipgloss().
-		Inline(true).
-		SetString(strings.ToUpper(log.FatalLevel.String()))
+	defaultColors := map[log.Level]lipgloss.Color{
+		log.DebugLevel: lipgloss.Color("63"),
+		log.InfoLevel:  lipgloss.Color("83"),
+		log.WarnLevel:  lipgloss.Color("192"),
+		log.ErrorLevel: lipgloss.Color("204"),
+		log.FatalLevel: lipgloss.Color("134"),
+	}
+
+	lvlStyle := o.LevelStyle.ToLipgloss()
+	if lvlStyle.GetForeground() == lipgloss.Color("") {
+		lvlStyle = lvlStyle.Foreground(defaultColors[levelToLog[o.Level]])
+	}
+
+	lvl := levelToLog[o.Level]
+	st.Levels[lvl] = lvlStyle.
+		SetString(strings.ToUpper(lvl.String())).
+		Inline(true)
+
 	st.Timestamp = o.TimeStyle.ToLipgloss().
 		Inline(true)
 	st.Prefix = o.PrefixStyle.ToLipgloss().
@@ -103,4 +107,13 @@ func (o Options) Run() error {
 type logger struct {
 	printf func(string, ...interface{})
 	print  func(interface{}, ...interface{})
+}
+
+var levelToLog = map[string]log.Level{
+	"none":  log.Level(math.MaxInt32),
+	"debug": log.DebugLevel,
+	"info":  log.InfoLevel,
+	"warn":  log.WarnLevel,
+	"error": log.ErrorLevel,
+	"fatal": log.FatalLevel,
 }
