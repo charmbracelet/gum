@@ -27,7 +27,7 @@ func (o Options) Run() error {
 
 	l.SetPrefix(o.Prefix)
 	l.SetLevel(-math.MaxInt32) // log all levels
-	l.SetReportTimestamp(o.Time)
+	l.SetReportTimestamp(o.Time != "")
 
 	timeFormats := map[string]string{
 		"layout":      time.Layout,
@@ -46,16 +46,16 @@ func (o Options) Run() error {
 		"stampmilli":  time.StampMilli,
 		"stampmicro":  time.StampMicro,
 		"stampnano":   time.StampNano,
-		"datetime":    time.DateTime,
-		"dateonly":    time.DateOnly,
-		"timeonly":    time.TimeOnly,
+		"datetime":    "2006-01-02 15:04:05",
+		"dateonly":    "2006-01-02",
+		"timeonly":    "15:04:05",
 	}
 
-	tf, ok := timeFormats[strings.ToLower(o.TimeFormat)]
+	tf, ok := timeFormats[strings.ToLower(o.Time)]
 	if ok {
 		l.SetTimeFormat(tf)
 	} else {
-		l.SetTimeFormat(o.TimeFormat)
+		l.SetTimeFormat(o.Time)
 	}
 
 	st := log.DefaultStyles()
