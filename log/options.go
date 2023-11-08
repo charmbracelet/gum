@@ -15,7 +15,7 @@ type Options struct {
 	Level      string `short:"l" help:"The log level to use" enum:"none,debug,info,warn,error,fatal" default:"none"`
 	Prefix     string `help:"Prefix to print before the message"`
 	Structured bool   `short:"s" help:"Use structured logging" xor:"format,structured"`
-	Time       string `short:"t" help:"The time format to use" default:""`
+	Time       string `short:"t" help:"The time format to use (kitchen, layout, ansic, rfc822, etc...)" default:""`
 
 	LevelStyle     style.Styles `embed:"" prefix:"level." help:"The style of the level being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_"` //nolint:staticcheck
 	TimeStyle      style.Styles `embed:"" prefix:"time." help:"The style of the time" envprefix:"GUM_LOG_TIME_"`
