@@ -5,6 +5,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
@@ -29,25 +30,25 @@ func (o Options) Run() error {
 	l.SetReportTimestamp(o.Time)
 
 	timeFormats := map[string]string{
-		"layout":      "01/02 03:04:05PM '06 -0700",
-		"ansic":       "Mon Jan _2 15:04:05 2006",
-		"unixdate":    "Mon Jan _2 15:04:05 MST 2006",
-		"rubydate":    "Mon Jan 02 15:04:05 -0700 2006",
-		"rfc822":      "02 Jan 06 15:04 MST",
-		"rfc822z":     "02 Jan 06 15:04 -0700",
-		"rfc850":      "Monday, 02-Jan-06 15:04:05 MST",
-		"rfc1123":     "Mon, 02 Jan 2006 15:04:05 MST",
-		"rfc1123z":    "Mon, 02 Jan 2006 15:04:05 -0700",
-		"rfc3339":     "2006-01-02T15:04:05Z07:00",
-		"rfc3339nano": "2006-01-02T15:04:05.999999999Z07:00",
-		"kitchen":     "3:04PM",
-		"stamp":       "Jan _2 15:04:05",
-		"stampmilli":  "Jan _2 15:04:05.000",
-		"stampmicro":  "Jan _2 15:04:05.000000",
-		"stampnano":   "Jan _2 15:04:05.000000000",
-		"datetime":    "2006-01-02 15:04:05",
-		"dateonly":    "2006-01-02",
-		"timeonly":    "15:04:05",
+		"layout":      time.Layout,
+		"ansic":       time.ANSIC,
+		"unixdate":    time.UnixDate,
+		"rubydate":    time.RubyDate,
+		"rfc822":      time.RFC822,
+		"rfc822z":     time.RFC822Z,
+		"rfc850":      time.RFC850,
+		"rfc1123":     time.RFC1123,
+		"rfc1123z":    time.RFC1123Z,
+		"rfc3339":     time.RFC3339,
+		"rfc3339nano": time.RFC3339Nano,
+		"kitchen":     time.Kitchen,
+		"stamp":       time.Stamp,
+		"stampmilli":  time.StampMilli,
+		"stampmicro":  time.StampMicro,
+		"stampnano":   time.StampNano,
+		"datetime":    time.DateTime,
+		"dateonly":    time.DateOnly,
+		"timeonly":    time.TimeOnly,
 	}
 
 	tf, ok := timeFormats[strings.ToLower(o.TimeFormat)]
