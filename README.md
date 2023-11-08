@@ -397,6 +397,8 @@ gum log --structured --level error "Unable to create file." name file.txt
 
 See [`charmbracelet/log`](https://github.com/charmbracelet/log) for more usage.
 
+<img src="https://vhs.charm.sh/vhs-6jupuFM0s2fXiUrBE0I1vU.gif" width="600" alt="Running gum log with debug and error levels" />
+
 ## Examples
 
 See the [examples](./examples/) directory for more real world use cases.
