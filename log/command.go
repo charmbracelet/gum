@@ -1,7 +1,7 @@
 package log
 
 import (
-	"errors"
+	"fmt"
 	"math"
 	"os"
 	"strings"
