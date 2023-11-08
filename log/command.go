@@ -17,7 +17,7 @@ func (o Options) Run() error {
 	if o.File != "" {
 		f, err := os.OpenFile(o.File, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
 		if err != nil {
-			return errors.New("error opening file")
+			return fmt.Errorf("error opening file: %w", err)
 		}
 
 		defer f.Close() //nolint:errcheck
