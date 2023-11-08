@@ -87,13 +87,8 @@ func (o Options) Run() error {
 	}
 
 	if o.Print {
-		headers := make([]any, 0, len(columnNames))
-		for _, name := range columnNames {
-			headers = append(headers, name)
-		}
-
 		table := ltable.New().
-			Headers(headers...).
+			Headers(columnNames...).
 			Rows(data...).
 			BorderStyle(o.BorderStyle.ToLipgloss()).
 			Border(style.Border[o.Border]).

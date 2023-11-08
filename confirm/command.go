@@ -36,9 +36,9 @@ func (o Options) Run() error {
 		os.Exit(exit.StatusAborted)
 	} else if m.(model).confirmation {
 		os.Exit(0)
-	} else {
-		os.Exit(1)
 	}
+
+	os.Exit(1)
 
 	return nil
 }

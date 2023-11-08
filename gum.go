@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/gum/format"
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
+	"github.com/charmbracelet/gum/log"
 	"github.com/charmbracelet/gum/man"
 	"github.com/charmbracelet/gum/pager"
 	"github.com/charmbracelet/gum/spin"
@@ -204,4 +205,13 @@ type Gum struct {
 	// $ gum write > output.text
 	//
 	Write write.Options `cmd:"" help:"Prompt for long-form text"`
+
+	// Log provides a shell script interface for logging using Log.
+	// https://github.com/charmbracelet/log
+	//
+	// It can be used to log messages to output.
+	//
+	// $ gum log --level info "Hello, world!"
+	//
+	Log log.Options `cmd:"" help:"Log messages to output"`
 }
