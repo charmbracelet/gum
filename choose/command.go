@@ -35,6 +35,11 @@ func (o Options) Run() error {
 		o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
 	}
 
+	if o.SelectIfOne && len(o.Options) == 1 {
+		print(o.Options[0])
+		return nil
+	}
+
 	// We don't need to display prefixes if we are only picking one option.
 	// Simply displaying the cursor is enough.
 	if o.Limit == 1 && !o.NoLimit {
