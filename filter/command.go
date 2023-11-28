@@ -45,11 +45,11 @@ func (o Options) Run() error {
 		return errors.New("no options provided, see `gum filter --help`")
 	}
 
-	if o.SelectIfOne && len(choices) == 1 {
+	if o.SelectIfOne && len(o.Options) == 1 {
 		if isatty.IsTerminal(os.Stdout.Fd()) {
-			fmt.Print(choices[0])
+			fmt.Print(o.Options[0])
 		} else {
-			fmt.Print(ansi.Strip(choices[0]))
+			fmt.Print(ansi.Strip(o.Options[0]))
 		}
 		return nil
 	}

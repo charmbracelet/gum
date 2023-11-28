@@ -146,7 +146,11 @@ func (o Options) Run() error {
 		}
 	}
 
-	print(s.String())
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		fmt.Print(s.String())
+	} else {
+		fmt.Print(ansi.Strip(s.String()))
+	}
 
 	return nil
 }
@@ -155,14 +159,6 @@ func (o Options) Run() error {
 func (o Options) BeforeReset(ctx *kong.Context) error {
 	style.HideFlags(ctx)
 	return nil
-}
-
-func print(s string) {
-	if isatty.IsTerminal(os.Stdout.Fd()) {
-		fmt.Print(s)
-	} else {
-		fmt.Print(ansi.Strip(s))
-	}
 }
 
 // Check if an array contains a value.
