@@ -42,6 +42,10 @@ type Styles struct {
 }
 
 // StylesNotHidden allows the style struct to display full help when not-embedded.
+//
+// NB: We must duplicate this struct to ensure that `gum style` does not hide
+// flags when an error pops up. Ideally, we can dynamically hide or show flags
+// based on the command run: https://github.com/alecthomas/kong/issues/316
 type StylesNotHidden struct {
 	// Colors
 	Foreground string `help:"Foreground Color" default:"${defaultForeground}" group:"Style Flags" env:"FOREGROUND"`
