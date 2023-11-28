@@ -7,6 +7,10 @@ gum
 dist
 testdata
 
+# Demos
+*.tape
+*.gif
+
 # Folders
 completions/
 manpages/

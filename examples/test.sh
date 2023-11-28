@@ -10,6 +10,10 @@ gum choose Unlimited Choice Of Items --no-limit --cursor "* " --cursor-prefix "(
 gum confirm "Testing?"
 gum confirm "No?" --default=false --affirmative "Okay." --negative "Cancel."
 
+# Date
+gum date
+gum date --value 2021-10-10
+
 # Filter
 gum filter
 echo {1..500} | sed 's/ /\n/g' | gum filter
