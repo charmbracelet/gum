@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for the text input bubble.
@@ -58,11 +56,5 @@ func (o Options) Run() error {
 	}
 
 	fmt.Println(m.textinput.Value())
-	return nil
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }

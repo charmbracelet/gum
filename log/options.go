@@ -1,7 +1,6 @@
 package log
 
 import (
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -24,10 +23,4 @@ type Options struct {
 	KeyStyle       style.Styles `embed:"" prefix:"key." help:"The style of the key" set:"defaultFaint=true" envprefix:"GUM_LOG_KEY_"`
 	ValueStyle     style.Styles `embed:"" prefix:"value." help:"The style of the value" envprefix:"GUM_LOG_VALUE_"`
 	SeparatorStyle style.Styles `embed:"" prefix:"separator." help:"The style of the separator" set:"defaultFaint=true" envprefix:"GUM_LOG_SEPARATOR_"`
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
-	return nil
 }

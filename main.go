@@ -48,8 +48,9 @@ func main() {
 		kong.Description(fmt.Sprintf("A tool for %s shell scripts.", bubbleGumPink.Render("glamorous"))),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
-			Compact: true,
-			Summary: false,
+			Compact:             true,
+			Summary:             false,
+			NoExpandSubcommands: true,
 		}),
 		kong.Vars{
 			"version":                 version,
@@ -74,7 +75,6 @@ func main() {
 		if errors.Is(err, exit.ErrAborted) {
 			os.Exit(exit.StatusAborted)
 		}
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }

@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -17,7 +16,6 @@ import (
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for filtering through options, powered
@@ -140,10 +138,4 @@ func (o Options) checkSelected(m model, isTTY bool) {
 			fmt.Println(ansi.Strip(k))
 		}
 	}
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
-	return nil
 }
