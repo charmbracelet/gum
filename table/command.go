@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -129,11 +128,5 @@ func (o Options) Run() error {
 
 	writer.Flush()
 
-	return nil
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }

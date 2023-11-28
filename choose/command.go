@@ -7,7 +7,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -16,7 +15,6 @@ import (
 	"github.com/charmbracelet/gum/ansi"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/style"
 )
 
 var (
@@ -147,12 +145,6 @@ func (o Options) Run() error {
 		fmt.Print(ansi.Strip(s.String()))
 	}
 
-	return nil
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }
 
