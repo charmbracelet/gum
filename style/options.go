@@ -1,9 +1,5 @@
 package style
 
-const (
-	groupName = "Style Flags"
-)
-
 // Options is the customization options for the style command.
 type Options struct {
 	Text  []string        `arg:"" optional:"" help:"Text to which to apply the style"`
