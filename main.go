@@ -75,6 +75,7 @@ func main() {
 		if errors.Is(err, exit.ErrAborted) {
 			os.Exit(exit.StatusAborted)
 		}
+		fmt.Println(err)
 		os.Exit(1)
 	}
 }
