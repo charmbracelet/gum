@@ -49,6 +49,7 @@ func (o Options) Run() error {
 		} else {
 			fmt.Print(ansi.Strip(o.Options[0]))
 		}
+		print("\n")
 		return nil
 	}
 
