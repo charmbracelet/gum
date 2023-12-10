@@ -44,12 +44,7 @@ func (o Options) Run() error {
 	}
 
 	if o.SelectIfOne && len(o.Options) == 1 {
-		if isatty.IsTerminal(os.Stdout.Fd()) {
-			fmt.Print(o.Options[0])
-		} else {
-			fmt.Print(ansi.Strip(o.Options[0]))
-		}
-		print("\n")
+		fmt.Println(o.Options[0])
 		return nil
 	}
 
