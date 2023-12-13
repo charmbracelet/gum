@@ -31,6 +31,7 @@ type model struct {
 	title      string
 	align      string
 	command    []string
+	quitting   bool
 	aborted    bool
 	status     int
 	stdout     string
@@ -81,6 +82,10 @@ func (m model) Init() tea.Cmd {
 	)
 }
 func (m model) View() string {
+	if m.quitting {
+		return ""
+	}
+
 	var str string
 	if m.hasTimeout {
 		str = timeout.Str(m.timeout)
@@ -110,6 +115,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case finishCommandMsg:
 		m.stdout = msg.stdout
 		m.status = msg.status
+		m.quitting = true
 		return m, tea.Quit
 	case tea.KeyMsg:
 		switch msg.String() {
