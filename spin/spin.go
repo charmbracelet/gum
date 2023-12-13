@@ -107,6 +107,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
+			// grab current output before closing for piped instances
+			m.stdout = outbuf.String()
+
 			m.status = exit.StatusAborted
 			return m, tea.Quit
 		}
