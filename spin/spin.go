@@ -15,12 +15,14 @@
 package spin
 
 import (
+	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/timeout"
+	"github.com/mattn/go-isatty"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -56,8 +58,12 @@ func commandStart(command []string) tea.Cmd {
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
-		cmd.Stdout = &outbuf
-		cmd.Stderr = &errbuf
+		if isatty.IsTerminal(os.Stdout.Fd()) {
+			cmd.Stdout = &outbuf
+			cmd.Stderr = &errbuf
+		} else {
+			cmd.Stdout = os.Stdout
+		}
 
 		_ = cmd.Run()
 
@@ -82,8 +88,8 @@ func (m model) Init() tea.Cmd {
 	)
 }
 func (m model) View() string {
-	if m.quitting {
-		return ""
+	if m.quitting && m.showOutput {
+		return strings.TrimPrefix(errbuf.String()+"\n"+outbuf.String(), "\n")
 	}
 
 	var str string
