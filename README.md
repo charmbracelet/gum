@@ -398,7 +398,7 @@ gum log --structured --level error "Unable to create file." name file.txt
 gum log --time rfc822 --level error "Unable to create file."
 ```
 
-See the Go [`time` package] for acceptable `--time` formats.
+See the Go [`time` package](https://pkg.go.dev/time#pkg-constants) for acceptable `--time` formats.
 
 See [`charmbracelet/log`](https://github.com/charmbracelet/log) for more usage.
 
