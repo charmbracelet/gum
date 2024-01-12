@@ -393,7 +393,12 @@ gum log --structured --level debug "Creating file..." name file.txt
 # Log some error.
 gum log --structured --level error "Unable to create file." name file.txt
 # ERROR Unable to create file. name=temp.txt
+
+# Include a timestamp.
+gum log --time rfc822 --level error "Unable to create file."
 ```
+
+See the Go [`time` package](https://pkg.go.dev/time#pkg-constants) for acceptable `--time` formats.
 
 See [`charmbracelet/log`](https://github.com/charmbracelet/log) for more usage.
 
