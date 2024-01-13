@@ -26,6 +26,7 @@ func (o Options) Run() error {
 
 	i.Prompt = o.Prompt
 	i.PromptStyle = o.PromptStyle.ToLipgloss()
+	i.PlaceholderStyle = o.PlaceholderStyle.ToLipgloss()
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
 
