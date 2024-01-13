@@ -27,6 +27,7 @@ func (o Options) Run() error {
 	i.Placeholder = o.Placeholder
 	i.Width = o.Width
 	i.PromptStyle = o.PromptStyle.ToLipgloss()
+	i.PlaceholderStyle = o.PlaceholderStyle.ToLipgloss()
 	i.Cursor.Style = o.CursorStyle.ToLipgloss()
 	i.Cursor.SetMode(cursor.Modes[o.CursorMode])
 	i.CharLimit = o.CharLimit
