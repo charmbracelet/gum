@@ -28,6 +28,7 @@ type Options struct {
 	Placeholder           string        `help:"Placeholder value" default:"Filter..." env:"GUM_FILTER_PLACEHOLDER"`
 	Prompt                string        `help:"Prompt to display" default:"> " env:"GUM_FILTER_PROMPT"`
 	PromptStyle           style.Styles  `embed:"" prefix:"prompt." set:"defaultForeground=240" envprefix:"GUM_FILTER_PROMPT_"`
+	PlaceholderStyle      style.Styles  `embed:"" prefix:"placeholder." set:"defaultForeground=240" envprefix:"GUM_FILTER_PLACEHOLDER_"`
 	Width                 int           `help:"Input width" default:"20" env:"GUM_FILTER_WIDTH"`
 	Height                int           `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
 	Value                 string        `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`

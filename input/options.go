@@ -11,7 +11,7 @@ type Options struct {
 	Placeholder      string        `help:"Placeholder value" default:"Type something..." env:"GUM_INPUT_PLACEHOLDER"`
 	Prompt           string        `help:"Prompt to display" default:"> " env:"GUM_INPUT_PROMPT"`
 	PromptStyle      style.Styles  `embed:"" prefix:"prompt." envprefix:"GUM_INPUT_PROMPT_"`
-	PlaceholderStyle style.Styles  `embed:"" prefix:"placeholder." envprefix:"GUM_INPUT_PLACEHOLDER_"`
+	PlaceholderStyle style.Styles  `embed:"" prefix:"placeholder." set:"defaultForeground=240" envprefix:"GUM_INPUT_PLACEHOLDER_"`
 	CursorStyle      style.Styles  `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_INPUT_CURSOR_"`
 	CursorMode       string        `prefix:"cursor." name:"mode" help:"Cursor mode" default:"blink" enum:"blink,hide,static" env:"GUM_INPUT_CURSOR_MODE"`
 	Value            string        `help:"Initial value (can also be passed via stdin)" default:""`
