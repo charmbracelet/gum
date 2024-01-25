@@ -21,6 +21,11 @@ func (o Options) Run() error {
 		o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
 	}
 
+	if o.SelectIfOne && len(o.Options) == 1 {
+		fmt.Println(o.Options[0])
+		return nil
+	}
+
 	theme := huh.ThemeCharm()
 	options := huh.NewOptions(o.Options...)
 
