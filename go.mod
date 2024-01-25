@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/bubbles v0.17.2-0.20240125161725-fc18779a6ae9
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/glamour v0.6.1-0.20230531150759-6d5b52861a9d
-	github.com/charmbracelet/huh v0.3.1-0.20240125205708-bb9c8f48a9f4
+	github.com/charmbracelet/huh v0.3.1-0.20240125232745-382fbd1f7ece
 	github.com/charmbracelet/lipgloss v0.9.1
 	github.com/charmbracelet/log v0.3.1
 	github.com/mattn/go-isatty v0.0.20
@@ -47,5 +47,3 @@ require (
 	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 )
-
-replace github.com/charmbracelet/huh => ../huh
