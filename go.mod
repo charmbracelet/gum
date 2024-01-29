@@ -5,10 +5,10 @@ go 1.21
 require (
 	github.com/alecthomas/kong v0.8.1
 	github.com/alecthomas/mango-kong v0.1.0
-	github.com/charmbracelet/bubbles v0.17.2-0.20240125161725-fc18779a6ae9
+	github.com/charmbracelet/bubbles v0.17.2-0.20240128171146-d98bf9db0a4d
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/glamour v0.6.1-0.20230531150759-6d5b52861a9d
-	github.com/charmbracelet/huh v0.3.1-0.20240125232745-382fbd1f7ece
+	github.com/charmbracelet/huh v0.3.1-0.20240126204032-2d4a91d091f6
 	github.com/charmbracelet/lipgloss v0.9.1
 	github.com/charmbracelet/log v0.3.1
 	github.com/mattn/go-isatty v0.0.20
@@ -37,7 +37,7 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/mango v0.2.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/rivo/uniseg v0.4.6 // indirect
 	github.com/yuin/goldmark v1.5.4 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
