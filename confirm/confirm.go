@@ -33,9 +33,11 @@ type model struct {
 	defaultSelection bool
 
 	// styles
-	promptStyle     lipgloss.Style
-	selectedStyle   lipgloss.Style
-	unselectedStyle lipgloss.Style
+	promptStyle               lipgloss.Style
+	selectedStyle             lipgloss.Style
+	unselectedStyle           lipgloss.Style
+	selectedBackgroundStyle   lipgloss.Style
+	unselectedBackgroundStyle lipgloss.Style
 }
 
 func (m model) Init() tea.Cmd {
