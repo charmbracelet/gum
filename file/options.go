@@ -14,7 +14,7 @@ type Options struct {
 	Cursor      string `short:"c" help:"The cursor character" default:">" env:"GUM_FILE_CURSOR"`
 	All         bool   `short:"a" help:"Show hidden and 'dot' files" default:"false" env:"GUM_FILE_ALL"`
 	Permissions bool   `short:"p" help:"Show file permissions" default:"false" env:"GUM_FILE_PERMISSION"`
-	Size		bool	`short:"s" help:"Show file size" default:"false" env:"GUM_FILE_SIZE"`
+	Size		bool   `short:"s" help:"Show file size" default:"false" env:"GUM_FILE_SIZE"`
 	File        bool   `help:"Allow files selection" default:"true" env:"GUM_FILE_FILE"`
 	Directory   bool   `help:"Allow directories selection" default:"false" env:"GUM_FILE_DIRECTORY"`
 
