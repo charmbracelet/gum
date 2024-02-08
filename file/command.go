@@ -36,6 +36,8 @@ func (o Options) Run() error {
 	fp.DirAllowed = o.Directory
 	fp.FileAllowed = o.File
 	fp.ShowHidden = o.All
+	fp.ShowPermissions = o.Permissions
+	fp.ShowSize = o.Size
 	fp.Styles = filepicker.DefaultStyles()
 	fp.Styles.Cursor = o.CursorStyle.ToLipgloss()
 	fp.Styles.Symlink = o.SymlinkStyle.ToLipgloss()
