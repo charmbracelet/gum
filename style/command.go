@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -29,20 +28,4 @@ func (o Options) Run() error {
 	}
 	fmt.Println(o.Style.ToLipgloss().Render(text))
 	return nil
-}
-
-// HideFlags hides the flags from the usage output. This is used in conjunction
-// with BeforeReset hook.
-func HideFlags(ctx *kong.Context) {
-	n := ctx.Selected()
-	if n == nil {
-		return
-	}
-	for _, f := range n.Flags {
-		if g := f.Group; g != nil && g.Key == groupName {
-			if !strings.HasSuffix(f.Name, ".foreground") {
-				f.Hidden = true
-			}
-		}
-	}
 }

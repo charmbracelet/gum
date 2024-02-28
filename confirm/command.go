@@ -6,10 +6,7 @@ import (
 
 	"github.com/charmbracelet/gum/internal/exit"
 
-	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
-
-	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for prompting a user to confirm an
@@ -36,15 +33,9 @@ func (o Options) Run() error {
 		os.Exit(exit.StatusAborted)
 	} else if m.(model).confirmation {
 		os.Exit(0)
-	} else {
-		os.Exit(1)
 	}
 
-	return nil
-}
+	os.Exit(1)
 
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }

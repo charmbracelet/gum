@@ -8,10 +8,13 @@ import (
 
 // Options is the customization options for the filter command.
 type Options struct {
+	Options []string `arg:"" optional:"" help:"Options to filter."`
+
 	Indicator             string        `help:"Character for selection" default:"•" env:"GUM_FILTER_INDICATOR"`
 	IndicatorStyle        style.Styles  `embed:"" prefix:"indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_INDICATOR_"`
 	Limit                 int           `help:"Maximum number of options to pick" default:"1" group:"Selection"`
 	NoLimit               bool          `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
+	SelectIfOne           bool          `help:"Select the given option if there is only one" group:"Selection"`
 	Strict                bool          `help:"Only returns if anything matched. Otherwise return Filter" negatable:"true" default:"true" group:"Selection"`
 	SelectedPrefix        string        `help:"Character to indicate selected items (hidden if limit is 1)" default:" ◉ " env:"GUM_FILTER_SELECTED_PREFIX"`
 	SelectedPrefixStyle   style.Styles  `embed:"" prefix:"selected-indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_SELECTED_PREFIX_"`
@@ -25,6 +28,7 @@ type Options struct {
 	Placeholder           string        `help:"Placeholder value" default:"Filter..." env:"GUM_FILTER_PLACEHOLDER"`
 	Prompt                string        `help:"Prompt to display" default:"> " env:"GUM_FILTER_PROMPT"`
 	PromptStyle           style.Styles  `embed:"" prefix:"prompt." set:"defaultForeground=240" envprefix:"GUM_FILTER_PROMPT_"`
+	PlaceholderStyle      style.Styles  `embed:"" prefix:"placeholder." set:"defaultForeground=240" envprefix:"GUM_FILTER_PLACEHOLDER_"`
 	Width                 int           `help:"Input width" default:"20" env:"GUM_FILTER_WIDTH"`
 	Height                int           `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
 	Value                 string        `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`

@@ -7,7 +7,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -16,7 +15,6 @@ import (
 	"github.com/charmbracelet/gum/ansi"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/style"
 )
 
 var (
@@ -33,6 +31,11 @@ func (o Options) Run() error {
 			return errors.New("no options provided, see `gum choose --help`")
 		}
 		o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
+	}
+
+	if o.SelectIfOne && len(o.Options) == 1 {
+		fmt.Println(o.Options[0])
+		return nil
 	}
 
 	// We don't need to display prefixes if we are only picking one option.
@@ -147,12 +150,6 @@ func (o Options) Run() error {
 		fmt.Print(ansi.Strip(s.String()))
 	}
 
-	return nil
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }
 

@@ -28,7 +28,7 @@ var (
 var bubbleGumPink = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 
 func main() {
-	lipgloss.SetColorProfile(termenv.NewOutput(os.Stderr).EnvColorProfile())
+	lipgloss.SetColorProfile(termenv.NewOutput(os.Stderr).Profile)
 
 	if Version == "" {
 		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
@@ -48,8 +48,9 @@ func main() {
 		kong.Description(fmt.Sprintf("A tool for %s shell scripts.", bubbleGumPink.Render("glamorous"))),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
-			Compact: true,
-			Summary: false,
+			Compact:             true,
+			Summary:             false,
+			NoExpandSubcommands: true,
 		}),
 		kong.Vars{
 			"version":                 version,

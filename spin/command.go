@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/mattn/go-isatty"
 
 	"github.com/charmbracelet/gum/internal/exit"
-	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for the spinner bubble.
@@ -26,6 +24,7 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
+		showOutput: o.ShowOutput && isTTY,
 		timeout:    o.Timeout,
 		hasTimeout: o.Timeout > 0,
 	}
@@ -46,7 +45,9 @@ func (o Options) Run() error {
 	}
 
 	if o.ShowOutput {
-		if isTTY {
+		// BubbleTea writes the View() to stderr.
+		// If the program is being piped then put the accumulated output in stdout.
+		if !isTTY {
 			_, err := os.Stdout.WriteString(m.stdout)
 			if err != nil {
 				return fmt.Errorf("failed to write to stdout: %w", err)
@@ -55,11 +56,5 @@ func (o Options) Run() error {
 	}
 
 	os.Exit(m.status)
-	return nil
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }

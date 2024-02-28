@@ -15,12 +15,14 @@
 package spin
 
 import (
+	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/timeout"
+	"github.com/mattn/go-isatty"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -31,6 +33,7 @@ type model struct {
 	title      string
 	align      string
 	command    []string
+	quitting   bool
 	aborted    bool
 	status     int
 	stdout     string
@@ -55,8 +58,12 @@ func commandStart(command []string) tea.Cmd {
 		}
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 
-		cmd.Stdout = &outbuf
-		cmd.Stderr = &errbuf
+		if isatty.IsTerminal(os.Stdout.Fd()) {
+			cmd.Stdout = &outbuf
+			cmd.Stderr = &errbuf
+		} else {
+			cmd.Stdout = os.Stdout
+		}
 
 		_ = cmd.Run()
 
@@ -81,6 +88,10 @@ func (m model) Init() tea.Cmd {
 	)
 }
 func (m model) View() string {
+	if m.quitting && m.showOutput {
+		return strings.TrimPrefix(errbuf.String()+"\n"+outbuf.String(), "\n")
+	}
+
 	var str string
 	if m.hasTimeout {
 		str = timeout.Str(m.timeout)
@@ -102,6 +113,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
+			// grab current output before closing for piped instances
+			m.stdout = outbuf.String()
+
 			m.status = exit.StatusAborted
 			return m, tea.Quit
 		}
@@ -110,6 +124,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case finishCommandMsg:
 		m.stdout = msg.stdout
 		m.status = msg.status
+		m.quitting = true
 		return m, tea.Quit
 	case tea.KeyMsg:
 		switch msg.String() {

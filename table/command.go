@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	ltable "github.com/charmbracelet/lipgloss/table"
 
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
@@ -85,6 +85,23 @@ func (o Options) Run() error {
 		rows = append(rows, table.Row(row))
 	}
 
+	if o.Print {
+		table := ltable.New().
+			Headers(columnNames...).
+			Rows(data...).
+			BorderStyle(o.BorderStyle.ToLipgloss()).
+			Border(style.Border[o.Border]).
+			StyleFunc(func(row, col int) lipgloss.Style {
+				if row == 0 {
+					return styles.Header
+				}
+				return styles.Cell
+			})
+
+		fmt.Println(table.Render())
+		return nil
+	}
+
 	table := table.New(
 		table.WithColumns(columns),
 		table.WithFocused(true),
@@ -117,11 +134,5 @@ func (o Options) Run() error {
 
 	writer.Flush()
 
-	return nil
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }

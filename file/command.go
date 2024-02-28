@@ -8,10 +8,8 @@ import (
 
 	"github.com/charmbracelet/gum/internal/exit"
 
-	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/style"
 )
 
 // Run is the interface to picking a file.
@@ -70,11 +68,5 @@ func (o Options) Run() error {
 
 	fmt.Println(m.selectedPath)
 
-	return nil
-}
-
-// BeforeReset hook. Used to unclutter style flags.
-func (o Options) BeforeReset(ctx *kong.Context) error {
-	style.HideFlags(ctx)
 	return nil
 }
