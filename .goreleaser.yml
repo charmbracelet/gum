@@ -4,6 +4,7 @@ includes:
 
 variables:
   main: "."
+  scoop_name: charm-gum
   description: "A tool for glamorous shell scripts"
   github_url: "https://github.com/charmbracelet/gum"
   maintainer: "Maas Lalani <maas@charm.sh>"
