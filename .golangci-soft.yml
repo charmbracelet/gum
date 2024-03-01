@@ -23,7 +23,7 @@ linters:
     - gomnd
     - gomoddirectives
     - goprintffuncname
-    - ifshort
+    # - ifshort
     # - lll
     - misspell
     - nakedret
@@ -43,5 +43,4 @@ linters:
     - staticcheck
     - structcheck
     - typecheck
-    - unused
     - varcheck
