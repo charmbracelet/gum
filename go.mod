@@ -14,7 +14,7 @@ require (
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.2
-	github.com/sahilm/fuzzy v0.1.1-0.20230530133925-c48e322e2a8f
+	github.com/sahilm/fuzzy v0.1.1
 )
 
 require (
