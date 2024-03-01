@@ -56,7 +56,7 @@ func (o Options) Run() error {
 	if err != nil {
 		return fmt.Errorf("invalid data provided")
 	}
-	var columns = make([]table.Column, 0, len(columnNames))
+	columns := make([]table.Column, 0, len(columnNames))
 
 	for i, title := range columnNames {
 		width := lipgloss.Width(title)
@@ -77,7 +77,7 @@ func (o Options) Run() error {
 		Selected: o.SelectedStyle.ToLipgloss(),
 	}
 
-	var rows = make([]table.Row, 0, len(data))
+	rows := make([]table.Row, 0, len(data))
 	for _, row := range data {
 		if len(row) > len(columns) {
 			return fmt.Errorf("invalid number of columns")
@@ -91,7 +91,7 @@ func (o Options) Run() error {
 			Rows(data...).
 			BorderStyle(o.BorderStyle.ToLipgloss()).
 			Border(style.Border[o.Border]).
-			StyleFunc(func(row, col int) lipgloss.Style {
+			StyleFunc(func(row, _ int) lipgloss.Style {
 				if row == 0 {
 					return styles.Header
 				}
@@ -111,7 +111,6 @@ func (o Options) Run() error {
 	)
 
 	tm, err := tea.NewProgram(model{table: table}, tea.WithOutput(os.Stderr)).Run()
-
 	if err != nil {
 		return fmt.Errorf("failed to start tea program: %w", err)
 	}
