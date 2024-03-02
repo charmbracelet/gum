@@ -290,6 +290,50 @@ gum pager < README.md
 
 <img src="https://stuff.charm.sh/gum/pager.gif" width="600" alt="Shell running gum pager" />
 
+#### Progress
+
+Show progress with just plain text or a progress bar given a limit. <br>
+
+Show progress of something which has a determined length.
+```bash
+# this example is only meant for illustration purpose.
+readarray files < <(find "$HOME" -type f 2>/dev/null)
+
+<<<"${files[@]}" $gum progress -o --limit ${#files[@]} --title 'checking...' | while read -r file; do
+    md5sum "$file" >> /tmp/cksums.txt 2>/dev/null
+done
+```
+
+Given no limit progress is printed as text only.
+```bash
+find / -type d 2> /dev/null | gum progress --show-output > /tmp/dump.txt
+```
+
+Use a custom format.
+```bash
+find / -type d 2> /dev/null | gum progress -f '{Iter} ~ {Elapsed}' -o > /tmp/dump.txt
+```
+
+Using a different progress indicator
+
+```bash
+{
+    sleep 2s
+    echo ":step:Long process 1 completed"
+
+    sleep 2s
+    echo ":step:Long process 2 completed"
+
+    sleep 2s
+    echo ":step:Long process 3 completed"
+} | gum progress -l 3 --progress-indicator ':step:' -o --hide-progress-indicator
+```
+
+**Note:** when using a --progress-indicator != '\n' (the default) with output
+going to the terminal (using -o/--output not piped)
+the lines will still be printed line wise. This has no influence on the
+measurement of progress!
+
 #### Spin
 
 Display a spinner while running a script or command. The spinner will

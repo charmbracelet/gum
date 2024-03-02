@@ -14,6 +14,7 @@ import (
 	"github.com/charmbracelet/gum/log"
 	"github.com/charmbracelet/gum/man"
 	"github.com/charmbracelet/gum/pager"
+	"github.com/charmbracelet/gum/progress"
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/gum/table"
@@ -136,6 +137,12 @@ type Gum struct {
 	//  ↑/↓: Navigate • q: Quit
 	//
 	Pager pager.Options `cmd:"" help:"Scroll through a file"`
+
+	// Progress provides a shell script interface for the progress bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/progress
+	//
+	// On top ... when no limit is set some other progress information is displayed.
+	Progress progress.Options `cmd:"" help:"Show progressbar"`
 
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/spinner
