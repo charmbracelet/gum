@@ -118,6 +118,18 @@ gpgcheck=1
 gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
 sudo yum install gum
 
+# openSUSE (zypper)
+echo '[charm]
+name=Charm
+baseurl=https://repo.charm.sh/yum/
+enabled=1
+type=rpm-md
+gpgcheck=1
+gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/zypp/repos.d/charm.repo
+sudo rpm --import https://repo.charm.sh/yum/gpg.key
+sudo zypper refresh
+sudo zypper install gum
+
 # Alpine
 apk add gum
 
