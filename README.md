@@ -222,6 +222,8 @@ cat flavors.txt | gum filter > selection.txt
 You can also select multiple items with the `--limit` flag, which determines
 the maximum number of items that can be chosen.
 
+Pressing `tab` or `ctrl+space` will select the current item, while `enter` will confirm the selection.
+
 ```bash
 cat flavors.txt | gum filter --limit 2
 ```
