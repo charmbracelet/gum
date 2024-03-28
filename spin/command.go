@@ -25,6 +25,7 @@ func (o Options) Run() error {
 		command:    o.Command,
 		align:      o.Align,
 		showOutput: o.ShowOutput && isTTY,
+		showError:  o.ShowError,
 		timeout:    o.Timeout,
 		hasTimeout: o.Timeout > 0,
 	}
@@ -38,10 +39,6 @@ func (o Options) Run() error {
 
 	if m.aborted {
 		return exit.ErrAborted
-	}
-
-	if err != nil {
-		return fmt.Errorf("failed to access stdout: %w", err)
 	}
 
 	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
