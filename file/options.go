@@ -16,7 +16,7 @@ type Options struct {
 	File      bool   `help:"Allow files selection" default:"true" env:"GUM_FILE_FILE"`
 	Directory bool   `help:"Allow directories selection" default:"false" env:"GUM_FILE_DIRECTORY"`
 
-	Height           int          `help:"Maximum number of files to display" default:"0" env:"GUM_FILE_HEIGHT"`
+	Height           int          `help:"Maximum number of files to display" default:"10" env:"GUM_FILE_HEIGHT"`
 	CursorStyle      style.Styles `embed:"" prefix:"cursor." help:"The cursor style" set:"defaultForeground=212" envprefix:"GUM_FILE_CURSOR_"`
 	SymlinkStyle     style.Styles `embed:"" prefix:"symlink." help:"The style to use for symlinks" set:"defaultForeground=36" envprefix:"GUM_FILE_SYMLINK_"`
 	DirectoryStyle   style.Styles `embed:"" prefix:"directory." help:"The style to use for directories" set:"defaultForeground=99" envprefix:"GUM_FILE_DIRECTORY_"`
