@@ -17,7 +17,7 @@ func (o Options) Run() error {
 	theme.Focused.FocusedButton = o.SelectedStyle.ToLipgloss()
 	theme.Focused.BlurredButton = o.UnselectedStyle.ToLipgloss()
 
-	var choice bool = o.Default
+	choice := o.Default
 
 	err := huh.NewForm(
 		huh.NewGroup(
