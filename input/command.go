@@ -49,6 +49,7 @@ func (o Options) Run() error {
 		),
 	).
 		WithShowHelp(false).
+		WithWidth(o.Width).
 		WithTheme(theme).
 		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
