@@ -29,6 +29,8 @@ github.com/charmbracelet/huh v0.3.0 h1:CxPplWkgW2yUTDDG0Z4S5HH8SJOosWHd4LxCvi0Xs
 github.com/charmbracelet/huh v0.3.0/go.mod h1:fujUdKX8tC45CCSaRQdw789O6uaCRwx8l2NDyKfC4jA=
 github.com/charmbracelet/huh v0.3.1-0.20240327025511-ec643317aa10 h1:779PmXc9Zt/Hxa0yg4I8sQk/1Nfa5TQisXaHZEW60Yk=
 github.com/charmbracelet/huh v0.3.1-0.20240327025511-ec643317aa10/go.mod h1:x0rYoA1kpsaefXhRJZuxLM+qP4CYyEFE67T3ZGl7zPU=
+github.com/charmbracelet/huh v0.3.1-0.20240328185852-590ecabc34b9 h1:Izr4MC+shs9PpR4MWz/OFA4+ywbKutvPv0eSHJwfn60=
+github.com/charmbracelet/huh v0.3.1-0.20240328185852-590ecabc34b9/go.mod h1:x0rYoA1kpsaefXhRJZuxLM+qP4CYyEFE67T3ZGl7zPU=
 github.com/charmbracelet/lipgloss v0.10.0 h1:KWeXFSexGcfahHX+54URiZGkBFazf70JNMtwg/AFW3s=
 github.com/charmbracelet/lipgloss v0.10.0/go.mod h1:Wig9DSfvANsxqkRsqj6x87irdy123SR4dOXlKa91ciE=
 github.com/charmbracelet/log v0.3.1 h1:TjuY4OBNbxmHWSwO3tosgqs5I3biyY8sQPny/eCMTYw=
