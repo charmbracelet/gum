@@ -2,8 +2,9 @@ package input
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 
@@ -13,21 +14,21 @@ import (
 // Run provides a shell script interface for the text input bubble.
 // https://github.com/charmbracelet/bubbles/textinput
 func (o Options) Run() error {
-	i := textinput.New()
+
+	var value string
 	if o.Value != "" {
-		i.SetValue(o.Value)
+		value = o.Value
 	} else if in, _ := stdin.Read(); in != "" {
-		i.SetValue(in)
+		value = in
 	}
 
 	theme := huh.ThemeCharm()
 	theme.Focused.Base = lipgloss.NewStyle()
-	theme.Focused.TextInput.Cursor = o.CursorStyle.ToLipgloss()
+	// theme.Focused.TextInput.Cursor = o.CursorStyle.ToLipgloss()
 	theme.Focused.TextInput.Placeholder = o.PlaceholderStyle.ToLipgloss()
 	theme.Focused.TextInput.Prompt = o.PromptStyle.ToLipgloss()
 	theme.Focused.Title = o.HeaderStyle.ToLipgloss()
 
-	var value string
 	var echoMode huh.EchoMode
 
 	if o.Password {
@@ -49,6 +50,7 @@ func (o Options) Run() error {
 	).
 		WithShowHelp(false).
 		WithTheme(theme).
+		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
 
 	if err != nil {
