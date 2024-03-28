@@ -255,28 +255,40 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *model) CursorUp() {
 	if m.reverse {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+		m.cursor = (m.cursor + 1) % len(m.matches)
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
-			m.viewport.SetYOffset(len(m.matches) - m.cursor - 1)
+			m.viewport.LineUp(1)
+		}
+		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
+			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
 		}
 	} else {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if m.cursor < m.viewport.YOffset {
-			m.viewport.SetYOffset(m.cursor)
+			m.viewport.LineUp(1)
+		}
+		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
+			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
 		}
 	}
 }
 
 func (m *model) CursorDown() {
 	if m.reverse {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor-1)
+		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
 			m.viewport.LineDown(1)
 		}
+		if len(m.matches)-m.cursor <= m.viewport.YOffset {
+			m.viewport.GotoTop()
+		}
 	} else {
-		m.cursor = clamp(0, len(m.matches)-1, m.cursor+1)
+		m.cursor = (m.cursor + 1) % len(m.matches)
 		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
 			m.viewport.LineDown(1)
+		}
+		if m.cursor < m.viewport.YOffset {
+			m.viewport.GotoTop()
 		}
 	}
 }
