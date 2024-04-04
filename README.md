@@ -25,7 +25,7 @@ useful shell scripts and dotfiles aliases with just a few lines of code.
 Let's build a simple script to help you write [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
 for your dotfiles.
 
-Ask for the commit type with gum choose:p
+Ask for the commit type with gum choose:
 ```bash
 gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert"
 ```
