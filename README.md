@@ -22,68 +22,34 @@ The above example is running from a single shell script ([source](./examples/dem
 
 Gum provides highly configurable, ready-to-use utilities to help you write
 useful shell scripts and dotfiles aliases with just a few lines of code.
+Let's build a simple script to help you write [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
+for your dotfiles.
 
-Let's build a simple script to help you write [Conventional
-Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for your
-dotfiles.
-
-Start with a `#!/bin/sh`.
-```bash
-#!/bin/sh
-```
-
-Ask for the commit type with `gum choose`:
-
+Ask for the commit type with gum choose:p
 ```bash
 gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert"
 ```
 
-> Tip: this command itself will print to `stdout` which is not all that useful.
-To make use of the command later on you can save the stdout to a `$VARIABLE` or
-`file.txt`.
+> [!NOTE]
+> This command itself will print to stdout which is not all that useful. To make use of the command later on you can save the stdout to a `$VARIABLE` or `file.txt`.
 
-Prompt for an (optional) scope for the commit:
-
+Prompt for the scope of these changes:
 ```bash
 gum input --placeholder "scope"
 ```
 
-Prompt for a commit message:
-
+Prompt for the summary and description of changes:
 ```bash
-gum input --placeholder "Summary of this change"
+gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change"
+gum write --placeholder "Details of this change"
 ```
 
-Prompt for a detailed (multi-line) explanation of the changes:
-
-```bash
-gum write --placeholder "Details of this change (CTRL+D to finish)"
-```
-
-Prompt for a confirmation before committing:
-> `gum confirm` exits with status `0` if confirmed and status `1` if cancelled.
-
+Confirm before committing:
 ```bash
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
-Putting it all together...
-
-```bash
-#!/bin/sh
-TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
-SCOPE=$(gum input --placeholder "scope")
-
-# Since the scope is optional, wrap it in parentheses if it has a value.
-test -n "$SCOPE" && SCOPE="($SCOPE)"
-
-# Pre-populate the input with the type(scope): so that the user may change it
-SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
-DESCRIPTION=$(gum write --placeholder "Details of this change (CTRL+D to finish)")
-
-# Commit these changes
-gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
-```
+For a working version of the script see how it is all [put together](https://github.com/charmbracelet/gum/blob/main/examples/commit.sh) in a single script.
 
 <img alt="Running the ./examples/commit.sh script to commit to git" width="600" src="https://stuff.charm.sh/gum/commit_2.gif">
 
@@ -100,32 +66,8 @@ pacman -S gum
 
 # Nix
 nix-env -iA nixpkgs.gum
-# Or, with flakes
-nix run "github:charmbracelet/gum" -- --help
-
-# Debian/Ubuntu
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-sudo apt update && sudo apt install gum
-
-# Fedora/RHEL
-echo '[charm]
-name=Charm
-baseurl=https://repo.charm.sh/yum/
-enabled=1
-gpgcheck=1
-gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
-sudo yum install gum
-
-# Alpine
-apk add gum
-
-# Android (via termux)
-pkg install gum
 
 # Windows (via WinGet or Scoop)
-winget install charmbracelet.gum
 scoop install charm-gum
 ```
 
@@ -142,25 +84,40 @@ go install github.com/charmbracelet/gum@latest
 
 [releases]: https://github.com/charmbracelet/gum/releases
 
+## Commands
+
+  * [`choose`](#choose): Choose an option from a list of choices
+  * [`confirm`](#confirm): Ask a user to confirm an action
+  * [`file`](#file): Pick a file from a folder
+  * [`filter`](#filter): Filter items from a list
+  * [`format`](#format): Format a string using a template
+  * [`input`](#input): Prompt for some input
+  * [`join`](#join): Join text vertically or horizontally
+  * [`pager`](#pager): Scroll through a file
+  * [`spin`](#spin): Display spinner while running a command
+  * [`style`](#style): Apply coloring, borders, spacing to text
+  * [`table`](#table): Render a table of data
+  * [`write`](#write): Prompt for long-form text
+  * [`log`](#log): Log messages to output
+
+
 ## Customization
 
-`gum` is designed to be embedded in scripts and supports all sorts of use
-cases. Components are configurable and customizable to fit your theme and
-use case.
+You can customize `gum` options and styles with `--flags` and `$ENVIRONMENT_VARIABLES`.
+See `gum <command> --help` for a full view of each command's customization and configuration options.
 
-You can customize with `--flags`. See `gum <command> --help` for a full view of
-each command's customization and configuration options.
-
-For example, let's use an `input` and change the cursor color, prompt color,
-prompt indicator, placeholder text, width, and pre-populate the value:
-
+Customize with `--flags`:
 ```bash
-gum input --cursor.foreground "#FF0" --prompt.foreground "#0FF" --prompt "* " \
-    --placeholder "What's up?" --width 80 --value "Not much, hby?"
+
+gum input --cursor.foreground "#FF0" \
+          --prompt.foreground "#0FF" \
+          --placeholder "What's up?" \
+          --prompt "* " \
+          --width 80 \
+          --value "Not much, hby?"
 ```
 
-You can also use `ENVIRONMENT_VARIABLES` to customize `gum` by default, this is
-useful to keep a consistent theme for all your `gum` commands.
+Customize with `ENVIRONMENT_VARIABLES`:
 
 ```bash
 export GUM_INPUT_CURSOR_FOREGROUND="#FF0"
@@ -169,36 +126,26 @@ export GUM_INPUT_PLACEHOLDER="What's up?"
 export GUM_INPUT_PROMPT="* "
 export GUM_INPUT_WIDTH=80
 
-# Uses values configured through environment variables above but can still be
-# overridden with flags.
+# --flags can override values set with environment
 gum input
 ```
 
 <img alt="Gum input displaying most customization options" width="600" src="https://stuff.charm.sh/gum/customization.gif">
 
-## Interaction
-
-#### Input
+## Input
 
 Prompt for input with a simple command.
 
 ```bash
 gum input > answer.txt
-```
-
-Prompt for sensitive input with the `--password` flag.
-
-```bash
 gum input --password > password.txt
 ```
 
 <img src="https://stuff.charm.sh/gum/input_1.gif" width="600" alt="Shell running gum input typing Not much, you?" />
 
-#### Write
+## Write
 
-Prompt for some multi-line text.
-
-Note: `CTRL+D` is used to complete text entry. `CTRL+C` and `esc` will cancel.
+Prompt for some multi-line text (`ctrl+d` to complete text entry).
 
 ```bash
 gum write > story.txt
@@ -206,35 +153,27 @@ gum write > story.txt
 
 <img src="https://stuff.charm.sh/gum/write.gif" width="600" alt="Shell running gum write typing a story" />
 
-#### Filter
+## Filter
 
-Use fuzzy matching to filter a list of values:
+Filter a list of values with fuzzy matching:
 
 ```bash
 echo Strawberry >> flavors.txt
 echo Banana >> flavors.txt
 echo Cherry >> flavors.txt
-cat flavors.txt | gum filter > selection.txt
+gum filter < flavors.txt > selection.txt
 ```
 
 <img src="https://stuff.charm.sh/gum/filter.gif" width="600" alt="Shell running gum filter on different bubble gum flavors" />
 
-You can also select multiple items with the `--limit` flag, which determines
-the maximum number of items that can be chosen.
-
-Pressing `tab` or `ctrl+space` will select the current item, while `enter` will confirm the selection.
+Select multiple options with the `--limit` flag or `--no-limit` flag. Use `tab` or `ctrl+space` to select, `enter` to confirm.
 
 ```bash
 cat flavors.txt | gum filter --limit 2
-```
-
-Or, allow any number of selections with the `--no-limit` flag.
-
-```bash
 cat flavors.txt | gum filter --no-limit
 ```
 
-#### Choose
+## Choose
 
 Choose an option from a list of choices.
 
@@ -244,24 +183,17 @@ CARD=$(gum choose --height 15 {{A,K,Q,J},{10..2}}" "{♠,♥,♣,♦})
 echo "Was your card the $CARD?"
 ```
 
-You can also select multiple items with the `--limit` flag, which determines
+You can also select multiple items with the `--limit` or `--no-limit` flag, which determines
 the maximum of items that can be chosen.
 
 ```bash
-echo "Pick your top 5 songs."
 cat songs.txt | gum choose --limit 5
-```
-
-Or, allow any number of selections with the `--no-limit` flag.
-
-```bash
-echo "What do you need from the grocery store?"
-cat foods.txt | gum choose --no-limit
+cat foods.txt | gum choose --no-limit --header "Grocery Shopping"
 ```
 
 <img src="https://stuff.charm.sh/gum/choose.gif" width="600" alt="Shell running gum choose with numbers and gum flavors" />
 
-#### Confirm
+## Confirm
 
 Confirm whether to perform an action. Exits with code `0` (affirmative) or `1`
 (negative) depending on selection.
@@ -272,7 +204,7 @@ gum confirm && rm file.txt || echo "File not removed"
 
 <img src="https://stuff.charm.sh/gum/confirm_2.gif" width="600" alt="Shell running gum confirm" />
 
-#### File
+## File
 
 Prompt the user to select a file from the file tree.
 
@@ -282,7 +214,7 @@ EDITOR $(gum file $HOME)
 
 <img src="https://stuff.charm.sh/gum/file.gif" width="600" alt="Shell running gum file" />
 
-#### Pager
+## Pager
 
 Scroll through a long document with line numbers and a fully customizable viewport.
 
@@ -292,7 +224,7 @@ gum pager < README.md
 
 <img src="https://stuff.charm.sh/gum/pager.gif" width="600" alt="Shell running gum pager" />
 
-#### Spin
+## Spin
 
 Display a spinner while running a script or command. The spinner will
 automatically stop after the given command exits.
@@ -307,7 +239,7 @@ gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 
 Available spinner types include: `line`, `dot`, `minidot`, `jump`, `pulse`, `points`, `globe`, `moon`, `monkey`, `meter`, `hamburger`.
 
-#### Table
+## Table
 
 Select a row from some tabular data.
 
@@ -317,9 +249,7 @@ gum table < flavors.csv | cut -d ',' -f 1
 
 <img src="https://stuff.charm.sh/gum/table.gif" width="600" alt="Shell running gum table" />
 
-## Styling
-
-#### Style
+## Style
 
 Pretty print any string with any layout with one command.
 
@@ -332,9 +262,7 @@ gum style \
 
 <img src="https://stuff.charm.sh/gum/style.gif" width="600" alt="Bubble Gum, So sweet and so fresh!" />
 
-## Layout
-
-#### Join
+## Join
 
 Combine text vertically or horizontally. Use this command with `gum style` to
 build layouts and pretty output.
