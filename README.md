@@ -130,7 +130,7 @@ export GUM_INPUT_WIDTH=80
 gum input
 ```
 
-<img alt="Gum input displaying most customization options" width="600" src="https://stuff.charm.sh/gum/customization.gif">
+<img alt="Gum input displaying most customization options" width="600" src="https://vhs.charm.sh/vhs-5zb9DlQYA70aL9ZpYLTwKv.gif">
 
 ## Input
 
@@ -141,7 +141,7 @@ gum input > answer.txt
 gum input --password > password.txt
 ```
 
-<img src="https://stuff.charm.sh/gum/input_1.gif" width="600" alt="Shell running gum input typing Not much, you?" />
+<img src="https://vhs.charm.sh/vhs-1nScrStFI3BMlCp5yrLtyg.gif" width="600" alt="Shell running gum input typing Not much, you?" />
 
 ## Write
 
@@ -151,7 +151,7 @@ Prompt for some multi-line text (`ctrl+d` to complete text entry).
 gum write > story.txt
 ```
 
-<img src="https://stuff.charm.sh/gum/write.gif" width="600" alt="Shell running gum write typing a story" />
+<img src="https://vhs.charm.sh/vhs-7abdKKrUEukgx9aJj8O5GX.gif" width="600" alt="Shell running gum write typing a story" />
 
 ## Filter
 
@@ -164,7 +164,7 @@ echo Cherry >> flavors.txt
 gum filter < flavors.txt > selection.txt
 ```
 
-<img src="https://stuff.charm.sh/gum/filter.gif" width="600" alt="Shell running gum filter on different bubble gum flavors" />
+<img src="https://vhs.charm.sh/vhs-61euOQtKPtQVD7nDpHQhzr.gif" width="600" alt="Shell running gum filter on different bubble gum flavors" />
 
 Select multiple options with the `--limit` flag or `--no-limit` flag. Use `tab` or `ctrl+space` to select, `enter` to confirm.
 
@@ -191,7 +191,7 @@ cat songs.txt | gum choose --limit 5
 cat foods.txt | gum choose --no-limit --header "Grocery Shopping"
 ```
 
-<img src="https://stuff.charm.sh/gum/choose.gif" width="600" alt="Shell running gum choose with numbers and gum flavors" />
+<img src="https://vhs.charm.sh/vhs-3zV1LvofA6Cbn5vBu1NHHl.gif" width="600" alt="Shell running gum choose with numbers and gum flavors" />
 
 ## Confirm
 
@@ -202,7 +202,7 @@ Confirm whether to perform an action. Exits with code `0` (affirmative) or `1`
 gum confirm && rm file.txt || echo "File not removed"
 ```
 
-<img src="https://stuff.charm.sh/gum/confirm_2.gif" width="600" alt="Shell running gum confirm" />
+<img src="https://vhs.charm.sh/vhs-3xRFvbeQ4lqGerbHY7y3q2.gif" width="600" alt="Shell running gum confirm" />
 
 ## File
 
@@ -212,7 +212,7 @@ Prompt the user to select a file from the file tree.
 EDITOR $(gum file $HOME)
 ```
 
-<img src="https://stuff.charm.sh/gum/file.gif" width="600" alt="Shell running gum file" />
+<img src="https://vhs.charm.sh/vhs-2RMRqmnOPneneIgVJJ3mI1.gif" width="600" alt="Shell running gum file" />
 
 ## Pager
 
@@ -222,7 +222,7 @@ Scroll through a long document with line numbers and a fully customizable viewpo
 gum pager < README.md
 ```
 
-<img src="https://stuff.charm.sh/gum/pager.gif" width="600" alt="Shell running gum pager" />
+<img src="https://vhs.charm.sh/vhs-3iMDpgOLmbYr0jrYEGbk7p.gif" width="600" alt="Shell running gum pager" />
 
 ## Spin
 
@@ -235,7 +235,7 @@ To view or pipe the command's output, use the `--show-output` flag.
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
 
-<img src="https://stuff.charm.sh/gum/spin.gif" width="600" alt="Shell running gum spin while sleeping for 5 seconds" />
+<img src="https://vhs.charm.sh/vhs-3YFswCmoY4o3Q7MyzWl6sS.gif" width="600" alt="Shell running gum spin while sleeping for 5 seconds" />
 
 Available spinner types include: `line`, `dot`, `minidot`, `jump`, `pulse`, `points`, `globe`, `moon`, `monkey`, `meter`, `hamburger`.
 
@@ -247,7 +247,7 @@ Select a row from some tabular data.
 gum table < flavors.csv | cut -d ',' -f 1
 ```
 
-<img src="https://stuff.charm.sh/gum/table.gif" width="600" alt="Shell running gum table" />
+<!-- <img src="https://stuff.charm.sh/gum/table.gif" width="600" alt="Shell running gum table" /> -->
 
 ## Style
 
@@ -260,7 +260,7 @@ gum style \
 	'Bubble Gum (1¢)' 'So sweet and so fresh!'
 ```
 
-<img src="https://stuff.charm.sh/gum/style.gif" width="600" alt="Bubble Gum, So sweet and so fresh!" />
+<img src="https://github.com/charmbracelet/gum/assets/42545625/67468acf-b3e0-4e78-bd89-360739eb44fa" width="600" alt="Bubble Gum, So sweet and so fresh!" />
 
 ## Join
 
@@ -281,7 +281,7 @@ BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
 gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ```
 
-<img src="https://stuff.charm.sh/gum/join.gif" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
+<img src="https://github.com/charmbracelet/gum/assets/42545625/68f7a25d-b495-48dd-982a-cee0c8ea5786" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
 
 ## Format
 
@@ -308,7 +308,7 @@ For more information on template helpers, see the [Termenv
 docs](https://github.com/muesli/termenv#template-helpers). For a full list of
 named emojis see the [GitHub API](https://api.github.com/emojis).
 
-<img src="https://stuff.charm.sh/gum/format.gif" width="600" alt="Running gum format for different types of formats" />
+<img src="https://github.com/charmbracelet/gum/assets/42545625/5cfbb0c8-0022-460d-841b-fec37527ca66" width="300" alt="Running gum format for different types of formats" />
 
 ## Log
 

@@ -14,7 +14,6 @@ import (
 // Run provides a shell script interface for the text input bubble.
 // https://github.com/charmbracelet/bubbles/textinput
 func (o Options) Run() error {
-
 	var value string
 	if o.Value != "" {
 		value = o.Value
