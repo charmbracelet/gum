@@ -336,108 +336,67 @@ See [`charmbracelet/log`](https://github.com/charmbracelet/log) for more usage.
 
 ## Examples
 
-See the [examples](./examples/) directory for more real world use cases.
-
 How to use `gum` in your daily workflows:
 
-#### Write a commit message
+See the [examples](./examples/) directory for more real world use cases.
 
-Prompt for input to write git commit messages with a short summary and
-longer details with `gum input` and `gum write`.
-
-Bonus points: use `gum filter` with the [Conventional Commits
-Specification](https://www.conventionalcommits.org/en/v1.0.0/#summary) as a
-prefix for your commit message.
+* Write a commit message:
 
 ```bash
 git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
-           -m "$(gum write --width 80 --placeholder "Details of changes (CTRL+D to finish)")"
+           -m "$(gum write --width 80 --placeholder "Details of changes")"
 ```
 
-#### Open files in your `$EDITOR`
-
-By default, `gum filter` will display a list of all files (searched
-recursively) through your current directory, with some sensible ignore settings
-(`.git`, `node_modules`). You can use this command to easily to pick a file and
-open it in your `$EDITOR`.
+* Open files in your `$EDITOR`
 
 ```bash
 $EDITOR $(gum filter)
 ```
 
-#### Connect to a TMUX session
-
-Pick from a running `tmux` session and attach to it. Or, if you're already in a
-`tmux` session, switch sessions.
+* Connect to a `tmux` session
 
 ```bash
 SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session...")
 tmux switch-client -t $SESSION || tmux attach -t $SESSION
 ```
 
-<img src="https://stuff.charm.sh/gum/pick-tmux-session.gif" width="600" alt="Picking a tmux session with gum filter" />
-
-#### Pick commit hash from your Git history
-
-Filter through your git history searching for commit messages, copying the
-commit hash of the commit you select.
+* Pick a commit hash from `git` history
 
 ```bash
 git log --oneline | gum filter | cut -d' ' -f1 # | copy
 ```
 
-<img src="https://stuff.charm.sh/gum/pick-commit.gif" width="600" alt="Picking a commit with gum filter" />
-
-#### Skate Passwords
-
-Build a simple (encrypted) password selector with [Skate](https://github.com/charmbracelet/skate).
-
-Save all your passwords to [Skate](https://github.com/charmbracelet/skate) with `skate set github@pass.db PASSWORD`, etc...
+* Simple [`skate`](https://github.com/charmbracelet/skate) password selector.
 
 ```
 skate list -k | gum filter | xargs skate get
 ```
 
-<img src="https://stuff.charm.sh/gum/skate-pass.gif" width="600" alt="Selecting a skate value with gum" />
-
-#### Choose packages to uninstall
-
-List all packages installed by your package manager (we'll use `brew`) and
-choose which packages to uninstall.
+* Uninstall packages
 
 ```bash
 brew list | gum choose --no-limit | xargs brew uninstall
 ```
 
-#### Choose branches to delete
-
-List all branches and choose which branches to delete.
+* Clean up `git` branches
 
 ```bash
 git branch | cut -c 3- | gum choose --no-limit | xargs git branch -D
 ```
 
-#### Choose pull request to checkout
-
-List all PRs for the current GitHub repository and checkout the chosen PR (using [`gh`](https://cli.github.com/)).
+* Checkout GitHub pull requests with [`gh`](https://cli.github.com/)
 
 ```bash
 gh pr list | cut -f1,2 | gum choose | cut -f1 | xargs gh pr checkout
 ```
 
-#### Pick command from shell history
-
-Pick a previously executed command from your shell history to execute, copy,
-edit, etc...
+* Copy command from shell history
 
 ```bash
 gum filter < $HISTFILE --height 20
 ```
 
-#### Sudo password input
-
-See visual feedback when entering password with masked characters with `gum
-input --password`.
+* `sudo` replacement
 
 ```bash
 alias please="gum input --password | sudo -nS"
