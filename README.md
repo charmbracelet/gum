@@ -14,7 +14,7 @@ A tool for glamorous shell scripts. Leverage the power of
 Gloss](https://github.com/charmbracelet/lipgloss) in your scripts and aliases
 without writing any Go code!
 
-<img alt="Shell running the ./demo.sh script" width="600" src="https://stuff.charm.sh/gum/demo.gif">
+<img alt="Shell running the ./demo.sh script" width="600" src="https://vhs.charm.sh/vhs-1qY57RrQlXCuydsEgDp68G.gif">
 
 The above example is running from a single shell script ([source](./examples/demo.sh)).
 
@@ -51,7 +51,7 @@ gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 
 For a working version of the script see how it is all [put together](https://github.com/charmbracelet/gum/blob/main/examples/commit.sh) in a single script.
 
-<img alt="Running the ./examples/commit.sh script to commit to git" width="600" src="https://stuff.charm.sh/gum/commit_2.gif">
+<img alt="Running the ./examples/commit.sh script to commit to git" width="600" src="https://vhs.charm.sh/vhs-7rRq3LsEuJVwhwr0xf6Er7.gif">
 
 ## Installation
 
