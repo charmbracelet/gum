@@ -49,7 +49,7 @@ Confirm before committing:
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
 
-For a working version of the script see how it is all [put together](https://github.com/charmbracelet/gum/blob/main/examples/commit.sh) in a single script.
+Check out the [complete example](https://github.com/charmbracelet/gum/blob/main/examples/commit.sh) for combining these commands in a single script.
 
 <img alt="Running the ./examples/commit.sh script to commit to git" width="600" src="https://vhs.charm.sh/vhs-7rRq3LsEuJVwhwr0xf6Er7.gif">
 
