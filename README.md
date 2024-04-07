@@ -64,6 +64,10 @@ brew install gum
 # Arch Linux (btw)
 pacman -S gum
 
+# Exherbo Linux
+cave resolve -x repository/CleverCloud
+cave resolve -x gum
+
 # Nix
 nix-env -iA nixpkgs.gum
 
@@ -99,7 +103,6 @@ go install github.com/charmbracelet/gum@latest
   * [`table`](#table): Render a table of data
   * [`write`](#write): Prompt for long-form text
   * [`log`](#log): Log messages to output
-
 
 ## Customization
 
