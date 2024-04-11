@@ -4,58 +4,59 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
 
-	"github.com/charmbracelet/gum/cursor"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
 // Run provides a shell script interface for the text input bubble.
 // https://github.com/charmbracelet/bubbles/textinput
 func (o Options) Run() error {
-	i := textinput.New()
+	var value string
 	if o.Value != "" {
-		i.SetValue(o.Value)
+		value = o.Value
 	} else if in, _ := stdin.Read(); in != "" {
-		i.SetValue(in)
+		value = in
 	}
 
-	i.Focus()
-	i.Prompt = o.Prompt
-	i.Placeholder = o.Placeholder
-	i.Width = o.Width
-	i.PromptStyle = o.PromptStyle.ToLipgloss()
-	i.PlaceholderStyle = o.PlaceholderStyle.ToLipgloss()
-	i.Cursor.Style = o.CursorStyle.ToLipgloss()
-	i.Cursor.SetMode(cursor.Modes[o.CursorMode])
-	i.CharLimit = o.CharLimit
+	theme := huh.ThemeCharm()
+	theme.Focused.Base = lipgloss.NewStyle()
+	// theme.Focused.TextInput.Cursor = o.CursorStyle.ToLipgloss()
+	theme.Focused.TextInput.Placeholder = o.PlaceholderStyle.ToLipgloss()
+	theme.Focused.TextInput.Prompt = o.PromptStyle.ToLipgloss()
+	theme.Focused.Title = o.HeaderStyle.ToLipgloss()
+
+	var echoMode huh.EchoMode
 
 	if o.Password {
-		i.EchoMode = textinput.EchoPassword
-		i.EchoCharacter = '•'
+		echoMode = huh.EchoModePassword
+	} else {
+		echoMode = huh.EchoModeNormal
 	}
 
-	p := tea.NewProgram(model{
-		textinput:   i,
-		aborted:     false,
-		header:      o.Header,
-		headerStyle: o.HeaderStyle.ToLipgloss(),
-		timeout:     o.Timeout,
-		hasTimeout:  o.Timeout > 0,
-		autoWidth:   o.Width < 1,
-	}, tea.WithOutput(os.Stderr))
-	tm, err := p.Run()
+	err := huh.NewForm(
+		huh.NewGroup(
+			huh.NewInput().
+				Prompt(o.Prompt).
+				Placeholder(o.Placeholder).
+				CharLimit(o.CharLimit).
+				EchoMode(echoMode).
+				Title(o.Header).
+				Value(&value),
+		),
+	).
+		WithShowHelp(false).
+		WithWidth(o.Width).
+		WithTheme(theme).
+		WithProgramOptions(tea.WithOutput(os.Stderr)).
+		Run()
+
 	if err != nil {
-		return fmt.Errorf("failed to run input: %w", err)
-	}
-	m := tm.(model)
-
-	if m.aborted {
-		return exit.ErrAborted
+		return err
 	}
 
-	fmt.Println(m.textinput.Value())
+	fmt.Println(value)
 	return nil
 }
