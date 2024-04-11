@@ -396,7 +396,7 @@ gh pr list | cut -f1,2 | gum choose | cut -f1 | xargs gh pr checkout
 gum filter < $HISTFILE --height 20
 ```
 
-#### Sudo password input
+* `sudo` replacement
 
 See visual feedback when entering password with masked characters with `gum
 input --password`. This only works for zsh.
