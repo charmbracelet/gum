@@ -507,10 +507,22 @@ gum filter < $HISTFILE --height 20
 #### Sudo password input
 
 See visual feedback when entering password with masked characters with `gum
-input --password`.
+input --password`. This only works for zsh.
 
+`.zshenv`
 ```bash
-alias please="gum input --password | sudo -nS"
+s() {
+    if sudo -n true 2> /dev/null; then
+        sudo "$@"
+    else
+        gum input --prompt "A random placeholder" --password | sudo -S -p '' "$@"
+    fi
+}
+```
+
+`.zshrc`
+```bash
+alias sudo='s'
 ```
 
 ## Feedback
