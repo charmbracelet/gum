@@ -1,6 +1,6 @@
 // Package pager provides a pager (similar to less) for the terminal.
 //
-// $ cat file.txt | gum page
+// $ cat file.txt | gum pager
 package pager
 
 import (
