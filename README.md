@@ -68,6 +68,7 @@ pacman -S gum
 nix-env -iA nixpkgs.gum
 
 # Windows (via WinGet or Scoop)
+winget install charmbracelet.gum
 scoop install charm-gum
 ```
 
