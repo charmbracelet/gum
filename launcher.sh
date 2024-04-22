@@ -2,6 +2,7 @@
 
 # CHMOD All files (.sh)
 find . -type f -iname "*.sh" -exec chmod +x {} \;
+go build
 
 # Main choice function
 function choice () {
