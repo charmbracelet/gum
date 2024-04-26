@@ -46,9 +46,9 @@ func (o Options) Run() error {
 		"stampmilli":  time.StampMilli,
 		"stampmicro":  time.StampMicro,
 		"stampnano":   time.StampNano,
-		"datetime":    "2006-01-02 15:04:05",
-		"dateonly":    "2006-01-02",
-		"timeonly":    "15:04:05",
+		"datetime":    time.DateTime,
+		"dateonly":    time.DateOnly,
+		"timeonly":    time.TimeOnly,
 	}
 
 	tf, ok := timeFormats[strings.ToLower(o.Time)]
