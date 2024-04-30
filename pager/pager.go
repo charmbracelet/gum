@@ -120,9 +120,9 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 		}
 	} else {
 		switch key.String() {
-		case "g":
+		case "g", "home":
 			m.viewport.GotoTop()
-		case "G":
+		case "G", "end":
 			m.viewport.GotoBottom()
 		case "/":
 			m.search.Begin()
