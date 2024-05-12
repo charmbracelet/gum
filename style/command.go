@@ -24,7 +24,6 @@ func (o Options) Run() error {
 		if text == "" {
 			return errors.New("no input provided, see `gum style --help`")
 		}
-		text = strings.TrimSuffix(text, "\n")
 	}
 	fmt.Println(o.Style.ToLipgloss().Render(text))
 	return nil
