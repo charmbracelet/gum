@@ -22,7 +22,7 @@ func (o Options) Run() error {
 		if input == "" {
 			return errors.New("no options provided, see `gum choose --help`")
 		}
-		o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
+		o.Options = strings.Split(input, "\n")
 	}
 
 	if o.SelectIfOne && len(o.Options) == 1 {
