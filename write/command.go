@@ -25,6 +25,9 @@ func (o Options) Run() error {
 	theme.Focused.TextInput.Placeholder = o.PlaceholderStyle.ToLipgloss()
 	theme.Focused.TextInput.Prompt = o.PromptStyle.ToLipgloss()
 
+	keymap := huh.NewDefaultKeyMap()
+	keymap.Text.NewLine.SetHelp("ctrl+j", "new line")
+
 	err := huh.NewForm(
 		huh.NewGroup(
 			huh.NewText().
@@ -38,7 +41,9 @@ func (o Options) Run() error {
 		WithWidth(o.Width).
 		WithHeight(o.Height).
 		WithTheme(theme).
-		WithShowHelp(false).Run()
+		WithKeyMap(keymap).
+		WithShowHelp(o.ShowHelp).
+		Run()
 
 	if err != nil {
 		return err

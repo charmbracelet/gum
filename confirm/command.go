@@ -5,14 +5,12 @@ import (
 	"os"
 
 	"github.com/charmbracelet/huh"
-	"github.com/charmbracelet/lipgloss"
 )
 
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
 	theme := huh.ThemeCharm()
-	theme.Focused.Base = lipgloss.NewStyle().Margin(0, 1)
 	theme.Focused.Title = o.PromptStyle.ToLipgloss()
 	theme.Focused.FocusedButton = o.SelectedStyle.ToLipgloss()
 	theme.Focused.BlurredButton = o.UnselectedStyle.ToLipgloss()
@@ -29,7 +27,7 @@ func (o Options) Run() error {
 		),
 	).
 		WithTheme(theme).
-		WithShowHelp(false).
+		WithShowHelp(o.ShowHelp).
 		Run()
 
 	if err != nil {

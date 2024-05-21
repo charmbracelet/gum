@@ -14,6 +14,8 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
+const widthBuffer = 2
+
 // Run provides a shell script interface for choosing between different through
 // options.
 func (o Options) Run() error {
@@ -55,8 +57,8 @@ func (o Options) Run() error {
 	}
 
 	width := max(widest(o.Options)+
-		max(lipgloss.Width(o.SelectedPrefix), lipgloss.Width(o.UnselectedPrefix))+
-		lipgloss.Width(o.Cursor)+1, lipgloss.Width(o.Header)+1)
+		max(lipgloss.Width(o.SelectedPrefix)+lipgloss.Width(o.UnselectedPrefix))+
+		lipgloss.Width(o.Cursor)+1, lipgloss.Width(o.Header)+widthBuffer)
 
 	if o.Limit > 1 {
 		var choices []string
@@ -65,14 +67,13 @@ func (o Options) Run() error {
 				huh.NewMultiSelect[string]().
 					Options(options...).
 					Title(o.Header).
-					Filterable(false).
 					Height(o.Height).
 					Limit(o.Limit).
 					Value(&choices),
 			),
 		).
 			WithWidth(width).
-			WithShowHelp(false).
+			WithShowHelp(o.ShowHelp).
 			WithTheme(theme).
 			Run()
 		if err != nil {
@@ -102,7 +103,7 @@ func (o Options) Run() error {
 	).
 		WithWidth(width).
 		WithTheme(theme).
-		WithShowHelp(false).
+		WithShowHelp(o.ShowHelp).
 		Run()
 
 	if err != nil {

@@ -15,6 +15,7 @@ type Options struct {
 	All       bool   `short:"a" help:"Show hidden and 'dot' files" default:"false" env:"GUM_FILE_ALL"`
 	File      bool   `help:"Allow files selection" default:"true" env:"GUM_FILE_FILE"`
 	Directory bool   `help:"Allow directories selection" default:"false" env:"GUM_FILE_DIRECTORY"`
+	ShowHelp  bool   `help:"Show help key binds" negatable:"" default:"true" env:"GUM_FILE_SHOW_HELP"`
 
 	Height           int          `help:"Maximum number of files to display" default:"10" env:"GUM_FILE_HEIGHT"`
 	CursorStyle      style.Styles `embed:"" prefix:"cursor." help:"The cursor style" set:"defaultForeground=212" envprefix:"GUM_FILE_CURSOR_"`
