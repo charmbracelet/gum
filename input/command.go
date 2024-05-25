@@ -5,6 +5,7 @@ import (
 
 	"os"
 
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -29,7 +30,9 @@ func (o Options) Run() error {
 	theme.Focused.TextInput.Prompt = o.PromptStyle.ToLipgloss()
 	theme.Focused.Title = o.HeaderStyle.ToLipgloss()
 
+	// Keep input keymap backwards compatible
 	keymap := huh.NewDefaultKeyMap()
+	keymap.Quit = key.NewBinding(key.WithKeys("ctrl+c", "esc"))
 
 	var echoMode huh.EchoMode
 
