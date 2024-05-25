@@ -30,6 +30,9 @@ func (o Options) Run() error {
 	theme.Focused.Directory = o.DirectoryStyle.ToLipgloss()
 	theme.Focused.SelectedOption = o.SelectedStyle.ToLipgloss()
 
+	keymap := huh.NewDefaultKeyMap()
+	keymap.FilePicker.Open.SetEnabled(false)
+
 	// XXX: These should be file selected specific.
 	theme.Focused.TextInput.Placeholder = o.PermissionsStyle.ToLipgloss()
 	theme.Focused.TextInput.Prompt = o.CursorStyle.ToLipgloss()
@@ -46,7 +49,8 @@ func (o Options) Run() error {
 				Value(&path),
 		),
 	).
-		WithShowHelp(false).
+		WithShowHelp(o.ShowHelp).
+		WithKeyMap(keymap).
 		WithTheme(theme).
 		Run()
 

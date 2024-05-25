@@ -40,7 +40,7 @@ gum style --foreground 99 --border double --border-foreground 99 --padding "1 2"
 
 # Write
 gum write
-gum write --width 40 --height 3 --placeholder "Type whatever you want" --prompt "| " --show-cursor-line --show-line-numbers --value "Something..." --base.padding 1 --cursor.foreground 99 --prompt.foreground 99
+gum write --width 40 --height 6 --placeholder "Type whatever you want" --prompt "| " --show-cursor-line --show-line-numbers --value "Something..." --base.padding 1 --cursor.foreground 99 --prompt.foreground 99
 
 # Table
 gum table < table/example.csv

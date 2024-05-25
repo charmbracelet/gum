@@ -31,10 +31,10 @@ linters:
     - noctx
     - nolintlint
     - prealloc
-    - wrapcheck
 
   # disable default linters, they are already enabled in .golangci.yml
   disable:
+    - wrapcheck
     - deadcode
     - errcheck
     - gosimple

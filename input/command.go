@@ -2,6 +2,7 @@ package input
 
 import (
 	"fmt"
+
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -28,6 +29,8 @@ func (o Options) Run() error {
 	theme.Focused.TextInput.Prompt = o.PromptStyle.ToLipgloss()
 	theme.Focused.Title = o.HeaderStyle.ToLipgloss()
 
+	keymap := huh.NewDefaultKeyMap()
+
 	var echoMode huh.EchoMode
 
 	if o.Password {
@@ -50,6 +53,8 @@ func (o Options) Run() error {
 		WithShowHelp(false).
 		WithWidth(o.Width).
 		WithTheme(theme).
+		WithKeyMap(keymap).
+		WithShowHelp(o.ShowHelp).
 		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
 

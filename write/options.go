@@ -13,6 +13,7 @@ type Options struct {
 	ShowLineNumbers bool   `help:"Show line numbers" default:"false" env:"GUM_WRITE_SHOW_LINE_NUMBERS"`
 	Value           string `help:"Initial value (can be passed via stdin)" default:"" env:"GUM_WRITE_VALUE"`
 	CharLimit       int    `help:"Maximum value length (0 for no limit)" default:"400"`
+	ShowHelp        bool   `help:"Show help key binds" negatable:"" default:"true" env:"GUM_WRITE_SHOW_HELP"`
 	CursorMode      string `prefix:"cursor." name:"mode" help:"Cursor mode" default:"blink" enum:"blink,hide,static" env:"GUM_WRITE_CURSOR_MODE"`
 
 	BaseStyle        style.Styles `embed:"" prefix:"base." envprefix:"GUM_WRITE_BASE_"`
