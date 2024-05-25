@@ -1,7 +1,12 @@
 { pkgs }:
 
-pkgs.buildGoModule {
-  name = "gum";
+pkgs.buildGoModule rec {
+  pname = "gum";
+  version = "0.14.0";
+
   src = ./.;
-  vendorSha256 = "sha256-rOBwhPXo4sTSI3j3rn3c5qWGnGFgkpeFUKgtzKBltbg=";
+
+  vendorHash = "sha256-gDDaKrwlrJyyDzgyGf9iP/XPnOAwpkvIyzCXobXrlF4=";
+
+  ldflags = [ "-s" "-w" "-X=main.Version=${version}" ];
 }
