@@ -37,6 +37,7 @@ func (o Options) Run() error {
 	).
 		WithWidth(o.Width).
 		WithHeight(o.Height).
+		WithTheme(theme).
 		WithShowHelp(false).Run()
 
 	if err != nil {
