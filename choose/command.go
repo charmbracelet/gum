@@ -62,30 +62,28 @@ func (o Options) Run() error {
 
 	if o.Limit > 1 {
 		var choices []string
-		err := huh.NewForm(
-			huh.NewGroup(
-				huh.NewMultiSelect[string]().
-					Options(options...).
-					Title(o.Header).
-					Height(o.Height).
-					Limit(o.Limit).
-					Value(&choices),
-			),
-		).
+
+		field := huh.NewMultiSelect[string]().
+			Options(options...).
+			Title(o.Header).
+			Height(o.Height).
+			Limit(o.Limit).
+			Value(&choices)
+
+		form := huh.NewForm(huh.NewGroup(field))
+
+		err := form.
 			WithWidth(width).
 			WithShowHelp(o.ShowHelp).
 			WithTheme(theme).
 			Run()
+
 		if err != nil {
 			return err
 		}
 		if len(choices) > 0 {
 			s := strings.Join(choices, "\n")
-			if isatty.IsTerminal(os.Stdout.Fd()) {
-				fmt.Println(s)
-			} else {
-				fmt.Print(ansi.Strip(s))
-			}
+			ansiprint(s)
 		}
 		return nil
 	}
@@ -128,4 +126,12 @@ func widest(options []string) int {
 		}
 	}
 	return max
+}
+
+func ansiprint(s string) {
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		fmt.Println(s)
+	} else {
+		fmt.Print(ansi.Strip(s))
+	}
 }
