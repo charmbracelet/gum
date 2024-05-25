@@ -24,8 +24,8 @@ github.com/charmbracelet/glamour v0.7.0 h1:2BtKGZ4iVJCDfMF229EzbeR1QRKLWztO9dMtj
 github.com/charmbracelet/glamour v0.7.0/go.mod h1:jUMh5MeihljJPQbJ/wf4ldw2+yBP59+ctV36jASy7ps=
 github.com/charmbracelet/huh v0.3.1-0.20240521183146-8c5d66193f2b h1:OT/S40SAHYBYExxjYdSC9VWkwb9a9j1ngaKegMS4Ai0=
 github.com/charmbracelet/huh v0.3.1-0.20240521183146-8c5d66193f2b/go.mod h1:IQZ2iXx4ATguyE2lDIZfZ7dMIXXk/uNUjS+OPlJU5Aw=
-github.com/charmbracelet/lipgloss v0.10.1-0.20240515185947-83fa9be7feac h1:CLy2pziY/9Yp2ylBfcvsd56MhP3fOVs2Vqh/usofTug=
-github.com/charmbracelet/lipgloss v0.10.1-0.20240515185947-83fa9be7feac/go.mod h1:1UdRTH9gYgpcdNN5oBtjbu/IzNKtzVtb7sqN1t9LNn8=
+github.com/charmbracelet/lipgloss v0.11.0 h1:UoAcbQ6Qml8hDwSWs0Y1cB5TEQuZkDPH/ZqwWWYTG4g=
+github.com/charmbracelet/lipgloss v0.11.0/go.mod h1:1UdRTH9gYgpcdNN5oBtjbu/IzNKtzVtb7sqN1t9LNn8=
 github.com/charmbracelet/log v0.4.0 h1:G9bQAcx8rWA2T3pWvx7YtPTPwgqpk7D68BX21IRW8ZM=
 github.com/charmbracelet/log v0.4.0/go.mod h1:63bXt/djrizTec0l11H20t8FDSvA4CRZJ1KH22MdptM=
 github.com/charmbracelet/x/ansi v0.1.1 h1:CGAduulr6egay/YVbGc8Hsu8deMg1xZ/bkaXTPi1JDk=
