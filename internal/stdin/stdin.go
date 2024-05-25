@@ -28,7 +28,7 @@ func Read() (string, error) {
 		}
 	}
 
-	return b.String(), nil
+	return strings.TrimSuffix(b.String(), "\n"), nil
 }
 
 // IsEmpty returns whether stdin is empty.

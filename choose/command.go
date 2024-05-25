@@ -14,6 +14,8 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
+const widthBuffer = 2
+
 // Run provides a shell script interface for choosing between different through
 // options.
 func (o Options) Run() error {
@@ -22,7 +24,7 @@ func (o Options) Run() error {
 		if input == "" {
 			return errors.New("no options provided, see `gum choose --help`")
 		}
-		o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
+		o.Options = strings.Split(input, "\n")
 	}
 
 	if o.SelectIfOne && len(o.Options) == 1 {
@@ -55,36 +57,33 @@ func (o Options) Run() error {
 	}
 
 	width := max(widest(o.Options)+
-		max(lipgloss.Width(o.SelectedPrefix), lipgloss.Width(o.UnselectedPrefix))+
-		lipgloss.Width(o.Cursor)+1, lipgloss.Width(o.Header)+1)
+		max(lipgloss.Width(o.SelectedPrefix)+lipgloss.Width(o.UnselectedPrefix))+
+		lipgloss.Width(o.Cursor)+1, lipgloss.Width(o.Header)+widthBuffer)
 
 	if o.Limit > 1 {
 		var choices []string
-		err := huh.NewForm(
-			huh.NewGroup(
-				huh.NewMultiSelect[string]().
-					Options(options...).
-					Title(o.Header).
-					Filterable(false).
-					Height(o.Height).
-					Limit(o.Limit).
-					Value(&choices),
-			),
-		).
+
+		field := huh.NewMultiSelect[string]().
+			Options(options...).
+			Title(o.Header).
+			Height(o.Height).
+			Limit(o.Limit).
+			Value(&choices)
+
+		form := huh.NewForm(huh.NewGroup(field))
+
+		err := form.
 			WithWidth(width).
-			WithShowHelp(false).
+			WithShowHelp(o.ShowHelp).
 			WithTheme(theme).
 			Run()
+
 		if err != nil {
 			return err
 		}
 		if len(choices) > 0 {
 			s := strings.Join(choices, "\n")
-			if isatty.IsTerminal(os.Stdout.Fd()) {
-				fmt.Println(s)
-			} else {
-				fmt.Print(ansi.Strip(s))
-			}
+			ansiprint(s)
 		}
 		return nil
 	}
@@ -102,7 +101,7 @@ func (o Options) Run() error {
 	).
 		WithWidth(width).
 		WithTheme(theme).
-		WithShowHelp(false).
+		WithShowHelp(o.ShowHelp).
 		Run()
 
 	if err != nil {
@@ -127,4 +126,12 @@ func widest(options []string) int {
 		}
 	}
 	return max
+}
+
+func ansiprint(s string) {
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		fmt.Println(s)
+	} else {
+		fmt.Print(ansi.Strip(s))
+	}
 }

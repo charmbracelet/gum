@@ -43,6 +43,7 @@ func (o Options) Run() error {
 
 	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
 	// STDOUT for piping or other things.
+	//nolint:nestif
 	if m.status == 0 {
 		if o.ShowOutput {
 			// BubbleTea writes the View() to stderr.

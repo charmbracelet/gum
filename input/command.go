@@ -2,6 +2,7 @@ package input
 
 import (
 	"fmt"
+
 	"os"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -24,7 +25,7 @@ func (o Options) Run() error {
 
 	theme := huh.ThemeCharm()
 	theme.Focused.Base = lipgloss.NewStyle()
-	// theme.Focused.TextInput.Cursor = o.CursorStyle.ToLipgloss()
+	theme.Focused.TextInput.Cursor = o.CursorStyle.ToLipgloss()
 	theme.Focused.TextInput.Placeholder = o.PlaceholderStyle.ToLipgloss()
 	theme.Focused.TextInput.Prompt = o.PromptStyle.ToLipgloss()
 	theme.Focused.Title = o.HeaderStyle.ToLipgloss()
@@ -56,6 +57,7 @@ func (o Options) Run() error {
 		WithWidth(o.Width).
 		WithTheme(theme).
 		WithKeyMap(keymap).
+		WithShowHelp(o.ShowHelp).
 		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
 

@@ -34,7 +34,7 @@ func (o Options) Run() error {
 
 	if len(o.Options) == 0 {
 		if input, _ := stdin.Read(); input != "" {
-			o.Options = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
+			o.Options = strings.Split(input, "\n")
 		} else {
 			o.Options = files.List()
 		}

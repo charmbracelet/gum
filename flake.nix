@@ -2,8 +2,8 @@
   description = "A tool for glamorous shell scripts";
 
   inputs = {
-    nixpkgs.url = github:nixos/nixpkgs/nixos-22.05;
-    flake-utils.url = github:numtide/flake-utils;
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, nixpkgs, flake-utils }:
