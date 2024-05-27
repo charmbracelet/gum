@@ -67,6 +67,9 @@ pacman -S gum
 # Nix
 nix-env -iA nixpkgs.gum
 
+# Flox
+flox install gum
+
 # Windows (via WinGet or Scoop)
 winget install charmbracelet.gum
 scoop install charm-gum
