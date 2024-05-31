@@ -35,7 +35,7 @@ func (o Options) Run() error {
 	theme := huh.ThemeCharm()
 	options := huh.NewOptions(o.Options...)
 
-	theme.Focused.Base.Border(lipgloss.Border{})
+	theme.Focused.Base = theme.Focused.Base.Border(lipgloss.Border{})
 	theme.Focused.Title = o.HeaderStyle.ToLipgloss()
 	theme.Focused.SelectSelector = o.CursorStyle.ToLipgloss().SetString(o.Cursor)
 	theme.Focused.MultiSelectSelector = o.CursorStyle.ToLipgloss().SetString(o.Cursor)
