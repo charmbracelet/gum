@@ -39,7 +39,9 @@ func (o Options) Run() error {
 		if delimIndex == -1 {
 			options[i] = huh.NewOption(option, option)
 		} else {
-			options[i] = huh.NewOption(option[:delimIndex], option[delimIndex+1:])
+			key := strings.TrimSpace(option[:delimIndex])
+			value := strings.TrimSpace(option[delimIndex+1:])
+			options[i] = huh.NewOption(key, value)
 		}
 	}
 
