@@ -33,7 +33,15 @@ func (o Options) Run() error {
 	}
 
 	theme := huh.ThemeCharm()
-	options := huh.NewOptions(o.Options...)
+	options := make([]huh.Option[string], len(o.Options))
+	for i, option := range o.Options {
+		delimIndex := strings.Index(option, o.Deliminator)
+		if delimIndex == -1 {
+			options[i] = huh.NewOption(option, option)
+		} else {
+			options[i] = huh.NewOption(option[:delimIndex], option[delimIndex+1:])
+		}
+	}
 
 	theme.Focused.Base = lipgloss.NewStyle()
 	theme.Focused.Title = o.HeaderStyle.ToLipgloss()
