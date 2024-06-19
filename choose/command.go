@@ -35,13 +35,13 @@ func (o Options) Run() error {
 	theme := huh.ThemeCharm()
 	options := make([]huh.Option[string], len(o.Options))
 	for i, option := range o.Options {
-		delimIndex := strings.Index(option, o.Deliminator)
-		if delimIndex == -1 {
-			options[i] = huh.NewOption(option, option)
-		} else {
-			key := strings.TrimSpace(option[:delimIndex])
-			value := strings.TrimSpace(option[delimIndex+1:])
+		parsed := strings.SplitN(option, o.Deliminator, 2)
+		if len(parsed) == 2 {
+			key := strings.TrimSpace(parsed[0])
+			value := strings.TrimSpace(parsed[1])
 			options[i] = huh.NewOption(key, value)
+		} else {
+			options[i] = huh.NewOption(option, option)
 		}
 	}
 
