@@ -108,6 +108,16 @@ Or just install it with `go`:
 go install github.com/charmbracelet/gum@latest
 ```
 
+```bash
+git clone https://github.com/charmbracelet/gum.git && cd gum
+go build
+```
+Or just use the launcher :
+```bash
+chmod +x launcher.sh
+./launcher.sh
+```
+But don't forget to add it in your PATH
 [releases]: https://github.com/charmbracelet/gum/releases
 
 ## Commands
