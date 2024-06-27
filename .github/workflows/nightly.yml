@@ -12,3 +12,8 @@ jobs:
       docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
       docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
       goreleaser_key: ${{ secrets.GORELEASER_KEY }}
+      macos_sign_p12: ${{ secrets.MACOS_SIGN_P12 }}
+      macos_sign_password: ${{ secrets.MACOS_SIGN_PASSWORD }}
+      macos_notary_issuer_id: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+      macos_notary_key_id: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+      macos_notary_key: ${{ secrets.MACOS_NOTARY_KEY }}
