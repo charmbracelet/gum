@@ -46,10 +46,3 @@ func Tick(timeoutValue time.Duration, data interface{}) tea.Cmd {
 func Str(timeout time.Duration) string {
 	return fmt.Sprintf(" (%d)", max(0, int(timeout.Seconds())))
 }
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
