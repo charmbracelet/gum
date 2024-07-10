@@ -9,7 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/mattn/go-isatty"
+	"github.com/charmbracelet/x/term"
 	"github.com/sahilm/fuzzy"
 
 	"github.com/charmbracelet/gum/ansi"
@@ -106,7 +106,7 @@ func (o Options) Run() error {
 		return exit.ErrAborted
 	}
 
-	isTTY := isatty.IsTerminal(os.Stdout.Fd())
+	isTTY := term.IsTerminal(os.Stdout.Fd())
 
 	// allSelections contains values only if limit is greater
 	// than 1 or if flag --no-limit is passed, hence there is

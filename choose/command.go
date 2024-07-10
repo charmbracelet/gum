@@ -8,7 +8,7 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/mattn/go-isatty"
+	"github.com/charmbracelet/x/term"
 
 	"github.com/charmbracelet/gum/ansi"
 	"github.com/charmbracelet/gum/internal/stdin"
@@ -88,7 +88,6 @@ func (o Options) Run() error {
 			WithTheme(theme).
 			WithTimeout(o.Timeout).
 			Run()
-
 		if err != nil {
 			return err
 		}
@@ -115,12 +114,11 @@ func (o Options) Run() error {
 		WithShowHelp(o.ShowHelp).
 		WithTimeout(o.Timeout).
 		Run()
-
 	if err != nil {
 		return err
 	}
 
-	if isatty.IsTerminal(os.Stdout.Fd()) {
+	if term.IsTerminal(os.Stdout.Fd()) {
 		fmt.Println(choice)
 	} else {
 		fmt.Print(ansi.Strip(choice))
@@ -141,7 +139,7 @@ func widest(options []string) int {
 }
 
 func ansiprint(s string) {
-	if isatty.IsTerminal(os.Stdout.Fd()) {
+	if term.IsTerminal(os.Stdout.Fd()) {
 		fmt.Println(s)
 	} else {
 		fmt.Print(ansi.Strip(s))
