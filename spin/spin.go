@@ -23,7 +23,7 @@ import (
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/timeout"
-	"github.com/mattn/go-isatty"
+	"github.com/charmbracelet/x/term"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -66,7 +66,7 @@ func commandStart(command []string) tea.Cmd {
 	}
 
 	cmd := exec.Command(command[0], args...) //nolint:gosec
-	if isatty.IsTerminal(os.Stdout.Fd()) {
+	if term.IsTerminal(os.Stdout.Fd()) {
 		stdout := io.MultiWriter(&bothbuf, &errbuf)
 		stderr := io.MultiWriter(&bothbuf, &outbuf)
 
