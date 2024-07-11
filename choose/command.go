@@ -76,6 +76,7 @@ func (o Options) Run() error {
 			WithWidth(width).
 			WithShowHelp(o.ShowHelp).
 			WithTheme(theme).
+			WithTimeout(o.Timeout).
 			Run()
 
 		if err != nil {
@@ -102,6 +103,7 @@ func (o Options) Run() error {
 		WithWidth(width).
 		WithTheme(theme).
 		WithShowHelp(o.ShowHelp).
+		WithTimeout(o.Timeout).
 		Run()
 
 	if err != nil {
