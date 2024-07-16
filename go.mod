@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/bubbletea v0.26.7-0.20240716165615-7d708384a105
 	github.com/charmbracelet/glamour v0.7.0
 	github.com/charmbracelet/huh v0.5.2-0.20240711191530-dbf5a5ac0510
-	github.com/charmbracelet/lipgloss v0.11.0
+	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/charmbracelet/log v0.4.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/muesli/reflow v0.3.0
