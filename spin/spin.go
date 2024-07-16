@@ -46,9 +46,11 @@ type model struct {
 	hasTimeout bool
 }
 
-var bothbuf strings.Builder
-var outbuf strings.Builder
-var errbuf strings.Builder
+var (
+	bothbuf strings.Builder
+	outbuf  strings.Builder
+	errbuf  strings.Builder
+)
 
 type finishCommandMsg struct {
 	stdout string
@@ -58,27 +60,24 @@ type finishCommandMsg struct {
 }
 
 func commandStart(command []string) tea.Cmd {
-	return func() tea.Msg {
-		var args []string
-		if len(command) > 1 {
-			args = command[1:]
-		}
-		cmd := exec.Command(command[0], args...) //nolint:gosec
+	var args []string
+	if len(command) > 1 {
+		args = command[1:]
+	}
 
-		if isatty.IsTerminal(os.Stdout.Fd()) {
-			stdout := io.MultiWriter(&bothbuf, &errbuf)
-			stderr := io.MultiWriter(&bothbuf, &outbuf)
+	cmd := exec.Command(command[0], args...) //nolint:gosec
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		stdout := io.MultiWriter(&bothbuf, &errbuf)
+		stderr := io.MultiWriter(&bothbuf, &outbuf)
 
-			cmd.Stdout = stdout
-			cmd.Stderr = stderr
-		} else {
-			cmd.Stdout = os.Stdout
-		}
+		cmd.Stdout = stdout
+		cmd.Stderr = stderr
+	} else {
+		cmd.Stdout = os.Stdout
+	}
 
-		_ = cmd.Run()
-
+	return tea.ExecProcess(cmd, func(error) tea.Msg {
 		status := cmd.ProcessState.ExitCode()
-
 		if status == -1 {
 			status = 1
 		}
@@ -89,7 +88,7 @@ func commandStart(command []string) tea.Cmd {
 			output: bothbuf.String(),
 			status: status,
 		}
-	}
+	})
 }
 
 func (m model) Init() tea.Cmd {
@@ -99,6 +98,7 @@ func (m model) Init() tea.Cmd {
 		timeout.Init(m.timeout, nil),
 	)
 }
+
 func (m model) View() string {
 	if m.quitting && m.showOutput {
 		return strings.TrimPrefix(errbuf.String()+"\n"+outbuf.String(), "\n")
