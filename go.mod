@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/kong v0.9.0
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/charmbracelet/bubbles v0.18.0
-	github.com/charmbracelet/bubbletea v0.26.4
+	github.com/charmbracelet/bubbletea v0.26.7-0.20240716165615-7d708384a105
 	github.com/charmbracelet/glamour v0.7.0
 	github.com/charmbracelet/huh v0.5.2-0.20240711191530-dbf5a5ac0510
 	github.com/charmbracelet/lipgloss v0.11.0
@@ -24,7 +24,7 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/catppuccin/go v0.2.0 // indirect
-	github.com/charmbracelet/x/ansi v0.1.2 // indirect
+	github.com/charmbracelet/x/ansi v0.1.4 // indirect
 	github.com/charmbracelet/x/exp/strings v0.0.0-20240617190524-788ec55faed1 // indirect
 	github.com/charmbracelet/x/input v0.1.2 // indirect
 	github.com/charmbracelet/x/term v0.1.1 // indirect
@@ -50,6 +50,6 @@ require (
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 )
