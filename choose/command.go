@@ -8,9 +8,9 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/term"
 
-	"github.com/charmbracelet/gum/ansi"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
