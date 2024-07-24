@@ -88,7 +88,7 @@ func (o Options) Run() error {
 			WithTheme(theme).
 			WithTimeout(o.Timeout).
 			Run()
-		if err != nil {
+		if err != nil && !errors.Is(err, huh.ErrTimeout) {
 			return err
 		}
 		if len(choices) > 0 {
@@ -114,7 +114,7 @@ func (o Options) Run() error {
 		WithShowHelp(o.ShowHelp).
 		WithTimeout(o.Timeout).
 		Run()
-	if err != nil {
+	if err != nil && !errors.Is(err, huh.ErrTimeout) {
 		return err
 	}
 
