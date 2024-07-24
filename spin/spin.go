@@ -60,24 +60,27 @@ type finishCommandMsg struct {
 }
 
 func commandStart(command []string) tea.Cmd {
-	var args []string
-	if len(command) > 1 {
-		args = command[1:]
-	}
+	return func() tea.Msg {
+		var args []string
+		if len(command) > 1 {
+			args = command[1:]
+		}
+		cmd := exec.Command(command[0], args...) //nolint:gosec
 
-	cmd := exec.Command(command[0], args...) //nolint:gosec
-	if term.IsTerminal(os.Stdout.Fd()) {
-		stdout := io.MultiWriter(&bothbuf, &errbuf)
-		stderr := io.MultiWriter(&bothbuf, &outbuf)
+		if term.IsTerminal(os.Stdout.Fd()) {
+			stdout := io.MultiWriter(&bothbuf, &errbuf)
+			stderr := io.MultiWriter(&bothbuf, &outbuf)
 
-		cmd.Stdout = stdout
-		cmd.Stderr = stderr
-	} else {
-		cmd.Stdout = os.Stdout
-	}
+			cmd.Stdout = stdout
+			cmd.Stderr = stderr
+		} else {
+			cmd.Stdout = os.Stdout
+		}
 
-	return tea.ExecProcess(cmd, func(error) tea.Msg {
+		_ = cmd.Run()
+
 		status := cmd.ProcessState.ExitCode()
+
 		if status == -1 {
 			status = 1
 		}
@@ -88,7 +91,7 @@ func commandStart(command []string) tea.Cmd {
 			output: bothbuf.String(),
 			status: status,
 		}
-	})
+	}
 }
 
 func (m model) Init() tea.Cmd {
