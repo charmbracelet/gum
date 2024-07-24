@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
+
 includes:
   - from_url:
       url: charmbracelet/meta/main/goreleaser-full.yaml
@@ -10,3 +12,6 @@ variables:
   maintainer: "Maas Lalani <maas@charm.sh>"
   brew_commit_author_name: "Maas Lalani"
   brew_commit_author_email: "maas@charm.sh"
+
+milestones:
+  - close: true
