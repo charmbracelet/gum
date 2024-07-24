@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -31,6 +32,7 @@ func (o Options) Run() error {
 	theme.Focused.SelectedOption = o.SelectedStyle.ToLipgloss()
 
 	keymap := huh.NewDefaultKeyMap()
+	keymap.Quit = key.NewBinding(key.WithKeys("ctrl+c", "esc"))
 	keymap.FilePicker.Open.SetEnabled(false)
 
 	// XXX: These should be file selected specific.
