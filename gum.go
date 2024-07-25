@@ -17,6 +17,7 @@ import (
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/gum/table"
+	"github.com/charmbracelet/gum/tail"
 	"github.com/charmbracelet/gum/write"
 )
 
@@ -195,6 +196,13 @@ type Gum struct {
 	//  Cherry      $0.75
 	//
 	Table table.Options `cmd:"" help:"Render a table of data"`
+
+	// Tail
+	// Provides a means of streaming -n of lines from stdin
+	// Useful for showing a subset of output from a process without clogging up the terminal
+	//
+	// $ { sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y; } | gum tail -n 3
+	Tail tail.Options `cmd:"" help:"Tail the -n of lines from stdin"`
 
 	// Write provides a shell script interface for the text area bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/textarea

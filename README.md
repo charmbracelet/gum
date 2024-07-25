@@ -126,6 +126,7 @@ go install github.com/charmbracelet/gum@latest
   * [`spin`](#spin): Display spinner while running a command
   * [`style`](#style): Apply coloring, borders, spacing to text
   * [`table`](#table): Render a table of data
+  * [`tail`](#tail): Provides a means of streaming -n of lines from stdin
   * [`write`](#write): Prompt for long-form text
   * [`log`](#log): Log messages to output
 
@@ -290,6 +291,14 @@ gum style \
 ```
 
 <img src="https://github.com/charmbracelet/gum/assets/42545625/67468acf-b3e0-4e78-bd89-360739eb44fa" width="600" alt="Bubble Gum, So sweet and so fresh!" />
+
+## Tail
+
+Render a subset of lines from stdin for easy log monitoring without cluttering the terminal output.
+
+```bash
+{ sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y; } | gum tail -n 3
+```
 
 ## Join
 
