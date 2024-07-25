@@ -7,7 +7,7 @@ type Options struct {
 	Separator string   `short:"s" help:"Row separator" default:","`
 	Columns   []string `short:"c" help:"Column names"`
 	Widths    []int    `short:"w" help:"Column widths"`
-	Height    int      `help:"Table height" default:"10"`
+	Height    int      `help:"Table height" default:"0"`
 	Print     bool     `short:"p" help:"static print" default:"false"`
 	File      string   `short:"f" help:"file path" default:""`
 	Border    string   `short:"b" help:"border style" default:"rounded" enum:"rounded,thick,normal,hidden,double,none"`
