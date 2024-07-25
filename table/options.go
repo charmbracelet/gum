@@ -16,6 +16,5 @@ type Options struct {
 	CellStyle     style.Styles `embed:"" prefix:"cell." envprefix:"GUM_TABLE_CELL_"`
 	HeaderStyle   style.Styles `embed:"" prefix:"header." envprefix:"GUM_TABLE_HEADER_"`
 	SelectedStyle style.Styles `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_TABLE_SELECTED_"`
-	File          string       `short:"f" help:"file path" default:""`
 	ReturnColumn  int          `short:"r" help:"Which column number should be returned instead of whole row as string. Default=0 returns whole Row" default:"0"`
 }
