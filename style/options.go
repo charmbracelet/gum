@@ -15,7 +15,7 @@ type Options struct {
 type Styles struct {
 	// Colors
 	Foreground string `help:"Foreground Color" default:"${defaultForeground}" group:"Style Flags" env:"FOREGROUND"`
-	Background string `help:"Background Color" default:"${defaultBackground}" group:"Style Flags" env:"BACKGROUND" hidden:"true"`
+	Background string `help:"Background Color" default:"${defaultBackground}" group:"Style Flags" env:"BACKGROUND"`
 
 	// Border
 	Border           string `help:"Border Style" enum:"none,hidden,normal,rounded,thick,double" default:"${defaultBorder}" group:"Style Flags" env:"BORDER" hidden:"true"`
