@@ -44,6 +44,9 @@ func (o Options) Run() error {
 	theme.Focused.SelectedPrefix = o.SelectedItemStyle.ToLipgloss().SetString(o.SelectedPrefix)
 	theme.Focused.UnselectedPrefix = o.ItemStyle.ToLipgloss().SetString(o.UnselectedPrefix)
 
+	keymap := huh.NewDefaultKeyMap()
+	keymap.MultiSelect.ToggleAll.SetKeys("a", "ctrl+a")
+
 	for _, s := range o.Selected {
 		for i, opt := range options {
 			if s == opt.Key || s == opt.Value {
@@ -52,15 +55,15 @@ func (o Options) Run() error {
 		}
 	}
 
-	if o.NoLimit {
-		o.Limit = len(o.Options)
-	}
-
 	width := max(widest(o.Options)+
 		max(lipgloss.Width(o.SelectedPrefix)+lipgloss.Width(o.UnselectedPrefix))+
 		lipgloss.Width(o.Cursor)+1, lipgloss.Width(o.Header)+widthBuffer)
 
-	if o.Limit > 1 {
+	if o.NoLimit {
+		o.Limit = 0
+	}
+
+	if o.Limit > 1 || o.NoLimit {
 		var choices []string
 
 		field := huh.NewMultiSelect[string]().
