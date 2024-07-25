@@ -16,7 +16,7 @@ type Options struct {
 	CursorMode       string        `prefix:"cursor." name:"mode" help:"Cursor mode" default:"blink" enum:"blink,hide,static" env:"GUM_INPUT_CURSOR_MODE"`
 	Value            string        `help:"Initial value (can also be passed via stdin)" default:""`
 	CharLimit        int           `help:"Maximum value length (0 for no limit)" default:"400"`
-	Width            int           `help:"Input width (0 for terminal width)" default:"40" env:"GUM_INPUT_WIDTH"`
+	Width            int           `help:"Input width (0 for terminal width)" default:"0" env:"GUM_INPUT_WIDTH"`
 	Password         bool          `help:"Mask input characters" default:"false"`
 	ShowHelp         bool          `help:"Show help keybinds" default:"true" negatable:"true" env:"GUM_INPUT_SHOW_HELP"`
 	Header           string        `help:"Header value" default:"" env:"GUM_INPUT_HEADER"`

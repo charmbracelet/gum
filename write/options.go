@@ -4,7 +4,7 @@ import "github.com/charmbracelet/gum/style"
 
 // Options are the customization options for the textarea.
 type Options struct {
-	Width           int    `help:"Text area width (0 for terminal width)" default:"50" env:"GUM_WRITE_WIDTH"`
+	Width           int    `help:"Text area width (0 for terminal width)" default:"0" env:"GUM_WRITE_WIDTH"`
 	Height          int    `help:"Text area height" default:"5" env:"GUM_WRITE_HEIGHT"`
 	Header          string `help:"Header value" default:"" env:"GUM_WRITE_HEADER"`
 	Placeholder     string `help:"Placeholder value" default:"Write something..." env:"GUM_WRITE_PLACEHOLDER"`
