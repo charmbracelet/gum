@@ -1,5 +1,4 @@
-Gum
-===
+# Gum
 
 <p>
     <a href="https://stuff.charm.sh/gum/nutritional-information.png" target="_blank"><img src="https://stuff.charm.sh/gum/gum.png" alt="Gum Image" width="450" /></a>
@@ -22,10 +21,12 @@ The above example is running from a single shell script ([source](./examples/dem
 
 Gum provides highly configurable, ready-to-use utilities to help you write
 useful shell scripts and dotfiles aliases with just a few lines of code.
-Let's build a simple script to help you write [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
+Let's build a simple script to help you write
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
 for your dotfiles.
 
 Ask for the commit type with gum choose:
+
 ```bash
 gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert"
 ```
@@ -34,17 +35,20 @@ gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert"
 > This command itself will print to stdout which is not all that useful. To make use of the command later on you can save the stdout to a `$VARIABLE` or `file.txt`.
 
 Prompt for the scope of these changes:
+
 ```bash
 gum input --placeholder "scope"
 ```
 
 Prompt for the summary and description of changes:
+
 ```bash
 gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change"
 gum write --placeholder "Details of this change"
 ```
 
 Confirm before committing:
+
 ```bash
 gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
 ```
@@ -84,10 +88,11 @@ curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/ke
 echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
 sudo apt update && sudo apt install gum
 ```
+
 </details>
 
 <details>
-<summary>Fedora/RHEL</summary>
+<summary>Fedora/RHEL/OpenSuse</summary>
 
 ```bash
 echo '[charm]
@@ -96,14 +101,22 @@ baseurl=https://repo.charm.sh/yum/
 enabled=1
 gpgcheck=1
 gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
+sudo rpm --import https://repo.charm.sh/yum/gpg.key
+
+# yum
 sudo yum install gum
+
+# zypper
+sudo zypper refresh
+sudo zypper install gum
 ```
+
 </details>
 
 Or download it:
 
-* [Packages][releases] are available in Debian, RPM, and Alpine formats
-* [Binaries][releases] are available for Linux, macOS, Windows, FreeBSD, OpenBSD, and NetBSD
+- [Packages][releases] are available in Debian, RPM, and Alpine formats
+- [Binaries][releases] are available for Linux, macOS, Windows, FreeBSD, OpenBSD, and NetBSD
 
 Or just install it with `go`:
 
@@ -115,20 +128,19 @@ go install github.com/charmbracelet/gum@latest
 
 ## Commands
 
-  * [`choose`](#choose): Choose an option from a list of choices
-  * [`confirm`](#confirm): Ask a user to confirm an action
-  * [`file`](#file): Pick a file from a folder
-  * [`filter`](#filter): Filter items from a list
-  * [`format`](#format): Format a string using a template
-  * [`input`](#input): Prompt for some input
-  * [`join`](#join): Join text vertically or horizontally
-  * [`pager`](#pager): Scroll through a file
-  * [`spin`](#spin): Display spinner while running a command
-  * [`style`](#style): Apply coloring, borders, spacing to text
-  * [`table`](#table): Render a table of data
-  * [`write`](#write): Prompt for long-form text
-  * [`log`](#log): Log messages to output
-
+- [`choose`](#choose): Choose an option from a list of choices
+- [`confirm`](#confirm): Ask a user to confirm an action
+- [`file`](#file): Pick a file from a folder
+- [`filter`](#filter): Filter items from a list
+- [`format`](#format): Format a string using a template
+- [`input`](#input): Prompt for some input
+- [`join`](#join): Join text vertically or horizontally
+- [`pager`](#pager): Scroll through a file
+- [`spin`](#spin): Display spinner while running a command
+- [`style`](#style): Apply coloring, borders, spacing to text
+- [`table`](#table): Render a table of data
+- [`write`](#write): Prompt for long-form text
+- [`log`](#log): Log messages to output
 
 ## Customization
 
@@ -136,6 +148,7 @@ You can customize `gum` options and styles with `--flags` and `$ENVIRONMENT_VARI
 See `gum <command> --help` for a full view of each command's customization and configuration options.
 
 Customize with `--flags`:
+
 ```bash
 
 gum input --cursor.foreground "#FF0" \
@@ -369,63 +382,63 @@ How to use `gum` in your daily workflows:
 
 See the [examples](./examples/) directory for more real world use cases.
 
-* Write a commit message:
+- Write a commit message:
 
 ```bash
 git commit -m "$(gum input --width 50 --placeholder "Summary of changes")" \
            -m "$(gum write --width 80 --placeholder "Details of changes")"
 ```
 
-* Open files in your `$EDITOR`
+- Open files in your `$EDITOR`
 
 ```bash
 $EDITOR $(gum filter)
 ```
 
-* Connect to a `tmux` session
+- Connect to a `tmux` session
 
 ```bash
 SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session...")
 tmux switch-client -t $SESSION || tmux attach -t $SESSION
 ```
 
-* Pick a commit hash from `git` history
+- Pick a commit hash from `git` history
 
 ```bash
 git log --oneline | gum filter | cut -d' ' -f1 # | copy
 ```
 
-* Simple [`skate`](https://github.com/charmbracelet/skate) password selector.
+- Simple [`skate`](https://github.com/charmbracelet/skate) password selector.
 
 ```
 skate list -k | gum filter | xargs skate get
 ```
 
-* Uninstall packages
+- Uninstall packages
 
 ```bash
 brew list | gum choose --no-limit | xargs brew uninstall
 ```
 
-* Clean up `git` branches
+- Clean up `git` branches
 
 ```bash
 git branch | cut -c 3- | gum choose --no-limit | xargs git branch -D
 ```
 
-* Checkout GitHub pull requests with [`gh`](https://cli.github.com/)
+- Checkout GitHub pull requests with [`gh`](https://cli.github.com/)
 
 ```bash
 gh pr list | cut -f1,2 | gum choose | cut -f1 | xargs gh pr checkout
 ```
 
-* Copy command from shell history
+- Copy command from shell history
 
 ```bash
 gum filter < $HISTFILE --height 20
 ```
 
-* `sudo` replacement
+- `sudo` replacement
 
 ```bash
 alias please="gum input --password | sudo -nS"
@@ -435,15 +448,15 @@ alias please="gum input --password | sudo -nS"
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
-* [Twitter](https://twitter.com/charmcli)
-* [The Fediverse](https://mastodon.social/@charmcli)
-* [Discord](https://charm.sh/chat)
+- [Twitter](https://twitter.com/charmcli)
+- [The Fediverse](https://mastodon.social/@charmcli)
+- [Discord](https://charm.sh/chat)
 
 ## License
 
 [MIT](https://github.com/charmbracelet/gum/raw/main/LICENSE)
 
-***
+---
 
 Part of [Charm](https://charm.sh).
 
