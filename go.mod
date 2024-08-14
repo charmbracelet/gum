@@ -5,13 +5,13 @@ go 1.21
 require (
 	github.com/alecthomas/kong v0.9.0
 	github.com/alecthomas/mango-kong v0.1.0
-	github.com/charmbracelet/bubbles v0.18.0
-	github.com/charmbracelet/bubbletea v0.26.7-0.20240716165615-7d708384a105
+	github.com/charmbracelet/bubbles v0.18.1-0.20240813162745-2de0504eb509
+	github.com/charmbracelet/bubbletea v0.26.7-0.20240813155527-7782a600eb35
 	github.com/charmbracelet/glamour v0.7.0
-	github.com/charmbracelet/huh v0.5.3-0.20240725170654-1926040ccf04
+	github.com/charmbracelet/huh v0.5.3-0.20240813141447-57c1e0379197
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/charmbracelet/log v0.4.0
-	github.com/charmbracelet/x/ansi v0.1.4
+	github.com/charmbracelet/x/ansi v0.1.5-0.20240812190614-74518029592c
 	github.com/charmbracelet/x/term v0.1.1
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/roff v0.1.0
@@ -35,7 +35,6 @@ require (
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mattn/go-localereader v0.0.1 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.26 // indirect
 	github.com/mitchellh/hashstructure/v2 v2.0.2 // indirect
@@ -49,7 +48,8 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.2 // indirect
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	golang.org/x/net v0.26.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
 )
+
+replace github.com/charmbracelet/huh => ../huh

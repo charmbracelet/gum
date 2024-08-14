@@ -44,9 +44,6 @@ func (o Options) Run() error {
 	theme.Focused.SelectedPrefix = o.SelectedItemStyle.ToLipgloss().SetString(o.SelectedPrefix)
 	theme.Focused.UnselectedPrefix = o.ItemStyle.ToLipgloss().SetString(o.UnselectedPrefix)
 
-	keymap := huh.NewDefaultKeyMap()
-	keymap.MultiSelect.ToggleAll.SetKeys("a", "ctrl+a")
-
 	for _, s := range o.Selected {
 		for i, opt := range options {
 			if s == opt.Key || s == opt.Value {
