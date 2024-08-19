@@ -2,7 +2,6 @@ package input
 
 import (
 	"fmt"
-
 	"os"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -34,12 +33,9 @@ func (o Options) Run() error {
 	keymap := huh.NewDefaultKeyMap()
 	keymap.Quit = key.NewBinding(key.WithKeys("ctrl+c", "esc"))
 
-	var echoMode huh.EchoMode
-
+	echoMode := huh.EchoModeNormal
 	if o.Password {
 		echoMode = huh.EchoModePassword
-	} else {
-		echoMode = huh.EchoModeNormal
 	}
 
 	err := huh.NewForm(
@@ -60,7 +56,6 @@ func (o Options) Run() error {
 		WithShowHelp(o.ShowHelp).
 		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
-
 	if err != nil {
 		return err
 	}
