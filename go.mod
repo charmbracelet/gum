@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/bubbles v0.19.0
 	github.com/charmbracelet/bubbletea v0.27.0
 	github.com/charmbracelet/glamour v0.8.0
-	github.com/charmbracelet/huh v0.5.3-0.20240821193529-5fd70815c13f
+	github.com/charmbracelet/huh v0.5.3
 	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/charmbracelet/log v0.4.0
 	github.com/charmbracelet/x/ansi v0.2.2
