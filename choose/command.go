@@ -116,14 +116,14 @@ func (o Options) Run() error {
 }
 
 func widest(options []string) int {
-	var max int
+	var maxw int
 	for _, o := range options {
 		w := lipgloss.Width(o)
-		if w > max {
-			max = w
+		if w > maxw {
+			maxw = w
 		}
 	}
-	return max
+	return maxw
 }
 
 func ansiprint(s string) {

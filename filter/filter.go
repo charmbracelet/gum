@@ -56,6 +56,7 @@ type model struct {
 func (m model) Init() tea.Cmd {
 	return timeout.Init(m.timeout, nil)
 }
+
 func (m model) View() string {
 	if m.quitting {
 		return ""
@@ -254,7 +255,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *model) CursorUp() {
-	if m.reverse {
+	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor + 1) % len(m.matches)
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
 			m.viewport.LineUp(1)
@@ -274,7 +275,7 @@ func (m *model) CursorUp() {
 }
 
 func (m *model) CursorDown() {
-	if m.reverse {
+	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
 			m.viewport.LineDown(1)
@@ -334,13 +335,12 @@ func exactMatches(search string, choices []string) []fuzzy.Match {
 	return matches
 }
 
-//nolint:unparam
-func clamp(min, max, val int) int {
-	if val < min {
-		return min
+func clamp(low, high, val int) int {
+	if val < low {
+		return low
 	}
-	if val > max {
-		return max
+	if val > high {
+		return high
 	}
 	return val
 }
