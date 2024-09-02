@@ -6,12 +6,12 @@ require (
 	github.com/alecthomas/kong v0.9.0
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/charmbracelet/bubbles v0.19.0
-	github.com/charmbracelet/bubbletea v1.0.0
+	github.com/charmbracelet/bubbletea v1.1.0
 	github.com/charmbracelet/glamour v0.8.0
 	github.com/charmbracelet/huh v0.5.3
 	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/charmbracelet/log v0.4.0
-	github.com/charmbracelet/x/ansi v0.2.2
+	github.com/charmbracelet/x/ansi v0.2.3
 	github.com/charmbracelet/x/term v0.2.0
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/roff v0.1.0
