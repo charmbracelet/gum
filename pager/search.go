@@ -151,12 +151,12 @@ func softWrapEm(str string, maxWidth int, softWrap bool) string {
 	var text strings.Builder
 	for _, line := range strings.Split(str, "\n") {
 		for softWrap && lipgloss.Width(line) > maxWidth {
-			truncatedLine := truncate.String(line, uint(maxWidth))
+			truncatedLine := truncate.String(line, uint(maxWidth)) //nolint: gosec
 			text.WriteString(truncatedLine)
 			text.WriteString("\n")
 			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(truncate.String(line, uint(maxWidth)))
+		text.WriteString(truncate.String(line, uint(maxWidth))) //nolint: gosec
 		text.WriteString("\n")
 	}
 
