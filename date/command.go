@@ -10,8 +10,7 @@ import (
 	"github.com/fxtlabs/date"
 )
 
-// Run provides a shell script interface for the text input bubble.
-// https://github.com/charmbracelet/bubbles/textinput
+// Run provides a shell script interface for the date picker component.
 func (o Options) Run() error {
 	picker := basePicker()
 

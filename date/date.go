@@ -52,10 +52,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.timeout = msg.TimeoutValue
 		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
-	// case tea.WindowSizeMsg:
-	// 	if m.autoWidth {
-	// 		m.textinput.Width = msg.Width - lipgloss.Width(m.textinput.Prompt) - 1
-	// 	}
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "esc":
