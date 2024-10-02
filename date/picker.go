@@ -2,7 +2,6 @@ package date
 
 import (
 	"strings"
-	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -67,24 +66,8 @@ func (p *picker) formatDate() string {
 }
 
 func (p *picker) formatWeekday() string {
-	name := ""
-	switch p.Date.Weekday() {
-	case time.Monday:
-		name = "Mon"
-	case time.Tuesday:
-		name = "Tue"
-	case time.Wednesday:
-		name = "Wed"
-	case time.Thursday:
-		name = "Thu"
-	case time.Friday:
-		name = "Fri"
-	case time.Saturday:
-		name = "Sat"
-	case time.Sunday:
-		name = "Sun"
-	}
-	return weekdayStyle.Render(name)
+	shortName := p.Date.Weekday().String()[:3]
+	return weekdayStyle.Render(shortName)
 }
 
 func (p *picker) incr(d direction) {
