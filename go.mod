@@ -13,6 +13,7 @@ require (
 	github.com/charmbracelet/log v0.4.0
 	github.com/charmbracelet/x/ansi v0.3.2
 	github.com/charmbracelet/x/term v0.2.0
+	github.com/fxtlabs/date v0.0.0-20150819233934-d9ab6e2a88a9
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
