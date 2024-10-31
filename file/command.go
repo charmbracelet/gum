@@ -42,6 +42,7 @@ func (o Options) Run() error {
 			huh.NewFilePicker().
 				Picking(true).
 				CurrentDirectory(path).
+				Cursor(o.Cursor).
 				DirAllowed(o.Directory).
 				FileAllowed(o.File).
 				Height(o.Height).
