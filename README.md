@@ -77,6 +77,9 @@ flox install gum
 # Windows (via WinGet or Scoop)
 winget install charmbracelet.gum
 scoop install charm-gum
+
+# X-CMD
+x env use gum
 ```
 
 <details>
