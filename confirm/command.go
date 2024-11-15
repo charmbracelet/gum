@@ -2,9 +2,9 @@ package confirm
 
 import (
 	"errors"
-	"fmt"
 	"os"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/huh"
 )
 
@@ -31,11 +31,11 @@ func (o Options) Run() error {
 		WithTheme(theme).
 		WithShowHelp(o.ShowHelp).
 		Run()
-
 	if err != nil {
-		if !o.errIsValidTimeout(err) {
-			return fmt.Errorf("unable to run confirm: %w", err)
+		if errors.Is(err, huh.ErrTimeout) {
+			return exit.NewTimeout(o.Timeout)
 		}
+		return err
 	}
 
 	if !choice {
@@ -43,12 +43,4 @@ func (o Options) Run() error {
 	}
 
 	return nil
-}
-
-// errIsValidTimeout returns false unless 1) the user has specified a nonzero timeout and 2) the error is a huh.ErrTimeout.
-func (o Options) errIsValidTimeout(err error) bool {
-	errWasTimeout := errors.Is(err, huh.ErrTimeout)
-	timeoutsExpected := o.Timeout > 0
-
-	return errWasTimeout && timeoutsExpected
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/term"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -76,8 +77,12 @@ func (o Options) Run() error {
 			WithWidth(width).
 			WithShowHelp(o.ShowHelp).
 			WithTheme(theme).
+			WithTimeout(o.Timeout).
 			Run()
-		if err != nil && !errors.Is(err, huh.ErrTimeout) {
+		if err != nil {
+			if errors.Is(err, huh.ErrTimeout) {
+				return exit.NewTimeout(o.Timeout)
+			}
 			return err
 		}
 		if len(choices) > 0 {
@@ -100,9 +105,13 @@ func (o Options) Run() error {
 	).
 		WithWidth(width).
 		WithTheme(theme).
+		WithTimeout(o.Timeout).
 		WithShowHelp(o.ShowHelp).
 		Run()
-	if err != nil && !errors.Is(err, huh.ErrTimeout) {
+	if err != nil {
+		if errors.Is(err, huh.ErrTimeout) {
+			return exit.NewTimeout(o.Timeout)
+		}
 		return err
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -49,12 +50,15 @@ func (o Options) Run() error {
 				Value(&path),
 		),
 	).
+		WithTimeout(o.Timeout).
 		WithShowHelp(o.ShowHelp).
 		WithKeyMap(keymap).
 		WithTheme(theme).
 		Run()
-
 	if err != nil {
+		if errors.Is(err, huh.ErrTimeout) {
+			return exit.NewTimeout(o.Timeout)
+		}
 		return err
 	}
 

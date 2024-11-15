@@ -1,6 +1,7 @@
 package input
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -53,10 +55,14 @@ func (o Options) Run() error {
 		WithWidth(o.Width).
 		WithTheme(theme).
 		WithKeyMap(keymap).
+		WithTimeout(o.Timeout).
 		WithShowHelp(o.ShowHelp).
 		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
 	if err != nil {
+		if errors.Is(err, huh.ErrTimeout) {
+			return exit.NewTimeout(o.Timeout)
+		}
 		return err
 	}
 
