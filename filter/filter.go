@@ -255,6 +255,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *model) CursorUp() {
+	if len(m.matches) == 0 {
+		return
+	}
+
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor + 1) % len(m.matches)
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
@@ -275,6 +279,10 @@ func (m *model) CursorUp() {
 }
 
 func (m *model) CursorDown() {
+	if len(m.matches) == 0 {
+		return
+	}
+
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
