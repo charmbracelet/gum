@@ -1,6 +1,7 @@
 package confirm
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -26,12 +27,15 @@ func (o Options) Run() error {
 				Value(&choice),
 		),
 	).
+		WithTimeout(o.Timeout).
 		WithTheme(theme).
 		WithShowHelp(o.ShowHelp).
 		Run()
 
 	if err != nil {
-		return fmt.Errorf("unable to run confirm: %w", err)
+		if !o.errIsValidTimeout(err) {
+			return fmt.Errorf("unable to run confirm: %w", err)
+		}
 	}
 
 	if !choice {
@@ -39,4 +43,12 @@ func (o Options) Run() error {
 	}
 
 	return nil
+}
+
+// errIsValidTimeout returns false unless 1) the user has specified a nonzero timeout and 2) the error is a huh.ErrTimeout.
+func (o Options) errIsValidTimeout(err error) bool {
+	errWasTimeout := errors.Is(err, huh.ErrTimeout)
+	timeoutsExpected := o.Timeout > 0
+
+	return errWasTimeout && timeoutsExpected
 }
