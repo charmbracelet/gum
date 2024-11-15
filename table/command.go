@@ -102,13 +102,16 @@ func (o Options) Run() error {
 		return nil
 	}
 
-	table := table.New(
+	opts := []table.Option{
 		table.WithColumns(columns),
 		table.WithFocused(true),
-		table.WithHeight(o.Height),
 		table.WithRows(rows),
 		table.WithStyles(styles),
-	)
+	}
+	if o.Height > 0 {
+		opts = append(opts, table.WithHeight(o.Height))
+	}
+	table := table.New(opts...)
 
 	tm, err := tea.NewProgram(model{table: table}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
