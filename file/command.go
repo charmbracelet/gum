@@ -46,6 +46,8 @@ func (o Options) Run() error {
 				FileAllowed(o.File).
 				Height(o.Height).
 				ShowHidden(o.All).
+				ShowSize(o.Size).
+				ShowPermissions(o.Permissions).
 				Value(&path),
 		),
 	).
@@ -53,7 +55,6 @@ func (o Options) Run() error {
 		WithKeyMap(keymap).
 		WithTheme(theme).
 		Run()
-
 	if err != nil {
 		return err
 	}
