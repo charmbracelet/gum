@@ -16,14 +16,12 @@ package spin
 
 import (
 	"io"
-	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/timeout"
-	"github.com/charmbracelet/x/term"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -65,22 +63,12 @@ func commandStart(command []string) tea.Cmd {
 		if len(command) > 1 {
 			args = command[1:]
 		}
+
 		cmd := exec.Command(command[0], args...) //nolint:gosec
-
-		if term.IsTerminal(os.Stdout.Fd()) {
-			stdout := io.MultiWriter(&bothbuf, &errbuf)
-			stderr := io.MultiWriter(&bothbuf, &outbuf)
-
-			cmd.Stdout = stdout
-			cmd.Stderr = stderr
-		} else {
-			cmd.Stdout = os.Stdout
-		}
-
+		cmd.Stdout = io.MultiWriter(&bothbuf, &outbuf)
+		cmd.Stderr = io.MultiWriter(&bothbuf, &errbuf)
 		_ = cmd.Run()
-
 		status := cmd.ProcessState.ExitCode()
-
 		if status == -1 {
 			status = 1
 		}
