@@ -31,9 +31,8 @@ func (o Options) Run() error {
 		WithTheme(theme).
 		WithShowHelp(o.ShowHelp).
 		Run()
-
 	if err != nil {
-		if !o.errIsValidTimeout(err) {
+		if o.Timeout > 0 && errors.Is(err, huh.ErrTimeout) {
 			return fmt.Errorf("unable to run confirm: %w", err)
 		}
 	}
@@ -43,12 +42,4 @@ func (o Options) Run() error {
 	}
 
 	return nil
-}
-
-// errIsValidTimeout returns false unless 1) the user has specified a nonzero timeout and 2) the error is a huh.ErrTimeout.
-func (o Options) errIsValidTimeout(err error) bool {
-	errWasTimeout := errors.Is(err, huh.ErrTimeout)
-	timeoutsExpected := o.Timeout > 0
-
-	return errWasTimeout && timeoutsExpected
 }
