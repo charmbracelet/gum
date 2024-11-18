@@ -56,12 +56,8 @@ func (o Options) Run() error {
 		WithTheme(theme).
 		Run()
 	if err != nil {
-		if errors.Is(err, huh.ErrTimeout) {
-			return exit.NewTimeout(o.Timeout)
-		}
-		return err
+		return exit.Handle(err, o.Timeout)
 	}
-
 	fmt.Println(path)
 	return nil
 }

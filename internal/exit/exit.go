@@ -1,6 +1,7 @@
 package exit
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -14,9 +15,12 @@ const StatusTimeout = 124
 const StatusAborted = 130
 
 // ErrAborted is the error to return when a gum command is aborted by Ctrl+C.
-var ErrAborted = fmt.Errorf("aborted")
+var ErrAborted = huh.ErrUserAborted
 
-// NewTimeout returns a new ErrTimeout.
-func NewTimeout(d time.Duration) ErrTimeout {
-	return fmt.Errorf("timed out after %s: %w", d, huh.ErrTimeout
+// Handle handles the error.
+func Handle(err error, d time.Duration) error {
+	if errors.Is(err, huh.ErrTimeout) {
+		return fmt.Errorf("%w after %s", huh.ErrTimeout, d)
+	}
+	return err
 }

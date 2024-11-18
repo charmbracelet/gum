@@ -1,7 +1,6 @@
 package confirm
 
 import (
-	"errors"
 	"os"
 
 	"github.com/charmbracelet/gum/internal/exit"
@@ -32,10 +31,7 @@ func (o Options) Run() error {
 		WithShowHelp(o.ShowHelp).
 		Run()
 	if err != nil {
-		if errors.Is(err, huh.ErrTimeout) {
-			return exit.NewTimeout(o.Timeout)
-		}
-		return err
+		return exit.Handle(err, o.Timeout)
 	}
 
 	if !choice {

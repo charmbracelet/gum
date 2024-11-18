@@ -1,7 +1,6 @@
 package input
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
@@ -60,10 +59,7 @@ func (o Options) Run() error {
 		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
 	if err != nil {
-		if errors.Is(err, huh.ErrTimeout) {
-			return exit.NewTimeout(o.Timeout)
-		}
-		return err
+		return exit.Handle(err, o.Timeout)
 	}
 
 	fmt.Println(value)
