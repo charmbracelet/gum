@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
@@ -33,6 +34,8 @@ func (o Options) Run() error {
 	}
 
 	theme := huh.ThemeCharm()
+	keymap := huh.NewDefaultKeyMap()
+	keymap.Quit = key.NewBinding(key.WithKeys("ctrl+c", "ctrl+q"))
 	options := huh.NewOptions(o.Options...)
 
 	theme.Focused.Base = lipgloss.NewStyle()
@@ -76,6 +79,7 @@ func (o Options) Run() error {
 			WithWidth(width).
 			WithShowHelp(o.ShowHelp).
 			WithTheme(theme).
+			WithKeyMap(keymap).
 			Run()
 		if err != nil && !errors.Is(err, huh.ErrTimeout) {
 			return err
@@ -100,6 +104,7 @@ func (o Options) Run() error {
 	).
 		WithWidth(width).
 		WithTheme(theme).
+		WithKeyMap(keymap).
 		WithShowHelp(o.ShowHelp).
 		Run()
 	if err != nil && !errors.Is(err, huh.ErrTimeout) {
