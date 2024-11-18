@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/charmbracelet/huh"
@@ -43,6 +44,12 @@ func (o Options) Run() error {
 	theme.Focused.UnselectedOption = o.ItemStyle.ToLipgloss()
 	theme.Focused.SelectedPrefix = o.SelectedItemStyle.ToLipgloss().SetString(o.SelectedPrefix)
 	theme.Focused.UnselectedPrefix = o.ItemStyle.ToLipgloss().SetString(o.UnselectedPrefix)
+
+	if o.Ordered {
+		slices.SortFunc(options, func(a, b huh.Option[string]) int {
+			return strings.Compare(a.Key, b.Key)
+		})
+	}
 
 	for _, s := range o.Selected {
 		for i, opt := range options {
