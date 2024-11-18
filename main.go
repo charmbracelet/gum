@@ -80,7 +80,7 @@ func main() {
 		if errors.Is(err, huh.ErrUserAborted) {
 			os.Exit(exit.StatusAborted)
 		}
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
