@@ -28,6 +28,13 @@ func (o Options) Run() error {
 	l.SetPrefix(o.Prefix)
 	l.SetLevel(-math.MaxInt32) // log all levels
 	l.SetReportTimestamp(o.Time != "")
+	if o.MinLevel != "" {
+		lvl, err := log.ParseLevel(o.MinLevel)
+		if err != nil {
+			return err
+		}
+		l.SetLevel(lvl)
+	}
 
 	timeFormats := map[string]string{
 		"layout":      time.Layout,

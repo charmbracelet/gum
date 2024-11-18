@@ -16,6 +16,8 @@ type Options struct {
 	Structured bool   `short:"s" help:"Use structured logging" xor:"format,structured"`
 	Time       string `short:"t" help:"The time format to use (kitchen, layout, ansic, rfc822, etc...)" default:""`
 
+	MinLevel string `help:"Minimal level to show" default:"" env:"GUM_LOG_LEVEL"`
+
 	LevelStyle     style.Styles `embed:"" prefix:"level." help:"The style of the level being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_"` //nolint:staticcheck
 	TimeStyle      style.Styles `embed:"" prefix:"time." help:"The style of the time" envprefix:"GUM_LOG_TIME_"`
 	PrefixStyle    style.Styles `embed:"" prefix:"prefix." help:"The style of the prefix" set:"defaultBold=true" set:"defaultFaint=true" envprefix:"GUM_LOG_PREFIX_"` //nolint:staticcheck
