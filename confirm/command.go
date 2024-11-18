@@ -1,10 +1,9 @@
 package confirm
 
 import (
-	"errors"
-	"fmt"
 	"os"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/huh"
 )
 
@@ -32,9 +31,7 @@ func (o Options) Run() error {
 		WithShowHelp(o.ShowHelp).
 		Run()
 	if err != nil {
-		if o.Timeout > 0 && errors.Is(err, huh.ErrTimeout) {
-			return fmt.Errorf("unable to run confirm: %w", err)
-		}
+		return exit.Handle(err, o.Timeout)
 	}
 
 	if !choice {

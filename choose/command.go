@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/term"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -76,9 +77,10 @@ func (o Options) Run() error {
 			WithWidth(width).
 			WithShowHelp(o.ShowHelp).
 			WithTheme(theme).
+			WithTimeout(o.Timeout).
 			Run()
-		if err != nil && !errors.Is(err, huh.ErrTimeout) {
-			return err
+		if err != nil {
+			return exit.Handle(err, o.Timeout)
 		}
 		if len(choices) > 0 {
 			s := strings.Join(choices, "\n")
@@ -100,10 +102,11 @@ func (o Options) Run() error {
 	).
 		WithWidth(width).
 		WithTheme(theme).
+		WithTimeout(o.Timeout).
 		WithShowHelp(o.ShowHelp).
 		Run()
-	if err != nil && !errors.Is(err, huh.ErrTimeout) {
-		return err
+	if err != nil {
+		return exit.Handle(err, o.Timeout)
 	}
 
 	if term.IsTerminal(os.Stdout.Fd()) {

@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -53,11 +54,12 @@ func (o Options) Run() error {
 		WithWidth(o.Width).
 		WithTheme(theme).
 		WithKeyMap(keymap).
+		WithTimeout(o.Timeout).
 		WithShowHelp(o.ShowHelp).
 		WithProgramOptions(tea.WithOutput(os.Stderr)).
 		Run()
 	if err != nil {
-		return err
+		return exit.Handle(err, o.Timeout)
 	}
 
 	fmt.Println(value)

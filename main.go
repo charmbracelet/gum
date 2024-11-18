@@ -73,10 +73,14 @@ func main() {
 		},
 	)
 	if err := ctx.Run(); err != nil {
-		if errors.Is(err, exit.ErrAborted) || errors.Is(err, huh.ErrUserAborted) {
+		if errors.Is(err, huh.ErrTimeout) {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(exit.StatusTimeout)
+		}
+		if errors.Is(err, huh.ErrUserAborted) {
 			os.Exit(exit.StatusAborted)
 		}
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
