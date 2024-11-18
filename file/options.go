@@ -11,11 +11,13 @@ type Options struct {
 	// Path is the path to the folder / directory to begin traversing.
 	Path string `arg:"" optional:"" name:"path" help:"The path to the folder to begin traversing" env:"GUM_FILE_PATH"`
 	// Cursor is the character to display in front of the current selected items.
-	Cursor    string `short:"c" help:"The cursor character" default:">" env:"GUM_FILE_CURSOR"`
-	All       bool   `short:"a" help:"Show hidden and 'dot' files" default:"false" env:"GUM_FILE_ALL"`
-	File      bool   `help:"Allow files selection" default:"true" env:"GUM_FILE_FILE"`
-	Directory bool   `help:"Allow directories selection" default:"false" env:"GUM_FILE_DIRECTORY"`
-	ShowHelp  bool   `help:"Show help key binds" negatable:"" default:"true" env:"GUM_FILE_SHOW_HELP"`
+	Cursor      string `short:"c" help:"The cursor character" default:">" env:"GUM_FILE_CURSOR"`
+	All         bool   `short:"a" help:"Show hidden and 'dot' files" default:"false" env:"GUM_FILE_ALL"`
+	Permissions bool   `short:"p" help:"Show file permissions" default:"true" negatable:"" env:"GUM_FILE_PERMISSION"`
+	Size        bool   `short:"s" help:"Show file size" default:"true" negatable:"" env:"GUM_FILE_SIZE"`
+	File        bool   `help:"Allow files selection" default:"true" env:"GUM_FILE_FILE"`
+	Directory   bool   `help:"Allow directories selection" default:"false" env:"GUM_FILE_DIRECTORY"`
+	ShowHelp    bool   `help:"Show help key binds" negatable:"" default:"true" env:"GUM_FILE_SHOW_HELP"`
 
 	Height           int          `help:"Maximum number of files to display" default:"0" env:"GUM_FILE_HEIGHT"`
 	CursorStyle      style.Styles `embed:"" prefix:"cursor." help:"The cursor style" set:"defaultForeground=212" envprefix:"GUM_FILE_CURSOR_"`

@@ -47,6 +47,8 @@ func (o Options) Run() error {
 				FileAllowed(o.File).
 				Height(o.Height).
 				ShowHidden(o.All).
+				ShowSize(o.Size).
+				ShowPermissions(o.Permissions).
 				Value(&path),
 		),
 	).
