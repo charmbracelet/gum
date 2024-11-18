@@ -18,18 +18,5 @@ var ErrAborted = fmt.Errorf("aborted")
 
 // NewTimeout returns a new ErrTimeout.
 func NewTimeout(d time.Duration) ErrTimeout {
-	return ErrTimeout{d: d}
-}
-
-// ErrTimeout is a time out error.
-type ErrTimeout struct {
-	d time.Duration
-}
-
-func (e ErrTimeout) Error() string {
-	return "timed out after " + e.d.String()
-}
-
-func (e ErrTimeout) Unwrap() error {
-	return huh.ErrTimeout
+	return fmt.Errorf("timed out after %s: %w", d, huh.ErrTimeout
 }
