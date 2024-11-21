@@ -11,7 +11,7 @@ require (
 	github.com/charmbracelet/huh v0.6.0
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/charmbracelet/log v0.4.0
-	github.com/charmbracelet/x/ansi v0.4.5
+	github.com/charmbracelet/x/ansi v0.5.0
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/roff v0.1.0
