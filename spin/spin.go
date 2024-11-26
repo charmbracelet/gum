@@ -18,6 +18,7 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/charmbracelet/gum/internal/exit"
@@ -48,6 +49,8 @@ var (
 	bothbuf strings.Builder
 	outbuf  strings.Builder
 	errbuf  strings.Builder
+
+	executing *exec.Cmd
 )
 
 type finishCommandMsg struct {
@@ -64,11 +67,11 @@ func commandStart(command []string) tea.Cmd {
 			args = command[1:]
 		}
 
-		cmd := exec.Command(command[0], args...) //nolint:gosec
-		cmd.Stdout = io.MultiWriter(&bothbuf, &outbuf)
-		cmd.Stderr = io.MultiWriter(&bothbuf, &errbuf)
-		_ = cmd.Run()
-		status := cmd.ProcessState.ExitCode()
+		executing = exec.Command(command[0], args...) //nolint:gosec
+		executing.Stdout = io.MultiWriter(&bothbuf, &outbuf)
+		executing.Stderr = io.MultiWriter(&bothbuf, &errbuf)
+		_ = executing.Run()
+		status := executing.ProcessState.ExitCode()
 		if status == -1 {
 			status = 1
 		}
@@ -80,6 +83,13 @@ func commandStart(command []string) tea.Cmd {
 			status: status,
 		}
 	}
+}
+
+func commandAbort() tea.Msg {
+	if executing != nil && executing.Process != nil {
+		executing.Process.Signal(syscall.SIGINT)
+	}
+	return nil
 }
 
 func (m model) Init() tea.Cmd {
@@ -135,7 +145,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c":
 			m.aborted = true
-			return m, tea.Quit
+			return m, commandAbort
 		}
 	}
 
