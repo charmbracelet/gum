@@ -25,5 +25,5 @@ type Options struct {
 	HeaderStyle       style.Styles  `embed:"" prefix:"header." set:"defaultForeground=99" envprefix:"GUM_CHOOSE_HEADER_"`
 	ItemStyle         style.Styles  `embed:"" prefix:"item." hidden:"" envprefix:"GUM_CHOOSE_ITEM_"`
 	SelectedItemStyle style.Styles  `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_SELECTED_"`
-	Timeout           time.Duration `help:"Timeout until choose returns selected element" default:"0" env:"GUM_CCHOOSE_TIMEOUT"` // including timeout command options [Timeout,...]
+	Timeout           time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_CCHOOSE_TIMEOUT"` // including timeout command options [Timeout,...]
 }

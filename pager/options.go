@@ -17,5 +17,5 @@ type Options struct {
 	SoftWrap            bool          `help:"Soft wrap lines" default:"false"`
 	MatchStyle          style.Styles  `embed:"" prefix:"match." help:"Style the matched text" set:"defaultForeground=212" set:"defaultBold=true" envprefix:"GUM_PAGER_MATCH_"`                                                      //nolint:staticcheck
 	MatchHighlightStyle style.Styles  `embed:"" prefix:"match-highlight." help:"Style the matched highlight text" set:"defaultForeground=235" set:"defaultBackground=225" set:"defaultBold=true" envprefix:"GUM_PAGER_MATCH_HIGH_"` //nolint:staticcheck
-	Timeout             time.Duration `help:"Timeout until command exits" default:"0" env:"GUM_PAGER_TIMEOUT"`
+	Timeout             time.Duration `help:"Timeout until command exits" default:"0s" env:"GUM_PAGER_TIMEOUT"`
 }

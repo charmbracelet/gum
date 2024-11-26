@@ -21,5 +21,5 @@ type Options struct {
 	ShowHelp         bool          `help:"Show help keybinds" default:"true" negatable:"true" env:"GUM_INPUT_SHOW_HELP"`
 	Header           string        `help:"Header value" default:"" env:"GUM_INPUT_HEADER"`
 	HeaderStyle      style.Styles  `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_INPUT_HEADER_"`
-	Timeout          time.Duration `help:"Timeout until input aborts" default:"0" env:"GUM_INPUT_TIMEOUT"`
+	Timeout          time.Duration `help:"Timeout until input aborts" default:"0s" env:"GUM_INPUT_TIMEOUT"`
 }
