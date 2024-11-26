@@ -18,6 +18,7 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/charmbracelet/gum/internal/exit"
@@ -42,6 +43,8 @@ type model struct {
 	showError  bool
 	timeout    time.Duration
 	hasTimeout bool
+
+	cmd *exec.Cmd
 }
 
 var (
@@ -57,7 +60,13 @@ type finishCommandMsg struct {
 	status int
 }
 
-func commandStart(command []string) tea.Cmd {
+type createdCommandMsg struct {
+	cmd *exec.Cmd
+}
+
+type commandAbortedMsg struct{}
+
+func commandCreate(command []string) tea.Cmd {
 	return func() tea.Msg {
 		var args []string
 		if len(command) > 1 {
@@ -67,6 +76,12 @@ func commandStart(command []string) tea.Cmd {
 		cmd := exec.Command(command[0], args...) //nolint:gosec
 		cmd.Stdout = io.MultiWriter(&bothbuf, &outbuf)
 		cmd.Stderr = io.MultiWriter(&bothbuf, &errbuf)
+		return createdCommandMsg{cmd}
+	}
+}
+
+func commandStart(cmd *exec.Cmd) tea.Cmd {
+	return func() tea.Msg {
 		_ = cmd.Run()
 		status := cmd.ProcessState.ExitCode()
 		if status == -1 {
@@ -82,10 +97,17 @@ func commandStart(command []string) tea.Cmd {
 	}
 }
 
+func commandAbort(cmd *exec.Cmd) tea.Cmd {
+	return func() tea.Msg {
+		_ = cmd.Process.Signal(syscall.SIGINT)
+		return commandAbortedMsg{}
+	}
+}
+
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
-		commandStart(m.command),
+		commandCreate(m.command),
 		timeout.Init(m.timeout, nil),
 	)
 }
@@ -124,6 +146,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.timeout = msg.TimeoutValue
 		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
+	case createdCommandMsg:
+		m.cmd = msg.cmd
+		return m, commandStart(m.cmd)
 	case finishCommandMsg:
 		m.stdout = msg.stdout
 		m.stderr = msg.stderr
@@ -131,11 +156,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.status = msg.status
 		m.quitting = true
 		return m, tea.Quit
+	case commandAbortedMsg:
+		// nothing
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
 			m.aborted = true
-			return m, tea.Quit
+			return m, commandAbort(m.cmd)
 		}
 	}
 
