@@ -87,7 +87,7 @@ func commandStart(command []string) tea.Cmd {
 
 func commandAbort() tea.Msg {
 	if executing != nil && executing.Process != nil {
-		executing.Process.Signal(syscall.SIGINT)
+		_ = executing.Process.Signal(syscall.SIGINT)
 	}
 	return nil
 }
