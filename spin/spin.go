@@ -16,6 +16,7 @@ package spin
 
 import (
 	"io"
+	"os"
 	"os/exec"
 	"strings"
 	"syscall"
@@ -23,6 +24,7 @@ import (
 
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/timeout"
+	"github.com/charmbracelet/x/term"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -68,8 +70,12 @@ func commandStart(command []string) tea.Cmd {
 		}
 
 		executing = exec.Command(command[0], args...) //nolint:gosec
-		executing.Stdout = io.MultiWriter(&bothbuf, &outbuf)
-		executing.Stderr = io.MultiWriter(&bothbuf, &errbuf)
+		if term.IsTerminal(os.Stdout.Fd()) {
+			executing.Stdout = io.MultiWriter(&bothbuf, &outbuf)
+			executing.Stderr = io.MultiWriter(&bothbuf, &errbuf)
+		} else {
+			executing.Stdout = os.Stdout
+		}
 		_ = executing.Run()
 		status := executing.ProcessState.ExitCode()
 		if status == -1 {
