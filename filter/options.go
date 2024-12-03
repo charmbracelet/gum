@@ -34,6 +34,6 @@ type Options struct {
 	Value                 string        `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
 	Reverse               bool          `help:"Display from the bottom of the screen" env:"GUM_FILTER_REVERSE"`
 	Fuzzy                 bool          `help:"Enable fuzzy matching" default:"true" env:"GUM_FILTER_FUZZY" negatable:""`
-	Sort                  bool          `help:"Sort the results" default:"true" env:"GUM_FILTER_SORT" negatable:""`
+	Sort                  bool          `help:"Sort the results by their scores when fuzzy matching, no effect otherwise" default:"true" env:"GUM_FILTER_SORT" negatable:""`
 	Timeout               time.Duration `help:"Timeout until filter command aborts" default:"0s" env:"GUM_FILTER_TIMEOUT"`
 }
