@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -52,6 +53,10 @@ func (o Options) Run() error {
 	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
 	if o.Height == 0 {
 		options = append(options, tea.WithAltScreen())
+	}
+
+	if o.Sort {
+		slices.SortStableFunc(o.Options, strings.Compare)
 	}
 
 	var matches []fuzzy.Match
