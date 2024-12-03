@@ -51,6 +51,7 @@ type model struct {
 	sort                  bool
 	timeout               time.Duration
 	hasTimeout            bool
+	strict                bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -223,14 +224,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			// A character was entered, this likely means that the text input has
 			// changed. This suggests that the matches are outdated, so update them.
+			var choices []string
+			if !m.strict {
+				choices = append(choices, m.textinput.Value())
+			}
+			choices = append(choices, m.choices...)
 			if m.fuzzy {
 				if m.sort {
-					m.matches = fuzzy.Find(m.textinput.Value(), m.choices)
+					m.matches = fuzzy.Find(m.textinput.Value(), choices)
 				} else {
-					m.matches = fuzzy.FindNoSort(m.textinput.Value(), m.choices)
+					m.matches = fuzzy.FindNoSort(m.textinput.Value(), choices)
 				}
 			} else {
-				m.matches = exactMatches(m.textinput.Value(), m.choices)
+				m.matches = exactMatches(m.textinput.Value(), choices)
 			}
 
 			// If the search field is empty, let's not display the matches
