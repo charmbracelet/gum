@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"strings"
+
+	"github.com/charmbracelet/x/ansi"
 )
 
 // Read reads input from an stdin pipe.
@@ -28,7 +30,7 @@ func Read() (string, error) {
 		}
 	}
 
-	return strings.TrimSuffix(b.String(), "\n"), nil
+	return strings.TrimSuffix(ansi.Strip(b.String()), "\n"), nil
 }
 
 // IsEmpty returns whether stdin is empty.
