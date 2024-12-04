@@ -94,7 +94,7 @@ func (o Options) Run() error {
 		fuzzy:                 o.Fuzzy,
 		timeout:               o.Timeout,
 		hasTimeout:            o.Timeout > 0,
-		sort:                  o.Sort,
+		sort:                  o.Sort && o.FuzzySort,
 	}, options...)
 
 	tm, err := p.Run()
