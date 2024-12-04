@@ -33,7 +33,7 @@ type Options struct {
 	Height                int           `help:"Input height" default:"0" env:"GUM_FILTER_HEIGHT"`
 	Value                 string        `help:"Initial filter value" default:"" env:"GUM_FILTER_VALUE"`
 	Reverse               bool          `help:"Display from the bottom of the screen" env:"GUM_FILTER_REVERSE"`
-	Fuzzy                 bool          `help:"Enable fuzzy matching" default:"true" env:"GUM_FILTER_FUZZY" negatable:""`
+	Fuzzy                 bool          `help:"Enable fuzzy matching; otherwise match from start of word" default:"true" env:"GUM_FILTER_FUZZY" negatable:""`
 	FuzzySort             bool          `help:"Sort fuzzy results by their scores" default:"true" env:"GUM_FILTER_FUZZY_SORT" negatable:""`
 	Timeout               time.Duration `help:"Timeout until filter command aborts" default:"0s" env:"GUM_FILTER_TIMEOUT"`
 
