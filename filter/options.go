@@ -15,7 +15,7 @@ type Options struct {
 	Limit                 int           `help:"Maximum number of options to pick" default:"1" group:"Selection"`
 	NoLimit               bool          `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
 	SelectIfOne           bool          `help:"Select the given option if there is only one" group:"Selection"`
-	Strict                bool          `help:"Only returns if anything matched. Otherwise return Filter" negatable:"true" default:"true" group:"Selection"`
+	Strict                bool          `help:"Only returns if anything matched. Otherwise return Filter" negatable:"" default:"true" group:"Selection"`
 	SelectedPrefix        string        `help:"Character to indicate selected items (hidden if limit is 1)" default:" ◉ " env:"GUM_FILTER_SELECTED_PREFIX"`
 	SelectedPrefixStyle   style.Styles  `embed:"" prefix:"selected-indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_SELECTED_PREFIX_"`
 	UnselectedPrefix      string        `help:"Character to indicate unselected items (hidden if limit is 1)" default:" ○ " env:"GUM_FILTER_UNSELECTED_PREFIX"`

@@ -95,6 +95,7 @@ func (o Options) Run() error {
 		timeout:               o.Timeout,
 		hasTimeout:            o.Timeout > 0,
 		sort:                  o.Sort && o.FuzzySort,
+		strict:                o.Strict,
 	}, options...)
 
 	tm, err := p.Run()
@@ -121,9 +122,6 @@ func (o Options) Run() error {
 		}
 	}
 
-	if !o.Strict && len(m.textinput.Value()) != 0 && len(m.matches) == 0 {
-		fmt.Println(m.textinput.Value())
-	}
 	return nil
 }
 
