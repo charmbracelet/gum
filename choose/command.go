@@ -95,6 +95,9 @@ func (o Options) Run() error {
 	pager.Page = startingIndex / o.Height
 
 	km := defaultKeymap()
+	if o.NoLimit || o.Limit > 1 {
+		km.Toggle.SetEnabled(true)
+	}
 	if o.NoLimit {
 		km.ToggleAll.SetEnabled(true)
 	}
