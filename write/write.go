@@ -44,6 +44,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.autoWidth {
 			m.textarea.SetWidth(msg.Width)
 		}
+	case tea.FocusMsg, tea.BlurMsg:
+		var cmd tea.Cmd
+		m.textarea, cmd = m.textarea.Update(msg)
+		return m, cmd
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
