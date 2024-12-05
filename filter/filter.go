@@ -38,6 +38,7 @@ type model struct {
 	unselectedPrefix      string
 	height                int
 	aborted               bool
+	timedOut              bool
 	quitting              bool
 	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style
@@ -161,7 +162,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
-			m.aborted = true
+			m.timedOut = true
 			return m, tea.Quit
 		}
 		m.timeout = msg.TimeoutValue

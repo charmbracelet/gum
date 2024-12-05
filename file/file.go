@@ -24,6 +24,7 @@ type model struct {
 	filepicker   filepicker.Model
 	selectedPath string
 	aborted      bool
+	timedOut     bool
 	quitting     bool
 	timeout      time.Duration
 	hasTimeout   bool
@@ -48,7 +49,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
-			m.aborted = true
+			m.timedOut = true
 			return m, tea.Quit
 		}
 		m.timeout = msg.TimeoutValue

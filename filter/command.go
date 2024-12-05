@@ -106,6 +106,9 @@ func (o Options) Run() error {
 	if m.aborted {
 		return exit.ErrAborted
 	}
+	if m.timedOut {
+		return exit.ErrTimeout
+	}
 
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 

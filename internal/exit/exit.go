@@ -1,10 +1,6 @@
 package exit
 
-import (
-	"errors"
-	"fmt"
-	"time"
-)
+import "errors"
 
 // StatusTimeout is the exit code for timed out commands.
 const StatusTimeout = 124
@@ -17,11 +13,3 @@ var ErrAborted = errors.New("user aborted")
 
 // ErrTimeout is the error returned when the timeout is reached.
 var ErrTimeout = errors.New("timeout")
-
-// Handle handles the error.
-func Handle(err error, d time.Duration) error {
-	if errors.Is(err, ErrTimeout) {
-		return fmt.Errorf("%w after %s", ErrTimeout, d)
-	}
-	return err
-}

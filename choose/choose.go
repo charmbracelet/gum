@@ -14,10 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/gum/timeout"
-
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -36,6 +35,7 @@ type model struct {
 	currentOrder     int
 	paginator        paginator.Model
 	aborted          bool
+	timedOut         bool
 
 	// styles
 	cursorStyle       lipgloss.Style
@@ -63,6 +63,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
+			m.timedOut = true
 			// If the user hasn't selected any items in a multi-select.
 			// Then we select the item that they have pressed enter on. If they
 			// have selected items, then we simply return them.

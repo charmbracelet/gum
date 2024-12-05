@@ -22,6 +22,7 @@ type model struct {
 	headerStyle lipgloss.Style
 	textinput   textinput.Model
 	quitting    bool
+	timedOut    bool
 	aborted     bool
 	timeout     time.Duration
 	hasTimeout  bool
@@ -51,7 +52,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
-			m.aborted = true
+			m.timedOut = true
 			return m, tea.Quit
 		}
 		m.timeout = msg.TimeoutValue

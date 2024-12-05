@@ -55,10 +55,13 @@ func (o Options) Run() error {
 	if err != nil {
 		return fmt.Errorf("failed to run input: %w", err)
 	}
-	m := tm.(model)
 
+	m := tm.(model)
 	if m.aborted {
 		return exit.ErrAborted
+	}
+	if m.timedOut {
+		return exit.ErrTimeout
 	}
 
 	fmt.Println(m.textinput.Value())

@@ -58,8 +58,11 @@ func (o Options) Run() error {
 	if m.aborted {
 		return exit.ErrAborted
 	}
+	if m.timedOut {
+		return exit.ErrTimeout
+	}
 	if m.selectedPath == "" {
-		os.Exit(1)
+		return errors.New("no file selected")
 	}
 
 	fmt.Println(m.selectedPath)

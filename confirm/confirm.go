@@ -29,6 +29,7 @@ type model struct {
 	timeout     time.Duration
 
 	confirmation bool
+	timedOut     bool
 
 	defaultSelection bool
 
@@ -75,10 +76,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case timeout.TickTimeoutMsg:
-
 		if msg.TimeoutValue <= 0 {
 			m.quitting = true
 			m.confirmation = m.defaultSelection
+			m.timedOut = true
 			return m, tea.Quit
 		}
 

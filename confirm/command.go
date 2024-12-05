@@ -1,6 +1,7 @@
 package confirm
 
 import (
+	"errors"
 	"os"
 
 	"github.com/charmbracelet/gum/internal/exit"
@@ -11,7 +12,7 @@ import (
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
-	m, err := tea.NewProgram(model{
+	tm, err := tea.NewProgram(model{
 		affirmative:      o.Affirmative,
 		negative:         o.Negative,
 		confirmation:     o.Default,
@@ -24,16 +25,19 @@ func (o Options) Run() error {
 		promptStyle:      o.PromptStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
-		return exit.Handle(err, o.Timeout)
+		return err
 	}
 
-	if m.(model).aborted {
-		os.Exit(exit.StatusAborted)
-	} else if m.(model).confirmation {
-		os.Exit(0)
+	m := tm.(model)
+	if m.timedOut {
+		return exit.ErrTimeout
+	}
+	if m.aborted {
+		return exit.ErrAborted
+	}
+	if m.confirmation {
+		return nil
 	}
 
-	os.Exit(1)
-
-	return nil
+	return errors.New("not confirmed")
 }

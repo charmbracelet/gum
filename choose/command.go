@@ -122,6 +122,9 @@ func (o Options) Run() error {
 	if m.aborted {
 		return exit.ErrAborted
 	}
+	if m.timedOut {
+		return exit.ErrTimeout
+	}
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
 			return m.items[i].order < m.items[j].order

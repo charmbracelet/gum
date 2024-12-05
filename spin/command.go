@@ -19,7 +19,7 @@ func (o Options) Run() error {
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
-	m := model{
+	tm, err := tea.NewProgram(model{
 		spinner:    s,
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
@@ -28,17 +28,17 @@ func (o Options) Run() error {
 		showError:  o.ShowError,
 		timeout:    o.Timeout,
 		hasTimeout: o.Timeout > 0,
-	}
-	p := tea.NewProgram(m, tea.WithOutput(os.Stderr))
-	mm, err := p.Run()
-	m = mm.(model)
-
+	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
 		return fmt.Errorf("failed to run spin: %w", err)
 	}
 
+	m := tm.(model)
 	if m.aborted {
 		return exit.ErrAborted
+	}
+	if m.timedOut {
+		return exit.ErrTimeout
 	}
 
 	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
