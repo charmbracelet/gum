@@ -14,11 +14,89 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
 )
+
+func defaultKeymap() keymap {
+	return keymap{
+		Down: key.NewBinding(
+			key.WithKeys("down", "j", "ctrl+j", "ctrl+n"),
+			key.WithHelp("↓", "down"),
+		),
+		Up: key.NewBinding(
+			key.WithKeys("up", "k", "ctrl+k", "ctrl+p"),
+			key.WithHelp("↑", "up"),
+		),
+		Right: key.NewBinding(
+			key.WithKeys("right", "l", "ctrl+f"),
+			key.WithHelp("→", "right"),
+		),
+		Left: key.NewBinding(
+			key.WithKeys("left", "h", "ctrl+b"),
+			key.WithHelp("←", "left"),
+		),
+		Home: key.NewBinding(
+			key.WithKeys("g", "home"),
+			key.WithHelp("g", "home"),
+		),
+		End: key.NewBinding(
+			key.WithKeys("G", "end"),
+			key.WithHelp("G", "end"),
+		),
+		ToggleAll: key.NewBinding(
+			key.WithKeys("a", "A", "ctrl+a"),
+			key.WithHelp("ctrl+a", "select all"),
+		),
+		Toggle: key.NewBinding(
+			key.WithKeys(" ", "tab", "x", "ctrl+@"),
+			key.WithHelp("x", "toggle"),
+		),
+		Abort: key.NewBinding(
+			key.WithKeys("ctrl+c", "esc"),
+			key.WithHelp("ctrl+c", "abort"),
+		),
+		Submit: key.NewBinding(
+			key.WithKeys("enter", "ctrl+q"),
+			key.WithHelp("enter", "submit"),
+		),
+	}
+}
+
+type keymap struct {
+	Down,
+	Up,
+	Right,
+	Left,
+	Home,
+	End,
+	ToggleAll,
+	Toggle,
+	Abort,
+	Submit key.Binding
+}
+
+// FullHelp implements help.KeyMap.
+func (k keymap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{}
+}
+
+// ShortHelp implements help.KeyMap.
+func (k keymap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		k.Toggle,
+		key.NewBinding(
+			key.WithKeys("up", "down", "right", "left"),
+			key.WithHelp("↑↓←→", "navigation"),
+		),
+		k.Submit,
+		k.ToggleAll,
+	}
+}
 
 type model struct {
 	height           int
@@ -36,6 +114,8 @@ type model struct {
 	paginator        paginator.Model
 	aborted          bool
 	timedOut         bool
+	showHelp         bool
+	help             help.Model
 
 	// styles
 	cursorStyle       lipgloss.Style
@@ -76,8 +156,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case tea.KeyMsg:
 		start, end := m.paginator.GetSliceBounds(len(m.items))
-		switch keypress := msg.String(); keypress {
-		case "down", "j", "ctrl+j", "ctrl+n":
+		km := defaultKeymap()
+		switch {
+		case key.Matches(msg, km.Down):
 			m.index++
 			if m.index >= len(m.items) {
 				m.index = 0
@@ -86,7 +167,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.index >= end {
 				m.paginator.NextPage()
 			}
-		case "up", "k", "ctrl+k", "ctrl+p":
+		case key.Matches(msg, km.Up):
 			m.index--
 			if m.index < 0 {
 				m.index = len(m.items) - 1
@@ -95,19 +176,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.index < start {
 				m.paginator.PrevPage()
 			}
-		case "right", "l", "ctrl+f":
+		case key.Matches(msg, km.Right):
 			m.index = clamp(m.index+m.height, 0, len(m.items)-1)
 			m.paginator.NextPage()
-		case "left", "h", "ctrl+b":
+		case key.Matches(msg, km.Left):
 			m.index = clamp(m.index-m.height, 0, len(m.items)-1)
 			m.paginator.PrevPage()
-		case "G", "end":
+		case key.Matches(msg, km.End):
 			m.index = len(m.items) - 1
 			m.paginator.Page = m.paginator.TotalPages - 1
-		case "g", "home":
+		case key.Matches(msg, km.Home):
 			m.index = 0
 			m.paginator.Page = 0
-		case "a", "A", "ctrl+a":
+		case key.Matches(msg, km.ToggleAll):
 			if m.limit <= 1 {
 				break
 			}
@@ -116,11 +197,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m = m.deselectAll()
 			}
-		case "ctrl+c", "esc":
+		case key.Matches(msg, km.Abort):
 			m.aborted = true
 			m.quitting = true
 			return m, tea.Quit
-		case " ", "tab", "x", "ctrl+@":
+		case key.Matches(msg, km.Toggle):
 			if m.limit == 1 {
 				break // no op
 			}
@@ -134,7 +215,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.numSelected++
 				m.currentOrder++
 			}
-		case "enter", "ctrl+q":
+		case key.Matches(msg, km.Submit):
 			m.quitting = true
 			if m.limit <= 1 && m.numSelected < 1 {
 				m.items[m.index].selected = true
@@ -210,12 +291,17 @@ func (m model) View() string {
 		s.WriteString("  " + m.paginator.View())
 	}
 
+	var parts []string
+
 	if m.header != "" {
-		header := m.headerStyle.Render(m.header)
-		return lipgloss.JoinVertical(lipgloss.Left, header, s.String())
+		parts = append(parts, m.headerStyle.Render(m.header))
+	}
+	parts = append(parts, s.String())
+	if m.showHelp {
+		parts = append(parts, m.help.View(defaultKeymap()))
 	}
 
-	return s.String()
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 func clamp(x, low, high int) int {

@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -112,6 +113,8 @@ func (o Options) Run() error {
 		numSelected:       currentSelected,
 		hasTimeout:        o.Timeout > 0,
 		timeout:           o.Timeout,
+		showHelp:          o.ShowHelp,
+		help:              help.New(),
 	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
 		return fmt.Errorf("failed to start tea program: %w", err)
