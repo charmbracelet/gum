@@ -151,7 +151,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.numSelected++
 				m.currentOrder++
 			}
-		case "enter":
+		case "enter", "ctrl+q":
 			m.quitting = true
 			if m.limit <= 1 && m.numSelected < 1 {
 				m.items[m.index].selected = true
