@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -53,6 +54,8 @@ func (o Options) Run() error {
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
 		autoWidth:   o.Width < 1,
+		help:        help.New(),
+		showHelp:    o.ShowHelp,
 	}, tea.WithOutput(os.Stderr), tea.WithReportFocus())
 	tm, err := p.Run()
 	if err != nil {
