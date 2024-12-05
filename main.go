@@ -7,7 +7,6 @@ import (
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
-	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 
@@ -73,11 +72,11 @@ func main() {
 		},
 	)
 	if err := ctx.Run(); err != nil {
-		if errors.Is(err, huh.ErrTimeout) {
+		if errors.Is(err, exit.ErrTimeout) {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(exit.StatusTimeout)
 		}
-		if errors.Is(err, huh.ErrUserAborted) {
+		if errors.Is(err, exit.ErrAborted) {
 			os.Exit(exit.StatusAborted)
 		}
 		fmt.Fprintln(os.Stderr, err)
