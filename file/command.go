@@ -34,6 +34,8 @@ func (o Options) Run() error {
 	fp.Cursor = o.Cursor
 	fp.DirAllowed = o.Directory
 	fp.FileAllowed = o.File
+	fp.ShowPermissions = o.Permissions
+	fp.ShowSize = o.Size
 	fp.ShowHidden = o.All
 	fp.Styles = filepicker.DefaultStyles()
 	fp.Styles.Cursor = o.CursorStyle.ToLipgloss()
