@@ -107,32 +107,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "g", "home":
 			m.index = 0
 			m.paginator.Page = 0
-		case "a":
+		case "a", "A", "ctrl+a":
 			if m.limit <= 1 {
 				break
 			}
-			for i := range m.items {
-				if m.numSelected >= m.limit {
-					break // do not exceed given limit
-				}
-				if m.items[i].selected {
-					continue
-				}
-				m.items[i].selected = true
-				m.items[i].order = m.currentOrder
-				m.numSelected++
-				m.currentOrder++
+			if m.numSelected < len(m.items) && m.numSelected < m.limit {
+				m = m.selectAll()
+			} else {
+				m = m.deselectAll()
 			}
-		case "A":
-			if m.limit <= 1 {
-				break
-			}
-			for i := range m.items {
-				m.items[i].selected = false
-				m.items[i].order = 0
-			}
-			m.numSelected = 0
-			m.currentOrder = 0
 		case "ctrl+c", "esc":
 			m.aborted = true
 			m.quitting = true
@@ -163,6 +146,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	m.paginator, cmd = m.paginator.Update(msg)
 	return m, cmd
+}
+
+func (m model) selectAll() model {
+	for i := range m.items {
+		if m.numSelected >= m.limit {
+			break // do not exceed given limit
+		}
+		if m.items[i].selected {
+			continue
+		}
+		m.items[i].selected = true
+		m.items[i].order = m.currentOrder
+		m.numSelected++
+		m.currentOrder++
+	}
+	return m
+}
+
+func (m model) deselectAll() model {
+	for i := range m.items {
+		m.items[i].selected = false
+		m.items[i].order = 0
+	}
+	m.numSelected = 0
+	m.currentOrder = 0
+	return m
 }
 
 func (m model) View() string {
