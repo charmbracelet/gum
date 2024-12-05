@@ -10,11 +10,35 @@ package input
 import (
 	"time"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
 )
+
+type keymap textinput.KeyMap
+
+func defaultKeymap() help.KeyMap {
+	k := textinput.DefaultKeyMap
+	return keymap(k)
+}
+
+// FullHelp implements help.KeyMap.
+func (k keymap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{k.ShortHelp()}
+}
+
+// ShortHelp implements help.KeyMap.
+func (k keymap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		key.NewBinding(
+			key.WithKeys("enter"),
+			key.WithHelp("enter", "submit"),
+		),
+	}
+}
 
 type model struct {
 	autoWidth   bool
@@ -26,6 +50,8 @@ type model struct {
 	aborted     bool
 	timeout     time.Duration
 	hasTimeout  bool
+	showHelp    bool
+	help        help.Model
 }
 
 func (m model) Init() tea.Cmd {
@@ -44,7 +70,15 @@ func (m model) View() string {
 		return lipgloss.JoinVertical(lipgloss.Left, header, m.textinput.View())
 	}
 
-	return m.textinput.View()
+	if !m.showHelp {
+		return m.textinput.View()
+	}
+	return lipgloss.JoinVertical(
+		lipgloss.Top,
+		m.textinput.View(),
+		"",
+		m.help.View(defaultKeymap()),
+	)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -50,6 +51,8 @@ func (o Options) Run() error {
 		timeout:     o.Timeout,
 		hasTimeout:  o.Timeout > 0,
 		autoWidth:   o.Width < 1,
+		showHelp:    o.ShowHelp,
+		help:        help.New(),
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
 	if err != nil {
