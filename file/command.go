@@ -3,11 +3,12 @@ package file
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 
+	"github.com/charmbracelet/bubbles/filepicker"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/exit"
-	"github.com/charmbracelet/huh"
-	"github.com/charmbracelet/lipgloss"
 )
 
 // Run is the interface to picking a file.
@@ -25,42 +26,42 @@ func (o Options) Run() error {
 		return fmt.Errorf("file not found: %w", err)
 	}
 
-	theme := huh.ThemeCharm()
-	theme.Focused.Base = lipgloss.NewStyle()
-	theme.Focused.File = o.FileStyle.ToLipgloss()
-	theme.Focused.Directory = o.DirectoryStyle.ToLipgloss()
-	theme.Focused.SelectedOption = o.SelectedStyle.ToLipgloss()
-
-	keymap := huh.NewDefaultKeyMap()
-	keymap.FilePicker.Open.SetEnabled(false)
-
-	// XXX: These should be file selected specific.
-	theme.Focused.TextInput.Placeholder = o.PermissionsStyle.ToLipgloss()
-	theme.Focused.TextInput.Prompt = o.CursorStyle.ToLipgloss()
-
-	err = huh.NewForm(
-		huh.NewGroup(
-			huh.NewFilePicker().
-				Picking(true).
-				CurrentDirectory(path).
-				Cursor(o.Cursor).
-				DirAllowed(o.Directory).
-				FileAllowed(o.File).
-				Height(o.Height).
-				ShowHidden(o.All).
-				ShowSize(o.Size).
-				ShowPermissions(o.Permissions).
-				Value(&path),
-		),
-	).
-		WithTimeout(o.Timeout).
-		WithShowHelp(o.ShowHelp).
-		WithKeyMap(keymap).
-		WithTheme(theme).
-		Run()
-	if err != nil {
-		return exit.Handle(err, o.Timeout)
+	fp := filepicker.New()
+	fp.CurrentDirectory = path
+	fp.Path = path
+	fp.Height = o.Height
+	fp.AutoHeight = o.Height == 0
+	fp.Cursor = o.Cursor
+	fp.DirAllowed = o.Directory
+	fp.FileAllowed = o.File
+	fp.ShowHidden = o.All
+	fp.Styles = filepicker.DefaultStyles()
+	fp.Styles.Cursor = o.CursorStyle.ToLipgloss()
+	fp.Styles.Symlink = o.SymlinkStyle.ToLipgloss()
+	fp.Styles.Directory = o.DirectoryStyle.ToLipgloss()
+	fp.Styles.File = o.FileStyle.ToLipgloss()
+	fp.Styles.Permission = o.PermissionsStyle.ToLipgloss()
+	fp.Styles.Selected = o.SelectedStyle.ToLipgloss()
+	fp.Styles.FileSize = o.FileSizeStyle.ToLipgloss()
+	m := model{
+		filepicker: fp,
+		timeout:    o.Timeout,
+		hasTimeout: o.Timeout > 0,
+		aborted:    false,
 	}
-	fmt.Println(path)
+
+	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
+	if err != nil {
+		return fmt.Errorf("unable to pick selection: %w", err)
+	}
+	m = tm.(model)
+	if m.aborted {
+		return exit.ErrAborted
+	}
+	if m.selectedPath == "" {
+		os.Exit(1)
+	}
+
+	fmt.Println(m.selectedPath)
 	return nil
 }
