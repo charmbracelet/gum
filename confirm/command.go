@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/gum/internal/exit"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -19,6 +20,9 @@ func (o Options) Run() error {
 		defaultSelection: o.Default,
 		timeout:          o.Timeout,
 		hasTimeout:       o.Timeout > 0,
+		keys:             defaultKeymap(o.Affirmative, o.Negative),
+		help:             help.New(),
+		showHelp:         o.ShowHelp,
 		prompt:           o.Prompt,
 		selectedStyle:    o.SelectedStyle.ToLipgloss(),
 		unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
