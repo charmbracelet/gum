@@ -50,11 +50,11 @@ func defaultKeymap(affirmative, negative string) keymap {
 				"ctrl+p",
 				"tab",
 			),
-			key.WithHelp("←/→", "toggle selection"),
+			key.WithHelp("←/→", "toggle"),
 		),
-		Confirm: key.NewBinding(
+		Submit: key.NewBinding(
 			key.WithKeys("enter"),
-			key.WithHelp("enter", "confirm selection"),
+			key.WithHelp("enter", "submit"),
 		),
 		Help: key.NewBinding(
 			key.WithKeys("?"),
@@ -69,21 +69,21 @@ type keymap struct {
 	Negative    key.Binding
 	Affirmative key.Binding
 	Toggle      key.Binding
-	Confirm     key.Binding
+	Submit      key.Binding
 	Help        key.Binding
 }
 
 // FullHelp implements help.KeyMap.
 func (k keymap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{k.Affirmative, k.Negative, k.Help},
-		{k.Abort, k.Quit, k.Confirm, k.Toggle},
+		{k.Toggle, k.Submit, k.Affirmative, k.Negative},
+		{k.Abort, k.Quit, k.Help},
 	}
 }
 
 // ShortHelp implements help.KeyMap.
 func (k keymap) ShortHelp() []key.Binding {
-	return []key.Binding{k.Affirmative, k.Negative, k.Help}
+	return []key.Binding{k.Toggle, k.Submit, k.Affirmative, k.Negative}
 }
 
 type model struct {
@@ -136,7 +136,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				break
 			}
 			m.confirmation = !m.confirmation
-		case key.Matches(msg, m.keys.Confirm):
+		case key.Matches(msg, m.keys.Submit):
 			m.quitting = true
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.Affirmative):
@@ -191,12 +191,16 @@ func (m model) View() string {
 
 	if m.showHelp {
 		return lipgloss.JoinVertical(
-			lipgloss.Center,
-			m.promptStyle.Render(m.prompt),
+			lipgloss.Left,
+			m.promptStyle.Render(m.prompt)+"\n",
 			lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
-			"", m.help.View(m.keys),
+			"\n"+m.help.View(m.keys),
 		)
 	}
 
-	return lipgloss.JoinVertical(lipgloss.Center, m.promptStyle.Render(m.prompt), lipgloss.JoinHorizontal(lipgloss.Left, aff, neg))
+	return lipgloss.JoinVertical(
+		lipgloss.Left,
+		m.promptStyle.Render(m.prompt)+"\n",
+		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
+	)
 }
