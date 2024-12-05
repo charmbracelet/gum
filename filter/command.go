@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -96,6 +97,8 @@ func (o Options) Run() error {
 		hasTimeout:            o.Timeout > 0,
 		sort:                  o.Sort && o.FuzzySort,
 		strict:                o.Strict,
+		showHelp:              o.ShowHelp,
+		help:                  help.New(),
 	}, options...)
 
 	tm, err := p.Run()

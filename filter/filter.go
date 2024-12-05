@@ -16,12 +16,74 @@ import (
 
 	"github.com/charmbracelet/gum/timeout"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/sahilm/fuzzy"
 )
+
+func defaultKeymap() keymap {
+	return keymap{
+		Down: key.NewBinding(
+			key.WithKeys("down", "ctrl+j", "ctrl+n"),
+			key.WithHelp("↓", "down"),
+		),
+		Up: key.NewBinding(
+			key.WithKeys("up", "ctrl+k", "ctrl+p"),
+			key.WithHelp("↑", "up"),
+		),
+		ToggleAndNext: key.NewBinding(
+			key.WithKeys("tab"),
+			key.WithHelp("tab", "toggle"),
+		),
+		ToggleAndPrevious: key.NewBinding(
+			key.WithKeys("shift+tab"),
+			key.WithHelp("shift+tab", "toggle"),
+		),
+		Toggle: key.NewBinding(
+			key.WithKeys("ctrl+@"),
+			key.WithHelp("ctrl+@", "toggle"),
+		),
+		Abort: key.NewBinding(
+			key.WithKeys("ctrl+c", "esc"),
+			key.WithHelp("ctrl+c", "abort"),
+		),
+		Submit: key.NewBinding(
+			key.WithKeys("enter", "ctrl+q"),
+			key.WithHelp("enter", "submit"),
+		),
+	}
+}
+
+type keymap struct {
+	Down,
+	Up,
+	ToggleAndNext,
+	ToggleAndPrevious,
+	Toggle,
+	Abort,
+	Submit key.Binding
+}
+
+// FullHelp implements help.KeyMap.
+func (k keymap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{}
+}
+
+// ShortHelp implements help.KeyMap.
+func (k keymap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		k.ToggleAndNext,
+		key.NewBinding(
+			key.WithKeys("up", "down"),
+			key.WithHelp("↑↓", "navigation"),
+		),
+		k.Submit,
+	}
+}
 
 type model struct {
 	textinput             textinput.Model
@@ -50,6 +112,8 @@ type model struct {
 	reverse               bool
 	fuzzy                 bool
 	sort                  bool
+	showHelp              bool
+	help                  help.Model
 	timeout               time.Duration
 	hasTimeout            bool
 	strict                bool
@@ -138,10 +202,18 @@ func (m model) View() string {
 
 	m.viewport.SetContent(s.String())
 
+	help := ""
+	if m.showHelp {
+		help = m.help.View(defaultKeymap())
+	}
+
 	// View the input and the filtered choices
 	header := m.headerStyle.Render(m.header)
 	if m.reverse {
 		view := m.viewport.View() + "\n" + m.textinput.View()
+		if m.showHelp {
+			view += "\n" + help
+		}
 		if m.header != "" {
 			return lipgloss.JoinVertical(lipgloss.Left, view, header)
 		}
@@ -150,6 +222,9 @@ func (m model) View() string {
 	}
 
 	view := m.textinput.View() + "\n" + m.viewport.View()
+	if m.showHelp {
+		view += "\n" + help
+	}
 	if m.header != "" {
 		return lipgloss.JoinVertical(lipgloss.Left, header, view)
 	}
@@ -177,36 +252,40 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.header != "" {
 			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.headerStyle.Render(m.header))
 		}
+		if m.showHelp {
+			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.help.View(defaultKeymap()))
+		}
 		m.viewport.Width = msg.Width
 		if m.reverse {
 			m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height)
 		}
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "esc":
+		km := defaultKeymap()
+		switch {
+		case key.Matches(msg, km.Abort):
 			m.aborted = true
 			m.quitting = true
 			return m, tea.Quit
-		case "enter":
+		case key.Matches(msg, km.Submit):
 			m.quitting = true
 			return m, tea.Quit
-		case "ctrl+n", "ctrl+j", "down":
+		case key.Matches(msg, km.Down):
 			m.CursorDown()
-		case "ctrl+p", "ctrl+k", "up":
+		case key.Matches(msg, km.Up):
 			m.CursorUp()
-		case "tab":
+		case key.Matches(msg, km.ToggleAndNext):
 			if m.limit == 1 {
 				break // no op
 			}
 			m.ToggleSelection()
 			m.CursorDown()
-		case "shift+tab":
+		case key.Matches(msg, km.ToggleAndPrevious):
 			if m.limit == 1 {
 				break // no op
 			}
 			m.ToggleSelection()
 			m.CursorUp()
-		case "ctrl+@":
+		case key.Matches(msg, km.Toggle):
 			if m.limit == 1 {
 				break // no op
 			}
