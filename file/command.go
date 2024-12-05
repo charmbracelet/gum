@@ -8,48 +8,9 @@ import (
 
 	"github.com/charmbracelet/bubbles/filepicker"
 	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/exit"
 )
-
-type keymap filepicker.KeyMap
-
-func defaultKeymap() keymap {
-	km := filepicker.DefaultKeyMap()
-	km.Down.SetHelp("↓", "down")
-	km.Up.SetHelp("↑", "up")
-	return keymap(km)
-}
-
-// FullHelp implements help.KeyMap.
-func (k keymap) FullHelp() [][]key.Binding {
-	return [][]key.Binding{
-		{
-			k.Up,
-			k.Down,
-			k.Back,
-			k.Open,
-			k.Select,
-		},
-		{
-			k.GoToTop,
-			k.GoToLast,
-			k.PageUp,
-			k.PageDown,
-		},
-	}
-}
-
-// ShortHelp implements help.KeyMap.
-func (k keymap) ShortHelp() []key.Binding {
-	return []key.Binding{
-		k.Up,
-		k.Down,
-		key.NewBinding(key.WithHelp("esc", "close")),
-		k.Select,
-	}
-}
 
 // Run is the interface to picking a file.
 func (o Options) Run() error {

@@ -17,10 +17,40 @@ import (
 
 	"github.com/charmbracelet/bubbles/filepicker"
 	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
 )
+
+type keymap filepicker.KeyMap
+
+var keyQuit = key.NewBinding(
+	key.WithKeys("esc", "q", "ctrl+c"),
+	key.WithHelp("esc", "close"),
+)
+
+func defaultKeymap() keymap {
+	km := filepicker.DefaultKeyMap()
+	km.Down.SetHelp("↓", "down")
+	km.Up.SetHelp("↑", "up")
+	return keymap(km)
+}
+
+// FullHelp implements help.KeyMap.
+func (k keymap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{k.ShortHelp()}
+}
+
+// ShortHelp implements help.KeyMap.
+func (k keymap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		k.Up,
+		k.Down,
+		keyQuit,
+		k.Select,
+	}
+}
 
 type model struct {
 	filepicker   filepicker.Model
@@ -44,8 +74,9 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q", "esc":
+		switch {
+		// TODO: should this handle q and esc differently than ctrl+c?
+		case key.Matches(msg, keyQuit):
 			m.aborted = true
 			m.quitting = true
 			return m, tea.Quit
