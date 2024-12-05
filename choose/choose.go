@@ -51,6 +51,7 @@ func defaultKeymap() keymap {
 		ToggleAll: key.NewBinding(
 			key.WithKeys("a", "A", "ctrl+a"),
 			key.WithHelp("ctrl+a", "select all"),
+			key.WithDisabled(),
 		),
 		Toggle: key.NewBinding(
 			key.WithKeys(" ", "tab", "x", "ctrl+@"),
