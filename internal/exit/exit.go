@@ -1,6 +1,9 @@
 package exit
 
-import "errors"
+import (
+	"errors"
+	"strconv"
+)
 
 // StatusTimeout is the exit code for timed out commands.
 const StatusTimeout = 124
@@ -13,3 +16,9 @@ var ErrAborted = errors.New("user aborted")
 
 // ErrTimeout is the error returned when the timeout is reached.
 var ErrTimeout = errors.New("timeout")
+
+// ErrExit is a custom exit error.
+type ErrExit int
+
+// Error implements error.
+func (e ErrExit) Error() string { return "exit " + strconv.Itoa(int(e)) }

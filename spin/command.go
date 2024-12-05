@@ -64,6 +64,5 @@ func (o Options) Run() error {
 		}
 	}
 
-	os.Exit(m.status)
-	return nil
+	return exit.ErrExit(m.status)
 }

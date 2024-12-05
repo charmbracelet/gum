@@ -72,6 +72,10 @@ func main() {
 		},
 	)
 	if err := ctx.Run(); err != nil {
+		var ex exit.ErrExit
+		if errors.As(err, &ex) {
+			os.Exit(int(ex))
+		}
 		if errors.Is(err, exit.ErrTimeout) {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(exit.StatusTimeout)
