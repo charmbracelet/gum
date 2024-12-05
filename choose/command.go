@@ -18,8 +18,6 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
-const widthBuffer = 2
-
 // Run provides a shell script interface for choosing between different through
 // options.
 func (o Options) Run() error {
@@ -145,12 +143,4 @@ func (o Options) Run() error {
 	}
 
 	return nil
-}
-
-func ansiprint(s string) {
-	if term.IsTerminal(os.Stdout.Fd()) {
-		fmt.Println(s)
-	} else {
-		fmt.Print(ansi.Strip(s))
-	}
 }
