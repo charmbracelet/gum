@@ -16,8 +16,10 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/filepicker"
+	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/timeout"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
@@ -28,6 +30,8 @@ type model struct {
 	quitting     bool
 	timeout      time.Duration
 	hasTimeout   bool
+	showHelp     bool
+	help         help.Model
 }
 
 func (m model) Init() tea.Cmd {
@@ -69,5 +73,12 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
-	return m.filepicker.View()
+	if !m.showHelp {
+		return m.filepicker.View()
+	}
+	return lipgloss.JoinVertical(
+		lipgloss.Top,
+		m.filepicker.View(),
+		m.help.View(defaultKeymap()),
+	)
 }
