@@ -98,6 +98,7 @@ func (o Options) Run() error {
 		sort:                  o.Sort && o.FuzzySort,
 		strict:                o.Strict,
 		showHelp:              o.ShowHelp,
+		keymap:                defaultKeymap(),
 		help:                  help.New(),
 	}, options...)
 

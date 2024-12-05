@@ -116,6 +116,7 @@ type model struct {
 	timedOut         bool
 	showHelp         bool
 	help             help.Model
+	keymap           keymap
 
 	// styles
 	cursorStyle       lipgloss.Style
@@ -156,7 +157,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case tea.KeyMsg:
 		start, end := m.paginator.GetSliceBounds(len(m.items))
-		km := defaultKeymap()
+		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Down):
 			m.index++
@@ -298,7 +299,7 @@ func (m model) View() string {
 	}
 	parts = append(parts, s.String())
 	if m.showHelp {
-		parts = append(parts, m.help.View(defaultKeymap()))
+		parts = append(parts, m.help.View(m.keymap))
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)

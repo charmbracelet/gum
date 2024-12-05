@@ -53,6 +53,7 @@ func (o Options) Run() error {
 		aborted:    false,
 		showHelp:   o.ShowHelp,
 		help:       help.New(),
+		keymap:     defaultKeymap(),
 	}
 
 	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()

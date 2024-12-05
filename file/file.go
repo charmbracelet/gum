@@ -62,6 +62,7 @@ type model struct {
 	hasTimeout   bool
 	showHelp     bool
 	help         help.Model
+	keymap       keymap
 }
 
 func (m model) Init() tea.Cmd {
@@ -110,6 +111,6 @@ func (m model) View() string {
 	return lipgloss.JoinVertical(
 		lipgloss.Top,
 		m.filepicker.View(),
-		m.help.View(defaultKeymap()),
+		m.help.View(m.keymap),
 	)
 }

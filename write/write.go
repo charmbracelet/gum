@@ -73,6 +73,7 @@ type model struct {
 	textarea    textarea.Model
 	showHelp    bool
 	help        help.Model
+	keymap      keymap
 }
 
 func (m model) Init() tea.Cmd { return textarea.Blink }
@@ -89,7 +90,7 @@ func (m model) View() string {
 	}
 	parts = append(parts, m.textarea.View())
 	if m.showHelp {
-		parts = append(parts, m.help.View(defaultKeymap()))
+		parts = append(parts, m.help.View(m.keymap))
 	}
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
@@ -114,7 +115,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.textarea.SetValue(msg.content)
 	case tea.KeyMsg:
-		km := defaultKeymap()
+		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Quit):
 			m.aborted = true

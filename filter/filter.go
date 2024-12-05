@@ -113,6 +113,7 @@ type model struct {
 	fuzzy                 bool
 	sort                  bool
 	showHelp              bool
+	keymap                keymap
 	help                  help.Model
 	timeout               time.Duration
 	hasTimeout            bool
@@ -204,7 +205,7 @@ func (m model) View() string {
 
 	help := ""
 	if m.showHelp {
-		help = m.help.View(defaultKeymap())
+		help = m.help.View(m.keymap)
 	}
 
 	// View the input and the filtered choices
@@ -253,14 +254,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.headerStyle.Render(m.header))
 		}
 		if m.showHelp {
-			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.help.View(defaultKeymap()))
+			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.help.View(m.keymap))
 		}
 		m.viewport.Width = msg.Width
 		if m.reverse {
 			m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height)
 		}
 	case tea.KeyMsg:
-		km := defaultKeymap()
+		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Abort):
 			m.aborted = true

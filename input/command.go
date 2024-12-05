@@ -53,6 +53,7 @@ func (o Options) Run() error {
 		autoWidth:   o.Width < 1,
 		showHelp:    o.ShowHelp,
 		help:        help.New(),
+		keymap:      defaultKeymap(),
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
 	if err != nil {

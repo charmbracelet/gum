@@ -20,7 +20,7 @@ import (
 
 type keymap textinput.KeyMap
 
-func defaultKeymap() help.KeyMap {
+func defaultKeymap() keymap {
 	k := textinput.DefaultKeyMap
 	return keymap(k)
 }
@@ -52,6 +52,7 @@ type model struct {
 	hasTimeout  bool
 	showHelp    bool
 	help        help.Model
+	keymap      keymap
 }
 
 func (m model) Init() tea.Cmd {
@@ -77,7 +78,7 @@ func (m model) View() string {
 		lipgloss.Top,
 		m.textinput.View(),
 		"",
-		m.help.View(defaultKeymap()),
+		m.help.View(m.keymap),
 	)
 }
 

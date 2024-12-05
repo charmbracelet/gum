@@ -115,6 +115,7 @@ func (o Options) Run() error {
 		timeout:           o.Timeout,
 		showHelp:          o.ShowHelp,
 		help:              help.New(),
+		keymap:            defaultKeymap(),
 	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
 		return fmt.Errorf("failed to start tea program: %w", err)
