@@ -93,6 +93,12 @@ func (o Options) Run() error {
 	pager.InactiveDot = verySubduedStyle.Render("•")
 	pager.KeyMap = paginator.KeyMap{}
 	pager.Page = startingIndex / o.Height
+
+	km := defaultKeymap()
+	if o.NoLimit {
+		km.ToggleAll.SetEnabled(true)
+	}
+
 	// Disable Keybindings since we will control it ourselves.
 	tm, err := tea.NewProgram(model{
 		index:             startingIndex,
@@ -115,7 +121,7 @@ func (o Options) Run() error {
 		timeout:           o.Timeout,
 		showHelp:          o.ShowHelp,
 		help:              help.New(),
-		keymap:            defaultKeymap(),
+		keymap:            km,
 	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
 		return fmt.Errorf("failed to start tea program: %w", err)
