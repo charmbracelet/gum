@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
@@ -35,7 +36,7 @@ func (o Options) Run() error {
 
 	m := model{
 		viewport:            vp,
-		helpStyle:           o.HelpStyle.ToLipgloss(),
+		help:                help.New(),
 		content:             o.Content,
 		origContent:         o.Content,
 		showLineNumbers:     o.ShowLineNumbers,
@@ -43,6 +44,7 @@ func (o Options) Run() error {
 		softWrap:            o.SoftWrap,
 		matchStyle:          o.MatchStyle.ToLipgloss(),
 		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
+		keymap:              defaultKeymap(),
 	}
 	_, err := tea.NewProgram(
 		m,
