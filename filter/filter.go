@@ -114,7 +114,7 @@ type model struct {
 	strict                bool
 }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd { return textinput.Blink }
 
 func (m model) View() string {
 	if m.quitting {
@@ -324,7 +324,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.
 	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
-	return m, cmd
+
+	var cmd2 tea.Cmd
+	m.textinput, cmd2 = m.textinput.Update(msg)
+	return m, tea.Batch(cmd, cmd2)
 }
 
 func (m *model) CursorUp() {
