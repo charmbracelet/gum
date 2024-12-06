@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -55,6 +56,14 @@ func (o Options) Run() error {
 		options = append(options, tea.WithAltScreen())
 	}
 
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+	options = append(options, tea.WithContext(ctx))
+
 	var matches []fuzzy.Match
 	if o.Value != "" {
 		i.SetValue(o.Value)
@@ -93,8 +102,6 @@ func (o Options) Run() error {
 		limit:                 o.Limit,
 		reverse:               o.Reverse,
 		fuzzy:                 o.Fuzzy,
-		timeout:               o.Timeout,
-		hasTimeout:            o.Timeout > 0,
 		sort:                  o.Sort && o.FuzzySort,
 		strict:                o.Strict,
 		showHelp:              o.ShowHelp,
@@ -107,12 +114,12 @@ func (o Options) Run() error {
 		if errors.Is(err, tea.ErrInterrupted) {
 			return exit.ErrAborted
 		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
+		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m := tm.(model)
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
 
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 

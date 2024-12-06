@@ -13,13 +13,10 @@
 package file
 
 import (
-	"time"
-
 	"github.com/charmbracelet/bubbles/filepicker"
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -60,10 +57,7 @@ func (k keymap) ShortHelp() []key.Binding {
 type model struct {
 	filepicker   filepicker.Model
 	selectedPath string
-	timedOut     bool
 	quitting     bool
-	timeout      time.Duration
-	hasTimeout   bool
 	showHelp     bool
 	help         help.Model
 	keymap       keymap
@@ -71,7 +65,6 @@ type model struct {
 
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
-		timeout.Init(m.timeout, nil),
 		m.filepicker.Init(),
 	)
 }
@@ -87,14 +80,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		}
-	case timeout.TickTimeoutMsg:
-		if msg.TimeoutValue <= 0 {
-			m.quitting = true
-			m.timedOut = true
-			return m, tea.Quit
-		}
-		m.timeout = msg.TimeoutValue
-		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	}
 	var cmd tea.Cmd
 	m.filepicker, cmd = m.filepicker.Update(msg)

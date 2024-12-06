@@ -1,6 +1,7 @@
 package spin
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -17,30 +18,39 @@ import (
 func (o Options) Run() error {
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
-	tm, err := tea.NewProgram(model{
-		spinner:    s,
-		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
-		command:    o.Command,
-		align:      o.Align,
-		showOutput: o.ShowOutput && isTTY,
-		showError:  o.ShowError,
-		timeout:    o.Timeout,
-		hasTimeout: o.Timeout > 0,
-	}, tea.WithOutput(os.Stderr)).Run()
+	tm, err := tea.NewProgram(
+		model{
+			spinner:    s,
+			title:      o.TitleStyle.ToLipgloss().Render(o.Title),
+			command:    o.Command,
+			align:      o.Align,
+			showOutput: o.ShowOutput && isTTY,
+			showError:  o.ShowError,
+		},
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
 		if errors.Is(err, tea.ErrInterrupted) {
 			return exit.ErrAborted
+		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
 		}
 		return fmt.Errorf("unable to run action: %w", err)
 	}
 
 	m := tm.(model)
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
 
 	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
 	// STDOUT for piping or other things.

@@ -1,6 +1,7 @@
 package input
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -44,30 +45,38 @@ func (o Options) Run() error {
 		i.EchoCharacter = '•'
 	}
 
-	p := tea.NewProgram(model{
-		textinput:   i,
-		header:      o.Header,
-		headerStyle: o.HeaderStyle.ToLipgloss(),
-		timeout:     o.Timeout,
-		hasTimeout:  o.Timeout > 0,
-		autoWidth:   o.Width < 1,
-		showHelp:    o.ShowHelp,
-		help:        help.New(),
-		keymap:      defaultKeymap(),
-	}, tea.WithOutput(os.Stderr))
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+
+	p := tea.NewProgram(
+		model{
+			textinput:   i,
+			header:      o.Header,
+			headerStyle: o.HeaderStyle.ToLipgloss(),
+			autoWidth:   o.Width < 1,
+			showHelp:    o.ShowHelp,
+			help:        help.New(),
+			keymap:      defaultKeymap(),
+		},
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	)
 	tm, err := p.Run()
 	if err != nil {
 		if errors.Is(err, tea.ErrInterrupted) {
 			return exit.ErrAborted
 		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
+		}
 		return fmt.Errorf("unable to input: %w", err)
 	}
 
 	m := tm.(model)
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
-
 	fmt.Println(m.textinput.Value())
 	return nil
 }

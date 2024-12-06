@@ -1,6 +1,8 @@
 package pager
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"regexp"
 
@@ -30,27 +32,36 @@ func (o Options) Run() error {
 		}
 	}
 
-	tm, err := tea.NewProgram(model{
-		viewport:            vp,
-		helpStyle:           o.HelpStyle.ToLipgloss(),
-		content:             o.Content,
-		origContent:         o.Content,
-		showLineNumbers:     o.ShowLineNumbers,
-		lineNumberStyle:     o.LineNumberStyle.ToLipgloss(),
-		softWrap:            o.SoftWrap,
-		matchStyle:          o.MatchStyle.ToLipgloss(),
-		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
-		timeout:             o.Timeout,
-		hasTimeout:          o.Timeout > 0,
-	}, tea.WithAltScreen()).Run()
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+
+	_, err := tea.NewProgram(
+		model{
+			viewport:            vp,
+			helpStyle:           o.HelpStyle.ToLipgloss(),
+			content:             o.Content,
+			origContent:         o.Content,
+			showLineNumbers:     o.ShowLineNumbers,
+			lineNumberStyle:     o.LineNumberStyle.ToLipgloss(),
+			softWrap:            o.SoftWrap,
+			matchStyle:          o.MatchStyle.ToLipgloss(),
+			matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
+		},
+		tea.WithAltScreen(),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
+		}
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
 		return fmt.Errorf("unable to start program: %w", err)
 	}
-
-	m := tm.(model)
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
-
 	return nil
 }

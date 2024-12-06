@@ -1,6 +1,7 @@
 package file
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -48,24 +49,33 @@ func (o Options) Run() error {
 	fp.Styles.FileSize = o.FileSizeStyle.ToLipgloss()
 	m := model{
 		filepicker: fp,
-		timeout:    o.Timeout,
-		hasTimeout: o.Timeout > 0,
 		showHelp:   o.ShowHelp,
 		help:       help.New(),
 		keymap:     defaultKeymap(),
 	}
 
-	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+
+	tm, err := tea.NewProgram(
+		&m,
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
 		if errors.Is(err, tea.ErrInterrupted) {
 			return exit.ErrAborted
 		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
+		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m = tm.(model)
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
 	if m.selectedPath == "" {
 		return errors.New("no file selected")
 	}

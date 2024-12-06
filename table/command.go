@@ -1,7 +1,9 @@
 package table
 
 import (
+	"context"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"os"
 
@@ -10,6 +12,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	ltable "github.com/charmbracelet/lipgloss/table"
 
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
 )
@@ -113,9 +116,26 @@ func (o Options) Run() error {
 	}
 	table := table.New(opts...)
 
-	tm, err := tea.NewProgram(model{table: table}, tea.WithOutput(os.Stderr)).Run()
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+
+	tm, err := tea.NewProgram(
+		model{table: table},
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
-		return fmt.Errorf("failed to start tea program: %w", err)
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
+		}
+		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 
 	if tm == nil {

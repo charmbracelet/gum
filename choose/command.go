@@ -1,6 +1,7 @@
 package choose
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -83,6 +84,13 @@ func (o Options) Run() error {
 		items[i] = item{text: option, selected: isSelected, order: order}
 	}
 
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+
 	// Use the pagination model to display the current and total number of
 	// pages.
 	pager := paginator.New()
@@ -94,39 +102,42 @@ func (o Options) Run() error {
 	pager.KeyMap = paginator.KeyMap{}
 	pager.Page = startingIndex / o.Height
 	// Disable Keybindings since we will control it ourselves.
-	tm, err := tea.NewProgram(model{
-		index:             startingIndex,
-		currentOrder:      currentOrder,
-		height:            o.Height,
-		cursor:            o.Cursor,
-		header:            o.Header,
-		selectedPrefix:    o.SelectedPrefix,
-		unselectedPrefix:  o.UnselectedPrefix,
-		cursorPrefix:      o.CursorPrefix,
-		items:             items,
-		limit:             o.Limit,
-		paginator:         pager,
-		cursorStyle:       o.CursorStyle.ToLipgloss(),
-		headerStyle:       o.HeaderStyle.ToLipgloss(),
-		itemStyle:         o.ItemStyle.ToLipgloss(),
-		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
-		numSelected:       currentSelected,
-		hasTimeout:        o.Timeout > 0,
-		timeout:           o.Timeout,
-		showHelp:          o.ShowHelp,
-		help:              help.New(),
-		keymap:            defaultKeymap(),
-	}, tea.WithOutput(os.Stderr)).Run()
+	tm, err := tea.NewProgram(
+		model{
+			index:             startingIndex,
+			currentOrder:      currentOrder,
+			height:            o.Height,
+			cursor:            o.Cursor,
+			header:            o.Header,
+			selectedPrefix:    o.SelectedPrefix,
+			unselectedPrefix:  o.UnselectedPrefix,
+			cursorPrefix:      o.CursorPrefix,
+			items:             items,
+			limit:             o.Limit,
+			paginator:         pager,
+			cursorStyle:       o.CursorStyle.ToLipgloss(),
+			headerStyle:       o.HeaderStyle.ToLipgloss(),
+			itemStyle:         o.ItemStyle.ToLipgloss(),
+			selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
+			numSelected:       currentSelected,
+			showHelp:          o.ShowHelp,
+			help:              help.New(),
+			keymap:            defaultKeymap(),
+		},
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
 		if errors.Is(err, tea.ErrInterrupted) {
 			return exit.ErrAborted
 		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
+		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
+
 	m := tm.(model)
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
 			return m.items[i].order < m.items[j].order
