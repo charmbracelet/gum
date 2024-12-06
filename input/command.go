@@ -59,6 +59,7 @@ func (o Options) Run() error {
 		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
+		tea.WithReportFocus(),
 	)
 	tm, err := p.Run()
 	if err != nil {

@@ -50,7 +50,10 @@ func (o Options) Run() error {
 		return nil
 	}
 
-	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
+	options := []tea.ProgramOption{
+		tea.WithOutput(os.Stderr),
+		tea.WithReportFocus(),
+	}
 	if o.Height == 0 {
 		options = append(options, tea.WithAltScreen())
 	}
