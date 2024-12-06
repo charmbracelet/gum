@@ -1,6 +1,7 @@
 package write
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -50,19 +51,34 @@ func (o Options) Run() error {
 	a.SetHeight(o.Height)
 	a.SetValue(o.Value)
 
-	p := tea.NewProgram(model{
-		textarea:    a,
-		header:      o.Header,
-		headerStyle: o.HeaderStyle.ToLipgloss(),
-		autoWidth:   o.Width < 1,
-		help:        help.New(),
-		showHelp:    o.ShowHelp,
-		keymap:      defaultKeymap(),
-	}, tea.WithOutput(os.Stderr), tea.WithReportFocus())
+	ctx := context.Background()
+	if o.Timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
+		defer cancel()
+	}
+
+	p := tea.NewProgram(
+		model{
+			textarea:    a,
+			header:      o.Header,
+			headerStyle: o.HeaderStyle.ToLipgloss(),
+			autoWidth:   o.Width < 1,
+			help:        help.New(),
+			showHelp:    o.ShowHelp,
+			keymap:      defaultKeymap(),
+		},
+		tea.WithOutput(os.Stderr),
+		tea.WithReportFocus(),
+		tea.WithContext(ctx),
+	)
 	tm, err := p.Run()
 	if err != nil {
 		if errors.Is(err, tea.ErrInterrupted) {
 			return exit.ErrAborted
+		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			return exit.ErrTimeout
 		}
 		return fmt.Errorf("unable to write: %w", err)
 	}
