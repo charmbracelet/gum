@@ -28,9 +28,7 @@ type keymap struct {
 }
 
 // FullHelp implements help.KeyMap.
-func (k keymap) FullHelp() [][]key.Binding {
-	return [][]key.Binding{k.ShortHelp()}
-}
+func (k keymap) FullHelp() [][]key.Binding { return nil }
 
 // ShortHelp implements help.KeyMap.
 func (k keymap) ShortHelp() []key.Binding {

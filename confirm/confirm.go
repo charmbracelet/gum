@@ -56,10 +56,6 @@ func defaultKeymap(affirmative, negative string) keymap {
 			key.WithKeys("enter"),
 			key.WithHelp("enter", "submit"),
 		),
-		Help: key.NewBinding(
-			key.WithKeys("?"),
-			key.WithHelp("?", "toggle help"),
-		),
 	}
 }
 
@@ -70,16 +66,10 @@ type keymap struct {
 	Affirmative key.Binding
 	Toggle      key.Binding
 	Submit      key.Binding
-	Help        key.Binding
 }
 
 // FullHelp implements help.KeyMap.
-func (k keymap) FullHelp() [][]key.Binding {
-	return [][]key.Binding{
-		{k.Toggle, k.Submit, k.Affirmative, k.Negative},
-		{k.Abort, k.Quit, k.Help},
-	}
-}
+func (k keymap) FullHelp() [][]key.Binding { return nil }
 
 // ShortHelp implements help.KeyMap.
 func (k keymap) ShortHelp() []key.Binding {
@@ -143,8 +133,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			m.confirmation = true
 			return m, tea.Quit
-		case key.Matches(msg, m.keys.Help):
-			m.help.ShowAll = !m.help.ShowAll
 		}
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
