@@ -38,14 +38,17 @@ func defaultKeymap() keymap {
 		ToggleAndNext: key.NewBinding(
 			key.WithKeys("tab"),
 			key.WithHelp("tab", "toggle"),
+			key.WithDisabled(),
 		),
 		ToggleAndPrevious: key.NewBinding(
 			key.WithKeys("shift+tab"),
 			key.WithHelp("shift+tab", "toggle"),
+			key.WithDisabled(),
 		),
 		Toggle: key.NewBinding(
 			key.WithKeys("ctrl+@"),
 			key.WithHelp("ctrl+@", "toggle"),
+			key.WithDisabled(),
 		),
 		Abort: key.NewBinding(
 			key.WithKeys("ctrl+c", "esc"),

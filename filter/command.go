@@ -68,8 +68,15 @@ func (o Options) Run() error {
 		matches = matchAll(o.Options)
 	}
 
+	km := defaultKeymap()
+
 	if o.NoLimit {
 		o.Limit = len(o.Options)
+	}
+	if o.NoLimit || o.Limit > 1 {
+		km.Toggle.SetEnabled(true)
+		km.ToggleAndPrevious.SetEnabled(true)
+		km.ToggleAndNext.SetEnabled(true)
 	}
 
 	p := tea.NewProgram(model{
@@ -98,7 +105,7 @@ func (o Options) Run() error {
 		sort:                  o.Sort && o.FuzzySort,
 		strict:                o.Strict,
 		showHelp:              o.ShowHelp,
-		keymap:                defaultKeymap(),
+		keymap:                km,
 		help:                  help.New(),
 	}, options...)
 
