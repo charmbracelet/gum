@@ -22,5 +22,5 @@ type Options struct {
 	SelectedStyle style.Styles `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_TABLE_SELECTED_"`
 	ReturnColumn  int          `short:"r" help:"Which column number should be returned instead of whole row as string. Default=0 returns whole Row" default:"0"`
 
-	Timeout time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_CCHOOSE_TIMEOUT"` // including timeout command options [Timeout,...]
+	Timeout time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_TABLE_TIMEOUT"` // including timeout command options [Timeout,...]
 }
