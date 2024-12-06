@@ -26,8 +26,13 @@ import (
 type keymap filepicker.KeyMap
 
 var keyQuit = key.NewBinding(
-	key.WithKeys("esc", "q", "ctrl+c"),
+	key.WithKeys("esc", "q"),
 	key.WithHelp("esc", "close"),
+)
+
+var keyAbort = key.NewBinding(
+	key.WithKeys("ctrl+c"),
+	key.WithHelp("ctrl+c", "abort"),
 )
 
 func defaultKeymap() keymap {
@@ -80,9 +85,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case tea.KeyMsg:
 		switch {
-		// TODO: should this handle q and esc differently than ctrl+c?
-		case key.Matches(msg, keyQuit):
+		case key.Matches(msg, keyAbort):
 			m.aborted = true
+			m.quitting = true
+			return m, tea.Quit
+		case key.Matches(msg, keyQuit):
 			m.quitting = true
 			return m, tea.Quit
 		}
