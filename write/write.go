@@ -123,6 +123,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case key.Matches(msg, km.OpenInEditor):
+			//nolint: gosec
 			return m, createTempFile(m.textarea.Value(), uint(m.textarea.Line())+1)
 		}
 	}
