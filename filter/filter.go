@@ -205,7 +205,7 @@ func (m model) View() string {
 
 	help := ""
 	if m.showHelp {
-		help = m.help.View(m.keymap)
+		help = "\n" + m.help.View(m.keymap)
 	}
 
 	// View the input and the filtered choices
