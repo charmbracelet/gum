@@ -7,17 +7,91 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/reflow/truncate"
 )
 
+type keymap struct {
+	Home,
+	End,
+	Search,
+	NextMatch,
+	PrevMatch,
+	Abort,
+	Quit,
+	ConfirmSearch,
+	CancelSearch key.Binding
+}
+
+// FullHelp implements help.KeyMap.
+func (k keymap) FullHelp() [][]key.Binding {
+	return nil
+}
+
+// ShortHelp implements help.KeyMap.
+func (k keymap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		key.NewBinding(
+			key.WithKeys("up", "down"),
+			key.WithHelp("↑/↓", "navigate"),
+		),
+		k.Quit,
+		k.Search,
+		k.NextMatch,
+		k.PrevMatch,
+	}
+}
+
+func defaultKeymap() keymap {
+	return keymap{
+		Home: key.NewBinding(
+			key.WithKeys("g", "home"),
+			key.WithHelp("h", "home"),
+		),
+		End: key.NewBinding(
+			key.WithKeys("G", "end"),
+			key.WithHelp("G", "end"),
+		),
+		Search: key.NewBinding(
+			key.WithKeys("/"),
+			key.WithHelp("/", "search"),
+		),
+		PrevMatch: key.NewBinding(
+			key.WithKeys("p", "N"),
+			key.WithHelp("N", "previous match"),
+		),
+		NextMatch: key.NewBinding(
+			key.WithKeys("n"),
+			key.WithHelp("n", "next match"),
+		),
+		Abort: key.NewBinding(
+			key.WithKeys("ctrl+c"),
+			key.WithHelp("ctrl+c", "abort"),
+		),
+		Quit: key.NewBinding(
+			key.WithKeys("q", "esc"),
+			key.WithHelp("esc", "quit"),
+		),
+		ConfirmSearch: key.NewBinding(
+			key.WithKeys("enter"),
+			key.WithHelp("enter", "confirm"),
+		),
+		CancelSearch: key.NewBinding(
+			key.WithKeys("ctrl+c", "ctrl+d", "esc"),
+			key.WithHelp("ctrl+c", "cancel"),
+		),
+	}
+}
+
 type model struct {
 	content             string
 	origContent         string
 	viewport            viewport.Model
-	helpStyle           lipgloss.Style
+	help                help.Model
 	showLineNumbers     bool
 	lineNumberStyle     lipgloss.Style
 	softWrap            bool
@@ -25,6 +99,7 @@ type model struct {
 	matchStyle          lipgloss.Style
 	matchHighlightStyle lipgloss.Style
 	maxWidth            int
+	keymap              keymap
 }
 
 func (m model) Init() tea.Cmd {
@@ -39,11 +114,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.KeyHandler(msg)
 	}
 
+	m.keymap.PrevMatch.SetEnabled(m.search.query != nil)
+	m.keymap.NextMatch.SetEnabled(m.search.query != nil)
 	return m, nil
 }
 
+func (m *model) helpView() string {
+	return "\n" + m.help.View(m.keymap)
+}
+
 func (m *model) ProcessText(msg tea.WindowSizeMsg) {
-	m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
+	m.viewport.Height = msg.Height - lipgloss.Height(m.helpView())
 	m.viewport.Width = msg.Width
 	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
 	var text strings.Builder
@@ -86,11 +167,12 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 
 const heightOffset = 2
 
-func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
+func (m model) KeyHandler(msg tea.KeyMsg) (model, func() tea.Msg) {
+	km := m.keymap
 	var cmd tea.Cmd
 	if m.search.active {
-		switch key.String() {
-		case "enter":
+		switch {
+		case key.Matches(msg, km.ConfirmSearch):
 			if m.search.input.Value() != "" {
 				m.content = m.origContent
 				m.search.Execute(&m)
@@ -101,46 +183,40 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			} else {
 				m.search.Done()
 			}
-		case "ctrl+d", "ctrl+c", "esc":
+		case key.Matches(msg, km.CancelSearch):
 			m.search.Done()
 		default:
-			m.search.input, cmd = m.search.input.Update(key)
+			m.search.input, cmd = m.search.input.Update(msg)
 		}
 	} else {
-		switch key.String() {
-		case "g", "home":
+		switch {
+		case key.Matches(msg, km.Home):
 			m.viewport.GotoTop()
-		case "G", "end":
+		case key.Matches(msg, km.End):
 			m.viewport.GotoBottom()
-		case "/":
+		case key.Matches(msg, km.Search):
 			m.search.Begin()
-		case "p", "N":
+		case key.Matches(msg, km.PrevMatch):
 			m.search.PrevMatch(&m)
 			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
-		case "n":
+		case key.Matches(msg, km.NextMatch):
 			m.search.NextMatch(&m)
 			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
-		case "q", "esc":
+		case key.Matches(msg, km.Quit):
 			return m, tea.Quit
-		case "ctrl+c":
+		case key.Matches(msg, km.Abort):
 			return m, tea.Interrupt
 		}
-		m.viewport, cmd = m.viewport.Update(key)
+		m.viewport, cmd = m.viewport.Update(msg)
 	}
 
 	return m, cmd
 }
 
 func (m model) View() string {
-	// TODO: use help bubble here
-	helpMsg := "\n  ↑/↓: Navigate • q: Quit • /: Search "
-	if m.search.query != nil {
-		helpMsg += "• n: Next Match "
-		helpMsg += "• N: Prev Match "
-	}
 	if m.search.active {
 		return m.viewport.View() + "\n" + m.search.input.View()
 	}
 
-	return m.viewport.View() + m.helpStyle.Render(helpMsg)
+	return m.viewport.View() + m.helpView()
 }
