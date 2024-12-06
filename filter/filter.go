@@ -79,7 +79,7 @@ func (k keymap) ShortHelp() []key.Binding {
 		k.ToggleAndNext,
 		key.NewBinding(
 			key.WithKeys("up", "down"),
-			key.WithHelp("↑↓", "navigation"),
+			key.WithHelp("↑↓", "navigate"),
 		),
 		k.Submit,
 	}
