@@ -76,6 +76,7 @@ type model struct {
 }
 
 func (m model) Init() tea.Cmd { return textarea.Blink }
+
 func (m model) View() string {
 	if m.quitting {
 		return ""

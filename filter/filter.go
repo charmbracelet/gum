@@ -116,9 +116,7 @@ type model struct {
 	strict                bool
 }
 
-func (m model) Init() tea.Cmd {
-	return nil
-}
+func (m model) Init() tea.Cmd { return nil }
 
 func (m model) View() string {
 	if m.quitting {

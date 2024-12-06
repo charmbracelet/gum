@@ -63,11 +63,7 @@ type model struct {
 	keymap       keymap
 }
 
-func (m model) Init() tea.Cmd {
-	return tea.Batch(
-		m.filepicker.Init(),
-	)
-}
+func (m model) Init() tea.Cmd { return m.filepicker.Init() }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {

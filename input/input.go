@@ -48,9 +48,7 @@ type model struct {
 	keymap      keymap
 }
 
-func (m model) Init() tea.Cmd {
-	return textinput.Blink
-}
+func (m model) Init() tea.Cmd { return textinput.Blink }
 
 func (m model) View() string {
 	if m.quitting {
