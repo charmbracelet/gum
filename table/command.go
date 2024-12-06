@@ -11,6 +11,7 @@ import (
 	ltable "github.com/charmbracelet/lipgloss/table"
 
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -113,16 +114,26 @@ func (o Options) Run() error {
 	}
 	table := table.New(opts...)
 
-	tm, err := tea.NewProgram(model{table: table}, tea.WithOutput(os.Stderr)).Run()
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
+	m := model{
+		table: table,
+	}
+	tm, err := tea.NewProgram(
+		m,
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
-		return fmt.Errorf("failed to start tea program: %w", err)
+		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 
 	if tm == nil {
 		return fmt.Errorf("failed to get selection")
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 
 	if o.ReturnColumn > 0 && o.ReturnColumn <= len(m.selected) {
 		if err = writer.Write([]string{m.selected[o.ReturnColumn-1]}); err != nil {

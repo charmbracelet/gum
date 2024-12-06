@@ -15,8 +15,8 @@ import (
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/term"
 
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for choosing between different through
@@ -83,6 +83,9 @@ func (o Options) Run() error {
 		items[i] = item{text: option, selected: isSelected, order: order}
 	}
 
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
 	// Use the pagination model to display the current and total number of
 	// pages.
 	pager := paginator.New()
@@ -102,8 +105,7 @@ func (o Options) Run() error {
 		km.ToggleAll.SetEnabled(true)
 	}
 
-	// Disable Keybindings since we will control it ourselves.
-	tm, err := tea.NewProgram(model{
+	m := model{
 		index:             startingIndex,
 		currentOrder:      currentOrder,
 		height:            o.Height,
@@ -120,22 +122,22 @@ func (o Options) Run() error {
 		itemStyle:         o.ItemStyle.ToLipgloss(),
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
 		numSelected:       currentSelected,
-		hasTimeout:        o.Timeout > 0,
-		timeout:           o.Timeout,
 		showHelp:          o.ShowHelp,
 		help:              help.New(),
 		keymap:            km,
-	}, tea.WithOutput(os.Stderr)).Run()
+	}
+
+	// Disable Keybindings since we will control it ourselves.
+	tm, err := tea.NewProgram(
+		m,
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
-		return fmt.Errorf("failed to start tea program: %w", err)
+		return fmt.Errorf("unable to pick selection: %w", err)
 	}
-	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
+
+	m = tm.(model)
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
 			return m.items[i].order < m.items[j].order

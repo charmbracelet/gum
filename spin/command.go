@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/x/term"
 
 	"github.com/charmbracelet/gum/internal/exit"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for the spinner bubble.
@@ -16,31 +17,30 @@ import (
 func (o Options) Run() error {
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
-	tm, err := tea.NewProgram(model{
+	m := model{
 		spinner:    s,
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
 		showOutput: o.ShowOutput && isTTY,
 		showError:  o.ShowError,
-		timeout:    o.Timeout,
-		hasTimeout: o.Timeout > 0,
-	}, tea.WithOutput(os.Stderr)).Run()
+	}
+	tm, err := tea.NewProgram(
+		m,
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
-		return fmt.Errorf("failed to run spin: %w", err)
+		return fmt.Errorf("unable to run action: %w", err)
 	}
 
-	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
-
+	m = tm.(model)
 	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
 	// STDOUT for piping or other things.
 	//nolint:nestif

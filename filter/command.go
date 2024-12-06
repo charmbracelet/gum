@@ -14,9 +14,9 @@ import (
 	"github.com/charmbracelet/x/term"
 	"github.com/sahilm/fuzzy"
 
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for filtering through options, powered
@@ -55,6 +55,10 @@ func (o Options) Run() error {
 		options = append(options, tea.WithAltScreen())
 	}
 
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+	options = append(options, tea.WithContext(ctx))
+
 	var matches []fuzzy.Match
 	if o.Value != "" {
 		i.SetValue(o.Value)
@@ -79,7 +83,7 @@ func (o Options) Run() error {
 		km.ToggleAndNext.SetEnabled(true)
 	}
 
-	p := tea.NewProgram(model{
+	m := model{
 		choices:               o.Options,
 		indicator:             o.Indicator,
 		matches:               matches,
@@ -100,27 +104,20 @@ func (o Options) Run() error {
 		limit:                 o.Limit,
 		reverse:               o.Reverse,
 		fuzzy:                 o.Fuzzy,
-		timeout:               o.Timeout,
-		hasTimeout:            o.Timeout > 0,
 		sort:                  o.Sort && o.FuzzySort,
 		strict:                o.Strict,
 		showHelp:              o.ShowHelp,
 		keymap:                km,
 		help:                  help.New(),
-	}, options...)
+	}
+	p := tea.NewProgram(m, options...)
 
 	tm, err := p.Run()
 	if err != nil {
-		return fmt.Errorf("unable to run filter: %w", err)
-	}
-	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
-	if m.timedOut {
-		return exit.ErrTimeout
+		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 
+	m = tm.(model)
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 
 	// allSelections contains values only if limit is greater

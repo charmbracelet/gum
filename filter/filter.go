@@ -12,9 +12,6 @@ package filter
 
 import (
 	"strings"
-	"time"
-
-	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -100,8 +97,6 @@ type model struct {
 	selectedPrefix        string
 	unselectedPrefix      string
 	height                int
-	aborted               bool
-	timedOut              bool
 	quitting              bool
 	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style
@@ -116,14 +111,10 @@ type model struct {
 	showHelp              bool
 	keymap                keymap
 	help                  help.Model
-	timeout               time.Duration
-	hasTimeout            bool
 	strict                bool
 }
 
-func (m model) Init() tea.Cmd {
-	return timeout.Init(m.timeout, nil)
-}
+func (m model) Init() tea.Cmd { return nil }
 
 func (m model) View() string {
 	if m.quitting {
@@ -240,15 +231,6 @@ func (m model) helpView() string {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
-	case timeout.TickTimeoutMsg:
-		if msg.TimeoutValue <= 0 {
-			m.quitting = true
-			m.timedOut = true
-			return m, tea.Quit
-		}
-		m.timeout = msg.TimeoutValue
-		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
-
 	case tea.WindowSizeMsg:
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
@@ -269,9 +251,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Abort):
-			m.aborted = true
 			m.quitting = true
-			return m, tea.Quit
+			return m, tea.Interrupt
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
 			return m, tea.Quit

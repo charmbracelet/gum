@@ -20,9 +20,7 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
-	"time"
 
-	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/x/term"
 
 	"github.com/charmbracelet/bubbles/spinner"
@@ -35,16 +33,12 @@ type model struct {
 	align      string
 	command    []string
 	quitting   bool
-	aborted    bool
-	timedOut   bool
 	status     int
 	stdout     string
 	stderr     string
 	output     string
 	showOutput bool
 	showError  bool
-	timeout    time.Duration
-	hasTimeout bool
 }
 
 var (
@@ -95,14 +89,13 @@ func commandAbort() tea.Msg {
 	if executing != nil && executing.Process != nil {
 		_ = executing.Process.Signal(syscall.SIGINT)
 	}
-	return nil
+	return tea.InterruptMsg{}
 }
 
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
 		commandStart(m.command),
-		timeout.Init(m.timeout, nil),
 	)
 }
 
@@ -111,15 +104,11 @@ func (m model) View() string {
 		return strings.TrimPrefix(errbuf.String()+"\n"+outbuf.String(), "\n")
 	}
 
-	var str string
-	if m.hasTimeout {
-		str = timeout.Str(m.timeout)
-	}
 	var header string
 	if m.align == "left" {
-		header = m.spinner.View() + str + " " + m.title
+		header = m.spinner.View() + " " + m.title
 	} else {
-		header = str + " " + m.title + " " + m.spinner.View()
+		header = " " + m.title + " " + m.spinner.View()
 	}
 	if !m.showOutput {
 		return header
@@ -130,15 +119,6 @@ func (m model) View() string {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
-	case timeout.TickTimeoutMsg:
-		if msg.TimeoutValue <= 0 {
-			// grab current output before closing for piped instances
-			m.stdout = outbuf.String()
-			m.timedOut = true
-			return m, tea.Quit
-		}
-		m.timeout = msg.TimeoutValue
-		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case finishCommandMsg:
 		m.stdout = msg.stdout
 		m.stderr = msg.stderr
@@ -149,7 +129,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
-			m.aborted = true
 			return m, commandAbort
 		}
 	}

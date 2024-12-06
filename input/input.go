@@ -8,13 +8,10 @@
 package input
 
 import (
-	"time"
-
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -44,21 +41,12 @@ type model struct {
 	headerStyle lipgloss.Style
 	textinput   textinput.Model
 	quitting    bool
-	timedOut    bool
-	aborted     bool
-	timeout     time.Duration
-	hasTimeout  bool
 	showHelp    bool
 	help        help.Model
 	keymap      keymap
 }
 
-func (m model) Init() tea.Cmd {
-	return tea.Batch(
-		textinput.Blink,
-		timeout.Init(m.timeout, nil),
-	)
-}
+func (m model) Init() tea.Cmd { return textinput.Blink }
 
 func (m model) View() string {
 	if m.quitting {
@@ -82,25 +70,16 @@ func (m model) View() string {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case timeout.TickTimeoutMsg:
-		if msg.TimeoutValue <= 0 {
-			m.quitting = true
-			m.timedOut = true
-			return m, tea.Quit
-		}
-		m.timeout = msg.TimeoutValue
-		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	case tea.WindowSizeMsg:
 		if m.autoWidth {
 			m.textinput.Width = msg.Width - lipgloss.Width(m.textinput.Prompt) - 1
 		}
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc":
+		case "ctrl+c":
 			m.quitting = true
-			m.aborted = true
-			return m, tea.Quit
-		case "enter":
+			return m, tea.Interrupt
+		case "esc", "enter":
 			m.quitting = true
 			return m, tea.Quit
 		}

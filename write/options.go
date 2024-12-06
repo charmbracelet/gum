@@ -1,6 +1,10 @@
 package write
 
-import "github.com/charmbracelet/gum/style"
+import (
+	"time"
+
+	"github.com/charmbracelet/gum/style"
+)
 
 // Options are the customization options for the textarea.
 type Options struct {
@@ -25,4 +29,6 @@ type Options struct {
 	HeaderStyle           style.Styles `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_WRITE_HEADER_"`
 	PlaceholderStyle      style.Styles `embed:"" prefix:"placeholder." set:"defaultForeground=240" envprefix:"GUM_WRITE_PLACEHOLDER_"`
 	PromptStyle           style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=7" envprefix:"GUM_WRITE_PROMPT_"`
+
+	Timeout time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_WRITE_TIMEOUT"`
 }
