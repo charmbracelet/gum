@@ -399,7 +399,7 @@ $EDITOR $(gum filter)
 
 ```bash
 SESSION=$(tmux list-sessions -F \#S | gum filter --placeholder "Pick session...")
-tmux switch-client -t $SESSION || tmux attach -t $SESSION
+tmux switch-client -t "$SESSION" || tmux attach -t "$SESSION"
 ```
 
 - Pick a commit hash from `git` history
