@@ -74,6 +74,10 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		if m.showHelp {
+			m.filepicker.Height -= lipgloss.Height(m.helpView())
+		}
 	case tea.KeyMsg:
 		switch {
 		// TODO: should this handle q and esc differently than ctrl+c?
@@ -108,9 +112,9 @@ func (m model) View() string {
 	if !m.showHelp {
 		return m.filepicker.View()
 	}
-	return lipgloss.JoinVertical(
-		lipgloss.Top,
-		m.filepicker.View(),
-		m.help.View(m.keymap),
-	)
+	return m.filepicker.View() + m.helpView()
+}
+
+func (m model) helpView() string {
+	return "\n" + m.help.View(m.keymap)
 }
