@@ -21,7 +21,7 @@ type Options struct {
 	SelectedPrefixStyle   style.Styles  `embed:"" prefix:"selected-indicator." set:"defaultForeground=212" envprefix:"GUM_FILTER_SELECTED_PREFIX_"`
 	UnselectedPrefix      string        `help:"Character to indicate unselected items (hidden if limit is 1)" default:" ○ " env:"GUM_FILTER_UNSELECTED_PREFIX"`
 	UnselectedPrefixStyle style.Styles  `embed:"" prefix:"unselected-prefix." set:"defaultForeground=240" envprefix:"GUM_FILTER_UNSELECTED_PREFIX_"`
-	HeaderStyle           style.Styles  `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_FILTER_HEADER_"`
+	HeaderStyle           style.Styles  `embed:"" prefix:"header." set:"defaultForeground=99" envprefix:"GUM_FILTER_HEADER_"`
 	Header                string        `help:"Header value" default:"" env:"GUM_FILTER_HEADER"`
 	TextStyle             style.Styles  `embed:"" prefix:"text." envprefix:"GUM_FILTER_TEXT_"`
 	CursorTextStyle       style.Styles  `embed:"" prefix:"cursor-text." envprefix:"GUM_FILTER_CURSOR_TEXT_"`
