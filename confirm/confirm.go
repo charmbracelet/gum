@@ -91,7 +91,6 @@ type model struct {
 	affirmative string
 	negative    string
 	quitting    bool
-	aborted     bool
 	hasTimeout  bool
 	showHelp    bool
 	help        help.Model
@@ -121,8 +120,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, m.keys.Abort):
 			m.confirmation = false
-			m.aborted = true
-			fallthrough
+			m.quitting = true
+			return m, tea.Interrupt
 		case key.Matches(msg, m.keys.Quit):
 			m.confirmation = false
 			m.quitting = true

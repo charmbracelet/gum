@@ -118,12 +118,12 @@ func (o Options) Run() error {
 		keymap:            defaultKeymap(),
 	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
-		return fmt.Errorf("failed to start tea program: %w", err)
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
+		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
 	if m.timedOut {
 		return exit.ErrTimeout
 	}

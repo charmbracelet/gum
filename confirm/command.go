@@ -2,6 +2,7 @@ package confirm
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -29,15 +30,15 @@ func (o Options) Run() error {
 		promptStyle:      o.PromptStyle.ToLipgloss(),
 	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
-		return err
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
+		return fmt.Errorf("unable to confirm: %w", err)
 	}
 
 	m := tm.(model)
 	if m.timedOut {
 		return exit.ErrTimeout
-	}
-	if m.aborted {
-		return exit.ErrAborted
 	}
 	if m.confirmation {
 		return nil

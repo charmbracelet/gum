@@ -60,7 +60,6 @@ func (k keymap) ShortHelp() []key.Binding {
 type model struct {
 	filepicker   filepicker.Model
 	selectedPath string
-	aborted      bool
 	timedOut     bool
 	quitting     bool
 	timeout      time.Duration
@@ -82,9 +81,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, keyAbort):
-			m.aborted = true
 			m.quitting = true
-			return m, tea.Quit
+			return m, tea.Interrupt
 		case key.Matches(msg, keyQuit):
 			m.quitting = true
 			return m, tea.Quit

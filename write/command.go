@@ -1,6 +1,7 @@
 package write
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -60,13 +61,13 @@ func (o Options) Run() error {
 	}, tea.WithOutput(os.Stderr), tea.WithReportFocus())
 	tm, err := p.Run()
 	if err != nil {
-		return fmt.Errorf("failed to run write: %w", err)
-	}
-	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
+		return fmt.Errorf("unable to write: %w", err)
 	}
 
+	m := tm.(model)
 	fmt.Println(m.textarea.Value())
 	return nil
 }

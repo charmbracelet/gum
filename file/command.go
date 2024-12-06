@@ -50,7 +50,6 @@ func (o Options) Run() error {
 		filepicker: fp,
 		timeout:    o.Timeout,
 		hasTimeout: o.Timeout > 0,
-		aborted:    false,
 		showHelp:   o.ShowHelp,
 		help:       help.New(),
 		keymap:     defaultKeymap(),
@@ -58,12 +57,12 @@ func (o Options) Run() error {
 
 	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m = tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
 	if m.timedOut {
 		return exit.ErrTimeout
 	}

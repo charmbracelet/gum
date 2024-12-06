@@ -104,12 +104,12 @@ func (o Options) Run() error {
 
 	tm, err := p.Run()
 	if err != nil {
-		return fmt.Errorf("unable to run filter: %w", err)
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
+		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
 	if m.timedOut {
 		return exit.ErrTimeout
 	}

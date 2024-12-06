@@ -66,7 +66,6 @@ func defaultKeymap() keymap {
 
 type model struct {
 	autoWidth   bool
-	aborted     bool
 	header      string
 	headerStyle lipgloss.Style
 	quitting    bool
@@ -109,18 +108,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, openEditor(msg.path, msg.lineno)
 	case editorFinishedMsg:
 		if msg.err != nil {
-			m.aborted = true
 			m.quitting = true
-			return m, tea.Quit
+			return m, tea.Interrupt
 		}
 		m.textarea.SetValue(msg.content)
 	case tea.KeyMsg:
 		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Quit):
-			m.aborted = true
 			m.quitting = true
-			return m, tea.Quit
+			return m, tea.Interrupt
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
 			return m, tea.Quit

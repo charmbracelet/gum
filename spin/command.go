@@ -1,6 +1,7 @@
 package spin
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -30,13 +31,13 @@ func (o Options) Run() error {
 		hasTimeout: o.Timeout > 0,
 	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
-		return fmt.Errorf("failed to run spin: %w", err)
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
+		return fmt.Errorf("unable to run action: %w", err)
 	}
 
 	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
 	if m.timedOut {
 		return exit.ErrTimeout
 	}

@@ -35,7 +35,6 @@ type model struct {
 	align      string
 	command    []string
 	quitting   bool
-	aborted    bool
 	timedOut   bool
 	status     int
 	stdout     string
@@ -95,7 +94,7 @@ func commandAbort() tea.Msg {
 	if executing != nil && executing.Process != nil {
 		_ = executing.Process.Signal(syscall.SIGINT)
 	}
-	return nil
+	return tea.InterruptMsg{}
 }
 
 func (m model) Init() tea.Cmd {
@@ -149,7 +148,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
-			m.aborted = true
 			return m, commandAbort
 		}
 	}

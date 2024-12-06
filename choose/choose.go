@@ -112,7 +112,6 @@ type model struct {
 	numSelected      int
 	currentOrder     int
 	paginator        paginator.Model
-	aborted          bool
 	timedOut         bool
 	showHelp         bool
 	help             help.Model
@@ -199,9 +198,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m = m.deselectAll()
 			}
 		case key.Matches(msg, km.Abort):
-			m.aborted = true
 			m.quitting = true
-			return m, tea.Quit
+			return m, tea.Interrupt
 		case key.Matches(msg, km.Toggle):
 			if m.limit == 1 {
 				break // no op

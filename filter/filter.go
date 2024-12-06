@@ -264,9 +264,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Abort):
-			m.aborted = true
 			m.quitting = true
-			return m, tea.Quit
+			return m, tea.Interrupt
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
 			return m, tea.Quit

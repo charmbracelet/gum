@@ -1,6 +1,7 @@
 package input
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -45,7 +46,6 @@ func (o Options) Run() error {
 
 	p := tea.NewProgram(model{
 		textinput:   i,
-		aborted:     false,
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
 		timeout:     o.Timeout,
@@ -57,13 +57,13 @@ func (o Options) Run() error {
 	}, tea.WithOutput(os.Stderr))
 	tm, err := p.Run()
 	if err != nil {
-		return fmt.Errorf("failed to run input: %w", err)
+		if errors.Is(err, tea.ErrInterrupted) {
+			return exit.ErrAborted
+		}
+		return fmt.Errorf("unable to input: %w", err)
 	}
 
 	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
 	if m.timedOut {
 		return exit.ErrTimeout
 	}
