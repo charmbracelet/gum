@@ -106,7 +106,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.textarea, cmd = m.textarea.Update(msg)
 		return m, cmd
 	case startEditorMsg:
-		return m, openEditor(msg.path, int(msg.lineno))
+		return m, openEditor(msg.path, msg.lineno)
 	case editorFinishedMsg:
 		if msg.err != nil {
 			m.aborted = true
@@ -162,7 +162,7 @@ func createTempFile(content string, lineno uint) tea.Cmd {
 	}
 }
 
-func openEditor(path string, lineno int) tea.Cmd {
+func openEditor(path string, lineno uint) tea.Cmd {
 	cb := func(err error) tea.Msg {
 		if err != nil {
 			return editorFinishedMsg{
@@ -180,7 +180,7 @@ func openEditor(path string, lineno int) tea.Cmd {
 	cmd, err := editor.Cmd(
 		"Gum",
 		path,
-		editor.LineNumber(uint(lineno)),
+		editor.LineNumber(lineno),
 		editor.EndOfLine(),
 	)
 	if err != nil {
