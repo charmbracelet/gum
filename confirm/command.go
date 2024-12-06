@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/gum/internal/exit"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -40,12 +39,6 @@ func (o Options) Run() error {
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {
-		if errors.Is(err, tea.ErrInterrupted) {
-			return exit.ErrAborted
-		}
-		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			return exit.ErrTimeout
-		}
 		return fmt.Errorf("unable to confirm: %w", err)
 	}
 

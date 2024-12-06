@@ -3,7 +3,6 @@ package table
 import (
 	"context"
 	"encoding/csv"
-	"errors"
 	"fmt"
 	"os"
 
@@ -12,7 +11,6 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	ltable "github.com/charmbracelet/lipgloss/table"
 
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/style"
 )
@@ -132,12 +130,6 @@ func (o Options) Run() error {
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {
-		if errors.Is(err, tea.ErrInterrupted) {
-			return exit.ErrAborted
-		}
-		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			return exit.ErrTimeout
-		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 

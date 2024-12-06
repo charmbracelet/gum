@@ -2,7 +2,6 @@ package spin
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 
@@ -42,12 +41,6 @@ func (o Options) Run() error {
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {
-		if errors.Is(err, tea.ErrInterrupted) {
-			return exit.ErrAborted
-		}
-		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			return exit.ErrTimeout
-		}
 		return fmt.Errorf("unable to run action: %w", err)
 	}
 

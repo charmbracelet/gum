@@ -2,7 +2,6 @@ package input
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 
@@ -11,7 +10,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/charmbracelet/gum/cursor"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -68,12 +66,6 @@ func (o Options) Run() error {
 	)
 	tm, err := p.Run()
 	if err != nil {
-		if errors.Is(err, tea.ErrInterrupted) {
-			return exit.ErrAborted
-		}
-		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			return exit.ErrTimeout
-		}
 		return fmt.Errorf("unable to input: %w", err)
 	}
 

@@ -15,7 +15,6 @@ import (
 	"github.com/charmbracelet/x/term"
 	"github.com/sahilm/fuzzy"
 
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
@@ -119,12 +118,6 @@ func (o Options) Run() error {
 
 	tm, err := p.Run()
 	if err != nil {
-		if errors.Is(err, tea.ErrInterrupted) {
-			return exit.ErrAborted
-		}
-		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			return exit.ErrTimeout
-		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 

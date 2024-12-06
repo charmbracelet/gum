@@ -10,7 +10,6 @@ import (
 	"github.com/charmbracelet/bubbles/filepicker"
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/internal/exit"
 )
 
 // Run is the interface to picking a file.
@@ -67,12 +66,6 @@ func (o Options) Run() error {
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {
-		if errors.Is(err, tea.ErrInterrupted) {
-			return exit.ErrAborted
-		}
-		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			return exit.ErrTimeout
-		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m = tm.(model)

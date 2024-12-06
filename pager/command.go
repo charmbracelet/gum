@@ -2,13 +2,11 @@ package pager
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"regexp"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -56,12 +54,6 @@ func (o Options) Run() error {
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {
-		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			return exit.ErrTimeout
-		}
-		if errors.Is(err, tea.ErrInterrupted) {
-			return exit.ErrAborted
-		}
 		return fmt.Errorf("unable to start program: %w", err)
 	}
 	return nil
