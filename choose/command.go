@@ -1,7 +1,6 @@
 package choose
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -17,6 +16,7 @@ import (
 	"github.com/charmbracelet/x/term"
 
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for choosing between different through
@@ -83,12 +83,8 @@ func (o Options) Run() error {
 		items[i] = item{text: option, selected: isSelected, order: order}
 	}
 
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
 
 	// Use the pagination model to display the current and total number of
 	// pages.

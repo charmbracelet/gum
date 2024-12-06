@@ -1,7 +1,6 @@
 package file
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -10,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/filepicker"
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run is the interface to picking a file.
@@ -53,12 +53,8 @@ func (o Options) Run() error {
 		keymap:     defaultKeymap(),
 	}
 
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
 
 	tm, err := tea.NewProgram(
 		&m,

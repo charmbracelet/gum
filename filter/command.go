@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -17,6 +16,7 @@ import (
 
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for filtering through options, powered
@@ -55,12 +55,8 @@ func (o Options) Run() error {
 		options = append(options, tea.WithAltScreen())
 	}
 
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
 	options = append(options, tea.WithContext(ctx))
 
 	var matches []fuzzy.Match

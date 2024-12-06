@@ -1,7 +1,6 @@
 package input
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -11,6 +10,7 @@ import (
 
 	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for the text input bubble.
@@ -43,12 +43,8 @@ func (o Options) Run() error {
 		i.EchoCharacter = '•'
 	}
 
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
 
 	m := model{
 		textinput:   i,

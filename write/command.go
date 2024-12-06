@@ -1,7 +1,6 @@
 package write
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for the text area bubble.
@@ -49,12 +49,8 @@ func (o Options) Run() error {
 	a.SetHeight(o.Height)
 	a.SetValue(o.Value)
 
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
 
 	m := model{
 		textarea:    a,

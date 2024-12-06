@@ -1,12 +1,12 @@
 package confirm
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
 
 	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/gum/internal/timeout"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -14,12 +14,9 @@ import (
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
 	m := model{
 		affirmative:      o.Affirmative,
 		negative:         o.Negative,

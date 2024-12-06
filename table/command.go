@@ -1,7 +1,6 @@
 package table
 
 import (
-	"context"
 	"encoding/csv"
 	"fmt"
 	"os"
@@ -12,6 +11,7 @@ import (
 	ltable "github.com/charmbracelet/lipgloss/table"
 
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/style"
 )
 
@@ -114,12 +114,8 @@ func (o Options) Run() error {
 	}
 	table := table.New(opts...)
 
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
 
 	m := model{
 		table: table,

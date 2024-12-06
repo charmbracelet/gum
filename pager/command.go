@@ -1,13 +1,13 @@
 package pager
 
 import (
-	"context"
 	"fmt"
 	"regexp"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for the viewport bubble.
@@ -30,12 +30,8 @@ func (o Options) Run() error {
 		}
 	}
 
-	ctx := context.Background()
-	if o.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
-		defer cancel()
-	}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
 
 	m := model{
 		viewport:            vp,
