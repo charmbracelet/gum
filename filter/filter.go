@@ -99,7 +99,6 @@ type model struct {
 	selectedPrefix        string
 	unselectedPrefix      string
 	height                int
-	aborted               bool
 	quitting              bool
 	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style

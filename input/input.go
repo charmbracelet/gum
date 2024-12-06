@@ -43,7 +43,6 @@ type model struct {
 	headerStyle lipgloss.Style
 	textinput   textinput.Model
 	quitting    bool
-	aborted     bool
 	showHelp    bool
 	help        help.Model
 	keymap      keymap
