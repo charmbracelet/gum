@@ -21,20 +21,21 @@ func (o Options) Run() error {
 		ctx, cancel = context.WithTimeout(ctx, o.Timeout)
 		defer cancel()
 	}
+	m := model{
+		affirmative:      o.Affirmative,
+		negative:         o.Negative,
+		confirmation:     o.Default,
+		defaultSelection: o.Default,
+		keys:             defaultKeymap(o.Affirmative, o.Negative),
+		help:             help.New(),
+		showHelp:         o.ShowHelp,
+		prompt:           o.Prompt,
+		selectedStyle:    o.SelectedStyle.ToLipgloss(),
+		unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
+		promptStyle:      o.PromptStyle.ToLipgloss(),
+	}
 	tm, err := tea.NewProgram(
-		model{
-			affirmative:      o.Affirmative,
-			negative:         o.Negative,
-			confirmation:     o.Default,
-			defaultSelection: o.Default,
-			keys:             defaultKeymap(o.Affirmative, o.Negative),
-			help:             help.New(),
-			showHelp:         o.ShowHelp,
-			prompt:           o.Prompt,
-			selectedStyle:    o.SelectedStyle.ToLipgloss(),
-			unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
-			promptStyle:      o.PromptStyle.ToLipgloss(),
-		},
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
 	).Run()
@@ -48,7 +49,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to confirm: %w", err)
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 	if m.confirmation {
 		return nil
 	}

@@ -81,7 +81,7 @@ func (o Options) Run() error {
 		o.Limit = len(o.Options)
 	}
 
-	p := tea.NewProgram(model{
+	m := model{
 		choices:               o.Options,
 		indicator:             o.Indicator,
 		matches:               matches,
@@ -107,7 +107,8 @@ func (o Options) Run() error {
 		showHelp:              o.ShowHelp,
 		keymap:                defaultKeymap(),
 		help:                  help.New(),
-	}, options...)
+	}
+	p := tea.NewProgram(m, options...)
 
 	tm, err := p.Run()
 	if err != nil {
@@ -119,8 +120,8 @@ func (o Options) Run() error {
 		}
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
-	m := tm.(model)
 
+	m = tm.(model)
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 
 	// allSelections contains values only if limit is greater

@@ -52,16 +52,17 @@ func (o Options) Run() error {
 		defer cancel()
 	}
 
+	m := model{
+		textinput:   i,
+		header:      o.Header,
+		headerStyle: o.HeaderStyle.ToLipgloss(),
+		autoWidth:   o.Width < 1,
+		showHelp:    o.ShowHelp,
+		help:        help.New(),
+		keymap:      defaultKeymap(),
+	}
 	p := tea.NewProgram(
-		model{
-			textinput:   i,
-			header:      o.Header,
-			headerStyle: o.HeaderStyle.ToLipgloss(),
-			autoWidth:   o.Width < 1,
-			showHelp:    o.ShowHelp,
-			help:        help.New(),
-			keymap:      defaultKeymap(),
-		},
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
 	)
@@ -76,7 +77,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to input: %w", err)
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 	fmt.Println(m.textinput.Value())
 	return nil
 }

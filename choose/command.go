@@ -101,29 +101,29 @@ func (o Options) Run() error {
 	pager.InactiveDot = verySubduedStyle.Render("•")
 	pager.KeyMap = paginator.KeyMap{}
 	pager.Page = startingIndex / o.Height
-	// Disable Keybindings since we will control it ourselves.
+	m := model{
+		index:             startingIndex,
+		currentOrder:      currentOrder,
+		height:            o.Height,
+		cursor:            o.Cursor,
+		header:            o.Header,
+		selectedPrefix:    o.SelectedPrefix,
+		unselectedPrefix:  o.UnselectedPrefix,
+		cursorPrefix:      o.CursorPrefix,
+		items:             items,
+		limit:             o.Limit,
+		paginator:         pager,
+		cursorStyle:       o.CursorStyle.ToLipgloss(),
+		headerStyle:       o.HeaderStyle.ToLipgloss(),
+		itemStyle:         o.ItemStyle.ToLipgloss(),
+		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
+		numSelected:       currentSelected,
+		showHelp:          o.ShowHelp,
+		help:              help.New(),
+		keymap:            defaultKeymap(),
+	}
 	tm, err := tea.NewProgram(
-		model{
-			index:             startingIndex,
-			currentOrder:      currentOrder,
-			height:            o.Height,
-			cursor:            o.Cursor,
-			header:            o.Header,
-			selectedPrefix:    o.SelectedPrefix,
-			unselectedPrefix:  o.UnselectedPrefix,
-			cursorPrefix:      o.CursorPrefix,
-			items:             items,
-			limit:             o.Limit,
-			paginator:         pager,
-			cursorStyle:       o.CursorStyle.ToLipgloss(),
-			headerStyle:       o.HeaderStyle.ToLipgloss(),
-			itemStyle:         o.ItemStyle.ToLipgloss(),
-			selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
-			numSelected:       currentSelected,
-			showHelp:          o.ShowHelp,
-			help:              help.New(),
-			keymap:            defaultKeymap(),
-		},
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
 	).Run()
@@ -137,7 +137,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
 			return m.items[i].order < m.items[j].order

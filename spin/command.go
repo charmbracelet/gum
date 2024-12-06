@@ -28,15 +28,16 @@ func (o Options) Run() error {
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
+	m := model{
+		spinner:    s,
+		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
+		command:    o.Command,
+		align:      o.Align,
+		showOutput: o.ShowOutput && isTTY,
+		showError:  o.ShowError,
+	}
 	tm, err := tea.NewProgram(
-		model{
-			spinner:    s,
-			title:      o.TitleStyle.ToLipgloss().Render(o.Title),
-			command:    o.Command,
-			align:      o.Align,
-			showOutput: o.ShowOutput && isTTY,
-			showError:  o.ShowError,
-		},
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
 	).Run()
@@ -50,8 +51,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to run action: %w", err)
 	}
 
-	m := tm.(model)
-
+	m = tm.(model)
 	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
 	// STDOUT for piping or other things.
 	//nolint:nestif

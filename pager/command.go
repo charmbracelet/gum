@@ -39,18 +39,19 @@ func (o Options) Run() error {
 		defer cancel()
 	}
 
+	m := model{
+		viewport:            vp,
+		helpStyle:           o.HelpStyle.ToLipgloss(),
+		content:             o.Content,
+		origContent:         o.Content,
+		showLineNumbers:     o.ShowLineNumbers,
+		lineNumberStyle:     o.LineNumberStyle.ToLipgloss(),
+		softWrap:            o.SoftWrap,
+		matchStyle:          o.MatchStyle.ToLipgloss(),
+		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
+	}
 	_, err := tea.NewProgram(
-		model{
-			viewport:            vp,
-			helpStyle:           o.HelpStyle.ToLipgloss(),
-			content:             o.Content,
-			origContent:         o.Content,
-			showLineNumbers:     o.ShowLineNumbers,
-			lineNumberStyle:     o.LineNumberStyle.ToLipgloss(),
-			softWrap:            o.SoftWrap,
-			matchStyle:          o.MatchStyle.ToLipgloss(),
-			matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
-		},
+		m,
 		tea.WithAltScreen(),
 		tea.WithContext(ctx),
 	).Run()

@@ -58,16 +58,17 @@ func (o Options) Run() error {
 		defer cancel()
 	}
 
+	m := model{
+		textarea:    a,
+		header:      o.Header,
+		headerStyle: o.HeaderStyle.ToLipgloss(),
+		autoWidth:   o.Width < 1,
+		help:        help.New(),
+		showHelp:    o.ShowHelp,
+		keymap:      defaultKeymap(),
+	}
 	p := tea.NewProgram(
-		model{
-			textarea:    a,
-			header:      o.Header,
-			headerStyle: o.HeaderStyle.ToLipgloss(),
-			autoWidth:   o.Width < 1,
-			help:        help.New(),
-			showHelp:    o.ShowHelp,
-			keymap:      defaultKeymap(),
-		},
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithReportFocus(),
 		tea.WithContext(ctx),
@@ -83,7 +84,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to write: %w", err)
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 	fmt.Println(m.textarea.Value())
 	return nil
 }

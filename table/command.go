@@ -123,8 +123,11 @@ func (o Options) Run() error {
 		defer cancel()
 	}
 
+	m := model{
+		table: table,
+	}
 	tm, err := tea.NewProgram(
-		model{table: table},
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
 	).Run()
@@ -142,7 +145,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("failed to get selection")
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 
 	if o.ReturnColumn > 0 && o.ReturnColumn <= len(m.selected) {
 		if err = writer.Write([]string{m.selected[o.ReturnColumn-1]}); err != nil {
