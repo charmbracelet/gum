@@ -101,6 +101,15 @@ func (o Options) Run() error {
 	pager.InactiveDot = verySubduedStyle.Render("•")
 	pager.KeyMap = paginator.KeyMap{}
 	pager.Page = startingIndex / o.Height
+
+	km := defaultKeymap()
+	if o.NoLimit || o.Limit > 1 {
+		km.Toggle.SetEnabled(true)
+	}
+	if o.NoLimit {
+		km.ToggleAll.SetEnabled(true)
+	}
+
 	m := model{
 		index:             startingIndex,
 		currentOrder:      currentOrder,
@@ -120,8 +129,10 @@ func (o Options) Run() error {
 		numSelected:       currentSelected,
 		showHelp:          o.ShowHelp,
 		help:              help.New(),
-		keymap:            defaultKeymap(),
+		keymap:            km,
 	}
+
+	// Disable Keybindings since we will control it ourselves.
 	tm, err := tea.NewProgram(
 		m,
 		tea.WithOutput(os.Stderr),

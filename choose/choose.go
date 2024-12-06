@@ -49,10 +49,12 @@ func defaultKeymap() keymap {
 		ToggleAll: key.NewBinding(
 			key.WithKeys("a", "A", "ctrl+a"),
 			key.WithHelp("ctrl+a", "select all"),
+			key.WithDisabled(),
 		),
 		Toggle: key.NewBinding(
 			key.WithKeys(" ", "tab", "x", "ctrl+@"),
 			key.WithHelp("x", "toggle"),
+			key.WithDisabled(),
 		),
 		Abort: key.NewBinding(
 			key.WithKeys("ctrl+c", "esc"),
@@ -89,7 +91,7 @@ func (k keymap) ShortHelp() []key.Binding {
 		k.Toggle,
 		key.NewBinding(
 			key.WithKeys("up", "down", "right", "left"),
-			key.WithHelp("↑↓←→", "navigation"),
+			key.WithHelp("↑↓←→", "navigate"),
 		),
 		k.Submit,
 		k.ToggleAll,
