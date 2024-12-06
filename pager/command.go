@@ -48,6 +48,7 @@ func (o Options) Run() error {
 		m,
 		tea.WithAltScreen(),
 		tea.WithContext(ctx),
+		tea.WithReportFocus(),
 	).Run()
 	if err != nil {
 		return fmt.Errorf("unable to start program: %w", err)

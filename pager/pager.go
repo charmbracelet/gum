@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -34,10 +35,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.ProcessText(msg)
 	case tea.KeyMsg:
-		return m.KeyHandler(msg)
+		return m.keyHandler(msg)
 	}
 
-	return m, nil
+	var cmd tea.Cmd
+	m.search.input, cmd = m.search.input.Update(msg)
+	return m, cmd
 }
 
 func (m *model) ProcessText(msg tea.WindowSizeMsg) {
@@ -84,7 +87,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 
 const heightOffset = 2
 
-func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
+func (m model) keyHandler(key tea.KeyMsg) (model, tea.Cmd) {
 	var cmd tea.Cmd
 	if m.search.active {
 		switch key.String() {
@@ -112,6 +115,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			m.viewport.GotoBottom()
 		case "/":
 			m.search.Begin()
+			return m, textinput.Blink
 		case "p", "N":
 			m.search.PrevMatch(&m)
 			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
