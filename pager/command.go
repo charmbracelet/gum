@@ -6,6 +6,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 )
 
@@ -29,7 +30,7 @@ func (o Options) Run() error {
 		}
 	}
 
-	model := model{
+	tm, err := tea.NewProgram(model{
 		viewport:            vp,
 		helpStyle:           o.HelpStyle.ToLipgloss(),
 		content:             o.Content,
@@ -41,10 +42,15 @@ func (o Options) Run() error {
 		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
 		timeout:             o.Timeout,
 		hasTimeout:          o.Timeout > 0,
-	}
-	_, err := tea.NewProgram(model, tea.WithAltScreen()).Run()
+	}, tea.WithAltScreen()).Run()
 	if err != nil {
 		return fmt.Errorf("unable to start program: %w", err)
 	}
+
+	m := tm.(model)
+	if m.timedOut {
+		return exit.ErrTimeout
+	}
+
 	return nil
 }

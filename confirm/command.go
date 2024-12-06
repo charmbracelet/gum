@@ -1,42 +1,47 @@
 package confirm
 
 import (
+	"errors"
 	"os"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/gum/internal/exit"
-	"github.com/charmbracelet/huh"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
-	theme := huh.ThemeCharm()
-	theme.Focused.Title = o.PromptStyle.ToLipgloss()
-	theme.Focused.FocusedButton = o.SelectedStyle.ToLipgloss()
-	theme.Focused.BlurredButton = o.UnselectedStyle.ToLipgloss()
-
-	choice := o.Default
-
-	err := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().
-				Affirmative(o.Affirmative).
-				Negative(o.Negative).
-				Title(o.Prompt).
-				Value(&choice),
-		),
-	).
-		WithTimeout(o.Timeout).
-		WithTheme(theme).
-		WithShowHelp(o.ShowHelp).
-		Run()
+	tm, err := tea.NewProgram(model{
+		affirmative:      o.Affirmative,
+		negative:         o.Negative,
+		confirmation:     o.Default,
+		defaultSelection: o.Default,
+		timeout:          o.Timeout,
+		hasTimeout:       o.Timeout > 0,
+		keys:             defaultKeymap(o.Affirmative, o.Negative),
+		help:             help.New(),
+		showHelp:         o.ShowHelp,
+		prompt:           o.Prompt,
+		selectedStyle:    o.SelectedStyle.ToLipgloss(),
+		unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
+		promptStyle:      o.PromptStyle.ToLipgloss(),
+	}, tea.WithOutput(os.Stderr)).Run()
 	if err != nil {
-		return exit.Handle(err, o.Timeout)
+		return err
 	}
 
-	if !choice {
-		os.Exit(1)
+	m := tm.(model)
+	if m.timedOut {
+		return exit.ErrTimeout
+	}
+	if m.aborted {
+		return exit.ErrAborted
+	}
+	if m.confirmation {
+		return nil
 	}
 
-	return nil
+	return errors.New("not confirmed")
 }

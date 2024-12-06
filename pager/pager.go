@@ -30,6 +30,7 @@ type model struct {
 	maxWidth            int
 	timeout             time.Duration
 	hasTimeout          bool
+	timedOut            bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -40,6 +41,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case timeout.TickTimeoutMsg:
 		if msg.TimeoutValue <= 0 {
+			m.timedOut = true
 			return m, tea.Quit
 		}
 		m.timeout = msg.TimeoutValue
