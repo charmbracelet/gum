@@ -205,7 +205,7 @@ func (m model) View() string {
 
 	help := ""
 	if m.showHelp {
-		help = "\n" + m.help.View(m.keymap)
+		help = m.helpView()
 	}
 
 	// View the input and the filtered choices
@@ -213,7 +213,7 @@ func (m model) View() string {
 	if m.reverse {
 		view := m.viewport.View() + "\n" + m.textinput.View()
 		if m.showHelp {
-			view += "\n" + help
+			view += help
 		}
 		if m.header != "" {
 			return lipgloss.JoinVertical(lipgloss.Left, view, header)
@@ -224,12 +224,16 @@ func (m model) View() string {
 
 	view := m.textinput.View() + "\n" + m.viewport.View()
 	if m.showHelp {
-		view += "\n" + help
+		view += help
 	}
 	if m.header != "" {
 		return lipgloss.JoinVertical(lipgloss.Left, header, view)
 	}
 	return view
+}
+
+func (m model) helpView() string {
+	return "\n\n" + m.help.View(m.keymap)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -248,13 +252,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
 		}
-
-		// Make place in the view port if header is set
+		// Include the header in the height calculation.
 		if m.header != "" {
 			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.headerStyle.Render(m.header))
 		}
+		// Include the help in the total height calculation.
 		if m.showHelp {
-			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.help.View(m.keymap))
+			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.helpView())
 		}
 		m.viewport.Width = msg.Width
 		if m.reverse {
