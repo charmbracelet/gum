@@ -22,7 +22,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/x/term"
 
@@ -37,6 +36,7 @@ type model struct {
 	command    []string
 	quitting   bool
 	aborted    bool
+	timedOut   bool
 	status     int
 	stdout     string
 	stderr     string
@@ -134,8 +134,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.TimeoutValue <= 0 {
 			// grab current output before closing for piped instances
 			m.stdout = outbuf.String()
-
-			m.status = exit.StatusAborted
+			m.timedOut = true
 			return m, tea.Quit
 		}
 		m.timeout = msg.TimeoutValue
