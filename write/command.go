@@ -28,6 +28,7 @@ func (o Options) Run() error {
 	a.Placeholder = o.Placeholder
 	a.ShowLineNumbers = o.ShowLineNumbers
 	a.CharLimit = o.CharLimit
+	a.MaxHeight = o.MaxLines
 
 	style := textarea.Style{
 		Base:             o.BaseStyle.ToLipgloss(),
