@@ -6,9 +6,6 @@ package pager
 import (
 	"fmt"
 	"strings"
-	"time"
-
-	"github.com/charmbracelet/gum/timeout"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -28,25 +25,12 @@ type model struct {
 	matchStyle          lipgloss.Style
 	matchHighlightStyle lipgloss.Style
 	maxWidth            int
-	timeout             time.Duration
-	hasTimeout          bool
-	timedOut            bool
 }
 
-func (m model) Init() tea.Cmd {
-	return timeout.Init(m.timeout, nil)
-}
+func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case timeout.TickTimeoutMsg:
-		if msg.TimeoutValue <= 0 {
-			m.timedOut = true
-			return m, tea.Quit
-		}
-		m.timeout = msg.TimeoutValue
-		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
-
 	case tea.WindowSizeMsg:
 		m.ProcessText(msg)
 	case tea.KeyMsg:
@@ -134,8 +118,10 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 		case "n":
 			m.search.NextMatch(&m)
 			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
-		case "q", "ctrl+c", "esc":
+		case "q", "esc":
 			return m, tea.Quit
+		case "ctrl+c":
+			return m, tea.Interrupt
 		}
 		m.viewport, cmd = m.viewport.Update(key)
 	}
@@ -144,17 +130,14 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 }
 
 func (m model) View() string {
-	var timeoutStr string
-	if m.hasTimeout {
-		timeoutStr = timeout.Str(m.timeout) + " "
-	}
-	helpMsg := "\n" + timeoutStr + " ↑/↓: Navigate • q: Quit • /: Search "
+	// TODO: use help bubble here
+	helpMsg := "\n ↑/↓: Navigate • q: Quit • /: Search "
 	if m.search.query != nil {
 		helpMsg += "• n: Next Match "
 		helpMsg += "• N: Prev Match "
 	}
 	if m.search.active {
-		return m.viewport.View() + "\n" + timeoutStr + " " + m.search.input.View()
+		return m.viewport.View() + "\n " + m.search.input.View()
 	}
 
 	return m.viewport.View() + m.helpStyle.Render(helpMsg)

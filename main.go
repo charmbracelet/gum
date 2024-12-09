@@ -7,10 +7,10 @@ import (
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
-
-	"github.com/charmbracelet/gum/internal/exit"
 )
 
 const shaLen = 7
@@ -76,11 +76,11 @@ func main() {
 		if errors.As(err, &ex) {
 			os.Exit(int(ex))
 		}
-		if errors.Is(err, exit.ErrTimeout) {
-			fmt.Fprintln(os.Stderr, err)
+		if errors.Is(err, tea.ErrProgramKilled) {
+			fmt.Fprintln(os.Stderr, "timed out")
 			os.Exit(exit.StatusTimeout)
 		}
-		if errors.Is(err, exit.ErrAborted) {
+		if errors.Is(err, tea.ErrInterrupted) {
 			os.Exit(exit.StatusAborted)
 		}
 		fmt.Fprintln(os.Stderr, err)

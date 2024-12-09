@@ -9,7 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/filepicker"
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/internal/exit"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run is the interface to picking a file.
@@ -48,25 +48,23 @@ func (o Options) Run() error {
 	fp.Styles.FileSize = o.FileSizeStyle.ToLipgloss()
 	m := model{
 		filepicker: fp,
-		timeout:    o.Timeout,
-		hasTimeout: o.Timeout > 0,
-		aborted:    false,
 		showHelp:   o.ShowHelp,
 		help:       help.New(),
 		keymap:     defaultKeymap(),
 	}
 
-	tm, err := tea.NewProgram(&m, tea.WithOutput(os.Stderr)).Run()
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
+	tm, err := tea.NewProgram(
+		&m,
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m = tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
 	if m.selectedPath == "" {
 		return errors.New("no file selected")
 	}
