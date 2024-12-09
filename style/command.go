@@ -20,7 +20,7 @@ func (o Options) Run() error {
 	if len(o.Text) > 0 {
 		text = strings.Join(o.Text, "\n")
 	} else {
-		text, _ = stdin.Read()
+		text, _ = stdin.ReadStrip()
 		if text == "" {
 			return errors.New("no input provided, see `gum style --help`")
 		}

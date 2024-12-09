@@ -24,7 +24,7 @@ func (o Options) Run() error {
 	if len(o.Template) > 0 {
 		input = strings.Join(o.Template, "\n")
 	} else {
-		input, _ = stdin.Read()
+		input, _ = stdin.ReadStrip()
 	}
 
 	switch o.Type {
