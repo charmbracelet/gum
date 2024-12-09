@@ -8,10 +8,9 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
-
 	"github.com/charmbracelet/gum/cursor"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for the text area bubble.
@@ -49,7 +48,7 @@ func (o Options) Run() error {
 	a.SetHeight(o.Height)
 	a.SetValue(o.Value)
 
-	p := tea.NewProgram(model{
+	m := model{
 		textarea:    a,
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
@@ -57,16 +56,22 @@ func (o Options) Run() error {
 		help:        help.New(),
 		showHelp:    o.ShowHelp,
 		keymap:      defaultKeymap(),
-	}, tea.WithOutput(os.Stderr), tea.WithReportFocus())
+	}
+
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
+	p := tea.NewProgram(
+		m,
+		tea.WithOutput(os.Stderr),
+		tea.WithReportFocus(),
+		tea.WithContext(ctx),
+	)
 	tm, err := p.Run()
 	if err != nil {
 		return fmt.Errorf("failed to run write: %w", err)
 	}
-	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
-
+	m = tm.(model)
 	fmt.Println(m.textarea.Value())
 	return nil
 }

@@ -12,13 +12,11 @@ package choose
 
 import (
 	"strings"
-	"time"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/timeout"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -112,8 +110,6 @@ type model struct {
 	numSelected      int
 	currentOrder     int
 	paginator        paginator.Model
-	aborted          bool
-	timedOut         bool
 	showHelp         bool
 	help             help.Model
 	keymap           keymap
@@ -123,8 +119,6 @@ type model struct {
 	headerStyle       lipgloss.Style
 	itemStyle         lipgloss.Style
 	selectedItemStyle lipgloss.Style
-	hasTimeout        bool
-	timeout           time.Duration
 }
 
 type item struct {
@@ -133,28 +127,13 @@ type item struct {
 	order    int
 }
 
-func (m model) Init() tea.Cmd {
-	return timeout.Init(m.timeout, nil)
-}
+func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		return m, nil
-	case timeout.TickTimeoutMsg:
-		if msg.TimeoutValue <= 0 {
-			m.quitting = true
-			m.timedOut = true
-			// If the user hasn't selected any items in a multi-select.
-			// Then we select the item that they have pressed enter on. If they
-			// have selected items, then we simply return them.
-			if m.numSelected < 1 {
-				m.items[m.index].selected = true
-			}
-			return m, tea.Quit
-		}
-		m.timeout = msg.TimeoutValue
-		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
+
 	case tea.KeyMsg:
 		start, end := m.paginator.GetSliceBounds(len(m.items))
 		km := m.keymap
@@ -199,9 +178,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m = m.deselectAll()
 			}
 		case key.Matches(msg, km.Abort):
-			m.aborted = true
 			m.quitting = true
-			return m, tea.Quit
+			return m, tea.Interrupt
 		case key.Matches(msg, km.Toggle):
 			if m.limit == 1 {
 				break // no op
@@ -262,7 +240,6 @@ func (m model) View() string {
 	}
 
 	var s strings.Builder
-	var timeoutStr string
 
 	start, end := m.paginator.GetSliceBounds(len(m.items))
 	for i, item := range m.items[start:end] {
@@ -273,10 +250,7 @@ func (m model) View() string {
 		}
 
 		if item.selected {
-			if m.hasTimeout {
-				timeoutStr = timeout.Str(m.timeout)
-			}
-			s.WriteString(m.selectedItemStyle.Render(m.selectedPrefix + item.text + timeoutStr))
+			s.WriteString(m.selectedItemStyle.Render(m.selectedPrefix + item.text))
 		} else if i == m.index%m.height {
 			s.WriteString(m.cursorStyle.Render(m.cursorPrefix + item.text))
 		} else {

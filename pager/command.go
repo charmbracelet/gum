@@ -6,8 +6,8 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for the viewport bubble.
@@ -30,7 +30,7 @@ func (o Options) Run() error {
 		}
 	}
 
-	tm, err := tea.NewProgram(model{
+	m := model{
 		viewport:            vp,
 		helpStyle:           o.HelpStyle.ToLipgloss(),
 		content:             o.Content,
@@ -40,16 +40,18 @@ func (o Options) Run() error {
 		softWrap:            o.SoftWrap,
 		matchStyle:          o.MatchStyle.ToLipgloss(),
 		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
-		timeout:             o.Timeout,
-		hasTimeout:          o.Timeout > 0,
-	}, tea.WithAltScreen()).Run()
-	if err != nil {
-		return fmt.Errorf("unable to start program: %w", err)
 	}
 
-	m := tm.(model)
-	if m.timedOut {
-		return exit.ErrTimeout
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
+	_, err := tea.NewProgram(
+		m,
+		tea.WithAltScreen(),
+		tea.WithContext(ctx),
+	).Run()
+	if err != nil {
+		return fmt.Errorf("unable to start program: %w", err)
 	}
 
 	return nil

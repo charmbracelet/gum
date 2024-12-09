@@ -10,13 +10,12 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/files"
+	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/term"
 	"github.com/sahilm/fuzzy"
-
-	"github.com/charmbracelet/gum/internal/exit"
-	"github.com/charmbracelet/gum/internal/files"
-	"github.com/charmbracelet/gum/internal/stdin"
 )
 
 // Run provides a shell script interface for filtering through options, powered
@@ -50,7 +49,13 @@ func (o Options) Run() error {
 		return nil
 	}
 
-	options := []tea.ProgramOption{tea.WithOutput(os.Stderr)}
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
+	options := []tea.ProgramOption{
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	}
 	if o.Height == 0 {
 		options = append(options, tea.WithAltScreen())
 	}
@@ -100,8 +105,6 @@ func (o Options) Run() error {
 		limit:                 o.Limit,
 		reverse:               o.Reverse,
 		fuzzy:                 o.Fuzzy,
-		timeout:               o.Timeout,
-		hasTimeout:            o.Timeout > 0,
 		sort:                  o.Sort && o.FuzzySort,
 		strict:                o.Strict,
 		showHelp:              o.ShowHelp,
@@ -113,14 +116,8 @@ func (o Options) Run() error {
 	if err != nil {
 		return fmt.Errorf("unable to run filter: %w", err)
 	}
-	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
 
+	m := tm.(model)
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 
 	// allSelections contains values only if limit is greater

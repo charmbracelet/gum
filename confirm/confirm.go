@@ -11,11 +11,8 @@
 package confirm
 
 import (
-	"time"
-
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/gum/timeout"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -81,15 +78,11 @@ type model struct {
 	affirmative string
 	negative    string
 	quitting    bool
-	aborted     bool
-	hasTimeout  bool
 	showHelp    bool
 	help        help.Model
 	keys        keymap
-	timeout     time.Duration
 
 	confirmation bool
-	timedOut     bool
 
 	defaultSelection bool
 
@@ -99,9 +92,7 @@ type model struct {
 	unselectedStyle lipgloss.Style
 }
 
-func (m model) Init() tea.Cmd {
-	return timeout.Init(m.timeout, m.defaultSelection)
-}
+func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -111,8 +102,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, m.keys.Abort):
 			m.confirmation = false
-			m.aborted = true
-			fallthrough
+			return m, tea.Interrupt
 		case key.Matches(msg, m.keys.Quit):
 			m.confirmation = false
 			m.quitting = true
@@ -134,16 +124,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.confirmation = true
 			return m, tea.Quit
 		}
-	case timeout.TickTimeoutMsg:
-		if msg.TimeoutValue <= 0 {
-			m.quitting = true
-			m.confirmation = m.defaultSelection
-			m.timedOut = true
-			return m, tea.Quit
-		}
-
-		m.timeout = msg.TimeoutValue
-		return m, timeout.Tick(msg.TimeoutValue, msg.Data)
 	}
 	return m, nil
 }
@@ -153,23 +133,14 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg, timeoutStrYes, timeoutStrNo string
-	timeoutStrNo = ""
-	timeoutStrYes = ""
-	if m.hasTimeout {
-		if m.defaultSelection {
-			timeoutStrYes = timeout.Str(m.timeout)
-		} else {
-			timeoutStrNo = timeout.Str(m.timeout)
-		}
-	}
+	var aff, neg string
 
 	if m.confirmation {
-		aff = m.selectedStyle.Render(m.affirmative + timeoutStrYes)
-		neg = m.unselectedStyle.Render(m.negative + timeoutStrNo)
+		aff = m.selectedStyle.Render(m.affirmative)
+		neg = m.unselectedStyle.Render(m.negative)
 	} else {
-		aff = m.unselectedStyle.Render(m.affirmative + timeoutStrYes)
-		neg = m.selectedStyle.Render(m.negative + timeoutStrNo)
+		aff = m.unselectedStyle.Render(m.affirmative)
+		neg = m.selectedStyle.Render(m.negative)
 	}
 
 	// If the option is intentionally empty, do not show it.

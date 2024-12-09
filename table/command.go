@@ -7,11 +7,11 @@ import (
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 	ltable "github.com/charmbracelet/lipgloss/table"
-
-	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for rendering tabular data (CSV).
@@ -111,9 +111,17 @@ func (o Options) Run() error {
 	if o.Height > 0 {
 		opts = append(opts, table.WithHeight(o.Height))
 	}
+
 	table := table.New(opts...)
 
-	tm, err := tea.NewProgram(model{table: table}, tea.WithOutput(os.Stderr)).Run()
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
+	tm, err := tea.NewProgram(
+		model{table: table},
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	).Run()
 	if err != nil {
 		return fmt.Errorf("failed to start tea program: %w", err)
 	}

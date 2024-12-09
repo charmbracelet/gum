@@ -7,10 +7,9 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-
 	"github.com/charmbracelet/gum/cursor"
-	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/timeout"
 )
 
 // Run provides a shell script interface for the text input bubble.
@@ -43,31 +42,30 @@ func (o Options) Run() error {
 		i.EchoCharacter = '•'
 	}
 
-	p := tea.NewProgram(model{
+	m := model{
 		textinput:   i,
-		aborted:     false,
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
-		timeout:     o.Timeout,
-		hasTimeout:  o.Timeout > 0,
 		autoWidth:   o.Width < 1,
 		showHelp:    o.ShowHelp,
 		help:        help.New(),
 		keymap:      defaultKeymap(),
-	}, tea.WithOutput(os.Stderr))
+	}
+
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
+	p := tea.NewProgram(
+		m,
+		tea.WithOutput(os.Stderr),
+		tea.WithContext(ctx),
+	)
 	tm, err := p.Run()
 	if err != nil {
 		return fmt.Errorf("failed to run input: %w", err)
 	}
 
-	m := tm.(model)
-	if m.aborted {
-		return exit.ErrAborted
-	}
-	if m.timedOut {
-		return exit.ErrTimeout
-	}
-
+	m = tm.(model)
 	fmt.Println(m.textinput.Value())
 	return nil
 }
