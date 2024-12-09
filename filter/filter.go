@@ -114,7 +114,7 @@ type model struct {
 	strict                bool
 }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd { return textinput.Blink }
 
 func (m model) View() string {
 	if m.quitting {
@@ -229,7 +229,8 @@ func (m model) helpView() string {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	var cmd tea.Cmd
+	var cmd, icmd tea.Cmd
+	m.textinput, icmd = m.textinput.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.height == 0 || m.height > msg.Height {
@@ -278,8 +279,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.ToggleSelection()
 		default:
-			m.textinput, cmd = m.textinput.Update(msg)
-
 			// yOffsetFromBottom is the number of lines from the bottom of the
 			// list to the top of the viewport. This is used to keep the viewport
 			// at a constant position when the number of matches are reduced
@@ -324,7 +323,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.
 	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
-	return m, cmd
+	return m, tea.Batch(cmd, icmd)
 }
 
 func (m *model) CursorUp() {

@@ -58,6 +58,7 @@ func (o Options) Run() error {
 	p := tea.NewProgram(
 		m,
 		tea.WithOutput(os.Stderr),
+		tea.WithReportFocus(),
 		tea.WithContext(ctx),
 	)
 	tm, err := p.Run()
