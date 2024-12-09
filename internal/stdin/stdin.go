@@ -30,7 +30,13 @@ func Read() (string, error) {
 		}
 	}
 
-	return strings.TrimSuffix(ansi.Strip(b.String()), "\n"), nil
+	return strings.TrimSuffix(b.String(), "\n"), nil
+}
+
+// ReadStrip reads input from an stdin pipe and strips ansi sequences.
+func ReadStrip() (string, error) {
+	s, err := Read()
+	return ansi.Strip(s), err
 }
 
 // IsEmpty returns whether stdin is empty.
