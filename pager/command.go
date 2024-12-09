@@ -48,6 +48,7 @@ func (o Options) Run() error {
 	_, err := tea.NewProgram(
 		m,
 		tea.WithAltScreen(),
+		tea.WithReportFocus(),
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {

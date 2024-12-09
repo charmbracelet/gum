@@ -54,6 +54,7 @@ func (o Options) Run() error {
 
 	options := []tea.ProgramOption{
 		tea.WithOutput(os.Stderr),
+		tea.WithReportFocus(),
 		tea.WithContext(ctx),
 	}
 	if o.Height == 0 {

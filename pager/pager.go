@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -32,15 +33,17 @@ func (m model) Init() tea.Cmd { return nil }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.ProcessText(msg)
+		m.processText(msg)
 	case tea.KeyMsg:
-		return m.KeyHandler(msg)
+		return m.keyHandler(msg)
 	}
 
-	return m, nil
+	var cmd tea.Cmd
+	m.search.input, cmd = m.search.input.Update(msg)
+	return m, cmd
 }
 
-func (m *model) ProcessText(msg tea.WindowSizeMsg) {
+func (m *model) processText(msg tea.WindowSizeMsg) {
 	m.viewport.Height = msg.Height - lipgloss.Height(m.helpStyle.Render("?")) - 1
 	m.viewport.Width = msg.Width
 	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
@@ -84,7 +87,7 @@ func (m *model) ProcessText(msg tea.WindowSizeMsg) {
 
 const heightOffset = 2
 
-func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
+func (m model) keyHandler(key tea.KeyMsg) (model, tea.Cmd) {
 	var cmd tea.Cmd
 	if m.search.active {
 		switch key.String() {
@@ -95,7 +98,7 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 
 				// Trigger a view update to highlight the found matches.
 				m.search.NextMatch(&m)
-				m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+				m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 			} else {
 				m.search.Done()
 			}
@@ -112,12 +115,13 @@ func (m model) KeyHandler(key tea.KeyMsg) (model, func() tea.Msg) {
 			m.viewport.GotoBottom()
 		case "/":
 			m.search.Begin()
+			return m, textinput.Blink
 		case "p", "N":
 			m.search.PrevMatch(&m)
-			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 		case "n":
 			m.search.NextMatch(&m)
-			m.ProcessText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
 		case "q", "esc":
 			return m, tea.Quit
 		case "ctrl+c":
