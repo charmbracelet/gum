@@ -15,14 +15,59 @@
 package table
 
 import (
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 )
+
+type keymap struct {
+	Navigate,
+	Select,
+	Quit,
+	Abort key.Binding
+}
+
+// FullHelp implements help.KeyMap.
+func (k keymap) FullHelp() [][]key.Binding { return nil }
+
+// ShortHelp implements help.KeyMap.
+func (k keymap) ShortHelp() []key.Binding {
+	return []key.Binding{
+		k.Navigate,
+		k.Select,
+		k.Quit,
+	}
+}
+
+func defaultKeymap() keymap {
+	return keymap{
+		Navigate: key.NewBinding(
+			key.WithKeys("up", "down"),
+			key.WithHelp("↑↓", "navigate"),
+		),
+		Select: key.NewBinding(
+			key.WithKeys("enter"),
+			key.WithHelp("enter", "select"),
+		),
+		Quit: key.NewBinding(
+			key.WithKeys("esc", "ctrl+q", "q"),
+			key.WithHelp("esc", "quit"),
+		),
+		Abort: key.NewBinding(
+			key.WithKeys("ctrl+c"),
+			key.WithHelp("ctrl+c", "abort"),
+		),
+	}
+}
 
 type model struct {
 	table    table.Model
 	selected table.Row
 	quitting bool
+	showHelp bool
+	help     help.Model
+	keymap   keymap
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -32,15 +77,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "enter":
+		km := m.keymap
+		switch {
+		case key.Matches(msg, km.Select):
 			m.selected = m.table.SelectedRow()
 			m.quitting = true
 			return m, tea.Quit
-		case "q", "esc":
+		case key.Matches(msg, km.Quit):
 			m.quitting = true
 			return m, tea.Quit
-		case "ctrl+c":
+		case key.Matches(msg, km.Abort):
 			m.quitting = true
 			return m, tea.Interrupt
 		}
@@ -54,5 +100,9 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
-	return m.table.View()
+	s := m.table.View()
+	if m.showHelp {
+		s += "\n" + m.help.View(m.keymap)
+	}
+	return s
 }

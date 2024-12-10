@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
@@ -117,8 +118,14 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
+	m := model{
+		table:    table,
+		showHelp: o.ShowHelp,
+		help:     help.New(),
+		keymap:   defaultKeymap(),
+	}
 	tm, err := tea.NewProgram(
-		model{table: table},
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
 	).Run()
@@ -130,8 +137,7 @@ func (o Options) Run() error {
 		return fmt.Errorf("failed to get selection")
 	}
 
-	m := tm.(model)
-
+	m = tm.(model)
 	if o.ReturnColumn > 0 && o.ReturnColumn <= len(m.selected) {
 		if err = writer.Write([]string{m.selected[o.ReturnColumn-1]}); err != nil {
 			return fmt.Errorf("failed to write col %d of selected row: %w", o.ReturnColumn, err)
