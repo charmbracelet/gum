@@ -85,11 +85,17 @@ func (o Options) Run() error {
 	}
 
 	rows := make([]table.Row, 0, len(data))
-	for _, row := range data {
-		if len(row) > len(columns) {
+	for row := range data {
+		if len(data[row]) > len(columns) {
 			return fmt.Errorf("invalid number of columns")
 		}
-		rows = append(rows, table.Row(row))
+
+		// fixes the data in case we have more columns than rows:
+		for len(data[row]) < len(columns) {
+			data[row] = append(data[row], "")
+		}
+
+		rows = append(rows, table.Row(data[row]))
 	}
 
 	if o.Print {
