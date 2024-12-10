@@ -26,7 +26,7 @@ func (o Options) Run() error {
 		if err != nil {
 			return fmt.Errorf("could not find file at path %s", o.File)
 		}
-		defer file.Close()
+		defer file.Close() //nolint: errcheck
 		in = file
 	} else {
 		if stdin.IsEmpty() {
