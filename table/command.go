@@ -3,6 +3,7 @@ package table
 import (
 	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/charmbracelet/bubbles/table"
@@ -12,24 +13,30 @@ import (
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 	ltable "github.com/charmbracelet/lipgloss/table"
+	"golang.org/x/text/encoding"
+	"golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/transform"
 )
 
 // Run provides a shell script interface for rendering tabular data (CSV).
 func (o Options) Run() error {
-	var reader *csv.Reader
+	var in io.Reader
 	if o.File != "" {
 		file, err := os.Open(o.File)
 		if err != nil {
 			return fmt.Errorf("could not find file at path %s", o.File)
 		}
-		reader = csv.NewReader(file)
+		defer file.Close()
+		in = file
 	} else {
 		if stdin.IsEmpty() {
 			return fmt.Errorf("no data provided")
 		}
-		reader = csv.NewReader(os.Stdin)
+		in = os.Stdin
 	}
 
+	transformer := unicode.BOMOverride(encoding.Nop.NewDecoder())
+	reader := csv.NewReader(transform.NewReader(in, transformer))
 	separatorRunes := []rune(o.Separator)
 	if len(separatorRunes) != 1 {
 		return fmt.Errorf("separator must be single character")

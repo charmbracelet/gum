@@ -17,6 +17,7 @@ require (
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
 	github.com/sahilm/fuzzy v0.1.1
+	golang.org/x/text v0.18.0
 )
 
 require (
@@ -45,5 +46,4 @@ require (
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/term v0.22.0 // indirect
-	golang.org/x/text v0.18.0 // indirect
 )
