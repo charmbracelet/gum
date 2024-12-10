@@ -68,7 +68,9 @@ func commandStart(command []string) tea.Cmd {
 			executing.Stderr = io.MultiWriter(&bothbuf, &errbuf)
 		} else {
 			executing.Stdout = os.Stdout
+			executing.Stderr = os.Stderr
 		}
+		executing.Stdin = os.Stdin
 		_ = executing.Run()
 		status := executing.ProcessState.ExitCode()
 		if status == -1 {
