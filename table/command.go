@@ -24,7 +24,7 @@ func (o Options) Run() error {
 		var err error
 		input, err = os.Open(o.File)
 		if err != nil {
-			return fmt.Errorf("could not find file at path %s", o.File)
+			return fmt.Errorf("could not render file: %w", err)
 		}
 	} else {
 		if stdin.IsEmpty() {
