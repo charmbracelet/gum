@@ -7,7 +7,7 @@ Four different parse-able formats exist:
 1. [Markdown](#markdown)
 2. [Code](#code)
 3. [Template](#template)
-3. [Emoji](#emoji)
+4. [Emoji](#emoji)
 
 ## Markdown
 
@@ -43,7 +43,7 @@ Render styled input from a string template. Templating is handled by
 ```bash
 gum format --type template '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}'
 # Or, via stdin
-echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' | gum format --type template 
+echo '{{ Bold "Tasty" }} {{ Italic "Bubble" }} {{ Color "99" "0" " Gum " }}' | gum format --type template
 ```
 
 ## Emoji
@@ -55,5 +55,30 @@ Emoji](https://github.com/yuin/goldmark-emoji)
 ```bash
 gum format --type emoji 'I :heart: Bubble Gum :candy:'
 # You know the drill, also via stdin
-echo 'I :heart: Bubble Gum :candy:' | gum format --type emoji 
+echo 'I :heart: Bubble Gum :candy:' | gum format --type emoji
 ```
+
+## Tables
+
+Tables are rendered using [Glamour](https://github.com/charmbracelet/glamour).
+
+| Bubble Gum Flavor | Price |
+| ----------------- | ----- |
+| Strawberry        | $0.99 |
+| Cherry            | $0.50 |
+| Banana            | $0.75 |
+| Orange            | $0.25 |
+| Lemon             | $0.50 |
+| Lime              | $0.50 |
+| Grape             | $0.50 |
+| Watermelon        | $0.50 |
+| Pineapple         | $0.50 |
+| Blueberry         | $0.50 |
+| Raspberry         | $0.50 |
+| Cranberry         | $0.50 |
+| Peach             | $0.50 |
+| Apple             | $0.50 |
+| Mango             | $0.50 |
+| Pomegranate       | $0.50 |
+| Coconut           | $0.50 |
+| Cinnamon          | $0.50 |
