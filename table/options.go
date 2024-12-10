@@ -15,6 +15,7 @@ type Options struct {
 	Print     bool     `short:"p" help:"static print" default:"false"`
 	File      string   `short:"f" help:"file path" default:""`
 	Border    string   `short:"b" help:"border style" default:"rounded" enum:"rounded,thick,normal,hidden,double,none"`
+	ShowHelp  bool     `help:"Show help keybinds" default:"true" negatable:"" env:"GUM_TABLE_SHOW_HELP"`
 
 	BorderStyle   style.Styles  `embed:"" prefix:"border." envprefix:"GUM_TABLE_BORDER_"`
 	CellStyle     style.Styles  `embed:"" prefix:"cell." envprefix:"GUM_TABLE_CELL_"`
