@@ -83,6 +83,7 @@ func (o Options) Run() error {
 		km.Toggle.SetEnabled(true)
 		km.ToggleAndPrevious.SetEnabled(true)
 		km.ToggleAndNext.SetEnabled(true)
+		km.ToggleAll.SetEnabled(true)
 	}
 
 	p := tea.NewProgram(model{
