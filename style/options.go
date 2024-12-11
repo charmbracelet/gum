@@ -3,6 +3,7 @@ package style
 // Options is the customization options for the style command.
 type Options struct {
 	Text  []string        `arg:"" optional:"" help:"Text to which to apply the style"`
+	Trim  bool            `help:"Trim whitespaces on every input line" default:"false"`
 	Style StylesNotHidden `embed:""`
 }
 
