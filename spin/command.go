@@ -26,16 +26,22 @@ func (o Options) Run() error {
 		align:      o.Align,
 		showOutput: o.ShowOutput && isTTY,
 		showError:  o.ShowError,
+		isTTY:      isTTY,
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
-	tm, err := tea.NewProgram(
-		m,
+	opts := []tea.ProgramOption{
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
-	).Run()
+	}
+
+	if !isTTY {
+		opts = append(opts, tea.WithInput(nil))
+	}
+
+	tm, err := tea.NewProgram(m, opts...).Run()
 	if err != nil {
 		return fmt.Errorf("unable to run action: %w", err)
 	}

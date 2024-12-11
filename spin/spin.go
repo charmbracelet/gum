@@ -32,6 +32,7 @@ type model struct {
 	align      string
 	command    []string
 	quitting   bool
+	isTTY      bool
 	status     int
 	stdout     string
 	stderr     string
@@ -101,6 +102,10 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) View() string {
+	if !m.isTTY {
+		return m.title
+	}
+
 	if m.quitting && m.showOutput {
 		return strings.TrimPrefix(errbuf.String()+"\n"+outbuf.String(), "\n")
 	}
