@@ -25,6 +25,13 @@ func (o Options) Run() error {
 			return errors.New("no input provided, see `gum style --help`")
 		}
 	}
+	if o.Trim {
+		var lines []string
+		for _, line := range strings.Split(text, "\n") {
+			lines = append(lines, strings.TrimSpace(line))
+		}
+		text = strings.Join(lines, "\n")
+	}
 	fmt.Println(o.Style.ToLipgloss().Render(text))
 	return nil
 }
