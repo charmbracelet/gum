@@ -97,7 +97,7 @@ func (o Options) Run() error {
 			data[row] = append(data[row], "")
 		}
 
-		for i, col := range row {
+		for i, col := range data[row] {
 			if len(o.Widths) == 0 {
 				width := lipgloss.Width(col)
 				if width > columns[i].Width {
@@ -106,7 +106,7 @@ func (o Options) Run() error {
 			}
 		}
 
-    rows = append(rows, table.Row(data[row]))
+		rows = append(rows, table.Row(data[row]))
 	}
 
 	if o.Print {
