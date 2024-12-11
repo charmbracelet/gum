@@ -119,6 +119,9 @@ func (o Options) Run() error {
 	}
 
 	m := tm.(model)
+	if !m.submitted {
+		return errors.New("nothing selected")
+	}
 	isTTY := term.IsTerminal(os.Stdout.Fd())
 
 	// allSelections contains values only if limit is greater

@@ -41,6 +41,7 @@ type model struct {
 	headerStyle lipgloss.Style
 	textinput   textinput.Model
 	quitting    bool
+	submitted   bool
 	showHelp    bool
 	help        help.Model
 	keymap      keymap
@@ -79,8 +80,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			m.quitting = true
 			return m, tea.Interrupt
-		case "esc", "enter":
+		case "esc":
 			m.quitting = true
+			return m, tea.Quit
+		case "enter":
+			m.quitting = true
+			m.submitted = true
 			return m, tea.Quit
 		}
 	}

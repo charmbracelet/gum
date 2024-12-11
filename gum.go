@@ -133,7 +133,7 @@ type Gum struct {
 	// │    7 │                                         │
 	// │    8 │                                         │
 	// ╰────────────────────────────────────────────────╯
-	//  ↑/↓: Navigate • q: Quit
+	//  ↓↑: navigate • q: quit
 	//
 	Pager pager.Options `cmd:"" help:"Scroll through a file"`
 

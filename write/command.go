@@ -1,6 +1,7 @@
 package write
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -73,6 +74,9 @@ func (o Options) Run() error {
 		return fmt.Errorf("failed to run write: %w", err)
 	}
 	m = tm.(model)
+	if !m.submitted {
+		return errors.New("not submitted")
+	}
 	fmt.Println(m.textarea.Value())
 	return nil
 }

@@ -34,8 +34,6 @@ var keyAbort = key.NewBinding(
 
 func defaultKeymap() keymap {
 	km := filepicker.DefaultKeyMap()
-	km.Down.SetHelp("↓", "down")
-	km.Up.SetHelp("↑", "up")
 	return keymap(km)
 }
 
@@ -45,8 +43,10 @@ func (k keymap) FullHelp() [][]key.Binding { return nil }
 // ShortHelp implements help.KeyMap.
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
-		k.Up,
-		k.Down,
+		key.NewBinding(
+			key.WithKeys("up", "down"),
+			key.WithHelp("↓↑", "navigate"),
+		),
 		keyQuit,
 		k.Select,
 	}
