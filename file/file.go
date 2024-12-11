@@ -100,7 +100,7 @@ func (m model) View() string {
 		parts = append(parts, m.headerStyle.Render(m.header))
 	}
 	parts = append(parts, m.filepicker.View())
-	if !m.showHelp {
+	if m.showHelp {
 		parts = append(parts, m.helpView())
 	}
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
