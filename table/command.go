@@ -37,6 +37,8 @@ func (o Options) Run() error {
 
 	transformer := unicode.BOMOverride(encoding.Nop.NewDecoder())
 	reader := csv.NewReader(transform.NewReader(input, transformer))
+	reader.LazyQuotes = o.LazyQuotes
+	reader.FieldsPerRecord = o.FieldsPerRecord
 	separatorRunes := []rune(o.Separator)
 	if len(separatorRunes) != 1 {
 		return fmt.Errorf("separator must be single character")
@@ -95,7 +97,16 @@ func (o Options) Run() error {
 			data[row] = append(data[row], "")
 		}
 
-		rows = append(rows, table.Row(data[row]))
+		for i, col := range row {
+			if len(o.Widths) == 0 {
+				width := lipgloss.Width(col)
+				if width > columns[i].Width {
+					columns[i].Width = width
+				}
+			}
+		}
+
+    rows = append(rows, table.Row(data[row]))
 	}
 
 	if o.Print {
