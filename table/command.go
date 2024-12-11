@@ -89,6 +89,14 @@ func (o Options) Run() error {
 		if len(row) > len(columns) {
 			return fmt.Errorf("invalid number of columns")
 		}
+		for i, col := range row {
+			if len(o.Widths) == 0 {
+				width := lipgloss.Width(col)
+				if width > columns[i].Width {
+					columns[i].Width = width
+				}
+			}
+		}
 		rows = append(rows, table.Row(row))
 	}
 
