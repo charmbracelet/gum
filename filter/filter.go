@@ -45,6 +45,11 @@ func defaultKeymap() keymap {
 			key.WithHelp("ctrl+@", "toggle"),
 			key.WithDisabled(),
 		),
+		ToggleAll: key.NewBinding(
+			key.WithKeys("ctrl+a"),
+			key.WithHelp("ctrl+a", "select all"),
+			key.WithDisabled(),
+		),
 		Quit: key.NewBinding(
 			key.WithKeys("esc"),
 			key.WithHelp("esc", "quit"),
@@ -65,6 +70,7 @@ type keymap struct {
 	Up,
 	ToggleAndNext,
 	ToggleAndPrevious,
+	ToggleAll,
 	Toggle,
 	Abort,
 	Quit,
@@ -77,11 +83,12 @@ func (k keymap) FullHelp() [][]key.Binding { return nil }
 // ShortHelp implements help.KeyMap.
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
-		k.ToggleAndNext,
 		key.NewBinding(
 			key.WithKeys("up", "down"),
 			key.WithHelp("↓↑", "navigate"),
 		),
+		k.ToggleAndNext,
+		k.ToggleAll,
 		k.Submit,
 	}
 }
@@ -286,6 +293,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				break // no op
 			}
 			m.ToggleSelection()
+		case key.Matches(msg, km.ToggleAll):
+			if m.limit <= 1 {
+				break
+			}
+			if m.numSelected < len(m.matches) && m.numSelected < m.limit {
+				m = m.selectAll()
+			} else {
+				m = m.deselectAll()
+			}
 		default:
 			// yOffsetFromBottom is the number of lines from the bottom of the
 			// list to the top of the viewport. This is used to keep the viewport
@@ -388,6 +404,26 @@ func (m *model) ToggleSelection() {
 		m.selected[m.matches[m.cursor].Str] = struct{}{}
 		m.numSelected++
 	}
+}
+
+func (m model) selectAll() model {
+	for i := range m.matches {
+		if m.numSelected >= m.limit {
+			break // do not exceed given limit
+		}
+		if _, ok := m.selected[m.matches[i].Str]; ok {
+			continue
+		}
+		m.selected[m.matches[i].Str] = struct{}{}
+		m.numSelected++
+	}
+	return m
+}
+
+func (m model) deselectAll() model {
+	m.selected = make(map[string]struct{})
+	m.numSelected = 0
+	return m
 }
 
 func matchAll(options []string) []fuzzy.Match {
