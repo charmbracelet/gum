@@ -26,8 +26,10 @@ func (o Options) Run() error {
 		verySubduedStyle = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "#DDDADA", Dark: "#3C3C3C"})
 	)
 
-	if len(o.Options) <= 0 {
-		input, _ := stdin.ReadStrip()
+	input, _ := stdin.ReadStrip()
+	if len(o.Options) > 0 {
+		o.Selected = strings.Split(input, "\n")
+	} else {
 		if input == "" {
 			return errors.New("no options provided, see `gum choose --help`")
 		}
