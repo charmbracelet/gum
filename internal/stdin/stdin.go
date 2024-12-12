@@ -2,6 +2,7 @@ package stdin
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -10,10 +11,12 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+var ErrEmpty = errors.New("stdin is empty")
+
 // Read reads input from an stdin pipe.
 func Read() (string, error) {
 	if IsEmpty() {
-		return "", fmt.Errorf("stdin is empty")
+		return "", ErrEmpty
 	}
 
 	reader := bufio.NewReader(os.Stdin)
@@ -37,6 +40,16 @@ func Read() (string, error) {
 func ReadStrip() (string, error) {
 	s, err := Read()
 	return ansi.Strip(s), err
+}
+
+// ReadLine reads only one line and returns it.
+func ReadLine() (string, error) {
+	if IsEmpty() {
+		return "", ErrEmpty
+	}
+	reader := bufio.NewReader(os.Stdin)
+	line, _, err := reader.ReadLine()
+	return strings.TrimSpace(string(line)), err
 }
 
 // IsEmpty returns whether stdin is empty.
