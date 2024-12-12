@@ -136,6 +136,9 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m = tm.(model)
+	if !m.submitted {
+		return errors.New("nothing selected")
+	}
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
 			return m.items[i].order < m.items[j].order

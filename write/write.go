@@ -23,6 +23,7 @@ import (
 type keymap struct {
 	textarea.KeyMap
 	Submit       key.Binding
+	Quit         key.Binding
 	Abort        key.Binding
 	OpenInEditor key.Binding
 }
@@ -47,6 +48,10 @@ func defaultKeymap() keymap {
 	)
 	return keymap{
 		KeyMap: km,
+		Quit: key.NewBinding(
+			key.WithKeys("esc"),
+			key.WithHelp("esc", "quit"),
+		),
 		Abort: key.NewBinding(
 			key.WithKeys("ctrl+c"),
 			key.WithHelp("ctrl+c", "cancel"),
@@ -67,6 +72,7 @@ type model struct {
 	header      string
 	headerStyle lipgloss.Style
 	quitting    bool
+	submitted   bool
 	textarea    textarea.Model
 	showHelp    bool
 	help        help.Model
@@ -117,8 +123,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, km.Abort):
 			m.quitting = true
 			return m, tea.Interrupt
+		case key.Matches(msg, km.Quit):
+			m.quitting = true
+			return m, tea.Quit
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
+			m.submitted = true
 			return m, tea.Quit
 		case key.Matches(msg, km.OpenInEditor):
 			//nolint: gosec

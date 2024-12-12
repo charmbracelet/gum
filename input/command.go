@@ -1,6 +1,7 @@
 package input
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -67,6 +68,9 @@ func (o Options) Run() error {
 	}
 
 	m = tm.(model)
+	if !m.submitted {
+		return errors.New("not submitted")
+	}
 	fmt.Println(m.textinput.Value())
 	return nil
 }

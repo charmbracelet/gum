@@ -44,7 +44,7 @@ func defaultKeymap() keymap {
 	return keymap{
 		Navigate: key.NewBinding(
 			key.WithKeys("up", "down"),
-			key.WithHelp("↑↓", "navigate"),
+			key.WithHelp("↓↑", "navigate"),
 		),
 		Select: key.NewBinding(
 			key.WithKeys("enter"),

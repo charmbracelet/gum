@@ -38,7 +38,7 @@ func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		key.NewBinding(
 			key.WithKeys("up", "down"),
-			key.WithHelp("↑/↓", "navigate"),
+			key.WithHelp("↓↑", "navigate"),
 		),
 		k.Quit,
 		k.Search,
