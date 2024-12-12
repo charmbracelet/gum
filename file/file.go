@@ -53,6 +53,8 @@ func (k keymap) ShortHelp() []key.Binding {
 }
 
 type model struct {
+	header       string
+	headerStyle  lipgloss.Style
 	filepicker   filepicker.Model
 	selectedPath string
 	quitting     bool
@@ -93,10 +95,15 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
-	if !m.showHelp {
-		return m.filepicker.View()
+	var parts []string
+	if m.header != "" {
+		parts = append(parts, m.headerStyle.Render(m.header))
 	}
-	return m.filepicker.View() + m.helpView()
+	parts = append(parts, m.filepicker.View())
+	if m.showHelp {
+		parts = append(parts, m.helpView())
+	}
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 func (m model) helpView() string {
