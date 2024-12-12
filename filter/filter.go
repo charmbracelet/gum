@@ -26,11 +26,9 @@ func defaultKeymap() keymap {
 	return keymap{
 		Down: key.NewBinding(
 			key.WithKeys("down", "ctrl+j", "ctrl+n"),
-			key.WithHelp("↓", "down"),
 		),
 		Up: key.NewBinding(
 			key.WithKeys("up", "ctrl+k", "ctrl+p"),
-			key.WithHelp("↑", "up"),
 		),
 		ToggleAndNext: key.NewBinding(
 			key.WithKeys("tab"),
@@ -52,8 +50,12 @@ func defaultKeymap() keymap {
 			key.WithHelp("ctrl+a", "select all"),
 			key.WithDisabled(),
 		),
+		Quit: key.NewBinding(
+			key.WithKeys("esc"),
+			key.WithHelp("esc", "quit"),
+		),
 		Abort: key.NewBinding(
-			key.WithKeys("ctrl+c", "esc"),
+			key.WithKeys("ctrl+c"),
 			key.WithHelp("ctrl+c", "abort"),
 		),
 		Submit: key.NewBinding(
@@ -71,6 +73,7 @@ type keymap struct {
 	ToggleAll,
 	Toggle,
 	Abort,
+	Quit,
 	Submit key.Binding
 }
 
@@ -82,7 +85,7 @@ func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		key.NewBinding(
 			key.WithKeys("up", "down"),
-			key.WithHelp("↑↓", "navigate"),
+			key.WithHelp("↓↑", "navigate"),
 		),
 		k.ToggleAndNext,
 		k.ToggleAll,
@@ -119,6 +122,7 @@ type model struct {
 	keymap                keymap
 	help                  help.Model
 	strict                bool
+	submitted             bool
 }
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
@@ -258,11 +262,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		km := m.keymap
 		switch {
+		case key.Matches(msg, km.Quit):
+			m.quitting = true
+			return m, tea.Quit
 		case key.Matches(msg, km.Abort):
 			m.quitting = true
 			return m, tea.Interrupt
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
+			m.submitted = true
 			return m, tea.Quit
 		case key.Matches(msg, km.Down):
 			m.CursorDown()

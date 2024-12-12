@@ -47,7 +47,7 @@ func defaultKeymap(affirmative, negative string) keymap {
 				"ctrl+p",
 				"tab",
 			),
-			key.WithHelp("←/→", "toggle"),
+			key.WithHelp("←→", "toggle"),
 		),
 		Submit: key.NewBinding(
 			key.WithKeys("enter"),

@@ -24,23 +24,18 @@ func defaultKeymap() keymap {
 	return keymap{
 		Down: key.NewBinding(
 			key.WithKeys("down", "j", "ctrl+j", "ctrl+n"),
-			key.WithHelp("↓", "down"),
 		),
 		Up: key.NewBinding(
 			key.WithKeys("up", "k", "ctrl+k", "ctrl+p"),
-			key.WithHelp("↑", "up"),
 		),
 		Right: key.NewBinding(
 			key.WithKeys("right", "l", "ctrl+f"),
-			key.WithHelp("→", "right"),
 		),
 		Left: key.NewBinding(
 			key.WithKeys("left", "h", "ctrl+b"),
-			key.WithHelp("←", "left"),
 		),
 		Home: key.NewBinding(
 			key.WithKeys("g", "home"),
-			key.WithHelp("g", "home"),
 		),
 		End: key.NewBinding(
 			key.WithKeys("G", "end"),
@@ -57,8 +52,12 @@ func defaultKeymap() keymap {
 			key.WithDisabled(),
 		),
 		Abort: key.NewBinding(
-			key.WithKeys("ctrl+c", "esc"),
+			key.WithKeys("ctrl+c"),
 			key.WithHelp("ctrl+c", "abort"),
+		),
+		Quit: key.NewBinding(
+			key.WithKeys("esc"),
+			key.WithHelp("esc", "quit"),
 		),
 		Submit: key.NewBinding(
 			key.WithKeys("enter", "ctrl+q"),
@@ -77,6 +76,7 @@ type keymap struct {
 	ToggleAll,
 	Toggle,
 	Abort,
+	Quit,
 	Submit key.Binding
 }
 
@@ -89,7 +89,7 @@ func (k keymap) ShortHelp() []key.Binding {
 		k.Toggle,
 		key.NewBinding(
 			key.WithKeys("up", "down", "right", "left"),
-			key.WithHelp("↑↓←→", "navigate"),
+			key.WithHelp("←↓↑→", "navigate"),
 		),
 		k.Submit,
 		k.ToggleAll,
@@ -105,6 +105,7 @@ type model struct {
 	header           string
 	items            []item
 	quitting         bool
+	submitted        bool
 	index            int
 	limit            int
 	numSelected      int
@@ -177,6 +178,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m = m.deselectAll()
 			}
+		case key.Matches(msg, km.Quit):
+			m.quitting = true
+			return m, tea.Quit
 		case key.Matches(msg, km.Abort):
 			m.quitting = true
 			return m, tea.Interrupt
@@ -199,6 +203,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.limit <= 1 && m.numSelected < 1 {
 				m.items[m.index].selected = true
 			}
+			m.submitted = true
 			return m, tea.Quit
 		}
 	}

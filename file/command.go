@@ -47,10 +47,12 @@ func (o Options) Run() error {
 	fp.Styles.Selected = o.SelectedStyle.ToLipgloss()
 	fp.Styles.FileSize = o.FileSizeStyle.ToLipgloss()
 	m := model{
-		filepicker: fp,
-		showHelp:   o.ShowHelp,
-		help:       help.New(),
-		keymap:     defaultKeymap(),
+		filepicker:  fp,
+		showHelp:    o.ShowHelp,
+		help:        help.New(),
+		keymap:      defaultKeymap(),
+		headerStyle: o.HeaderStyle.ToLipgloss(),
+		header:      o.Header,
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)

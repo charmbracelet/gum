@@ -55,6 +55,8 @@ func (o Options) Run() error {
 		slices.SortFunc(o.Options, strings.Compare)
 	}
 
+	isSelectAll := len(o.Selected) == 1 && o.Selected[0] == "*"
+
 	// Keep track of the selected items.
 	currentSelected := 0
 	// Check if selected items should be used.
@@ -65,7 +67,7 @@ func (o Options) Run() error {
 	for i, option := range o.Options {
 		var order int
 		// Check if the option should be selected.
-		isSelected := hasSelectedItems && currentSelected < o.Limit && slices.Contains(o.Selected, option)
+		isSelected := hasSelectedItems && currentSelected < o.Limit && (isSelectAll || slices.Contains(o.Selected, option))
 		// If the option is selected then increment the current selected count.
 		if isSelected {
 			if o.Limit == 1 {
@@ -136,6 +138,9 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to pick selection: %w", err)
 	}
 	m = tm.(model)
+	if !m.submitted {
+		return errors.New("nothing selected")
+	}
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
 			return m.items[i].order < m.items[j].order

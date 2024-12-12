@@ -34,8 +34,6 @@ var keyAbort = key.NewBinding(
 
 func defaultKeymap() keymap {
 	km := filepicker.DefaultKeyMap()
-	km.Down.SetHelp("↓", "down")
-	km.Up.SetHelp("↑", "up")
 	return keymap(km)
 }
 
@@ -45,14 +43,18 @@ func (k keymap) FullHelp() [][]key.Binding { return nil }
 // ShortHelp implements help.KeyMap.
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
-		k.Up,
-		k.Down,
+		key.NewBinding(
+			key.WithKeys("up", "down"),
+			key.WithHelp("↓↑", "navigate"),
+		),
 		keyQuit,
 		k.Select,
 	}
 }
 
 type model struct {
+	header       string
+	headerStyle  lipgloss.Style
 	filepicker   filepicker.Model
 	selectedPath string
 	quitting     bool
@@ -93,10 +95,15 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
-	if !m.showHelp {
-		return m.filepicker.View()
+	var parts []string
+	if m.header != "" {
+		parts = append(parts, m.headerStyle.Render(m.header))
 	}
-	return m.filepicker.View() + m.helpView()
+	parts = append(parts, m.filepicker.View())
+	if m.showHelp {
+		parts = append(parts, m.helpView())
+	}
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 func (m model) helpView() string {
