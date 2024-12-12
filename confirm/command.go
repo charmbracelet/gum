@@ -19,6 +19,7 @@ func (o Options) Run() error {
 	m := model{
 		affirmative:      o.Affirmative,
 		negative:         o.Negative,
+		showOutput:       o.ShowOutput,
 		confirmation:     o.Default,
 		defaultSelection: o.Default,
 		keys:             defaultKeymap(o.Affirmative, o.Negative),
@@ -36,6 +37,14 @@ func (o Options) Run() error {
 	).Run()
 	if err != nil {
 		return fmt.Errorf("unable to confirm: %w", err)
+	}
+
+	if o.ShowOutput {
+		confirmationText := m.negative
+		if m.confirmation {
+			confirmationText = m.affirmative
+		}
+		fmt.Println(m.prompt, confirmationText)
 	}
 
 	m = tm.(model)

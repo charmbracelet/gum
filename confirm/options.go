@@ -9,6 +9,7 @@ import (
 // Options is the customization options for the confirm command.
 type Options struct {
 	Default     bool   `help:"Default confirmation action" default:"true"`
+	ShowOutput  bool   `help:"Print prompt and chosen action to output" default:"false"`
 	Affirmative string `help:"The title of the affirmative action" default:"Yes"`
 	Negative    string `help:"The title of the negative action" default:"No"`
 	Prompt      string `arg:"" help:"Prompt to display." default:"Are you sure?"`
