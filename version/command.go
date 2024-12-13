@@ -16,7 +16,7 @@ func (o Options) Run(ctx *kong.Context) error {
 	current := ctx.Model.Vars()["versionNumber"]
 	v, err := semver.NewVersion(current)
 	if err != nil {
-		return fmt.Errorf("could parse version %s: %w", current, err)
+		return fmt.Errorf("could not parse version %s: %w", current, err)
 	}
 	if !c.Check(v) {
 		return fmt.Errorf("gum version %q is not within given range %q", current, o.Constraint)
