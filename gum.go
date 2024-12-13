@@ -17,6 +17,7 @@ import (
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/gum/table"
+	"github.com/charmbracelet/gum/version"
 	"github.com/charmbracelet/gum/write"
 )
 
@@ -214,4 +215,14 @@ type Gum struct {
 	// $ gum log --level info "Hello, world!"
 	//
 	Log log.Options `cmd:"" help:"Log messages to output"`
+
+	// VersionCheck provides a command that checks if the current gum version
+	// matches a given semantic version constraint.
+	//
+	// It can be used to check that a minimum gum version is installed in a
+	// script.
+	//
+	// $ gum version-check '~> 0.15'
+	//
+	VersionCheck version.Options `cmd:"" help:"Semver check current gum version"`
 }
