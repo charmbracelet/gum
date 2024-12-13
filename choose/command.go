@@ -13,9 +13,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/internal/tty"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/x/ansi"
-	"github.com/charmbracelet/x/term"
 )
 
 // Run provides a shell script interface for choosing between different through
@@ -153,12 +152,6 @@ func (o Options) Run() error {
 			out = append(out, item.text)
 		}
 	}
-
-	if term.IsTerminal(os.Stdout.Fd()) {
-		fmt.Println(strings.Join(out, o.OutputDelimiter))
-	} else {
-		fmt.Println(ansi.Strip(strings.Join(out, o.OutputDelimiter)))
-	}
-
+	tty.Println(strings.Join(out, o.OutputDelimiter))
 	return nil
 }
