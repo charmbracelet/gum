@@ -86,7 +86,7 @@ func (o Options) Run() error {
 		km.ToggleAll.SetEnabled(true)
 	}
 
-	p := tea.NewProgram(model{
+	m := model{
 		choices:               o.Options,
 		indicator:             o.Indicator,
 		matches:               matches,
@@ -112,14 +112,29 @@ func (o Options) Run() error {
 		showHelp:              o.ShowHelp,
 		keymap:                km,
 		help:                  help.New(),
-	}, options...)
+	}
 
-	tm, err := p.Run()
+	for _, s := range o.Selected {
+		if o.NoLimit || o.Limit > 1 {
+			m.selected[s] = struct{}{}
+		}
+	}
+
+	if len(o.Selected) > 0 {
+		for i, match := range matches {
+			if match.Str == o.Selected[0] {
+				m.cursor = i
+				break
+			}
+		}
+	}
+
+	tm, err := tea.NewProgram(m, options...).Run()
 	if err != nil {
 		return fmt.Errorf("unable to run filter: %w", err)
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 	if !m.submitted {
 		return errors.New("nothing selected")
 	}
