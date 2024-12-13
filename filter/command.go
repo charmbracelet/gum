@@ -34,7 +34,7 @@ func (o Options) Run() error {
 
 	if len(o.Options) == 0 {
 		if input, _ := stdin.ReadStrip(); input != "" {
-			o.Options = strings.Split(input, "\n")
+			o.Options = strings.Split(input, o.InputDelimiter)
 		} else {
 			o.Options = files.List()
 		}
@@ -142,11 +142,12 @@ func (o Options) Run() error {
 }
 
 func (o Options) checkSelected(m model, isTTY bool) {
+	out := []string{}
 	for k := range m.selected {
 		if isTTY {
-			fmt.Println(k)
-		} else {
-			fmt.Println(ansi.Strip(k))
+			k = ansi.Strip(k)
 		}
+		out = append(out, k)
 	}
+	fmt.Println(strings.Join(out, o.OutputDelimiter))
 }

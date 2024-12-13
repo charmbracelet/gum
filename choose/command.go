@@ -31,7 +31,7 @@ func (o Options) Run() error {
 		if input == "" {
 			return errors.New("no options provided, see `gum choose --help`")
 		}
-		o.Options = strings.Split(input, "\n")
+		o.Options = strings.Split(input, o.InputDelimiter)
 	}
 
 	if o.SelectIfOne && len(o.Options) == 1 {
@@ -146,18 +146,18 @@ func (o Options) Run() error {
 			return m.items[i].order < m.items[j].order
 		})
 	}
-	var s strings.Builder
+
+	var out []string
 	for _, item := range m.items {
 		if item.selected {
-			s.WriteString(item.text)
-			s.WriteRune('\n')
+			out = append(out, item.text)
 		}
 	}
 
 	if term.IsTerminal(os.Stdout.Fd()) {
-		fmt.Print(s.String())
+		fmt.Println(strings.Join(out, o.OutputDelimiter))
 	} else {
-		fmt.Print(ansi.Strip(s.String()))
+		fmt.Println(ansi.Strip(strings.Join(out, o.OutputDelimiter)))
 	}
 
 	return nil
