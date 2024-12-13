@@ -13,8 +13,7 @@ import (
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
-	"github.com/charmbracelet/x/ansi"
-	"github.com/charmbracelet/x/term"
+	"github.com/charmbracelet/gum/internal/tty"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -44,11 +43,6 @@ func (o Options) Run() error {
 		return errors.New("no options provided, see `gum filter --help`")
 	}
 
-	if o.SelectIfOne && len(o.Options) == 1 {
-		fmt.Println(o.Options[0])
-		return nil
-	}
-
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
@@ -74,11 +68,16 @@ func (o Options) Run() error {
 		matches = matchAll(o.Options)
 	}
 
-	km := defaultKeymap()
-
 	if o.NoLimit {
 		o.Limit = len(o.Options)
 	}
+
+	if o.SelectIfOne && len(matches) == 1 {
+		tty.Println(matches[0].Str)
+		return nil
+	}
+
+	km := defaultKeymap()
 	if o.NoLimit || o.Limit > 1 {
 		km.Toggle.SetEnabled(true)
 		km.ToggleAndPrevious.SetEnabled(true)
@@ -123,30 +122,21 @@ func (o Options) Run() error {
 	if !m.submitted {
 		return errors.New("nothing selected")
 	}
-	isTTY := term.IsTerminal(os.Stdout.Fd())
 
 	// allSelections contains values only if limit is greater
 	// than 1 or if flag --no-limit is passed, hence there is
 	// no need to further checks
 	if len(m.selected) > 0 {
-		o.checkSelected(m, isTTY)
+		o.checkSelected(m)
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
-		if isTTY {
-			fmt.Println(m.matches[m.cursor].Str)
-		} else {
-			fmt.Println(ansi.Strip(m.matches[m.cursor].Str))
-		}
+		tty.Println(m.matches[m.cursor].Str)
 	}
 
 	return nil
 }
 
-func (o Options) checkSelected(m model, isTTY bool) {
+func (o Options) checkSelected(m model) {
 	for k := range m.selected {
-		if isTTY {
-			fmt.Println(k)
-		} else {
-			fmt.Println(ansi.Strip(k))
-		}
+		tty.Println(k)
 	}
 }
