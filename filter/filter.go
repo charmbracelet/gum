@@ -30,6 +30,18 @@ func defaultKeymap() keymap {
 		Up: key.NewBinding(
 			key.WithKeys("up", "ctrl+k", "ctrl+p"),
 		),
+		NDown: key.NewBinding(
+			key.WithKeys("j"),
+		),
+		NUp: key.NewBinding(
+			key.WithKeys("k"),
+		),
+		Home: key.NewBinding(
+			key.WithKeys("g", "home"),
+		),
+		End: key.NewBinding(
+			key.WithKeys("G", "end"),
+		),
 		ToggleAndNext: key.NewBinding(
 			key.WithKeys("tab"),
 			key.WithHelp("tab", "toggle"),
@@ -50,6 +62,14 @@ func defaultKeymap() keymap {
 			key.WithHelp("ctrl+a", "select all"),
 			key.WithDisabled(),
 		),
+		FocusInSearch: key.NewBinding(
+			key.WithKeys("/"),
+			key.WithHelp("/", "search"),
+		),
+		FocusOutSearch: key.NewBinding(
+			key.WithKeys("esc"),
+			key.WithHelp("esc", "blur search"),
+		),
 		Quit: key.NewBinding(
 			key.WithKeys("esc"),
 			key.WithHelp("esc", "quit"),
@@ -66,8 +86,14 @@ func defaultKeymap() keymap {
 }
 
 type keymap struct {
+	FocusInSearch,
+	FocusOutSearch,
 	Down,
 	Up,
+	NDown,
+	NUp,
+	Home,
+	End,
 	ToggleAndNext,
 	ToggleAndPrevious,
 	ToggleAll,
@@ -87,6 +113,8 @@ func (k keymap) ShortHelp() []key.Binding {
 			key.WithKeys("up", "down"),
 			key.WithHelp("↓↑", "navigate"),
 		),
+		k.FocusInSearch,
+		k.FocusOutSearch,
 		k.ToggleAndNext,
 		k.ToggleAll,
 		k.Submit,
@@ -262,6 +290,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		km := m.keymap
 		switch {
+		case key.Matches(msg, km.FocusInSearch):
+			m.textinput.Focus()
+		case key.Matches(msg, km.FocusOutSearch):
+			m.textinput.Blur()
 		case key.Matches(msg, km.Quit):
 			m.quitting = true
 			return m, tea.Quit
@@ -272,10 +304,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			m.submitted = true
 			return m, tea.Quit
-		case key.Matches(msg, km.Down):
+		case key.Matches(msg, km.Down, km.NDown):
 			m.CursorDown()
-		case key.Matches(msg, km.Up):
+		case key.Matches(msg, km.Up, km.NUp):
 			m.CursorUp()
+		case key.Matches(msg, km.Home):
+			m.cursor = 0
+			m.viewport.GotoTop()
+		case key.Matches(msg, km.End):
+			m.cursor = len(m.choices) - 1
+			m.viewport.GotoBottom()
 		case key.Matches(msg, km.ToggleAndNext):
 			if m.limit == 1 {
 				break // no op
@@ -343,6 +381,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	}
+
+	m.keymap.FocusInSearch.SetEnabled(!m.textinput.Focused())
+	m.keymap.FocusOutSearch.SetEnabled(m.textinput.Focused())
+	m.keymap.NUp.SetEnabled(!m.textinput.Focused())
+	m.keymap.NDown.SetEnabled(!m.textinput.Focused())
+	m.keymap.Home.SetEnabled(!m.textinput.Focused())
+	m.keymap.End.SetEnabled(!m.textinput.Focused())
 
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.

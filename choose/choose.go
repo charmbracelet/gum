@@ -39,7 +39,6 @@ func defaultKeymap() keymap {
 		),
 		End: key.NewBinding(
 			key.WithKeys("G", "end"),
-			key.WithHelp("G", "end"),
 		),
 		ToggleAll: key.NewBinding(
 			key.WithKeys("a", "A", "ctrl+a"),
