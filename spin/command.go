@@ -24,7 +24,8 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
-		showOutput: o.ShowOutput && isTTY,
+		showStdout: (o.ShowOutput || o.ShowStdout) && isTTY,
+		showStderr: (o.ShowOutput || o.ShowStderr) && isTTY,
 		showError:  o.ShowError,
 		isTTY:      isTTY,
 	}
