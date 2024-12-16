@@ -29,4 +29,10 @@ type Options struct {
 	HeaderStyle       style.Styles `embed:"" prefix:"header." set:"defaultForeground=99" envprefix:"GUM_CHOOSE_HEADER_"`
 	ItemStyle         style.Styles `embed:"" prefix:"item." hidden:"" envprefix:"GUM_CHOOSE_ITEM_"`
 	SelectedItemStyle style.Styles `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_SELECTED_"`
+
+	StripANSICodes bool `help:"Strip ANSI codes from the input" negatable:"" default:"true" env:"GUM_CHOOSE_STRIP_ANSI_CODES"`
+}
+
+func (o *Options) DoStripANSICodes() bool {
+	return o.StripANSICodes
 }

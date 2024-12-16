@@ -43,4 +43,10 @@ type Options struct {
 
 	// Deprecated: use [FuzzySort]. This will be removed at some point.
 	Sort bool `help:"Sort fuzzy results by their scores" default:"true" env:"GUM_FILTER_FUZZY_SORT" negatable:"" hidden:""`
+
+	StripANSICodes bool `help:"Strip ANSI codes from the input" negatable:"" default:"true" env:"GUM_FILTER_STRIP_ANSI_CODES"`
+}
+
+func (o *Options) DoStripANSICodes() bool {
+	return o.StripANSICodes
 }

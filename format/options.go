@@ -7,4 +7,10 @@ type Options struct {
 	Language string   `help:"Programming language to parse code" short:"l" default:"" env:"GUM_FORMAT_LANGUAGE"`
 
 	Type string `help:"Format to use (markdown,template,code,emoji)" enum:"markdown,template,code,emoji" short:"t" default:"markdown" env:"GUM_FORMAT_TYPE"`
+
+	StripANSICodes bool `help:"Strip ANSI codes from the input" negatable:"" default:"true" env:"GUM_FORMAT_STRIP_ANSI_CODES"`
+}
+
+func (o *Options) DoStripANSICodes() bool {
+	return o.StripANSICodes
 }

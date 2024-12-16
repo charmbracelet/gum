@@ -17,7 +17,7 @@ import (
 // https://github.com/charmbracelet/bubbles/textinput
 func (o Options) Run() error {
 	if o.Value == "" {
-		if in, _ := stdin.ReadStrip(); in != "" {
+		if in, _ := stdin.ReadWithOptions(&o); in != "" {
 			o.Value = in
 		}
 	}
@@ -25,7 +25,7 @@ func (o Options) Run() error {
 	i := textinput.New()
 	if o.Value != "" {
 		i.SetValue(o.Value)
-	} else if in, _ := stdin.ReadStrip(); in != "" {
+	} else if in, _ := stdin.ReadWithOptions(&o); in != "" {
 		i.SetValue(in)
 	}
 	i.Focus()

@@ -17,7 +17,7 @@ import (
 // Run provides a shell script interface for the text area bubble.
 // https://github.com/charmbracelet/bubbles/textarea
 func (o Options) Run() error {
-	in, _ := stdin.ReadStrip()
+	in, _ := stdin.ReadWithOptions(&o)
 	if in != "" && o.Value == "" {
 		o.Value = strings.ReplaceAll(in, "\r", "")
 	}

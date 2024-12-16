@@ -5,6 +5,12 @@ type Options struct {
 	Text  []string        `arg:"" optional:"" help:"Text to which to apply the style"`
 	Trim  bool            `help:"Trim whitespaces on every input line" default:"false"`
 	Style StylesNotHidden `embed:""`
+
+	StripANSICodes bool `help:"Strip ANSI codes from the input" negatable:"" default:"true" env:"GUM_STYLE_STRIP_ANSI_CODES"`
+}
+
+func (o *Options) DoStripANSICodes() bool {
+	return o.StripANSICodes
 }
 
 // Styles is a flag set of possible styles.

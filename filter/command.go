@@ -32,7 +32,7 @@ func (o Options) Run() error {
 	v := viewport.New(o.Width, o.Height)
 
 	if len(o.Options) == 0 {
-		if input, _ := stdin.ReadStrip(); input != "" {
+		if input, _ := stdin.ReadWithOptions(&o); input != "" {
 			o.Options = strings.Split(input, o.InputDelimiter)
 		} else {
 			o.Options = files.List()

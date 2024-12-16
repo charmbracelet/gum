@@ -26,7 +26,7 @@ func (o Options) Run() error {
 	)
 
 	if len(o.Options) <= 0 {
-		input, _ := stdin.ReadStrip()
+		input, _ := stdin.ReadWithOptions(&o)
 		if input == "" {
 			return errors.New("no options provided, see `gum choose --help`")
 		}
