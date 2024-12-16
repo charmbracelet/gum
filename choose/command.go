@@ -3,6 +3,7 @@ package choose
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"slices"
 	"sort"
@@ -33,8 +34,25 @@ func (o Options) Run() error {
 		o.Options = strings.Split(input, o.InputDelimiter)
 	}
 
+	// normalize options into a map
+	options := map[string]string{}
+	for _, opt := range o.Options {
+		if o.LabelDelimiter == "" {
+			options[opt] = opt
+			continue
+		}
+		label, value, ok := strings.Cut(opt, o.LabelDelimiter)
+		if !ok {
+			return fmt.Errorf("invalid option format: %q", opt)
+		}
+		options[label] = value
+	}
+	if o.LabelDelimiter != "" {
+		o.Options = slices.Collect(maps.Keys(options))
+	}
+
 	if o.SelectIfOne && len(o.Options) == 1 {
-		fmt.Println(o.Options[0])
+		fmt.Println(options[o.Options[0]])
 		return nil
 	}
 
@@ -149,7 +167,7 @@ func (o Options) Run() error {
 	var out []string
 	for _, item := range m.items {
 		if item.selected {
-			out = append(out, item.text)
+			out = append(out, options[item.text])
 		}
 	}
 	tty.Println(strings.Join(out, o.OutputDelimiter))
