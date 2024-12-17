@@ -24,6 +24,7 @@ type Options struct {
 	SelectIfOne      bool          `help:"Select the given option if there is only one" group:"Selection"`
 	InputDelimiter   string        `help:"Option delimiter when reading from STDIN" default:"\n" env:"GUM_CHOOSE_INPUT_DELIMITER"`
 	OutputDelimiter  string        `help:"Option delimiter when writing to STDOUT" default:"\n" env:"GUM_CHOOSE_OUTPUT_DELIMITER"`
+	LabelDelimiter   string        `help:"Allows to set a delimiter, so options can be set as label:value" default:"" env:"GUM_CHOOSE_LABEL_DELIMITER"`
 
 	CursorStyle       style.Styles `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_CURSOR_"`
 	HeaderStyle       style.Styles `embed:"" prefix:"header." set:"defaultForeground=99" envprefix:"GUM_CHOOSE_HEADER_"`
