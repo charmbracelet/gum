@@ -22,6 +22,10 @@ type Options struct {
 	UnselectedPrefix string        `help:"Prefix to show on unselected items (hidden if limit is 1)" default:"• " env:"GUM_CHOOSE_UNSELECTED_PREFIX"`
 	Selected         []string      `help:"Options that should start as selected (selects all if given '*')" default:"" env:"GUM_CHOOSE_SELECTED"`
 	SelectIfOne      bool          `help:"Select the given option if there is only one" group:"Selection"`
+	InputDelimiter   string        `help:"Option delimiter when reading from STDIN" default:"\n" env:"GUM_CHOOSE_INPUT_DELIMITER"`
+	OutputDelimiter  string        `help:"Option delimiter when writing to STDOUT" default:"\n" env:"GUM_CHOOSE_OUTPUT_DELIMITER"`
+	LabelDelimiter   string        `help:"Allows to set a delimiter, so options can be set as label:value" default:"" env:"GUM_CHOOSE_LABEL_DELIMITER"`
+	StripANSI        bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_CHOOSE_STRIP_ANSI"`
 
 	CursorStyle       style.Styles `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_CURSOR_"`
 	HeaderStyle       style.Styles `embed:"" prefix:"header." set:"defaultForeground=99" envprefix:"GUM_CHOOSE_HEADER_"`

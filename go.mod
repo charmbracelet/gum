@@ -1,8 +1,9 @@
 module github.com/charmbracelet/gum
 
-go 1.21
+go 1.23.0
 
 require (
+	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/alecthomas/kong v1.6.0
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/charmbracelet/bubbles v0.20.0

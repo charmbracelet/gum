@@ -54,6 +54,7 @@ func main() {
 		}),
 		kong.Vars{
 			"version":                 version,
+			"versionNumber":           Version,
 			"defaultHeight":           "0",
 			"defaultWidth":            "0",
 			"defaultAlign":            "left",
