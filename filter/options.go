@@ -40,6 +40,7 @@ type Options struct {
 	Timeout               time.Duration `help:"Timeout until filter command aborts" default:"0s" env:"GUM_FILTER_TIMEOUT"`
 	InputDelimiter        string        `help:"Option delimiter when reading from STDIN" default:"\n" env:"GUM_FILTER_INPUT_DELIMITER"`
 	OutputDelimiter       string        `help:"Option delimiter when writing to STDOUT" default:"\n" env:"GUM_FILTER_OUTPUT_DELIMITER"`
+	StripANSI             bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_FILTER_STRIP_ANSI"`
 
 	// Deprecated: use [FuzzySort]. This will be removed at some point.
 	Sort bool `help:"Sort fuzzy results by their scores" default:"true" env:"GUM_FILTER_FUZZY_SORT" negatable:"" hidden:""`
