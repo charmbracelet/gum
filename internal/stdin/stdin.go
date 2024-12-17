@@ -2,7 +2,6 @@ package stdin
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -10,8 +9,6 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 )
-
-var ErrEmpty = errors.New("stdin is empty")
 
 type options struct {
 	ansiStrip  bool
@@ -38,7 +35,7 @@ func SingleLine(b bool) Option {
 // Read reads input from an stdin pipe.
 func Read(opts ...Option) (string, error) {
 	if IsEmpty() {
-		return "", ErrEmpty
+		return "", fmt.Errorf("stdin is empty")
 	}
 
 	options := options{}

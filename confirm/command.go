@@ -16,7 +16,7 @@ var errNotConfirmed = errors.New("not confirmed")
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
 func (o Options) Run() error {
-	line, err := stdin.ReadLine()
+	line, err := stdin.Read(stdin.SingleLine(true))
 	if err == nil {
 		switch line {
 		case "yes", "y":
