@@ -15,6 +15,7 @@ type Options struct {
 	Limit                 int           `help:"Maximum number of options to pick" default:"1" group:"Selection"`
 	NoLimit               bool          `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
 	SelectIfOne           bool          `help:"Select the given option if there is only one" group:"Selection"`
+	Selected              []string      `help:"Options that should start as selected (selects all if given '*')" default:"" env:"GUM_FILTER_SELECTED"`
 	ShowHelp              bool          `help:"Show help keybinds" default:"true" negatable:"" env:"GUM_FILTER_SHOW_HELP"`
 	Strict                bool          `help:"Only returns if anything matched. Otherwise return Filter" negatable:"" default:"true" group:"Selection"`
 	SelectedPrefix        string        `help:"Character to indicate selected items (hidden if limit is 1)" default:" ◉ " env:"GUM_FILTER_SELECTED_PREFIX"`
@@ -37,6 +38,9 @@ type Options struct {
 	Fuzzy                 bool          `help:"Enable fuzzy matching; otherwise match from start of word" default:"true" env:"GUM_FILTER_FUZZY" negatable:""`
 	FuzzySort             bool          `help:"Sort fuzzy results by their scores" default:"true" env:"GUM_FILTER_FUZZY_SORT" negatable:""`
 	Timeout               time.Duration `help:"Timeout until filter command aborts" default:"0s" env:"GUM_FILTER_TIMEOUT"`
+	InputDelimiter        string        `help:"Option delimiter when reading from STDIN" default:"\n" env:"GUM_FILTER_INPUT_DELIMITER"`
+	OutputDelimiter       string        `help:"Option delimiter when writing to STDOUT" default:"\n" env:"GUM_FILTER_OUTPUT_DELIMITER"`
+	StripANSI             bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_FILTER_STRIP_ANSI"`
 
 	// Deprecated: use [FuzzySort]. This will be removed at some point.
 	Sort bool `help:"Sort fuzzy results by their scores" default:"true" env:"GUM_FILTER_FUZZY_SORT" negatable:"" hidden:""`

@@ -13,8 +13,7 @@ import (
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
-	"github.com/charmbracelet/x/ansi"
-	"github.com/charmbracelet/x/term"
+	"github.com/charmbracelet/gum/internal/tty"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -33,8 +32,8 @@ func (o Options) Run() error {
 	v := viewport.New(o.Width, o.Height)
 
 	if len(o.Options) == 0 {
-		if input, _ := stdin.ReadStrip(); input != "" {
-			o.Options = strings.Split(input, "\n")
+		if input, _ := stdin.Read(stdin.StripANSI(o.StripANSI)); input != "" {
+			o.Options = strings.Split(input, o.InputDelimiter)
 		} else {
 			o.Options = files.List()
 		}
@@ -42,11 +41,6 @@ func (o Options) Run() error {
 
 	if len(o.Options) == 0 {
 		return errors.New("no options provided, see `gum filter --help`")
-	}
-
-	if o.SelectIfOne && len(o.Options) == 1 {
-		fmt.Println(o.Options[0])
-		return nil
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)
@@ -74,11 +68,16 @@ func (o Options) Run() error {
 		matches = matchAll(o.Options)
 	}
 
-	km := defaultKeymap()
-
 	if o.NoLimit {
 		o.Limit = len(o.Options)
 	}
+
+	if o.SelectIfOne && len(matches) == 1 {
+		tty.Println(matches[0].Str)
+		return nil
+	}
+
+	km := defaultKeymap()
 	if o.NoLimit || o.Limit > 1 {
 		km.Toggle.SetEnabled(true)
 		km.ToggleAndPrevious.SetEnabled(true)
@@ -86,7 +85,7 @@ func (o Options) Run() error {
 		km.ToggleAll.SetEnabled(true)
 	}
 
-	p := tea.NewProgram(model{
+	m := model{
 		choices:               o.Options,
 		indicator:             o.Indicator,
 		matches:               matches,
@@ -112,41 +111,49 @@ func (o Options) Run() error {
 		showHelp:              o.ShowHelp,
 		keymap:                km,
 		help:                  help.New(),
-	}, options...)
+	}
 
-	tm, err := p.Run()
+	for _, s := range o.Selected {
+		if o.NoLimit || o.Limit > 1 {
+			m.selected[s] = struct{}{}
+		}
+	}
+
+	if len(o.Selected) > 0 {
+		for i, match := range matches {
+			if match.Str == o.Selected[0] {
+				m.cursor = i
+				break
+			}
+		}
+	}
+
+	tm, err := tea.NewProgram(m, options...).Run()
 	if err != nil {
 		return fmt.Errorf("unable to run filter: %w", err)
 	}
 
-	m := tm.(model)
+	m = tm.(model)
 	if !m.submitted {
 		return errors.New("nothing selected")
 	}
-	isTTY := term.IsTerminal(os.Stdout.Fd())
 
 	// allSelections contains values only if limit is greater
 	// than 1 or if flag --no-limit is passed, hence there is
 	// no need to further checks
 	if len(m.selected) > 0 {
-		o.checkSelected(m, isTTY)
+		o.checkSelected(m)
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
-		if isTTY {
-			fmt.Println(m.matches[m.cursor].Str)
-		} else {
-			fmt.Println(ansi.Strip(m.matches[m.cursor].Str))
-		}
+		tty.Println(m.matches[m.cursor].Str)
 	}
 
 	return nil
 }
 
-func (o Options) checkSelected(m model, isTTY bool) {
+func (o Options) checkSelected(m model) {
+	out := []string{}
 	for k := range m.selected {
-		if isTTY {
-			fmt.Println(k)
-		} else {
-			fmt.Println(ansi.Strip(k))
-		}
+		out = append(out, k)
 	}
+	tty.Println(strings.Join(out, o.OutputDelimiter))
 }

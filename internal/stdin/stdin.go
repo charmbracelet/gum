@@ -10,16 +10,54 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+type options struct {
+	ansiStrip  bool
+	singleLine bool
+}
+
+// Option is a read option.
+type Option func(*options)
+
+// StripANSI optionally strips ansi sequences.
+func StripANSI(b bool) Option {
+	return func(o *options) {
+		o.ansiStrip = b
+	}
+}
+
+// SingleLine reads a single line.
+func SingleLine(b bool) Option {
+	return func(o *options) {
+		o.singleLine = b
+	}
+}
+
 // Read reads input from an stdin pipe.
-func Read() (string, error) {
+func Read(opts ...Option) (string, error) {
 	if IsEmpty() {
 		return "", fmt.Errorf("stdin is empty")
+	}
+
+	options := options{}
+	for _, opt := range opts {
+		opt(&options)
 	}
 
 	reader := bufio.NewReader(os.Stdin)
 	var b strings.Builder
 
-	for {
+	if options.singleLine {
+		line, _, err := reader.ReadLine()
+		if err != nil {
+			return "", fmt.Errorf("failed to read line: %w", err)
+		}
+		_, err = b.Write(line)
+		if err != nil {
+			return "", fmt.Errorf("failed to write: %w", err)
+		}
+	}
+
+	for !options.singleLine {
 		r, _, err := reader.ReadRune()
 		if err != nil && err == io.EOF {
 			break
@@ -30,13 +68,11 @@ func Read() (string, error) {
 		}
 	}
 
-	return strings.TrimSpace(b.String()), nil
-}
-
-// ReadStrip reads input from an stdin pipe and strips ansi sequences.
-func ReadStrip() (string, error) {
-	s, err := Read()
-	return ansi.Strip(s), err
+	s := strings.TrimSpace(b.String())
+	if options.ansiStrip {
+		return ansi.Strip(s), nil
+	}
+	return s, nil
 }
 
 // IsEmpty returns whether stdin is empty.

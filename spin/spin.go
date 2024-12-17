@@ -37,7 +37,8 @@ type model struct {
 	stdout     string
 	stderr     string
 	output     string
-	showOutput bool
+	showStdout bool
+	showStderr bool
 	showError  bool
 }
 
@@ -106,8 +107,16 @@ func (m model) View() string {
 		return m.title
 	}
 
-	if m.quitting && m.showOutput {
-		return strings.TrimPrefix(errbuf.String()+"\n"+outbuf.String(), "\n")
+	var out string
+	if m.showStderr {
+		out += errbuf.String()
+	}
+	if m.showStdout {
+		out += outbuf.String()
+	}
+
+	if m.quitting && out != "" {
+		return out
 	}
 
 	var header string
@@ -116,10 +125,7 @@ func (m model) View() string {
 	} else {
 		header = m.title + " " + m.spinner.View()
 	}
-	if !m.showOutput {
-		return header
-	}
-	return header + errbuf.String() + "\n" + outbuf.String()
+	return header + "\n" + out
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
