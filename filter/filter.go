@@ -19,6 +19,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/x/ansi"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -124,7 +125,8 @@ func (k keymap) ShortHelp() []key.Binding {
 type model struct {
 	textinput             textinput.Model
 	viewport              *viewport.Model
-	choices               []string
+	choices               map[string]string
+	filteringChoices      []string
 	matches               []fuzzy.Match
 	cursor                int
 	header                string
@@ -201,28 +203,38 @@ func (m model) View() string {
 			s.WriteString(" ")
 		}
 
-		// For this match, there are a certain number of characters that have
-		// caused the match. i.e. fuzzy matching.
-		// We should indicate to the users which characters are being matched.
-		mi := 0
-		var buf strings.Builder
-		for ci, c := range match.Str {
-			// Check if the current character index matches the current matched
-			// index. If so, color the character to indicate a match.
-			if mi < len(match.MatchedIndexes) && ci == match.MatchedIndexes[mi] {
-				// Flush text buffer.
-				s.WriteString(lineTextStyle.Render(buf.String()))
-				buf.Reset()
-
-				s.WriteString(m.matchStyle.Render(string(c)))
-				// We have matched this character, so we never have to check it
-				// again. Move on to the next match.
-				mi++
-			} else {
-				// Not a match, buffer a regular character.
-				buf.WriteRune(c)
-			}
+		stylesOption := m.choices[match.Str]
+		if len(match.MatchedIndexes) == 0 {
+			// No matches, just render the text.
+			s.WriteString(lineTextStyle.Render(stylesOption))
+			s.WriteRune('\n')
+			continue
 		}
+
+		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
+		// style match.MatchedIndexes without losing the original option style:
+		// TODO: this could be optimized to handle highlight ranges instead of char-by-char.
+		var buf strings.Builder
+		lastIdx := 0
+		for i, idx := range match.MatchedIndexes {
+			if i == 0 {
+				lastIdx = idx - 1
+			}
+			// Add the text before this match
+			if idx > lastIdx {
+				buf.WriteString(cut2(stylesOption, idx, lastIdx))
+			}
+			// Add the matched character with highlight
+			buf.WriteString(m.matchStyle.Render(string(match.Str[idx])))
+			lastIdx = idx + 1
+		}
+
+		// Add any remaining text after the last match
+		if lastIdx < ansi.StringWidth(stylesOption) {
+			remaining := ansi.TruncateLeft(stylesOption, lastIdx, "")
+			buf.WriteString(remaining)
+		}
+
 		// Flush text buffer.
 		s.WriteString(lineTextStyle.Render(buf.String()))
 
@@ -356,7 +368,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if !m.strict {
 				choices = append(choices, m.textinput.Value())
 			}
-			choices = append(choices, m.choices...)
+			choices = append(choices, m.filteringChoices...)
 			if m.fuzzy {
 				if m.sort {
 					m.matches = fuzzy.Find(m.textinput.Value(), choices)
@@ -370,7 +382,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// If the search field is empty, let's not display the matches
 			// (none), but rather display all possible choices.
 			if m.textinput.Value() == "" {
-				m.matches = matchAll(m.choices)
+				m.matches = matchAll(m.filteringChoices)
 			}
 
 			// For reverse layout, we need to offset the viewport so that the
@@ -510,4 +522,12 @@ func clamp(low, high, val int) int {
 		return high
 	}
 	return val
+}
+
+func cut(a, b int, s string) string {
+	return ansi.TruncateLeft(ansi.Truncate(s, b, ""), a, "")
+}
+
+func cut2(s string, left, right int) string {
+	return ansi.TruncateLeft(ansi.Truncate(s, left, ""), right, "")
 }
