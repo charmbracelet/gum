@@ -203,35 +203,34 @@ func (m model) View() string {
 			s.WriteString(" ")
 		}
 
-		stylesOption := m.choices[match.Str]
+		styledOption := m.choices[match.Str]
 		if len(match.MatchedIndexes) == 0 {
 			// No matches, just render the text.
-			s.WriteString(lineTextStyle.Render(stylesOption))
+			s.WriteString(lineTextStyle.Render(styledOption))
 			s.WriteRune('\n')
 			continue
 		}
 
 		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
 		// style match.MatchedIndexes without losing the original option style:
-		// TODO: this could be optimized to handle highlight ranges instead of char-by-char.
 		var buf strings.Builder
 		lastIdx := 0
-		for i, idx := range match.MatchedIndexes {
-			if i == 0 {
-				lastIdx = idx - 1
-			}
+		for _, rng := range matchedRanges(match.MatchedIndexes) {
+			// fmt.Print("here ", lastIdx, rng, " - ", match.Str[rng[0]:rng[1]+1], "\r\n")
 			// Add the text before this match
-			if idx > lastIdx {
-				buf.WriteString(cut2(stylesOption, idx, lastIdx))
+			if rng[0] > lastIdx {
+				buf.WriteString(ansiCut(styledOption, rng[0], lastIdx))
 			}
+
 			// Add the matched character with highlight
-			buf.WriteString(m.matchStyle.Render(string(match.Str[idx])))
-			lastIdx = idx + 1
+			buf.WriteString(m.matchStyle.Render(match.Str[rng[0] : rng[1]+1]))
+			lastIdx = rng[1] + 1
 		}
 
 		// Add any remaining text after the last match
-		if lastIdx < ansi.StringWidth(stylesOption) {
-			remaining := ansi.TruncateLeft(stylesOption, lastIdx, "")
+		// fmt.Print("here ", lastIdx, ansi.StringWidth(styledOption), len(match.Str), "\r\n")
+		if lastIdx < ansi.StringWidth(styledOption) {
+			remaining := ansi.TruncateLeft(styledOption, lastIdx, "")
 			buf.WriteString(remaining)
 		}
 
@@ -524,10 +523,30 @@ func clamp(low, high, val int) int {
 	return val
 }
 
-func cut(a, b int, s string) string {
-	return ansi.TruncateLeft(ansi.Truncate(s, b, ""), a, "")
+func ansiCut(s string, left, right int) string {
+	if right == 0 {
+		return ansi.Truncate(s, left, "")
+	}
+	return ansi.TruncateLeft(ansi.Truncate(s, left, ""), right, "")
 }
 
-func cut2(s string, left, right int) string {
-	return ansi.TruncateLeft(ansi.Truncate(s, left, ""), right, "")
+func matchedRanges(in []int) [][2]int {
+	if len(in) == 0 {
+		return [][2]int{}
+	}
+	current := [2]int{in[0], in[0]}
+	if len(in) == 1 {
+		return [][2]int{current}
+	}
+	var out [][2]int
+	for i := 1; i < len(in); i++ {
+		if in[i] == current[1]+1 {
+			current[1] = in[i]
+		} else {
+			out = append(out, current)
+			current = [2]int{in[i], in[i]}
+		}
+	}
+	out = append(out, current)
+	return out
 }
