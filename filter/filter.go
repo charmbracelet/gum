@@ -219,7 +219,7 @@ func (m model) View() string {
 			// fmt.Print("here ", lastIdx, rng, " - ", match.Str[rng[0]:rng[1]+1], "\r\n")
 			// Add the text before this match
 			if rng[0] > lastIdx {
-				buf.WriteString(ansiCut(styledOption, lastIdx, rng[0]))
+				buf.WriteString(ansi.Cut(styledOption, lastIdx, rng[0]))
 			}
 
 			// Add the matched character with highlight
@@ -521,13 +521,6 @@ func clamp(low, high, val int) int {
 		return high
 	}
 	return val
-}
-
-func ansiCut(s string, left, right int) string {
-	if left == 0 {
-		return ansi.Truncate(s, right, "")
-	}
-	return ansi.TruncateLeft(ansi.Truncate(s, right, ""), left, "")
 }
 
 func matchedRanges(in []int) [][2]int {
