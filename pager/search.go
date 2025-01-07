@@ -28,9 +28,10 @@ func (s *search) new() {
 	s.input = input
 }
 
-func (s *search) Begin() {
+func (s *search) Begin(w int) {
 	s.new()
 	s.active = true
+	s.input.Width = w
 	s.input.Focus()
 }
 

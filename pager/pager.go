@@ -109,6 +109,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.processText(msg)
+		m.search.input.Width = msg.Width
 	case tea.KeyMsg:
 		return m.keyHandler(msg)
 	}
@@ -203,7 +204,7 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 		case key.Matches(msg, km.End):
 			m.viewport.GotoBottom()
 		case key.Matches(msg, km.Search):
-			m.search.Begin()
+			m.search.Begin(m.viewport.Width)
 			return m, textinput.Blink
 		case key.Matches(msg, km.PrevMatch):
 			m.search.PrevMatch(&m)
