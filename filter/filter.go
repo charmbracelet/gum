@@ -31,6 +31,18 @@ func defaultKeymap() keymap {
 		Up: key.NewBinding(
 			key.WithKeys("up", "ctrl+k", "ctrl+p"),
 		),
+		Left: key.NewBinding(
+			key.WithKeys("left"),
+		),
+		Right: key.NewBinding(
+			key.WithKeys("right"),
+		),
+		NLeft: key.NewBinding(
+			key.WithKeys("h"),
+		),
+		NRight: key.NewBinding(
+			key.WithKeys("l"),
+		),
 		NDown: key.NewBinding(
 			key.WithKeys("j"),
 		),
@@ -93,6 +105,10 @@ type keymap struct {
 	Up,
 	NDown,
 	NUp,
+	Right,
+	Left,
+	NRight,
+	NLeft,
 	Home,
 	End,
 	ToggleAndNext,
@@ -111,8 +127,8 @@ func (k keymap) FullHelp() [][]key.Binding { return nil }
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		key.NewBinding(
-			key.WithKeys("up", "down"),
-			key.WithHelp("↓↑", "navigate"),
+			key.WithKeys("left", "down", "up", "rigth"),
+			key.WithHelp("←↓↑→", "navigate"),
 		),
 		k.FocusInSearch,
 		k.FocusOutSearch,
@@ -316,6 +332,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CursorDown()
 		case key.Matches(msg, km.Up, km.NUp):
 			m.CursorUp()
+		case key.Matches(msg, km.Right, km.NRight):
+			m.viewport.MoveRight(6)
+		case key.Matches(msg, km.Left, km.NLeft):
+			m.viewport.MoveLeft(6)
 		case key.Matches(msg, km.Home):
 			m.cursor = 0
 			m.viewport.GotoTop()
