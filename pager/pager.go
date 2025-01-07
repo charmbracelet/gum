@@ -13,7 +13,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/reflow/truncate"
+	"github.com/charmbracelet/x/ansi"
 )
 
 type keymap struct {
@@ -37,8 +37,8 @@ func (k keymap) FullHelp() [][]key.Binding {
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		key.NewBinding(
-			key.WithKeys("up", "down"),
-			key.WithHelp("↓↑", "navigate"),
+			key.WithKeys("left", "down", "up", "rigth"),
+			key.WithHelp("←↓↑→", "navigate"),
 		),
 		k.Quit,
 		k.Search,
@@ -117,8 +117,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.keymap.NextMatch.SetEnabled(m.search.query != nil)
 
 	var cmd tea.Cmd
+	var cmds []tea.Cmd
+	m.viewport, cmd = m.viewport.Update(msg)
+	cmds = append(cmds, cmd)
 	m.search.input, cmd = m.search.input.Update(msg)
-	return m, cmd
+	cmds = append(cmds, cmd)
+	return m, tea.Batch(cmds...)
 }
 
 func (m *model) helpView() string {
@@ -128,7 +132,7 @@ func (m *model) helpView() string {
 func (m *model) processText(msg tea.WindowSizeMsg) {
 	m.viewport.Height = msg.Height - lipgloss.Height(m.helpView())
 	m.viewport.Width = msg.Width
-	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
+
 	var text strings.Builder
 
 	// Determine max width of a line.
@@ -146,17 +150,19 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 		if m.showLineNumbers {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
-		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
-			truncatedLine := truncate.String(line, uint(m.maxWidth)) //nolint: gosec
-			text.WriteString(textStyle.Render(truncatedLine))
-			text.WriteString("\n")
-			if m.showLineNumbers {
-				text.WriteString(m.lineNumberStyle.Render("     │ "))
+		if m.softWrap {
+			idx := 0
+			for ansi.StringWidth(line) >= idx {
+				truncatedLine := ansi.Cut(line, idx, m.maxWidth+idx)
+				if m.showLineNumbers && idx > 0 {
+					text.WriteString(m.lineNumberStyle.Render("     │ "))
+				}
+				text.WriteString(truncatedLine + "\n")
+				idx += m.maxWidth
 			}
-			line = strings.Replace(line, truncatedLine, "", 1)
+		} else {
+			text.WriteString(line + "\n")
 		}
-		text.WriteString(textStyle.Render(truncate.String(line, uint(m.maxWidth)))) //nolint: gosec
-		text.WriteString("\n")
 	}
 
 	diffHeight := m.viewport.Height - lipgloss.Height(text.String())

@@ -2,7 +2,6 @@ package pager
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -18,14 +17,12 @@ func (o Options) Run() error {
 	vp.Style = o.Style.ToLipgloss()
 
 	if o.Content == "" {
-		stdin, err := stdin.Read()
+		stdin, err := stdin.Read(stdin.StripANSI(true))
 		if err != nil {
 			return fmt.Errorf("unable to read stdin")
 		}
 		if stdin != "" {
-			// Sanitize the input from stdin by removing backspace sequences.
-			backspace := regexp.MustCompile(".\x08")
-			o.Content = backspace.ReplaceAllString(stdin, "")
+			o.Content = stdin
 		} else {
 			return fmt.Errorf("provide some content to display")
 		}
