@@ -211,10 +211,11 @@ func (m model) View() string {
 			continue
 		}
 
-		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
-		// style match.MatchedIndexes without losing the original option style:
 		var buf strings.Builder
 		lastIdx := 0
+
+		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
+		// style match.MatchedIndexes without losing the original option style:
 		for _, rng := range matchedRanges(match.MatchedIndexes) {
 			// fmt.Print("here ", lastIdx, rng, " - ", match.Str[rng[0]:rng[1]+1], "\r\n")
 			// Add the text before this match
@@ -223,16 +224,12 @@ func (m model) View() string {
 			}
 
 			// Add the matched character with highlight
-			buf.WriteString(m.matchStyle.Render(match.Str[rng[0] : rng[1]+1]))
+			buf.WriteString(m.matchStyle.Render(ansi.Cut(match.Str, rng[0], rng[1]+1)))
 			lastIdx = rng[1] + 1
 		}
 
 		// Add any remaining text after the last match
-		// fmt.Print("here ", lastIdx, ansi.StringWidth(styledOption), len(match.Str), "\r\n")
-		if lastIdx < ansi.StringWidth(styledOption) {
-			remaining := ansi.TruncateLeft(styledOption, lastIdx, "")
-			buf.WriteString(remaining)
-		}
+		buf.WriteString(ansi.TruncateLeft(styledOption, lastIdx, ""))
 
 		// Flush text buffer.
 		s.WriteString(lineTextStyle.Render(buf.String()))
