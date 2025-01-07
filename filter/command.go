@@ -14,6 +14,7 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/internal/tty"
+	"github.com/charmbracelet/x/ansi"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -59,13 +60,21 @@ func (o Options) Run() error {
 	if o.Value != "" {
 		i.SetValue(o.Value)
 	}
+
+	choices := map[string]string{}
+	filteringChoices := []string{}
+	for _, opt := range o.Options {
+		s := ansi.Strip(opt)
+		choices[s] = opt
+		filteringChoices = append(filteringChoices, s)
+	}
 	switch {
 	case o.Value != "" && o.Fuzzy:
-		matches = fuzzy.Find(o.Value, o.Options)
+		matches = fuzzy.Find(o.Value, filteringChoices)
 	case o.Value != "" && !o.Fuzzy:
-		matches = exactMatches(o.Value, o.Options)
+		matches = exactMatches(o.Value, filteringChoices)
 	default:
-		matches = matchAll(o.Options)
+		matches = matchAll(filteringChoices)
 	}
 
 	if o.NoLimit {
@@ -86,7 +95,8 @@ func (o Options) Run() error {
 	}
 
 	m := model{
-		choices:               o.Options,
+		choices:               choices,
+		filteringChoices:      filteringChoices,
 		indicator:             o.Indicator,
 		matches:               matches,
 		header:                o.Header,
