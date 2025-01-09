@@ -33,6 +33,7 @@ func (o Options) Run() error {
 	}
 
 	vp.SoftWrap = o.SoftWrap
+	vp.FillHeight = o.ShowLineNumbers
 	vp.SetContent(o.Content)
 	vp.HighlightStyle = o.MatchStyle.ToLipgloss()
 	vp.SelectedHighlightStyle = o.MatchHighlightStyle.ToLipgloss()
