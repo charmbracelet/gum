@@ -28,17 +28,21 @@ func (o Options) Run() error {
 		}
 	}
 
+	if o.ShowLineNumbers {
+		vp.LeftGutterFunc = viewport.LineNumberGutter(o.LineNumberStyle.ToLipgloss())
+	}
+
+	vp.SoftWrap = o.SoftWrap
+	vp.SetContent(o.Content)
+	vp.HighlightStyle = o.MatchStyle.ToLipgloss()
+	vp.SelectedHighlightStyle = o.MatchHighlightStyle.ToLipgloss()
+
 	m := model{
-		viewport:            vp,
-		help:                help.New(),
-		content:             o.Content,
-		origContent:         o.Content,
-		showLineNumbers:     o.ShowLineNumbers,
-		lineNumberStyle:     o.LineNumberStyle.ToLipgloss(),
-		softWrap:            o.SoftWrap,
-		matchStyle:          o.MatchStyle.ToLipgloss(),
-		matchHighlightStyle: o.MatchHighlightStyle.ToLipgloss(),
-		keymap:              defaultKeymap(),
+		viewport:        vp,
+		help:            help.New(),
+		showLineNumbers: o.ShowLineNumbers,
+		lineNumberStyle: o.LineNumberStyle.ToLipgloss(),
+		keymap:          defaultKeymap(),
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)
