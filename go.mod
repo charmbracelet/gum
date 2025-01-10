@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.2.5-0.20241207142916-e0515bc22ad1
 	github.com/charmbracelet/glamour v0.8.0
-	github.com/charmbracelet/lipgloss v1.0.0
+	github.com/charmbracelet/lipgloss v1.0.1-0.20250109182251-99421664af19
 	github.com/charmbracelet/log v0.4.0
 	github.com/charmbracelet/x/ansi v0.6.1-0.20250107110353-48b574af22a5
 	github.com/charmbracelet/x/editor v0.1.0
@@ -50,5 +50,3 @@ require (
 )
 
 replace github.com/charmbracelet/bubbles => ../bubbles
-
-replace github.com/charmbracelet/lipgloss => ../lipgloss
