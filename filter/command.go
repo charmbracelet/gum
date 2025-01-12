@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -123,17 +124,19 @@ func (o Options) Run() error {
 		help:                  help.New(),
 	}
 
-	for _, s := range o.Selected {
-		if o.NoLimit || o.Limit > 1 {
-			m.selected[s] = struct{}{}
-		}
-	}
-
+	isSelectAll := len(o.Selected) == 1 && o.Selected[0] == "*"
+	currentSelected := 0
 	if len(o.Selected) > 0 {
-		for i, match := range matches {
-			if match.Str == o.Selected[0] {
+		for i, option := range o.Options {
+			if currentSelected >= o.Limit || (!isSelectAll && !slices.Contains(o.Selected, option)) {
+				continue
+			}
+			if o.Limit == 1 {
 				m.cursor = i
-				break
+				m.selected[option] = struct{}{}
+			} else {
+				currentSelected++
+				m.selected[option] = struct{}{}
 			}
 		}
 	}
