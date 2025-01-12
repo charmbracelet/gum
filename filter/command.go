@@ -127,16 +127,16 @@ func (o Options) Run() error {
 	isSelectAll := len(o.Selected) == 1 && o.Selected[0] == "*"
 	currentSelected := 0
 	if len(o.Selected) > 0 {
-		for i, option := range o.Options {
-			if currentSelected >= o.Limit || (!isSelectAll && !slices.Contains(o.Selected, option)) {
+		for i, option := range matches {
+			if currentSelected >= o.Limit || (!isSelectAll && !slices.Contains(o.Selected, option.Str)) {
 				continue
 			}
 			if o.Limit == 1 {
 				m.cursor = i
-				m.selected[option] = struct{}{}
+				m.selected[option.Str] = struct{}{}
 			} else {
 				currentSelected++
-				m.selected[option] = struct{}{}
+				m.selected[option.Str] = struct{}{}
 			}
 		}
 	}
