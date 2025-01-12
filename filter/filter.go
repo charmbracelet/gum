@@ -282,8 +282,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return strings.Repeat(" ", lipgloss.Width(m.indicator)) + selectGutter
 	}
-	var cmd, icmd tea.Cmd
+	var cmd, icmd, vcmd tea.Cmd
 	m.textinput, icmd = m.textinput.Update(msg)
+	*m.viewport, vcmd = m.viewport.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.textinput.Width = msg.Width
@@ -411,7 +412,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.
 	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
-	return m, tea.Batch(cmd, icmd)
+	return m, tea.Batch(cmd, icmd, vcmd)
 }
 
 func (m *model) CursorUp() {

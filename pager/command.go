@@ -56,7 +56,7 @@ func (o Options) Run() error {
 	log.SetOutput(w)
 	_, err := tea.NewProgram(
 		m,
-		tea.WithAltScreen(),
+		// tea.WithAltScreen(),
 		tea.WithReportFocus(),
 		tea.WithContext(ctx),
 	).Run()
