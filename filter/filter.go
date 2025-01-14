@@ -20,6 +20,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -217,15 +218,20 @@ func (m model) View() string {
 		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
 		// style match.MatchedIndexes without losing the original option style:
 		for _, rng := range matchedRanges(match.MatchedIndexes) {
-			// fmt.Print("here ", lastIdx, rng, " - ", match.Str[rng[0]:rng[1]+1], "\r\n")
+
+			// ansi.Cut is grapheme and ansi sequence aware, we match against a ansi.Stripped string, but we might still have grahemes.
+			// all that to say that rng is byte positions, but we pass it down to ansi.Cut as char positions.
+			// so we need to adjust it here.
+			start, stop := byteToChar(match.Str, rng)
+
 			// Add the text before this match
-			if rng[0] > lastIdx {
-				buf.WriteString(ansi.Cut(styledOption, lastIdx, rng[0]))
+			if start > lastIdx {
+				buf.WriteString(ansi.Cut(styledOption, lastIdx, start))
 			}
 
 			// Add the matched character with highlight
-			buf.WriteString(m.matchStyle.Render(ansi.Cut(match.Str, rng[0], rng[1]+1)))
-			lastIdx = rng[1] + 1
+			buf.WriteString(m.matchStyle.Render(ansi.Cut(match.Str, start, stop+1)))
+			lastIdx = stop + 1
 		}
 
 		// Add any remaining text after the last match
@@ -539,4 +545,27 @@ func matchedRanges(in []int) [][2]int {
 	}
 	out = append(out, current)
 	return out
+}
+
+func byteToChar(str string, rng [2]int) (int, int) {
+	bytePos, byteStart, byteStop := 0, rng[0], rng[1]
+	pos, start, stop := 0, 0, 0
+	gr := uniseg.NewGraphemes(str)
+	for byteStart > bytePos {
+		if !gr.Next() {
+			break
+		}
+		bytePos += len(gr.Str())
+		pos += max(1, gr.Width())
+	}
+	start = pos
+	for byteStop > bytePos {
+		if !gr.Next() {
+			break
+		}
+		bytePos += len(gr.Str())
+		pos += max(1, gr.Width())
+	}
+	stop = pos
+	return start, stop
 }

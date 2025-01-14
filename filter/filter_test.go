@@ -3,6 +3,8 @@ package filter
 import (
 	"reflect"
 	"testing"
+
+	"github.com/charmbracelet/x/ansi"
 )
 
 func TestMatchedRanges(t *testing.T) {
@@ -37,5 +39,20 @@ func TestMatchedRanges(t *testing.T) {
 				t.Errorf("expected %v, got %v", tt.out, match)
 			}
 		})
+	}
+}
+
+func TestByteToChar(t *testing.T) {
+	str := " Downloads"
+	rng := [2]int{4, 7}
+	expect := "Dow"
+
+	if got := str[rng[0]:rng[1]]; got != expect {
+		t.Errorf("expected %q, got %q", expect, got)
+	}
+
+	start, stop := byteToChar(str, rng)
+	if got := ansi.Cut(str, start, stop); got != expect {
+		t.Errorf("expected %+q, got %+q", expect, got)
 	}
 }
