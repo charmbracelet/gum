@@ -19,7 +19,6 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/x/ansi"
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
 )
@@ -212,33 +211,16 @@ func (m model) View() string {
 			continue
 		}
 
-		var buf strings.Builder
-		lastIdx := 0
-
-		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
-		// style match.MatchedIndexes without losing the original option style:
+		var ranges []lipgloss.Range
 		for _, rng := range matchedRanges(match.MatchedIndexes) {
-
-			// ansi.Cut is grapheme and ansi sequence aware, we match against a ansi.Stripped string, but we might still have grahemes.
-			// all that to say that rng is byte positions, but we pass it down to ansi.Cut as char positions.
-			// so we need to adjust it here.
-			start, stop := byteToChar(match.Str, rng)
-
-			// Add the text before this match
-			if start > lastIdx {
-				buf.WriteString(ansi.Cut(styledOption, lastIdx, start))
-			}
-
-			// Add the matched character with highlight
-			buf.WriteString(m.matchStyle.Render(ansi.Cut(match.Str, start, stop+1)))
-			lastIdx = stop + 1
+			// ansi.Cut is grapheme and ansi sequence aware, we match against a ansi.Stripped string, but we might still have graphemes.
+			// all that to say that rng is byte positions, but we need to pass it down to ansi.Cut as char positions.
+			// so we need to adjust it here:
+			start, stop := bytePosToVisibleCharPos(match.Str, rng)
+			ranges = append(ranges, lipgloss.NewRange(start, stop+1, m.matchStyle))
 		}
 
-		// Add any remaining text after the last match
-		buf.WriteString(ansi.TruncateLeft(styledOption, lastIdx, ""))
-
-		// Flush text buffer.
-		s.WriteString(lineTextStyle.Render(buf.String()))
+		s.WriteString(lineTextStyle.Render(lipgloss.StyleRanges(styledOption, ranges...)))
 
 		// We have finished displaying the match with all of it's matched
 		// characters highlighted and the rest filled in.
@@ -547,7 +529,7 @@ func matchedRanges(in []int) [][2]int {
 	return out
 }
 
-func byteToChar(str string, rng [2]int) (int, int) {
+func bytePosToVisibleCharPos(str string, rng [2]int) (int, int) {
 	bytePos, byteStart, byteStop := 0, rng[0], rng[1]
 	pos, start, stop := 0, 0, 0
 	gr := uniseg.NewGraphemes(str)

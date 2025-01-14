@@ -43,6 +43,7 @@ func TestMatchedRanges(t *testing.T) {
 }
 
 func TestByteToChar(t *testing.T) {
+	stStr := "\x1b[90m\ue615\x1b[39m \x1b[3m\x1b[32mDow\x1b[0m\x1b[90m\x1b[39m\x1b[3wnloads"
 	str := " Downloads"
 	rng := [2]int{4, 7}
 	expect := "Dow"
@@ -51,8 +52,8 @@ func TestByteToChar(t *testing.T) {
 		t.Errorf("expected %q, got %q", expect, got)
 	}
 
-	start, stop := byteToChar(str, rng)
-	if got := ansi.Cut(str, start, stop); got != expect {
+	start, stop := bytePosToVisibleCharPos(str, rng)
+	if got := ansi.Strip(ansi.Cut(stStr, start, stop)); got != expect {
 		t.Errorf("expected %+q, got %+q", expect, got)
 	}
 }
