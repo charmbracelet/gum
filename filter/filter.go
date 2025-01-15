@@ -19,7 +19,6 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/x/ansi"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -30,6 +29,18 @@ func defaultKeymap() keymap {
 		),
 		Up: key.NewBinding(
 			key.WithKeys("up", "ctrl+k", "ctrl+p"),
+		),
+		Left: key.NewBinding(
+			key.WithKeys("left"),
+		),
+		Right: key.NewBinding(
+			key.WithKeys("right"),
+		),
+		NLeft: key.NewBinding(
+			key.WithKeys("h"),
+		),
+		NRight: key.NewBinding(
+			key.WithKeys("l"),
 		),
 		NDown: key.NewBinding(
 			key.WithKeys("j"),
@@ -93,6 +104,10 @@ type keymap struct {
 	Up,
 	NDown,
 	NUp,
+	Right,
+	Left,
+	NRight,
+	NLeft,
 	Home,
 	End,
 	ToggleAndNext,
@@ -111,8 +126,8 @@ func (k keymap) FullHelp() [][]key.Binding { return nil }
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		key.NewBinding(
-			key.WithKeys("up", "down"),
-			key.WithHelp("↓↑", "navigate"),
+			key.WithKeys("left", "down", "up", "rigth"),
+			key.WithHelp("←↓↑→", "navigate"),
 		),
 		k.FocusInSearch,
 		k.FocusOutSearch,
@@ -187,20 +202,9 @@ func (m model) View() string {
 		// The line's text style is set depending on whether or not the cursor
 		// points to this line.
 		if i == m.cursor {
-			s.WriteString(m.indicatorStyle.Render(m.indicator))
 			lineTextStyle = m.cursorTextStyle
 		} else {
-			s.WriteString(strings.Repeat(" ", lipgloss.Width(m.indicator)))
 			lineTextStyle = m.textStyle
-		}
-
-		// If there are multiple selections mark them, otherwise leave an empty space
-		if _, ok := m.selected[match.Str]; ok {
-			s.WriteString(m.selectedPrefixStyle.Render(m.selectedPrefix))
-		} else if m.limit > 1 {
-			s.WriteString(m.unselectedPrefixStyle.Render(m.unselectedPrefix))
-		} else {
-			s.WriteString(" ")
 		}
 
 		styledOption := m.choices[match.Str]
@@ -211,28 +215,15 @@ func (m model) View() string {
 			continue
 		}
 
-		var buf strings.Builder
-		lastIdx := 0
-
 		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
 		// style match.MatchedIndexes without losing the original option style:
+		ranges := []lipgloss.Range{}
 		for _, rng := range matchedRanges(match.MatchedIndexes) {
-			// fmt.Print("here ", lastIdx, rng, " - ", match.Str[rng[0]:rng[1]+1], "\r\n")
-			// Add the text before this match
-			if rng[0] > lastIdx {
-				buf.WriteString(ansi.Cut(styledOption, lastIdx, rng[0]))
-			}
-
-			// Add the matched character with highlight
-			buf.WriteString(m.matchStyle.Render(ansi.Cut(match.Str, rng[0], rng[1]+1)))
-			lastIdx = rng[1] + 1
+			ranges = append(ranges, lipgloss.NewRange(rng[0], rng[1]+1, m.matchStyle))
 		}
 
 		// Add any remaining text after the last match
-		buf.WriteString(ansi.TruncateLeft(styledOption, lastIdx, ""))
-
-		// Flush text buffer.
-		s.WriteString(lineTextStyle.Render(buf.String()))
+		s.WriteString(lipgloss.StyleRanges(styledOption, ranges...))
 
 		// We have finished displaying the match with all of it's matched
 		// characters highlighted and the rest filled in.
@@ -240,7 +231,7 @@ func (m model) View() string {
 		s.WriteRune('\n')
 	}
 
-	m.viewport.SetContent(s.String())
+	m.viewport.SetContent(strings.TrimSpace(s.String()))
 
 	help := ""
 	if m.showHelp {
@@ -276,10 +267,26 @@ func (m model) helpView() string {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	m.viewport.LeftGutterFunc = func(gc viewport.GutterContext) string {
+		selectGutter := ""
+		if m.limit > 1 {
+			selectGutter = m.unselectedPrefixStyle.Render(m.unselectedPrefix)
+		}
+		if gc.Index < len(m.matches)-1 {
+			if _, ok := m.selected[m.matches[gc.Index].Str]; ok {
+				selectGutter = m.selectedPrefixStyle.Render(m.selectedPrefix)
+			}
+		}
+		if gc.Index == m.cursor {
+			return m.indicatorStyle.Render(m.indicator) + selectGutter
+		}
+		return strings.Repeat(" ", lipgloss.Width(m.indicator)) + selectGutter
+	}
 	var cmd, icmd tea.Cmd
 	m.textinput, icmd = m.textinput.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
+		m.textinput.Width = msg.Width
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
 		}
@@ -316,6 +323,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CursorDown()
 		case key.Matches(msg, km.Up, km.NUp):
 			m.CursorUp()
+		case key.Matches(msg, km.Right, km.NRight):
+			m.viewport.MoveRight(6)
+		case key.Matches(msg, km.Left, km.NLeft):
+			m.viewport.MoveLeft(6)
 		case key.Matches(msg, km.Home):
 			m.cursor = 0
 			m.viewport.GotoTop()

@@ -14,7 +14,6 @@ require (
 	github.com/charmbracelet/x/ansi v0.7.0
 	github.com/charmbracelet/x/editor v0.1.0
 	github.com/charmbracelet/x/term v0.2.1
-	github.com/muesli/reflow v0.3.0
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.3-0.20241211131612-0d230cb6eb15
 	github.com/sahilm/fuzzy v0.1.1
@@ -39,6 +38,7 @@ require (
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/mango v0.2.0 // indirect
+	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/yuin/goldmark v1.7.4 // indirect
 	github.com/yuin/goldmark-emoji v1.0.4 // indirect
@@ -48,3 +48,7 @@ require (
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/term v0.27.0 // indirect
 )
+
+replace github.com/charmbracelet/bubbles => ../bubbles
+
+replace github.com/charmbracelet/lipgloss => ../lipgloss
