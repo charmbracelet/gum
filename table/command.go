@@ -110,7 +110,7 @@ func (o Options) Run() error {
 		rows = append(rows, table.Row(data[row]))
 	}
 
-	if !o.Interactive && (o.Print || !term.IsTerminal(os.Stdout.Fd())) {
+	if !o.Interactive && (o.Print || !term.IsTerminal(os.Stdin.Fd())) {
 		table := ltable.New().
 			Headers(columnNames...).
 			Rows(data...).
