@@ -13,6 +13,7 @@ type Options struct {
 	Widths          []int    `short:"w" help:"Column widths"`
 	Height          int      `help:"Table height" default:"0"`
 	Print           bool     `short:"p" help:"static print" default:"false"`
+	Interactive     bool     `short:"i" help:"force interactive mode when stdout is not a terminal" default:"false"`
 	File            string   `short:"f" help:"file path" default:""`
 	Border          string   `short:"b" help:"border style" default:"rounded" enum:"rounded,thick,normal,hidden,double,none"`
 	ShowHelp        bool     `help:"Show help keybinds" default:"true" negatable:"" env:"GUM_TABLE_SHOW_HELP"`
