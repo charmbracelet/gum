@@ -14,7 +14,8 @@ import (
 // Run provides a shell script interface for the spinner bubble.
 // https://github.com/charmbracelet/bubbles/spinner
 func (o Options) Run() error {
-	isTTY := term.IsTerminal(os.Stdout.Fd())
+	isOutTTY := term.IsTerminal(os.Stdout.Fd())
+	isErrTTY := term.IsTerminal(os.Stderr.Fd())
 
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
@@ -24,25 +25,21 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
-		showStdout: (o.ShowOutput || o.ShowStdout) && isTTY,
-		showStderr: (o.ShowOutput || o.ShowStderr) && isTTY,
+		showStdout: (o.ShowOutput || o.ShowStdout) && isOutTTY,
+		showStderr: (o.ShowOutput || o.ShowStderr) && isErrTTY,
 		showError:  o.ShowError,
-		isTTY:      isTTY,
+		isTTY:      isErrTTY,
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
-	opts := []tea.ProgramOption{
+	tm, err := tea.NewProgram(
+		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
-	}
-
-	if !isTTY {
-		opts = append(opts, tea.WithInput(nil))
-	}
-
-	tm, err := tea.NewProgram(m, opts...).Run()
+		tea.WithInput(nil),
+	).Run()
 	if err != nil {
 		return fmt.Errorf("unable to run action: %w", err)
 	}
@@ -55,7 +52,7 @@ func (o Options) Run() error {
 		if o.ShowOutput {
 			// BubbleTea writes the View() to stderr.
 			// If the program is being piped then put the accumulated output in stdout.
-			if !isTTY {
+			if !isOutTTY {
 				_, err := os.Stdout.WriteString(m.stdout)
 				if err != nil {
 					return fmt.Errorf("failed to write to stdout: %w", err)
