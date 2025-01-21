@@ -14,7 +14,7 @@ import (
 // Run provides a shell script interface for the spinner bubble.
 // https://github.com/charmbracelet/bubbles/spinner
 func (o Options) Run() error {
-	isOutTTTY := term.IsTerminal(os.Stdout.Fd())
+	isOutTTY := term.IsTerminal(os.Stdout.Fd())
 	isErrTTY := term.IsTerminal(os.Stderr.Fd())
 
 	s := spinner.New()
@@ -25,7 +25,7 @@ func (o Options) Run() error {
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
 		align:      o.Align,
-		showStdout: (o.ShowOutput || o.ShowStdout) && isOutTTTY,
+		showStdout: (o.ShowOutput || o.ShowStdout) && isOutTTY,
 		showStderr: (o.ShowOutput || o.ShowStderr) && isErrTTY,
 		showError:  o.ShowError,
 		isTTY:      isErrTTY,
@@ -52,7 +52,7 @@ func (o Options) Run() error {
 		if o.ShowOutput {
 			// BubbleTea writes the View() to stderr.
 			// If the program is being piped then put the accumulated output in stdout.
-			if !isOutTTTY {
+			if !isOutTTY {
 				_, err := os.Stdout.WriteString(m.stdout)
 				if err != nil {
 					return fmt.Errorf("failed to write to stdout: %w", err)
