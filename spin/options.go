@@ -14,6 +14,7 @@ type Options struct {
 	ShowError    bool          `help:"Show output of command only if the command fails" default:"false" env:"GUM_SPIN_SHOW_ERROR"`
 	ShowStdout   bool          `help:"Show STDOUT output" default:"false" env:"GUM_SPIN_SHOW_STDOUT"`
 	ShowStderr   bool          `help:"Show STDERR errput" default:"false" env:"GUM_SPIN_SHOW_STDERR"`
+	ShowSpinner  bool          `help:"Show spinner even if output device is not a TTY" default:"false" env:"GUM_SPIN_SHOW_SPINNER"`
 	Spinner      string        `help:"Spinner type" short:"s" type:"spinner" enum:"line,dot,minidot,jump,pulse,points,globe,moon,monkey,meter,hamburger" default:"dot" env:"GUM_SPIN_SPINNER"`
 	SpinnerStyle style.Styles  `embed:"" prefix:"spinner." set:"defaultForeground=212" envprefix:"GUM_SPIN_SPINNER_"`
 	Title        string        `help:"Text to display to user while spinning" default:"Loading..." env:"GUM_SPIN_TITLE"`

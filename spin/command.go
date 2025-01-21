@@ -27,6 +27,7 @@ func (o Options) Run() error {
 		showStdout: (o.ShowOutput || o.ShowStdout) && isTTY,
 		showStderr: (o.ShowOutput || o.ShowStderr) && isTTY,
 		showError:  o.ShowError,
+		showSpinner: o.ShowSpinner,
 		isTTY:      isTTY,
 	}
 

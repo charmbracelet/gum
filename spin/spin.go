@@ -27,19 +27,20 @@ import (
 )
 
 type model struct {
-	spinner    spinner.Model
-	title      string
-	align      string
-	command    []string
-	quitting   bool
-	isTTY      bool
-	status     int
-	stdout     string
-	stderr     string
-	output     string
-	showStdout bool
-	showStderr bool
-	showError  bool
+	spinner     spinner.Model
+	title       string
+	align       string
+	command     []string
+	quitting    bool
+	isTTY       bool
+	status      int
+	stdout      string
+	stderr      string
+	output      string
+	showStdout  bool
+	showStderr  bool
+	showError   bool
+	showSpinner bool
 }
 
 var (
@@ -103,7 +104,7 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) View() string {
-	if !m.isTTY {
+	if !m.isTTY && !m.showSpinner {
 		return m.title
 	}
 

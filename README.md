@@ -273,6 +273,8 @@ automatically stop after the given command exits.
 
 To view or pipe the command's output, use the `--show-output` flag.
 
+By default, spinner will not be printed when output is piped or redirected. Use the `--show-spinner` to make it visible in such case.
+
 ```bash
 gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 ```
