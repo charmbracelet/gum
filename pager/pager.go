@@ -122,7 +122,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *model) helpView() string {
-	return "\n" + m.help.View(m.keymap)
+	return m.help.View(m.keymap)
 }
 
 func (m *model) processText(msg tea.WindowSizeMsg) {
@@ -221,5 +221,5 @@ func (m model) View() string {
 		return m.viewport.View() + "\n " + m.search.input.View()
 	}
 
-	return m.viewport.View() + m.helpView()
+	return m.viewport.View() + "\n" + m.helpView()
 }
