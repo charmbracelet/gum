@@ -103,10 +103,6 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) View() string {
-	if !m.isTTY {
-		return m.title
-	}
-
 	var out string
 	if m.showStderr {
 		out += errbuf.String()
@@ -115,8 +111,12 @@ func (m model) View() string {
 		out += outbuf.String()
 	}
 
-	if m.quitting && out != "" {
+	if m.quitting {
 		return out
+	}
+
+	if !m.isTTY {
+		return m.title
 	}
 
 	var header string
