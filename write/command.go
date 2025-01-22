@@ -60,6 +60,8 @@ func (o Options) Run() error {
 		keymap:      defaultKeymap(),
 	}
 
+	m.textarea.KeyMap.InsertNewline = m.keymap.InsertNewline
+
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
