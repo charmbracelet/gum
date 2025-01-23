@@ -33,7 +33,7 @@ func (k keymap) FullHelp() [][]key.Binding {
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		key.NewBinding(
-			key.WithKeys("left", "down", "up", "rigth"),
+			key.WithKeys("left", "down", "up", "right"),
 			key.WithHelp("←↓↑→", "navigate"),
 		),
 		k.Quit,

@@ -127,7 +127,7 @@ func (k keymap) FullHelp() [][]key.Binding { return nil }
 func (k keymap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		key.NewBinding(
-			key.WithKeys("left", "down", "up", "rigth"),
+			key.WithKeys("left", "down", "up", "right"),
 			key.WithHelp("←↓↑→", "navigate"),
 		),
 		k.FocusInSearch,
