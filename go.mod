@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/alecthomas/kong v1.6.1
 	github.com/alecthomas/mango-kong v0.1.0
-	github.com/charmbracelet/bubbles v0.20.1-0.20250123134425-4ac5ac9181dc
+	github.com/charmbracelet/bubbles v0.20.1-0.20250123163325-afe305ca65b2
 	github.com/charmbracelet/bubbletea v1.2.5-0.20241207142916-e0515bc22ad1
 	github.com/charmbracelet/glamour v0.8.0
 	github.com/charmbracelet/lipgloss v1.0.1-0.20250121132900-022e96717265
