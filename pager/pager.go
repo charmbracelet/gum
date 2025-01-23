@@ -138,7 +138,7 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, km.ConfirmSearch):
 			if m.search.input.Value() != "" {
-				m.viewport.SetHighligths(m.search.Execute(m.viewport.GetContent()))
+				m.viewport.SetHighlights(m.search.Execute(m.viewport.GetContent()))
 			} else {
 				m.search.Done()
 				m.viewport.ClearHighlights()
@@ -161,7 +161,7 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 		case key.Matches(msg, km.PrevMatch):
 			m.viewport.HighlightPrevious()
 		case key.Matches(msg, km.NextMatch):
-			m.viewport.HightlightNext()
+			m.viewport.HighlightNext()
 		case key.Matches(msg, km.Quit):
 			return m, tea.Quit
 		case key.Matches(msg, km.Abort):

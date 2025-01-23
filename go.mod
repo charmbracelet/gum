@@ -6,12 +6,12 @@ require (
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/alecthomas/kong v1.6.1
 	github.com/alecthomas/mango-kong v0.1.0
-	github.com/charmbracelet/bubbles v0.20.0
+	github.com/charmbracelet/bubbles v0.20.1-0.20250123134425-4ac5ac9181dc
 	github.com/charmbracelet/bubbletea v1.2.5-0.20241207142916-e0515bc22ad1
 	github.com/charmbracelet/glamour v0.8.0
-	github.com/charmbracelet/lipgloss v1.0.1-0.20250109182251-99421664af19
+	github.com/charmbracelet/lipgloss v1.0.1-0.20250121132900-022e96717265
 	github.com/charmbracelet/log v0.4.0
-	github.com/charmbracelet/x/ansi v0.6.1-0.20250107110353-48b574af22a5
+	github.com/charmbracelet/x/ansi v0.7.1-0.20250122132629-a969ddeb820d
 	github.com/charmbracelet/x/editor v0.1.0
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/muesli/roff v0.1.0
@@ -48,5 +48,3 @@ require (
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/term v0.22.0 // indirect
 )
-
-replace github.com/charmbracelet/bubbles => ../bubbles
