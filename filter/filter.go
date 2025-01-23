@@ -268,22 +268,31 @@ func (m model) helpView() string {
 	return "\n\n" + m.help.View(m.keymap)
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	m.viewport.LeftGutterFunc = func(gc viewport.GutterContext) string {
+func (m model) gutter() func(gc viewport.GutterContext) string {
+	selected := m.selectedPrefixStyle.Render(m.selectedPrefix)
+	unselected := m.unselectedPrefixStyle.Render(m.unselectedPrefix)
+	indicator := m.indicatorStyle.Render(m.indicator)
+	empty := strings.Repeat(" ", lipgloss.Width(indicator))
+
+	return func(gc viewport.GutterContext) string {
 		selectGutter := ""
 		if m.limit > 1 {
-			selectGutter = m.unselectedPrefixStyle.Render(m.unselectedPrefix)
+			selectGutter = unselected
 		}
 		if gc.Index < len(m.matches)-1 {
 			if _, ok := m.selected[m.matches[gc.Index].Str]; ok {
-				selectGutter = m.selectedPrefixStyle.Render(m.selectedPrefix)
+				selectGutter = selected
 			}
 		}
 		if gc.Index == m.cursor {
-			return m.indicatorStyle.Render(m.indicator) + selectGutter
+			return indicator + selectGutter
 		}
-		return strings.Repeat(" ", lipgloss.Width(m.indicator)) + selectGutter
+		return empty + selectGutter
 	}
+}
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	m.viewport.LeftGutterFunc = m.gutter()
 	var cmd, icmd, vcmd tea.Cmd
 	m.textinput, icmd = m.textinput.Update(msg)
 	*m.viewport, vcmd = m.viewport.Update(msg)
