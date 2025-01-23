@@ -19,6 +19,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
 )
 
@@ -215,15 +216,16 @@ func (m model) View() string {
 			continue
 		}
 
-		// Use ansi.Truncate and ansi.TruncateLeft and ansi.StringWidth to
-		// style match.MatchedIndexes without losing the original option style:
-		ranges := []lipgloss.Range{}
+		var ranges []lipgloss.Range
 		for _, rng := range matchedRanges(match.MatchedIndexes) {
-			ranges = append(ranges, lipgloss.NewRange(rng[0], rng[1]+1, m.matchStyle))
+			// ansi.Cut is grapheme and ansi sequence aware, we match against a ansi.Stripped string, but we might still have graphemes.
+			// all that to say that rng is byte positions, but we need to pass it down to ansi.Cut as char positions.
+			// so we need to adjust it here:
+			start, stop := bytePosToVisibleCharPos(match.Str, rng)
+			ranges = append(ranges, lipgloss.NewRange(start, stop+1, m.matchStyle))
 		}
 
-		// Add any remaining text after the last match
-		s.WriteString(lipgloss.StyleRanges(styledOption, ranges...))
+		s.WriteString(lineTextStyle.Render(lipgloss.StyleRanges(styledOption, ranges...)))
 
 		// We have finished displaying the match with all of it's matched
 		// characters highlighted and the rest filled in.
@@ -551,4 +553,27 @@ func matchedRanges(in []int) [][2]int {
 	}
 	out = append(out, current)
 	return out
+}
+
+func bytePosToVisibleCharPos(str string, rng [2]int) (int, int) {
+	bytePos, byteStart, byteStop := 0, rng[0], rng[1]
+	pos, start, stop := 0, 0, 0
+	gr := uniseg.NewGraphemes(str)
+	for byteStart > bytePos {
+		if !gr.Next() {
+			break
+		}
+		bytePos += len(gr.Str())
+		pos += max(1, gr.Width())
+	}
+	start = pos
+	for byteStop > bytePos {
+		if !gr.Next() {
+			break
+		}
+		bytePos += len(gr.Str())
+		pos += max(1, gr.Width())
+	}
+	stop = pos
+	return start, stop
 }

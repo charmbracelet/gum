@@ -107,5 +107,5 @@ func (m model) View() string {
 }
 
 func (m model) helpView() string {
-	return "\n" + m.help.View(m.keymap)
+	return m.help.View(m.keymap)
 }

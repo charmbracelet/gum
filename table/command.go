@@ -13,7 +13,6 @@ import (
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 	ltable "github.com/charmbracelet/lipgloss/table"
-	"github.com/charmbracelet/x/term"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
@@ -110,7 +109,7 @@ func (o Options) Run() error {
 		rows = append(rows, table.Row(data[row]))
 	}
 
-	if o.Print || !term.IsTerminal(os.Stdout.Fd()) {
+	if o.Print {
 		table := ltable.New().
 			Headers(columnNames...).
 			Rows(data...).

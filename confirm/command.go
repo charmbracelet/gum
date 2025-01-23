@@ -1,17 +1,15 @@
 package confirm
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 )
-
-var errNotConfirmed = errors.New("not confirmed")
 
 // Run provides a shell script interface for prompting a user to confirm an
 // action with an affirmative or negative answer.
@@ -22,7 +20,7 @@ func (o Options) Run() error {
 		case "yes", "y":
 			return nil
 		default:
-			return errNotConfirmed
+			return exit.ErrExit(1)
 		}
 	}
 
@@ -65,5 +63,5 @@ func (o Options) Run() error {
 		return nil
 	}
 
-	return errNotConfirmed
+	return exit.ErrExit(1)
 }
