@@ -2,8 +2,6 @@ package pager
 
 import (
 	"fmt"
-	"log"
-	"os"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -51,9 +49,6 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
-	w, _ := os.OpenFile("pager.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o666)
-	defer w.Close()
-	log.SetOutput(w)
 	_, err := tea.NewProgram(
 		m,
 		// tea.WithAltScreen(),

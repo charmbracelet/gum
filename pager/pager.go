@@ -129,8 +129,6 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 	m.maxWidth = m.viewport.Width
 }
 
-const heightOffset = 2
-
 func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 	km := m.keymap
 	var cmd tea.Cmd
