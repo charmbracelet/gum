@@ -268,31 +268,28 @@ func (m model) helpView() string {
 	return "\n\n" + m.help.View(m.keymap)
 }
 
-func (m model) gutter() func(gc viewport.GutterContext) string {
+func (m model) gutter(gc viewport.GutterContext) string {
 	selected := m.selectedPrefixStyle.Render(m.selectedPrefix)
 	unselected := m.unselectedPrefixStyle.Render(m.unselectedPrefix)
 	indicator := m.indicatorStyle.Render(m.indicator)
 	empty := strings.Repeat(" ", lipgloss.Width(indicator))
 
-	return func(gc viewport.GutterContext) string {
-		selectGutter := ""
-		if m.limit > 1 {
-			selectGutter = unselected
-		}
-		if gc.Index < len(m.matches)-1 {
-			if _, ok := m.selected[m.matches[gc.Index].Str]; ok {
-				selectGutter = selected
-			}
-		}
-		if gc.Index == m.cursor {
-			return indicator + selectGutter
-		}
-		return empty + selectGutter
+	selectGutter := ""
+	if m.limit > 1 {
+		selectGutter = unselected
 	}
+	if gc.Index < len(m.matches) {
+		if _, ok := m.selected[m.matches[gc.Index].Str]; ok {
+			selectGutter = selected
+		}
+	}
+	if gc.Index == m.cursor {
+		return indicator + selectGutter
+	}
+	return empty + selectGutter
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	m.viewport.LeftGutterFunc = m.gutter()
 	var cmd, icmd, vcmd tea.Cmd
 	m.textinput, icmd = m.textinput.Update(msg)
 	*m.viewport, vcmd = m.viewport.Update(msg)
@@ -335,10 +332,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CursorDown()
 		case key.Matches(msg, km.Up, km.NUp):
 			m.CursorUp()
-		case key.Matches(msg, km.Right, km.NRight):
-			m.viewport.MoveRight(6)
-		case key.Matches(msg, km.Left, km.NLeft):
-			m.viewport.MoveLeft(6)
 		case key.Matches(msg, km.Home):
 			m.cursor = 0
 			m.viewport.GotoTop()
@@ -415,6 +408,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	m.keymap.FocusInSearch.SetEnabled(!m.textinput.Focused())
 	m.keymap.FocusOutSearch.SetEnabled(m.textinput.Focused())
+	m.viewport.KeyMap.Left.SetEnabled(!m.textinput.Focused())
+	m.viewport.KeyMap.Right.SetEnabled(!m.textinput.Focused())
 	m.keymap.Left.SetEnabled(!m.textinput.Focused())
 	m.keymap.Right.SetEnabled(!m.textinput.Focused())
 	m.keymap.NLeft.SetEnabled(!m.textinput.Focused())
@@ -427,6 +422,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.
 	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
+	m.viewport.LeftGutterFunc = m.gutter
 	return m, tea.Batch(cmd, icmd, vcmd)
 }
 
