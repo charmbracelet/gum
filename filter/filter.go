@@ -233,7 +233,7 @@ func (m model) View() string {
 		s.WriteRune('\n')
 	}
 
-	m.viewport.SetContent(strings.TrimSpace(s.String()))
+	m.viewport.SetContent(s.String())
 
 	help := ""
 	if m.showHelp {
