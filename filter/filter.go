@@ -406,6 +406,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	m.keymap.FocusInSearch.SetEnabled(!m.textinput.Focused())
 	m.keymap.FocusOutSearch.SetEnabled(m.textinput.Focused())
+	m.keymap.Left.SetEnabled(!m.textinput.Focused())
+	m.keymap.Right.SetEnabled(!m.textinput.Focused())
+	m.keymap.NLeft.SetEnabled(!m.textinput.Focused())
+	m.keymap.NRight.SetEnabled(!m.textinput.Focused())
 	m.keymap.NUp.SetEnabled(!m.textinput.Focused())
 	m.keymap.NDown.SetEnabled(!m.textinput.Focused())
 	m.keymap.Home.SetEnabled(!m.textinput.Focused())
