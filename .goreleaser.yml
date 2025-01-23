@@ -17,7 +17,3 @@ variables:
 
 milestones:
   - close: true
-#
-# changelog:
-#   ai:
-#     use: anthropic
