@@ -113,6 +113,19 @@ sudo zypper install gum
 
 </details>
 
+<details>
+<summary>FreeBSD</summary>
+
+```bash
+# packages
+sudo pkg install gum
+
+# ports
+cd /usr/ports/devel/gum && sudo make install clean
+```
+
+</details>
+
 Or download it:
 
 - [Packages][releases] are available in Debian, RPM, and Alpine formats
