@@ -3,13 +3,17 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"runtime/debug"
+
+	_ "net/http/pprof"
 
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/log"
 	"github.com/muesli/termenv"
 )
 
@@ -29,6 +33,15 @@ var bubbleGumPink = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 
 func main() {
 	lipgloss.SetColorProfile(termenv.NewOutput(os.Stderr).Profile)
+
+	if os.Getenv("GUM_DEBUG") != "" {
+		go func() {
+			log.Info("serving pprof at localhost:6060")
+			if err := http.ListenAndServe("localhost:6060", nil); err != nil {
+				log.Error("failed to pprof listen", "err", err)
+			}
+		}()
+	}
 
 	if Version == "" {
 		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
