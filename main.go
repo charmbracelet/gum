@@ -7,7 +7,7 @@ import (
 	"os"
 	"runtime/debug"
 
-	_ "net/http/pprof"
+	_ "net/http/pprof" //nolint:gosec
 
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
@@ -37,7 +37,7 @@ func main() {
 	if os.Getenv("GUM_DEBUG") != "" {
 		go func() {
 			log.Info("serving pprof at localhost:6060")
-			if err := http.ListenAndServe("localhost:6060", nil); err != nil {
+			if err := http.ListenAndServe("localhost:6060", nil); err != nil { //nolint:gosec
 				log.Error("failed to pprof listen", "err", err)
 			}
 		}()
