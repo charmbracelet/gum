@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/gum/internal/utils"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/reflow/truncate"
+	"github.com/charmbracelet/x/ansi"
 )
 
 type search struct {
@@ -150,14 +150,18 @@ func (s *search) PrevMatch(m *model) {
 func softWrapEm(str string, maxWidth int, softWrap bool) string {
 	var text strings.Builder
 	for _, line := range strings.Split(str, "\n") {
-		for softWrap && lipgloss.Width(line) > maxWidth {
-			truncatedLine := truncate.String(line, uint(maxWidth)) //nolint: gosec
-			text.WriteString(truncatedLine)
+		idx := 0
+		if w := ansi.StringWidth(line); softWrap && w > maxWidth {
+			for w > idx {
+				truncatedLine := ansi.Cut(line, idx, maxWidth+idx)
+				idx += maxWidth
+				text.WriteString(truncatedLine)
+				text.WriteString("\n")
+			}
+		} else {
+			text.WriteString(line) //nolint: gosec
 			text.WriteString("\n")
-			line = strings.Replace(line, truncatedLine, "", 1)
 		}
-		text.WriteString(truncate.String(line, uint(maxWidth))) //nolint: gosec
-		text.WriteString("\n")
 	}
 
 	return text.String()

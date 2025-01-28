@@ -13,7 +13,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/reflow/truncate"
+	"github.com/charmbracelet/x/ansi"
 )
 
 type keymap struct {
@@ -146,17 +146,21 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 		if m.showLineNumbers {
 			text.WriteString(m.lineNumberStyle.Render(fmt.Sprintf("%4d │ ", i+1)))
 		}
-		for m.softWrap && lipgloss.Width(line) > m.maxWidth {
-			truncatedLine := truncate.String(line, uint(m.maxWidth)) //nolint: gosec
-			text.WriteString(textStyle.Render(truncatedLine))
-			text.WriteString("\n")
-			if m.showLineNumbers {
-				text.WriteString(m.lineNumberStyle.Render("     │ "))
+		idx := 0
+		if w := ansi.StringWidth(line); m.softWrap && w > m.maxWidth {
+			for w > idx {
+				if m.showLineNumbers && idx != 0 {
+					text.WriteString(m.lineNumberStyle.Render("     │ "))
+				}
+				truncatedLine := ansi.Cut(line, idx, m.maxWidth+idx)
+				idx += m.maxWidth
+				text.WriteString(textStyle.Render(truncatedLine))
+				text.WriteString("\n")
 			}
-			line = strings.Replace(line, truncatedLine, "", 1)
+		} else {
+			text.WriteString(textStyle.Render(line)) //nolint: gosec
+			text.WriteString("\n")
 		}
-		text.WriteString(textStyle.Render(truncate.String(line, uint(m.maxWidth)))) //nolint: gosec
-		text.WriteString("\n")
 	}
 
 	diffHeight := m.viewport.Height - lipgloss.Height(text.String())
