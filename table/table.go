@@ -16,6 +16,7 @@ package table
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -80,7 +81,13 @@ func (m model) countView() string {
 		return ""
 	}
 
-	return m.help.Styles.FullDesc.Render(fmt.Sprintf("%d/%d%s", m.table.Cursor()+1, len(m.table.Rows()), m.help.ShortSeparator))
+	padding := strconv.Itoa(numLen(len(m.table.Rows())))
+	return m.help.Styles.FullDesc.Render(fmt.Sprintf(
+		"%"+padding+"d/%d%s",
+		m.table.Cursor()+1,
+		len(m.table.Rows()),
+		m.help.ShortSeparator,
+	))
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -116,4 +123,16 @@ func (m model) View() string {
 		s += "\n" + m.countView() + m.help.View(m.keymap)
 	}
 	return s
+}
+
+func numLen(i int) int {
+	if i == 0 {
+		return 1
+	}
+	count := 0
+	for i != 0 {
+		i /= 10
+		count++
+	}
+	return count
 }
