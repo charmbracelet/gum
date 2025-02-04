@@ -142,10 +142,11 @@ func (o Options) Run() error {
 	defer cancel()
 
 	m := model{
-		table:    table,
-		showHelp: o.ShowHelp,
-		help:     help.New(),
-		keymap:   defaultKeymap(),
+		table:         table,
+		showHelp:      o.ShowHelp,
+		hideIndicator: o.HideIndicator,
+		help:          help.New(),
+		keymap:        defaultKeymap(),
 	}
 	tm, err := tea.NewProgram(
 		m,
