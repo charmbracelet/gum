@@ -144,6 +144,7 @@ func (o Options) Run() error {
 	m := model{
 		table:    table,
 		showHelp: o.ShowHelp,
+		hideIndicator: o.HideIndicator,
 		help:     help.New(),
 		keymap:   defaultKeymap(),
 	}

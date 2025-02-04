@@ -15,6 +15,8 @@
 package table
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
@@ -62,15 +64,24 @@ func defaultKeymap() keymap {
 }
 
 type model struct {
-	table    table.Model
-	selected table.Row
-	quitting bool
-	showHelp bool
-	help     help.Model
-	keymap   keymap
+	table         table.Model
+	selected      table.Row
+	quitting      bool
+	showHelp      bool
+	hideIndicator bool
+	help          help.Model
+	keymap        keymap
 }
 
 func (m model) Init() tea.Cmd { return nil }
+
+func (m model) inidicatorView() string {
+	if m.hideIndicator {
+		return ""
+	}
+
+	return m.help.Styles.FullDesc.Render(fmt.Sprintf("%d/%d%s", m.table.Cursor()+1, len(m.table.Rows()), m.help.ShortSeparator))
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
@@ -102,7 +113,7 @@ func (m model) View() string {
 	}
 	s := m.table.View()
 	if m.showHelp {
-		s += "\n" + m.help.View(m.keymap)
+		s += "\n" + m.inidicatorView() + m.help.View(m.keymap)
 	}
 	return s
 }
