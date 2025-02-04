@@ -64,19 +64,19 @@ func defaultKeymap() keymap {
 }
 
 type model struct {
-	table         table.Model
-	selected      table.Row
-	quitting      bool
-	showHelp      bool
-	hideIndicator bool
-	help          help.Model
-	keymap        keymap
+	table     table.Model
+	selected  table.Row
+	quitting  bool
+	showHelp  bool
+	hideCount bool
+	help      help.Model
+	keymap    keymap
 }
 
 func (m model) Init() tea.Cmd { return nil }
 
-func (m model) inidicatorView() string {
-	if m.hideIndicator {
+func (m model) countView() string {
+	if m.hideCount {
 		return ""
 	}
 
@@ -113,7 +113,7 @@ func (m model) View() string {
 	}
 	s := m.table.View()
 	if m.showHelp {
-		s += "\n" + m.inidicatorView() + m.help.View(m.keymap)
+		s += "\n" + m.countView() + m.help.View(m.keymap)
 	}
 	return s
 }
