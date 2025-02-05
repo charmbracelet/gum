@@ -3,7 +3,6 @@ package choose
 import (
 	"errors"
 	"fmt"
-	"maps"
 	"os"
 	"slices"
 	"sort"
@@ -38,7 +37,7 @@ func (o Options) Run() error {
 
 	// normalize options into a map
 	options := map[string]string{}
-	for _, opt := range o.Options {
+	for i, opt := range o.Options {
 		if o.LabelDelimiter == "" {
 			options[opt] = opt
 			continue
@@ -48,9 +47,9 @@ func (o Options) Run() error {
 			return fmt.Errorf("invalid option format: %q", opt)
 		}
 		options[label] = value
-	}
-	if o.LabelDelimiter != "" {
-		o.Options = slices.Collect(maps.Keys(options))
+
+		// amend Options with delimited label
+		o.Options[i] = label
 	}
 
 	if o.SelectIfOne && len(o.Options) == 1 {
