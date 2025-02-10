@@ -14,6 +14,7 @@ require (
 	github.com/charmbracelet/x/ansi v0.8.0
 	github.com/charmbracelet/x/editor v0.1.0
 	github.com/charmbracelet/x/term v0.2.1
+	github.com/charmbracelet/x/xpty v0.1.2
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.3-0.20241211131612-0d230cb6eb15
 	github.com/rivo/uniseg v0.4.7
@@ -26,6 +27,10 @@ require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
+	github.com/charmbracelet/x/conpty v0.1.0 // indirect
+	github.com/charmbracelet/x/errors v0.0.0-20240508181413-e8d8b6e2de86 // indirect
+	github.com/charmbracelet/x/termios v0.1.1 // indirect
+	github.com/creack/pty v1.1.24 // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
