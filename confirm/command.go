@@ -49,6 +49,7 @@ func (o Options) Run() error {
 	if err != nil {
 		return fmt.Errorf("unable to confirm: %w", err)
 	}
+	m = tm.(model)
 
 	if o.ShowOutput {
 		confirmationText := m.negative
@@ -58,7 +59,6 @@ func (o Options) Run() error {
 		fmt.Println(m.prompt, confirmationText)
 	}
 
-	m = tm.(model)
 	if m.confirmation {
 		return nil
 	}
