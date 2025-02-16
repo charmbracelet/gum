@@ -16,10 +16,34 @@ import (
 
 // Run provides a shell script interface for the text area bubble.
 // https://github.com/charmbracelet/bubbles/textarea
+var Keybinds map[string]string
+
 func (o Options) Run() error {
 	in, _ := stdin.Read(stdin.StripANSI(o.StripANSI))
 	if in != "" && o.Value == "" {
 		o.Value = strings.ReplaceAll(in, "\r", "")
+	}
+
+	Keybinds = map[string]string {
+		"InsertNewline": "ctrl+j",
+		"Quit": "esc",
+		"Abort": "ctrl+c",
+		"OpenInEditor": "ctrl+e",
+		"Submit": "enter",
+	}
+
+	rebinds := map[string]string {
+		"InsertNewline": o.BindInsertNewline,
+		"Quit": o.BindQuit,
+		"Abort": o.BindAbort,
+		"OpenInEditor": o.BindOpenInEditor,
+		"Submit": o.BindSubmit,
+	}
+
+	for key, value := range rebinds {
+		if value != "" {
+			Keybinds[key] = value
+		}
 	}
 
 	a := textarea.New()
