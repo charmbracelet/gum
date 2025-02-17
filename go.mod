@@ -4,7 +4,7 @@ go 1.23.0
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
-	github.com/alecthomas/kong v1.8.0
+	github.com/alecthomas/kong v1.8.1
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.3.3
