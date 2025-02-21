@@ -79,7 +79,7 @@ func (f Fish) gen(buf io.StringWriter, cmd *kong.Node) {
 			_, _ = buf.WriteString(fmt.Sprintf(" -s %c", f.Short))
 		}
 		_, _ = buf.WriteString(fmt.Sprintf(" -l %s", f.Name))
-		_, _ = buf.WriteString(fmt.Sprintf(" -d '%s'", f.Help))
+		_, _ = buf.WriteString(fmt.Sprintf(" -d \"%s\"", f.Help))
 		_, _ = buf.WriteString("\n")
 	}
 	_, _ = buf.WriteString("\n")
