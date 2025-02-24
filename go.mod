@@ -16,7 +16,7 @@ require (
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/charmbracelet/x/xpty v0.1.2
 	github.com/muesli/roff v0.1.0
-	github.com/muesli/termenv v0.15.3-0.20241211131612-0d230cb6eb15
+	github.com/muesli/termenv v0.16.0
 	github.com/rivo/uniseg v0.4.7
 	github.com/sahilm/fuzzy v0.1.1
 	golang.org/x/text v0.22.0
