@@ -7,7 +7,7 @@ require (
 	github.com/alecthomas/kong v1.8.1
 	github.com/alecthomas/mango-kong v0.1.0
 	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.3.3
+	github.com/charmbracelet/bubbletea v1.3.4
 	github.com/charmbracelet/glamour v0.8.0
 	github.com/charmbracelet/lipgloss v1.0.1-0.20250110214317-ecc1bd014d51
 	github.com/charmbracelet/log v0.4.0
