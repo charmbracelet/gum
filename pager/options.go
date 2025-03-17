@@ -10,6 +10,7 @@ import (
 type Options struct {
 	//nolint:staticcheck
 	Style               style.Styles  `embed:"" help:"Style the pager" set:"defaultBorder=rounded" set:"defaultPadding=0 1" set:"defaultBorderForeground=212" envprefix:"GUM_PAGER_"`
+	SyntaxHighlight     string        `help:"syntax highlighting (support language: markdown)" default:""`
 	Content             string        `arg:"" optional:"" help:"Display content to scroll"`
 	ShowLineNumbers     bool          `help:"Show line numbers" default:"true"`
 	LineNumberStyle     style.Styles  `embed:"" prefix:"line-number." help:"Style the line numbers" set:"defaultForeground=237" envprefix:"GUM_PAGER_LINE_NUMBER_"`
