@@ -277,7 +277,7 @@ func (m model) View() string {
 	}
 	parts = append(parts, s.String())
 	if m.showHelp {
-		parts = append(parts, m.help.View(m.keymap))
+		parts = append(parts, "", m.help.View(m.keymap))
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
