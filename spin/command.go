@@ -48,22 +48,29 @@ func (o Options) Run() error {
 	// If the command succeeds, and we are printing output and we are in a TTY then push the STDOUT we got to the actual
 	// STDOUT for piping or other things.
 	//nolint:nestif
-	if m.status == 0 {
-		if o.ShowOutput {
-			// BubbleTea writes the View() to stderr.
-			// If the program is being piped then put the accumulated output in stdout.
-			if !isOutTTY {
-				_, err := os.Stdout.WriteString(m.stdout)
-				if err != nil {
-					return fmt.Errorf("failed to write to stdout: %w", err)
-				}
+	if m.err != nil {
+		if _, err := fmt.Fprintf(os.Stderr, "%s\n", m.err.Error()); err != nil {
+			return fmt.Errorf("failed to write to stdout: %w", err)
+		}
+		return exit.ErrExit(1)
+	} else if m.status == 0 {
+		var output string
+		if o.ShowOutput || (o.ShowStdout && o.ShowStderr) {
+			output = m.output
+		} else if o.ShowStdout {
+			output = m.stdout
+		} else if o.ShowStderr {
+			output = m.stderr
+		}
+		if output != "" {
+			if _, err := os.Stdout.WriteString(output); err != nil {
+				return fmt.Errorf("failed to write to stdout: %w", err)
 			}
 		}
 	} else if o.ShowError {
 		// Otherwise if we are showing errors and the command did not exit with a 0 status code then push all of the command
 		// output to the terminal. This way failed commands can be debugged.
-		_, err := os.Stdout.WriteString(m.output)
-		if err != nil {
+		if _, err := os.Stdout.WriteString(m.output); err != nil {
 			return fmt.Errorf("failed to write to stdout: %w", err)
 		}
 	}

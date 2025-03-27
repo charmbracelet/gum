@@ -94,7 +94,7 @@ func (m model) View() string {
 	}
 	parts = append(parts, m.textarea.View())
 	if m.showHelp {
-		parts = append(parts, m.help.View(m.keymap))
+		parts = append(parts, "", m.help.View(m.keymap))
 	}
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
