@@ -13,11 +13,11 @@
 package file
 
 import (
-	"github.com/charmbracelet/bubbles/filepicker"
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/bubbles/v2/filepicker"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/key"
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 )
 
 type keymap filepicker.KeyMap
@@ -69,7 +69,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.showHelp {
-			m.filepicker.Height -= lipgloss.Height(m.helpView())
+			m.filepicker.SetHeight(m.filepicker.Height() - lipgloss.Height(m.helpView()))
 		}
 	case tea.KeyMsg:
 		switch {

@@ -12,11 +12,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textarea"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/key"
+	"github.com/charmbracelet/bubbles/v2/textarea"
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/charmbracelet/x/editor"
 )
 
@@ -41,7 +41,7 @@ func (k keymap) ShortHelp() []key.Binding {
 }
 
 func defaultKeymap() keymap {
-	km := textarea.DefaultKeyMap
+	km := textarea.DefaultKeyMap()
 	km.InsertNewline = key.NewBinding(
 		key.WithKeys("ctrl+j"),
 		key.WithHelp("ctrl+j", "insert newline"),

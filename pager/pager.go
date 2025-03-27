@@ -4,12 +4,12 @@
 package pager
 
 import (
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/key"
+	"github.com/charmbracelet/bubbles/v2/textinput"
+	"github.com/charmbracelet/bubbles/v2/viewport"
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 )
 
 type keymap struct {
@@ -100,7 +100,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.processText(msg)
-		m.search.input.Width = msg.Width
+		m.search.input.SetWidth(msg.Width)
 	case tea.KeyMsg:
 		return m.keyHandler(msg)
 	}
@@ -122,11 +122,11 @@ func (m *model) helpView() string {
 }
 
 func (m *model) processText(msg tea.WindowSizeMsg) {
-	m.viewport.Height = msg.Height - lipgloss.Height(m.helpView())
-	m.viewport.Width = msg.Width
+	m.viewport.SetHeight(msg.Height - lipgloss.Height(m.helpView()))
+	m.viewport.SetWidth(msg.Width)
 
 	// Determine max width of a line.
-	m.maxWidth = m.viewport.Width
+	m.maxWidth = m.viewport.Width()
 }
 
 func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
@@ -154,7 +154,7 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 		case key.Matches(msg, km.End):
 			m.viewport.GotoBottom()
 		case key.Matches(msg, km.Search):
-			m.search.Show(m.viewport.Width)
+			m.search.Show(m.viewport.Width())
 			return m, textinput.Blink
 		case key.Matches(msg, km.PrevMatch):
 			m.viewport.HighlightPrevious()

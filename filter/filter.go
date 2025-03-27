@@ -13,12 +13,12 @@ package filter
 import (
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/key"
+	"github.com/charmbracelet/bubbles/v2/textinput"
+	"github.com/charmbracelet/bubbles/v2/viewport"
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
 )
@@ -184,8 +184,8 @@ func (m model) View() string {
 	// For reverse layout, if the number of matches is less than the viewport
 	// height, we need to offset the matches so that the first match is at the
 	// bottom edge of the viewport instead of in the middle.
-	if m.reverse && len(m.matches) < m.viewport.Height {
-		s.WriteString(strings.Repeat("\n", m.viewport.Height-len(m.matches)))
+	if m.reverse && len(m.matches) < m.viewport.Height() {
+		s.WriteString(strings.Repeat("\n", m.viewport.Height()-len(m.matches)))
 	}
 
 	// Since there are matches, display them so that the user can see, in real
@@ -295,21 +295,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	*m.viewport, vcmd = m.viewport.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.textinput.Width = msg.Width
+		m.textinput.SetWidth(msg.Width)
 		if m.height == 0 || m.height > msg.Height {
-			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
+			m.viewport.SetHeight(msg.Height - lipgloss.Height(m.textinput.View()))
 		}
 		// Include the header in the height calculation.
 		if m.header != "" {
-			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.headerStyle.Render(m.header))
+			m.viewport.SetHeight(m.viewport.Height() - lipgloss.Height(m.headerStyle.Render(m.header)))
 		}
 		// Include the help in the total height calculation.
 		if m.showHelp {
-			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.helpView())
+			m.viewport.SetHeight(m.viewport.Height() - lipgloss.Height(m.helpView()))
 		}
-		m.viewport.Width = msg.Width
+		m.viewport.SetWidth(msg.Width)
 		if m.reverse {
-			m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height)
+			m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height())
 		}
 	case tea.KeyMsg:
 		km := m.keymap
@@ -400,7 +400,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// For reverse layout, we need to offset the viewport so that the
 			// it remains at a constant position relative to the cursor.
 			if m.reverse {
-				maxYOffset := max(0, len(m.matches)-m.viewport.Height)
+				maxYOffset := max(0, len(m.matches)-m.viewport.Height())
 				m.viewport.YOffset = clamp(0, maxYOffset, len(m.matches)-yOffsetFromBottom)
 			}
 		}
@@ -435,16 +435,16 @@ func (m *model) CursorUp() {
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
 			m.viewport.LineUp(1)
 		}
-		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
-			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
+		if len(m.matches)-m.cursor > m.viewport.Height()+m.viewport.YOffset {
+			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height())
 		}
 	} else {
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if m.cursor < m.viewport.YOffset {
 			m.viewport.LineUp(1)
 		}
-		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
-			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
+		if m.cursor >= m.viewport.YOffset+m.viewport.Height() {
+			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height())
 		}
 	}
 }
@@ -455,7 +455,7 @@ func (m *model) CursorDown() {
 	}
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
-		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
+		if len(m.matches)-m.cursor > m.viewport.Height()+m.viewport.YOffset {
 			m.viewport.LineDown(1)
 		}
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
@@ -463,7 +463,7 @@ func (m *model) CursorDown() {
 		}
 	} else {
 		m.cursor = (m.cursor + 1) % len(m.matches)
-		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
+		if m.cursor >= m.viewport.YOffset+m.viewport.Height() {
 			m.viewport.LineDown(1)
 		}
 		if m.cursor < m.viewport.YOffset {

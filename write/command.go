@@ -6,10 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/textarea"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/cursor"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/textarea"
+	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 )
@@ -31,7 +30,7 @@ func (o Options) Run() error {
 	a.CharLimit = o.CharLimit
 	a.MaxHeight = o.MaxLines
 
-	style := textarea.Style{
+	style := textarea.StyleState{
 		Base:             o.BaseStyle.ToLipgloss(),
 		Placeholder:      o.PlaceholderStyle.ToLipgloss(),
 		CursorLine:       o.CursorLineStyle.ToLipgloss(),
@@ -41,10 +40,12 @@ func (o Options) Run() error {
 		Prompt:           o.PromptStyle.ToLipgloss(),
 	}
 
-	a.BlurredStyle = style
-	a.FocusedStyle = style
-	a.Cursor.Style = o.CursorStyle.ToLipgloss()
-	a.Cursor.SetMode(cursor.Modes[o.CursorMode])
+	a.Styles.Focused = style
+	a.Styles.Blurred = style
+	a.Styles.Cursor.Color = o.CursorStyle.ToLipgloss().GetForeground()
+	a.Styles.Cursor.Blink = o.CursorMode == "blink"
+	// TODO: handle cursor hidden
+	// a.Cursor.SetMode(cursor.Modes[o.CursorMode])
 
 	a.SetWidth(o.Width)
 	a.SetHeight(o.Height)

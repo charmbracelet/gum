@@ -3,8 +3,8 @@ package pager
 import (
 	"regexp"
 
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/bubbles/v2/textinput"
+	"github.com/charmbracelet/lipgloss/v2"
 )
 
 type search struct {
@@ -17,14 +17,15 @@ func (s *search) new() {
 	input := textinput.New()
 	input.Placeholder = "search"
 	input.Prompt = "/"
-	input.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	input.Styles.Focused.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	input.Styles.Blurred.Prompt = input.Styles.Focused.Prompt
 	s.input = input
 }
 
 func (s *search) Show(w int) {
 	s.new()
 	s.visible = true
-	s.input.Width = w
+	s.input.SetWidth(w)
 	s.input.Focus()
 }
 

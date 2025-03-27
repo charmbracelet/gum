@@ -1,8 +1,6 @@
 package cursor
 
-import (
-	"github.com/charmbracelet/bubbles/cursor"
-)
+import "github.com/charmbracelet/bubbles/v2/cursor"
 
 // Modes maps strings to cursor modes.
 var Modes = map[string]cursor.Mode{

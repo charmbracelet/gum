@@ -8,17 +8,17 @@
 package input
 
 import (
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/key"
+	"github.com/charmbracelet/bubbles/v2/textinput"
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 )
 
 type keymap textinput.KeyMap
 
 func defaultKeymap() keymap {
-	k := textinput.DefaultKeyMap
+	k := textinput.DefaultKeyMap()
 	return keymap(k)
 }
 
@@ -73,7 +73,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.autoWidth {
-			m.textinput.Width = msg.Width - lipgloss.Width(m.textinput.Prompt) - 1
+			m.textinput.SetWidth(msg.Width - lipgloss.Width(m.textinput.Prompt) - 1)
 		}
 	case tea.KeyMsg:
 		switch msg.String() {

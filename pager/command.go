@@ -3,9 +3,9 @@ package pager
 import (
 	"fmt"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/viewport"
+	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 )
@@ -13,7 +13,10 @@ import (
 // Run provides a shell script interface for the viewport bubble.
 // https://github.com/charmbracelet/bubbles/viewport
 func (o Options) Run() error {
-	vp := viewport.New(o.Style.Width, o.Style.Height)
+	vp := viewport.New(
+		viewport.WithWidth(o.Style.Width),
+		viewport.WithHeight(o.Style.Height),
+	)
 	vp.Style = o.Style.ToLipgloss()
 
 	if o.Content == "" {
@@ -29,7 +32,17 @@ func (o Options) Run() error {
 	}
 
 	if o.ShowLineNumbers {
-		vp.LeftGutterFunc = viewport.LineNumberGutter(o.LineNumberStyle.ToLipgloss())
+		vp.LeftGutterFunc = func(info viewport.GutterContext) string {
+			style := o.LineNumberStyle.ToLipgloss()
+			if info.Soft {
+				return style.Render("     │ ")
+			}
+			if info.Index >= info.TotalLines {
+				return style.Render("   ~ │ ")
+			}
+			// TODO: handle more lines
+			return style.Render(fmt.Sprintf("%4d │ ", info.Index+1))
+		}
 	}
 
 	vp.SoftWrap = o.SoftWrap
