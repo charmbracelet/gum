@@ -7,10 +7,10 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/textinput"
+	"github.com/charmbracelet/bubbles/v2/viewport"
+	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
@@ -26,12 +26,17 @@ func (o Options) Run() error {
 	i.Focus()
 
 	i.Prompt = o.Prompt
-	i.PromptStyle = o.PromptStyle.ToLipgloss()
-	i.PlaceholderStyle = o.PlaceholderStyle.ToLipgloss()
+	i.Styles.Focused.Prompt = o.PromptStyle.ToLipgloss()
+	i.Styles.Blurred.Prompt = i.Styles.Focused.Prompt
+	i.Styles.Focused.Placeholder = o.PlaceholderStyle.ToLipgloss()
+	i.Styles.Blurred.Placeholder = i.Styles.Focused.Placeholder
 	i.Placeholder = o.Placeholder
-	i.Width = o.Width
+	i.SetWidth(o.Width)
 
-	v := viewport.New(o.Width, o.Height)
+	v := viewport.New(
+		viewport.WithWidth(o.Width),
+		viewport.WithHeight(o.Height),
+	)
 
 	if len(o.Options) == 0 {
 		if input, _ := stdin.Read(stdin.StripANSI(o.StripANSI)); input != "" {

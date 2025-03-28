@@ -1,6 +1,6 @@
 package decode
 
-import "github.com/charmbracelet/lipgloss"
+import "github.com/charmbracelet/lipgloss/v2"
 
 // Align maps strings to `lipgloss.Position`s.
 var Align = map[string]lipgloss.Position{

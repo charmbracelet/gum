@@ -1,6 +1,6 @@
 package spin
 
-import "github.com/charmbracelet/bubbles/spinner"
+import "github.com/charmbracelet/bubbles/v2/spinner"
 
 var spinnerMap = map[string]spinner.Spinner{
 	"line":      spinner.Line,

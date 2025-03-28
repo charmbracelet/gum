@@ -18,10 +18,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/table"
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/key"
+	"github.com/charmbracelet/bubbles/v2/table"
+	tea "github.com/charmbracelet/bubbletea/v2"
 )
 
 type keymap struct {

@@ -11,7 +11,7 @@ type Options struct {
 	//nolint:staticcheck
 	Style               style.Styles  `embed:"" help:"Style the pager" set:"defaultBorder=rounded" set:"defaultPadding=0 1" set:"defaultBorderForeground=212" envprefix:"GUM_PAGER_"`
 	Content             string        `arg:"" optional:"" help:"Display content to scroll"`
-	ShowLineNumbers     bool          `help:"Show line numbers" default:"true"`
+	ShowLineNumbers     bool          `help:"Show line numbers" default:"true" negatable:""`
 	LineNumberStyle     style.Styles  `embed:"" prefix:"line-number." help:"Style the line numbers" set:"defaultForeground=237" envprefix:"GUM_PAGER_LINE_NUMBER_"`
 	SoftWrap            bool          `help:"Soft wrap lines" default:"true" negatable:""`
 	MatchStyle          style.Styles  `embed:"" prefix:"match." help:"Style the matched text" set:"defaultForeground=212" set:"defaultBold=true" envprefix:"GUM_PAGER_MATCH_"`                                                      //nolint:staticcheck

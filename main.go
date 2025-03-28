@@ -7,10 +7,10 @@ import (
 	"runtime/debug"
 
 	"github.com/alecthomas/kong"
-	tea "github.com/charmbracelet/bubbletea"
+	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/exit"
-	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/termenv"
+	"github.com/charmbracelet/lipgloss/v2"
+	"github.com/charmbracelet/lipgloss/v2/compat"
 )
 
 const shaLen = 7
@@ -28,7 +28,7 @@ var (
 var bubbleGumPink = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 
 func main() {
-	lipgloss.SetColorProfile(termenv.NewOutput(os.Stderr).Profile)
+	compat.HasDarkBackground = lipgloss.HasDarkBackground(os.Stdin, os.Stderr)
 
 	if Version == "" {
 		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {

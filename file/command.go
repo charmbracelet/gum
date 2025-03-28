@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/charmbracelet/bubbles/filepicker"
-	"github.com/charmbracelet/bubbles/help"
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/bubbles/v2/filepicker"
+	"github.com/charmbracelet/bubbles/v2/help"
+	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/timeout"
 )
 
@@ -30,7 +30,7 @@ func (o Options) Run() error {
 	fp := filepicker.New()
 	fp.CurrentDirectory = path
 	fp.Path = path
-	fp.Height = o.Height
+	fp.SetHeight(o.Height)
 	fp.AutoHeight = o.Height == 0
 	fp.Cursor = o.Cursor
 	fp.DirAllowed = o.Directory

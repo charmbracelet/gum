@@ -5,7 +5,7 @@ import (
 	"fmt"
 	tpl "text/template"
 
-	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/glamour/v2"
 	"github.com/muesli/termenv"
 )
 
