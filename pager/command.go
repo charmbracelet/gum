@@ -66,6 +66,7 @@ func (o Options) Run() error {
 		m,
 		tea.WithAltScreen(),
 		tea.WithReportFocus(),
+		tea.WithMouseAllMotion(),
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {

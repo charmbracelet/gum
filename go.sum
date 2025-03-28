@@ -22,8 +22,8 @@ github.com/aymerick/douceur v0.2.0 h1:Mv+mAeH1Q+n9Fr+oyamOlAkUNPWPlA8PPGR0QAaYuP
 github.com/aymerick/douceur v0.2.0/go.mod h1:wlT5vV2O3h55X9m7iVYN0TBM0NH/MmbLnd30/FjWUq4=
 github.com/charmbracelet/bubbles/v2 v2.0.0-beta.1 h1:swACzss0FjnyPz1enfX56GKkLiuKg5FlyVmOLIlU2kE=
 github.com/charmbracelet/bubbles/v2 v2.0.0-beta.1/go.mod h1:6HamsBKWqEC/FVHuQMHgQL+knPyvHH55HwJDHl/adMw=
-github.com/charmbracelet/bubbletea/v2 v2.0.0-beta1 h1:yaxFt97mvofGY7bYZn8U/aSVoamXGE3O4AEvWhshUDI=
-github.com/charmbracelet/bubbletea/v2 v2.0.0-beta1/go.mod h1:qbcZLI5z8R49v9xBdU5V5Dh5D2uccx8wSwBqxQyErqc=
+github.com/charmbracelet/bubbletea/v2 v2.0.0-beta.1.0.20250328000255-bf331300c52e h1:0kRhGpsFiFVPOx75o8pYUBaCjDrrcGrvtLYh6kKaeRs=
+github.com/charmbracelet/bubbletea/v2 v2.0.0-beta.1.0.20250328000255-bf331300c52e/go.mod h1:hYsjyXwOT3RiI2CI4WQYPUg4vg2O1TNTpk8TQTavCPI=
 github.com/charmbracelet/colorprofile v0.3.0 h1:KtLh9uuu1RCt+Hml4s6Hz+kB1PfV3wi++1h5ia65yKQ=
 github.com/charmbracelet/colorprofile v0.3.0/go.mod h1:oHJ340RS2nmG1zRGPmhJKJ/jf4FPNNk0P39/wBPA1G0=
 github.com/charmbracelet/glamour/v2 v2.0.0-20250327175542-c0a9b8dab672 h1:DF8za137pUh5LAXAdXISh0bhS6zU0mHl+cLxyivZjuI=
