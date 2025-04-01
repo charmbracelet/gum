@@ -3,7 +3,7 @@ package utils
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/v2"
 )
 
 // LipglossPadding calculates how much padding a string is given by a style.

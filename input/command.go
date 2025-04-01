@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/cursor"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/textinput"
+	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 )
@@ -31,11 +30,15 @@ func (o Options) Run() error {
 	i.Focus()
 	i.Prompt = o.Prompt
 	i.Placeholder = o.Placeholder
-	i.Width = o.Width
-	i.PromptStyle = o.PromptStyle.ToLipgloss()
-	i.PlaceholderStyle = o.PlaceholderStyle.ToLipgloss()
-	i.Cursor.Style = o.CursorStyle.ToLipgloss()
-	i.Cursor.SetMode(cursor.Modes[o.CursorMode])
+	i.SetWidth(o.Width)
+	i.Styles.Focused.Prompt = o.PromptStyle.ToLipgloss()
+	i.Styles.Blurred.Prompt = i.Styles.Focused.Prompt
+	i.Styles.Focused.Placeholder = o.PlaceholderStyle.ToLipgloss()
+	i.Styles.Blurred.Placeholder = i.Styles.Focused.Placeholder
+	i.Styles.Cursor.Color = o.CursorStyle.ToLipgloss().GetForeground()
+	i.Styles.Cursor.Blink = o.CursorMode == "blink"
+	// XXX: set hidden
+	// i.Cursor.SetMode(cursor.Modes[o.CursorMode])
 	i.CharLimit = o.CharLimit
 
 	if o.Password {

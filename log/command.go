@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/log"
+	"github.com/charmbracelet/lipgloss/v2"
+	"github.com/charmbracelet/log/v2"
 )
 
 // Run is the command-line interface for logging text.

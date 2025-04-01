@@ -8,21 +8,28 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/paginator"
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/bubbles/v2/help"
+	"github.com/charmbracelet/bubbles/v2/paginator"
+	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/internal/tty"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/v2"
+	"github.com/charmbracelet/lipgloss/v2/compat"
 )
 
 // Run provides a shell script interface for choosing between different through
 // options.
 func (o Options) Run() error {
 	var (
-		subduedStyle     = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "#847A85", Dark: "#979797"})
-		verySubduedStyle = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "#DDDADA", Dark: "#3C3C3C"})
+		subduedStyle = lipgloss.NewStyle().Foreground(compat.AdaptiveColor{
+			Light: lipgloss.Color("#847A85"),
+			Dark:  lipgloss.Color("#979797"),
+		})
+		verySubduedStyle = lipgloss.NewStyle().Foreground(compat.AdaptiveColor{
+			Light: lipgloss.Color("#DDDADA"),
+			Dark:  lipgloss.Color("#3C3C3C"),
+		})
 	)
 
 	input, _ := stdin.Read(stdin.StripANSI(o.StripANSI))
