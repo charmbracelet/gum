@@ -1,6 +1,7 @@
 package confirm
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -46,7 +47,7 @@ func (o Options) Run() error {
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
 	).Run()
-	if err != nil {
+	if err != nil && ctx.Err() != context.DeadlineExceeded {
 		return fmt.Errorf("unable to confirm: %w", err)
 	}
 	m = tm.(model)
