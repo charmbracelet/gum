@@ -264,7 +264,7 @@ gum confirm && rm file.txt || echo "File not removed"
 Prompt the user to select a file from the file tree.
 
 ```bash
-EDITOR $(gum file $HOME)
+$EDITOR $(gum file $HOME)
 ```
 
 <img src="https://vhs.charm.sh/vhs-2RMRqmnOPneneIgVJJ3mI1.gif" width="600" alt="Shell running gum file" />
