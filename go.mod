@@ -13,7 +13,7 @@ require (
 	github.com/charmbracelet/glamour v0.10.0
 	github.com/charmbracelet/lipgloss v1.1.1-0.20250404203927-76690c660834
 	github.com/charmbracelet/log v0.4.1
-	github.com/charmbracelet/x/ansi v0.8.0
+	github.com/charmbracelet/x/ansi v0.9.2
 	github.com/charmbracelet/x/editor v0.1.0
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/charmbracelet/x/xpty v0.1.2
