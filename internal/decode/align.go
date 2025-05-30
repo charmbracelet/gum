@@ -1,3 +1,4 @@
+// Package decode position strings to lipgloss.
 package decode
 
 import "github.com/charmbracelet/lipgloss"

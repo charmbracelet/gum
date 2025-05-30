@@ -158,7 +158,7 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 				text.WriteString("\n")
 			}
 		} else {
-			text.WriteString(textStyle.Render(line)) //nolint: gosec
+			text.WriteString(textStyle.Render(line))
 			text.WriteString("\n")
 		}
 	}

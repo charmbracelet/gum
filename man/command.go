@@ -1,3 +1,4 @@
+// Package man the man command.
 package man
 
 import (

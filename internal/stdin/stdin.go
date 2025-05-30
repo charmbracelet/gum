@@ -1,3 +1,4 @@
+// Package stdin handles processing input from stdin.
 package stdin
 
 import (

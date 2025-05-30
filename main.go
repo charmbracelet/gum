@@ -1,3 +1,4 @@
+// Package main is Gum: a tool for glamorous shell scripts.
 package main
 
 import (

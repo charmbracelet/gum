@@ -1,8 +1,7 @@
+// Package exit code implementation.
 package exit
 
-import (
-	"strconv"
-)
+import "strconv"
 
 // StatusTimeout is the exit code for timed out commands.
 const StatusTimeout = 124

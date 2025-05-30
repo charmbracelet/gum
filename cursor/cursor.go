@@ -1,3 +1,4 @@
+// Package cursor provides cursor modes.
 package cursor
 
 import (

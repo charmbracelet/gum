@@ -38,7 +38,7 @@ func (o Options) Run() error {
 	// normalize options into a map
 	options := map[string]string{}
 	// keep the labels in the user-provided order
-	var labels []string
+	var labels []string //nolint:prealloc
 	for _, opt := range o.Options {
 		if o.LabelDelimiter == "" {
 			options[opt] = opt
