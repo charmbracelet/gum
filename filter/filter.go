@@ -398,7 +398,7 @@ func (m *model) CursorUp() {
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor + 1) % len(m.matches)
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
-			m.viewport.LineUp(1)
+			m.viewport.ScrollUp(1)
 		}
 		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
 			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
@@ -406,7 +406,7 @@ func (m *model) CursorUp() {
 	} else {
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if m.cursor < m.viewport.YOffset {
-			m.viewport.LineUp(1)
+			m.viewport.ScrollUp(1)
 		}
 		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
 			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
@@ -421,7 +421,7 @@ func (m *model) CursorDown() {
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
-			m.viewport.LineDown(1)
+			m.viewport.ScrollDown(1)
 		}
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
 			m.viewport.GotoTop()
@@ -429,7 +429,7 @@ func (m *model) CursorDown() {
 	} else {
 		m.cursor = (m.cursor + 1) % len(m.matches)
 		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
-			m.viewport.LineDown(1)
+			m.viewport.ScrollDown(1)
 		}
 		if m.cursor < m.viewport.YOffset {
 			m.viewport.GotoTop()
