@@ -1,3 +1,4 @@
+// Package timeout handles context timeouts.
 package timeout
 
 import (

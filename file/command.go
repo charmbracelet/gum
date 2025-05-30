@@ -30,7 +30,7 @@ func (o Options) Run() error {
 	fp := filepicker.New()
 	fp.CurrentDirectory = path
 	fp.Path = path
-	fp.Height = o.Height
+	fp.SetHeight(o.Height)
 	fp.AutoHeight = o.Height == 0
 	fp.Cursor = o.Cursor
 	fp.DirAllowed = o.Directory

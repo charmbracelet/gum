@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/gum/internal/utils"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
 )
@@ -52,7 +51,7 @@ func (s *search) Execute(m *model) {
 	m.content = query.ReplaceAllString(m.content, m.matchStyle.Render("$1"))
 
 	// Recompile the regex to match the an replace the highlights.
-	leftPad, _ := utils.LipglossPadding(m.matchStyle)
+	leftPad, _ := lipglossPadding(m.matchStyle)
 	matchingString := regexp.QuoteMeta(m.matchStyle.Render()[:leftPad]) + s.query.String() + regexp.QuoteMeta(m.matchStyle.Render()[leftPad:])
 	s.query, err = regexp.Compile(matchingString)
 	if err != nil {
@@ -82,7 +81,7 @@ func (s *search) NextMatch(m *model) {
 		return
 	}
 
-	leftPad, rightPad := utils.LipglossPadding(m.matchStyle)
+	leftPad, rightPad := lipglossPadding(m.matchStyle)
 	s.matchIndex = (s.matchIndex + 1) % len(allMatches)
 	match := allMatches[s.matchIndex]
 	lhs := m.content[:match[0]]
@@ -125,7 +124,7 @@ func (s *search) PrevMatch(m *model) {
 		s.matchIndex = len(allMatches) - 1
 	}
 
-	leftPad, rightPad := utils.LipglossPadding(m.matchStyle)
+	leftPad, rightPad := lipglossPadding(m.matchStyle)
 	match := allMatches[s.matchIndex]
 	lhs := m.content[:match[0]]
 	rhs := m.content[match[0]:]
@@ -159,10 +158,18 @@ func softWrapEm(str string, maxWidth int, softWrap bool) string {
 				text.WriteString("\n")
 			}
 		} else {
-			text.WriteString(line) //nolint: gosec
+			text.WriteString(line)
 			text.WriteString("\n")
 		}
 	}
 
 	return text.String()
+}
+
+// lipglossPadding calculates how much padding a string is given by a style.
+func lipglossPadding(style lipgloss.Style) (int, int) {
+	render := style.Render(" ")
+	before := strings.Index(render, " ")
+	after := len(render) - len(" ") - before
+	return before, after
 }

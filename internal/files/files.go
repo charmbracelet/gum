@@ -1,3 +1,4 @@
+// Package files handles files.
 package files
 
 import (
@@ -18,7 +19,6 @@ func List() []string {
 			files = append(files, path)
 			return nil
 		})
-
 	if err != nil {
 		return []string{}
 	}

@@ -1,3 +1,5 @@
+// Package completion provides a bash completion generator for Kong
+// applications.
 package completion
 
 import (
@@ -628,6 +630,7 @@ func writeCmdAliases(buf io.StringWriter, cmd *kong.Node) {
 	writeString(buf, `    fi`)
 	writeString(buf, "\n")
 }
+
 func writeArgAliases(buf io.StringWriter, cmd *kong.Node) {
 	writeString(buf, "    noun_aliases=()\n")
 	sort.Strings(cmd.Aliases)

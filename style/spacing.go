@@ -5,9 +5,11 @@ import (
 	"strings"
 )
 
-const minTokens = 1
-const halfTokens = 2
-const maxTokens = 4
+const (
+	minTokens  = 1
+	halfTokens = 2
+	maxTokens  = 4
+)
 
 // parsePadding parses 1 - 4 integers from a string and returns them in a top,
 // right, bottom, left order for use in the lipgloss.Padding() method.
