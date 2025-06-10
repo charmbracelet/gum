@@ -280,6 +280,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.helpView())
 		}
 		m.viewport.Width = msg.Width
+		m.textinput.Width = msg.Width
 		if m.reverse {
 			m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height)
 		}
