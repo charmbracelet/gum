@@ -78,12 +78,12 @@ func main() {
 		if errors.As(err, &ex) {
 			os.Exit(int(ex))
 		}
+		if errors.Is(err, tea.ErrInterrupted) {
+			os.Exit(exit.StatusAborted)
+		}
 		if errors.Is(err, tea.ErrProgramKilled) {
 			fmt.Fprintln(os.Stderr, "timed out")
 			os.Exit(exit.StatusTimeout)
-		}
-		if errors.Is(err, tea.ErrInterrupted) {
-			os.Exit(exit.StatusAborted)
 		}
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
