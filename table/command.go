@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/gumtea"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/style"
@@ -148,7 +149,7 @@ func (o Options) Run() error {
 		help:      help.New(),
 		keymap:    defaultKeymap(),
 	}
-	tm, err := tea.NewProgram(
+	tm, err := gumtea.NewProgram(
 		m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
