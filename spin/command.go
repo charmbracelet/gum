@@ -19,7 +19,16 @@ func (o Options) Run() error {
 
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
-	s.Spinner = spinnerMap[o.Spinner]
+
+	if len(o.Glyphs) > 0 {
+		s.Spinner = spinner.Spinner{
+			Frames: o.Glyphs,
+			FPS:    o.Fps,
+		}
+	} else {
+		s.Spinner = spinnerMap[o.Spinner]
+	}
+
 	m := model{
 		spinner:    s,
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
