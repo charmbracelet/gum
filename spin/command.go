@@ -23,7 +23,7 @@ func (o Options) Run() error {
 	if len(o.Glyphs) > 0 {
 		s.Spinner = spinner.Spinner{
 			Frames: o.Glyphs,
-			FPS:    o.Fps,
+			FPS:    o.FrameInterval,
 		}
 	} else {
 		s.Spinner = spinnerMap[o.Spinner]
