@@ -77,6 +77,9 @@ flox install gum
 # Windows (via WinGet or Scoop)
 winget install charmbracelet.gum
 scoop install charm-gum
+
+# Conda-forge
+pixi global install go-gum
 ```
 
 <details>
