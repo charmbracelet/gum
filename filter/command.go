@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/files"
+	"github.com/charmbracelet/gum/internal/gumtea"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/internal/tty"
@@ -141,7 +142,7 @@ func (o Options) Run() error {
 		}
 	}
 
-	tm, err := tea.NewProgram(m, options...).Run()
+	tm, err := gumtea.NewProgram(m, options...).Run()
 	if err != nil {
 		return fmt.Errorf("unable to run filter: %w", err)
 	}
