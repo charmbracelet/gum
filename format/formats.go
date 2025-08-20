@@ -27,6 +27,7 @@ func code(input, language string) (string, error) {
 func emoji(input string) (string, error) {
 	renderer, err := glamour.NewTermRenderer(
 		glamour.WithEmoji(),
+		glamour.WithWordWrap(0),
 	)
 	if err != nil {
 		return "", fmt.Errorf("unable to create renderer: %w", err)
