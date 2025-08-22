@@ -21,14 +21,15 @@ func (o Options) Run() error {
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
 	m := model{
-		spinner:    s,
-		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
-		command:    o.Command,
-		align:      o.Align,
-		showStdout: (o.ShowOutput || o.ShowStdout) && isOutTTY,
-		showStderr: (o.ShowOutput || o.ShowStderr) && isErrTTY,
-		showError:  o.ShowError,
-		isTTY:      isErrTTY,
+		spinner:     s,
+		title:       o.TitleStyle.ToLipgloss().Render(o.Title),
+		command:     o.Command,
+		align:       o.Align,
+		showStdout:  (o.ShowOutput || o.ShowStdout) && isOutTTY,
+		showStderr:  (o.ShowOutput || o.ShowStderr) && isErrTTY,
+		showError:   o.ShowError,
+		showElapsed: o.ShowElapsed,
+		isTTY:       isErrTTY,
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)

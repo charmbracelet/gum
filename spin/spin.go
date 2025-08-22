@@ -17,11 +17,13 @@ package spin
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"runtime"
 	"syscall"
+	"time"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -30,20 +32,22 @@ import (
 )
 
 type model struct {
-	spinner    spinner.Model
-	title      string
-	align      string
-	command    []string
-	quitting   bool
-	isTTY      bool
-	status     int
-	stdout     string
-	stderr     string
-	output     string
-	showStdout bool
-	showStderr bool
-	showError  bool
-	err        error
+	spinner     spinner.Model
+	title       string
+	align       string
+	command     []string
+	quitting    bool
+	isTTY       bool
+	status      int
+	stdout      string
+	stderr      string
+	output      string
+	showStdout  bool
+	showStderr  bool
+	showError   bool
+	showElapsed bool
+	err         error
+	started     time.Time
 }
 
 var (
@@ -55,6 +59,10 @@ var (
 )
 
 type errorMsg error
+
+type startMsg struct {
+	started time.Time
+}
 
 type finishCommandMsg struct {
 	stdout string
@@ -137,10 +145,31 @@ func commandAbort() tea.Msg {
 	return tea.InterruptMsg{}
 }
 
+func formatDuration(d time.Duration) string {
+	days := int(d.Hours()) / 24
+	hours := int(d.Hours()) % 24
+	minutes := int(d.Minutes()) % 60
+	seconds := int(d.Seconds()) % 60
+
+	if days > 0 {
+		return fmt.Sprintf("(%dd %dh %dm)", days, hours, minutes)
+	} else if hours > 0 {
+		return fmt.Sprintf("(%dh %dm)", hours, minutes)
+	} else if minutes > 0 {
+		return fmt.Sprintf("(%dm %ds)", minutes, seconds)
+	}
+	return fmt.Sprintf("(%ds)", seconds)
+}
+
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
 		commandStart(m.command),
+		func() tea.Msg {
+			return startMsg{
+				started: time.Now(),
+			}
+		},
 	)
 }
 
@@ -161,17 +190,25 @@ func (m model) View() string {
 		return m.title
 	}
 
+	elapsed := ""
+	if m.showElapsed {
+		elapsed = formatDuration(time.Since(m.started))
+	}
+
 	var header string
 	if m.align == "left" {
 		header = m.spinner.View() + " " + m.title
 	} else {
 		header = m.title + " " + m.spinner.View()
 	}
-	return header + "\n" + out
+	return header + elapsed + "\n" + out
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case startMsg:
+		m.started = msg.started
+		return m, nil
 	case finishCommandMsg:
 		m.stdout = msg.stdout
 		m.stderr = msg.stderr
