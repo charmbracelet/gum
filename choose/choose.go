@@ -253,10 +253,14 @@ func (m model) View() string {
 			s.WriteString(strings.Repeat(" ", lipgloss.Width(m.cursor)))
 		}
 
-		if item.selected {
+		if i == m.index%m.height {
+			if item.selected {
+				s.WriteString(m.cursorStyle.Render(m.selectedPrefix + item.text))
+			} else {
+				s.WriteString(m.cursorStyle.Render(m.cursorPrefix + item.text))
+			}
+		} else if item.selected {
 			s.WriteString(m.selectedItemStyle.Render(m.selectedPrefix + item.text))
-		} else if i == m.index%m.height {
-			s.WriteString(m.cursorStyle.Render(m.cursorPrefix + item.text))
 		} else {
 			s.WriteString(m.itemStyle.Render(m.unselectedPrefix + item.text))
 		}
