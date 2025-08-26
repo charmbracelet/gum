@@ -102,6 +102,7 @@ func (o Options) Run() error {
 		matches:               matches,
 		header:                o.Header,
 		textinput:             i,
+		allowUnfocus:          o.AllowUnfocus,
 		viewport:              &v,
 		indicatorStyle:        o.IndicatorStyle.ToLipgloss(),
 		selectedPrefixStyle:   o.SelectedPrefixStyle.ToLipgloss(),

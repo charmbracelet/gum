@@ -153,6 +153,7 @@ type model struct {
 	help                  help.Model
 	strict                bool
 	submitted             bool
+	allowUnfocus          bool
 }
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
@@ -379,8 +380,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	m.keymap.FocusInSearch.SetEnabled(!m.textinput.Focused())
-	m.keymap.FocusOutSearch.SetEnabled(m.textinput.Focused())
+	m.keymap.FocusInSearch.SetEnabled(m.allowUnfocus && !m.textinput.Focused())
+	m.keymap.FocusOutSearch.SetEnabled(m.allowUnfocus && m.textinput.Focused())
+
 	m.keymap.NUp.SetEnabled(!m.textinput.Focused())
 	m.keymap.NDown.SetEnabled(!m.textinput.Focused())
 	m.keymap.Home.SetEnabled(!m.textinput.Focused())
