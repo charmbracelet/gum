@@ -113,6 +113,7 @@ func (o Options) Run() error {
 		textStyle:             o.TextStyle.ToLipgloss(),
 		cursorTextStyle:       o.CursorTextStyle.ToLipgloss(),
 		height:                o.Height,
+		padding:               o.Padding,
 		selected:              make(map[string]struct{}),
 		limit:                 o.Limit,
 		reverse:               o.Reverse,

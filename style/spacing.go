@@ -11,9 +11,9 @@ const (
 	maxTokens  = 4
 )
 
-// parsePadding parses 1 - 4 integers from a string and returns them in a top,
+// ParsePadding parses 1 - 4 integers from a string and returns them in a top,
 // right, bottom, left order for use in the lipgloss.Padding() method.
-func parsePadding(s string) (int, int, int, int) {
+func ParsePadding(s string) (int, int, int, int) {
 	var ints [maxTokens]int
 
 	tokens := strings.Split(s, " ")
@@ -48,4 +48,4 @@ func parsePadding(s string) (int, int, int, int) {
 
 // parseMargin is an alias for parsePadding since they involve the same logic
 // to parse integers to the same format.
-var parseMargin = parsePadding
+var parseMargin = ParsePadding

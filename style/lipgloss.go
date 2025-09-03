@@ -19,7 +19,7 @@ func (s Styles) ToLipgloss() lipgloss.Style {
 		Height(s.Height).
 		Width(s.Width).
 		Margin(parseMargin(s.Margin)).
-		Padding(parsePadding(s.Padding)).
+		Padding(ParsePadding(s.Padding)).
 		Bold(s.Bold).
 		Faint(s.Faint).
 		Italic(s.Italic).
@@ -40,7 +40,7 @@ func (s StylesNotHidden) ToLipgloss() lipgloss.Style {
 		Height(s.Height).
 		Width(s.Width).
 		Margin(parseMargin(s.Margin)).
-		Padding(parsePadding(s.Padding)).
+		Padding(ParsePadding(s.Padding)).
 		Bold(s.Bold).
 		Faint(s.Faint).
 		Italic(s.Italic).

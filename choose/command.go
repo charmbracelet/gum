@@ -128,6 +128,7 @@ func (o Options) Run() error {
 		index:             startingIndex,
 		currentOrder:      currentOrder,
 		height:            o.Height,
+		padding:           o.Padding,
 		cursor:            o.Cursor,
 		header:            o.Header,
 		selectedPrefix:    o.SelectedPrefix,

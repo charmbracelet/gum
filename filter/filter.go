@@ -18,6 +18,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
@@ -137,6 +138,7 @@ type model struct {
 	selectedPrefix        string
 	unselectedPrefix      string
 	height                int
+	padding               string
 	quitting              bool
 	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style
@@ -256,7 +258,8 @@ func (m model) View() string {
 	if m.header != "" {
 		return lipgloss.JoinVertical(lipgloss.Left, header, view)
 	}
-	return view
+
+	return lipgloss.NewStyle().Padding(style.ParsePadding(m.padding)).Render(view)
 }
 
 func (m model) helpView() string {
