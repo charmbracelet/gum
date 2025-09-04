@@ -15,6 +15,7 @@ require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/charmbracelet/x/ansi v0.10.1
 	github.com/charmbracelet/x/editor v0.1.0
+	github.com/charmbracelet/x/exp/ordered v0.1.0
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/charmbracelet/x/xpty v0.1.2
 	github.com/muesli/roff v0.1.0

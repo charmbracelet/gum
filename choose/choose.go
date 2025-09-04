@@ -18,6 +18,7 @@ import (
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/x/exp/ordered"
 )
 
 func defaultKeymap() keymap {
@@ -158,10 +159,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.paginator.PrevPage()
 			}
 		case key.Matches(msg, km.Right):
-			m.index = clamp(m.index+m.height, 0, len(m.items)-1)
+			m.index = ordered.Clamp(m.index+m.height, 0, len(m.items)-1)
 			m.paginator.NextPage()
 		case key.Matches(msg, km.Left):
-			m.index = clamp(m.index-m.height, 0, len(m.items)-1)
+			m.index = ordered.Clamp(m.index-m.height, 0, len(m.items)-1)
 			m.paginator.PrevPage()
 		case key.Matches(msg, km.End):
 			m.index = len(m.items) - 1
@@ -285,14 +286,4 @@ func (m model) View() string {
 	return lipgloss.NewStyle().
 		Padding(m.padding...).
 		Render(view)
-}
-
-func clamp(x, low, high int) int {
-	if x < low {
-		return low
-	}
-	if x > high {
-		return high
-	}
-	return x
 }

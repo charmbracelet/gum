@@ -19,6 +19,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/x/exp/ordered"
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
 )
@@ -286,7 +287,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.viewport.Width = msg.Width - m.padding[1] - m.padding[3]
 		m.textinput.Width = msg.Width - m.padding[1] - m.padding[3]
 		if m.reverse {
-			m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height)
+			m.viewport.YOffset = ordered.Clamp(len(m.matches)-m.viewport.Height, 0, len(m.matches))
 		}
 	case tea.KeyMsg:
 		km := m.keymap
@@ -378,7 +379,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// it remains at a constant position relative to the cursor.
 			if m.reverse {
 				maxYOffset := max(0, len(m.matches)-m.viewport.Height)
-				m.viewport.YOffset = clamp(0, maxYOffset, len(m.matches)-yOffsetFromBottom)
+				m.viewport.YOffset = ordered.Clamp(len(m.matches)-yOffsetFromBottom, 0, maxYOffset)
 			}
 		}
 	}
@@ -392,7 +393,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// It's possible that filtering items have caused fewer matches. So, ensure
 	// that the selected index is within the bounds of the number of matches.
-	m.cursor = clamp(0, len(m.matches)-1, m.cursor)
+	m.cursor = ordered.Clamp(m.cursor, 0, len(m.matches)-1)
 	return m, tea.Batch(cmd, icmd)
 }
 
@@ -501,16 +502,6 @@ func exactMatches(search string, choices []string) []fuzzy.Match {
 	}
 
 	return matches
-}
-
-func clamp(low, high, val int) int {
-	if val < low {
-		return low
-	}
-	if val > high {
-		return high
-	}
-	return val
 }
 
 func matchedRanges(in []int) [][2]int {
