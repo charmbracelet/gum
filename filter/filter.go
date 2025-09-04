@@ -252,7 +252,9 @@ func (m model) View() string {
 		view += m.helpView()
 	}
 	if m.header != "" {
-		return lipgloss.JoinVertical(lipgloss.Left, header, view)
+		return lipgloss.NewStyle().
+			Padding(m.padding...).
+			Render(header + "\n" + view)
 	}
 
 	return lipgloss.NewStyle().
