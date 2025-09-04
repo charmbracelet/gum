@@ -72,7 +72,7 @@ func commandStart(command []string) tea.Cmd {
 			args = command[1:]
 		}
 
-		executing = exec.Command(command[0], args...) //nolint:gosec
+		executing = exec.CommandContext(context.Background(), command[0], args...) //nolint:gosec
 		executing.Stdin = os.Stdin
 
 		isTerminal := term.IsTerminal(os.Stdout.Fd())
