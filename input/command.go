@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for the text input bubble.
@@ -43,10 +44,12 @@ func (o Options) Run() error {
 		i.EchoCharacter = '•'
 	}
 
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		textinput:   i,
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
+		padding:     []int{top, right, bottom, left},
 		autoWidth:   o.Width < 1,
 		showHelp:    o.ShowHelp,
 		help:        help.New(),

@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run is the interface to picking a file.
@@ -46,8 +47,10 @@ func (o Options) Run() error {
 	fp.Styles.Permission = o.PermissionsStyle.ToLipgloss()
 	fp.Styles.Selected = o.SelectedStyle.ToLipgloss()
 	fp.Styles.FileSize = o.FileSizeStyle.ToLipgloss()
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		filepicker:  fp,
+		padding:     []int{top, right, bottom, left},
 		showHelp:    o.ShowHelp,
 		help:        help.New(),
 		keymap:      defaultKeymap(),

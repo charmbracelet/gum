@@ -15,6 +15,7 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/internal/tty"
+	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/sahilm/fuzzy"
 )
@@ -94,7 +95,7 @@ func (o Options) Run() error {
 		km.ToggleAndNext.SetEnabled(true)
 		km.ToggleAll.SetEnabled(true)
 	}
-
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		choices:               choices,
 		filteringChoices:      filteringChoices,
@@ -113,7 +114,7 @@ func (o Options) Run() error {
 		textStyle:             o.TextStyle.ToLipgloss(),
 		cursorTextStyle:       o.CursorTextStyle.ToLipgloss(),
 		height:                o.Height,
-		padding:               o.Padding,
+		padding:               []int{top, right, bottom, left},
 		selected:              make(map[string]struct{}),
 		limit:                 o.Limit,
 		reverse:               o.Reverse,

@@ -18,7 +18,6 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
@@ -138,7 +137,7 @@ type model struct {
 	selectedPrefix        string
 	unselectedPrefix      string
 	height                int
-	padding               string
+	padding               []int
 	quitting              bool
 	headerStyle           lipgloss.Style
 	matchStyle            lipgloss.Style
@@ -232,34 +231,33 @@ func (m model) View() string {
 
 	m.viewport.SetContent(s.String())
 
-	help := ""
-	if m.showHelp {
-		help = m.helpView()
-	}
-
 	// View the input and the filtered choices
 	header := m.headerStyle.Render(m.header)
 	if m.reverse {
-		view := m.viewport.View() + "\n" + m.textinput.View()
-		if m.showHelp {
-			view += help
-		}
+		view := m.viewport.View()
 		if m.header != "" {
-			return lipgloss.JoinVertical(lipgloss.Left, view, header)
+			view += "\n" + header
 		}
-
-		return view
+		view += "\n" + m.textinput.View()
+		if m.showHelp {
+			view += m.helpView()
+		}
+		return lipgloss.NewStyle().
+			Padding(m.padding...).
+			Render(view)
 	}
 
 	view := m.textinput.View() + "\n" + m.viewport.View()
 	if m.showHelp {
-		view += help
+		view += m.helpView()
 	}
 	if m.header != "" {
 		return lipgloss.JoinVertical(lipgloss.Left, header, view)
 	}
 
-	return lipgloss.NewStyle().Padding(style.ParsePadding(m.padding)).Render(view)
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(view)
 }
 
 func (m model) helpView() string {
@@ -282,8 +280,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.showHelp {
 			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.helpView())
 		}
-		m.viewport.Width = msg.Width
-		m.textinput.Width = msg.Width
+		m.viewport.Height = m.viewport.Height - m.padding[0] - m.padding[2]
+		m.viewport.Width = msg.Width - m.padding[1] - m.padding[3]
+		m.textinput.Width = msg.Width - m.padding[1] - m.padding[3]
 		if m.reverse {
 			m.viewport.YOffset = clamp(0, len(m.matches), len(m.matches)-m.viewport.Height)
 		}

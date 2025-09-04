@@ -14,6 +14,7 @@ import (
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/internal/tty"
+	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -107,6 +108,7 @@ func (o Options) Run() error {
 
 	// Use the pagination model to display the current and total number of
 	// pages.
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 	pager := paginator.New()
 	pager.SetTotalPages((len(items) + o.Height - 1) / o.Height)
 	pager.PerPage = o.Height
@@ -128,7 +130,7 @@ func (o Options) Run() error {
 		index:             startingIndex,
 		currentOrder:      currentOrder,
 		height:            o.Height,
-		padding:           o.Padding,
+		padding:           []int{top, right, bottom, left},
 		cursor:            o.Cursor,
 		header:            o.Header,
 		selectedPrefix:    o.SelectedPrefix,

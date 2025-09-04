@@ -32,4 +32,5 @@ type Options struct {
 	HeaderStyle           style.Styles `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_WRITE_HEADER_"`
 	PlaceholderStyle      style.Styles `embed:"" prefix:"placeholder." set:"defaultForeground=240" envprefix:"GUM_WRITE_PLACEHOLDER_"`
 	PromptStyle           style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=7" envprefix:"GUM_WRITE_PROMPT_"`
+	Padding               string       `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_WRITE_PADDING"`
 }

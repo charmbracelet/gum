@@ -17,7 +17,6 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/paginator"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -98,7 +97,7 @@ func (k keymap) ShortHelp() []key.Binding {
 
 type model struct {
 	height           int
-	padding          string
+	padding          []int
 	cursor           string
 	selectedPrefix   string
 	unselectedPrefix string
@@ -283,7 +282,9 @@ func (m model) View() string {
 	}
 
 	view := lipgloss.JoinVertical(lipgloss.Left, parts...)
-	return lipgloss.NewStyle().Padding(style.ParsePadding(m.padding)).Render(view)
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(view)
 }
 
 func clamp(x, low, high int) int {

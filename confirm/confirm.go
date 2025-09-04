@@ -91,6 +91,7 @@ type model struct {
 	promptStyle     lipgloss.Style
 	selectedStyle   lipgloss.Style
 	unselectedStyle lipgloss.Style
+	padding         []int
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -149,18 +150,19 @@ func (m model) View() string {
 		neg = ""
 	}
 
-	if m.showHelp {
-		return lipgloss.JoinVertical(
-			lipgloss.Left,
-			m.promptStyle.Render(m.prompt)+"\n",
-			lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
-			"\n"+m.help.View(m.keys),
-		)
+	parts := []string{
+		m.promptStyle.Render(m.prompt) + "\n",
+		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
 	}
 
-	return lipgloss.JoinVertical(
-		lipgloss.Left,
-		m.promptStyle.Render(m.prompt)+"\n",
-		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
-	)
+	if m.showHelp {
+		parts = append(parts, "", m.help.View(m.keys))
+	}
+
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(lipgloss.JoinVertical(
+			lipgloss.Left,
+			parts...,
+		))
 }

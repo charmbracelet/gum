@@ -21,4 +21,5 @@ type Options struct {
 	UnselectedStyle style.Styles  `embed:"" prefix:"unselected." help:"The style of the unselected action" set:"defaultBackground=235" set:"defaultForeground=254" set:"defaultPadding=0 3" set:"defaultMargin=0 1" envprefix:"GUM_CONFIRM_UNSELECTED_"`
 	ShowHelp        bool          `help:"Show help key binds" negatable:"" default:"true" env:"GUM_CONFIRM_SHOW_HELP"`
 	Timeout         time.Duration `help:"Timeout until confirm returns selected value or default if provided" default:"0s" env:"GUM_CONFIRM_TIMEOUT"`
+	Padding         string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_CONFIRM_PADDING"`
 }

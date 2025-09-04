@@ -22,6 +22,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type keymap struct {
@@ -72,6 +73,7 @@ type model struct {
 	hideCount bool
 	help      help.Model
 	keymap    keymap
+	padding   []int
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -122,7 +124,9 @@ func (m model) View() string {
 	if m.showHelp {
 		s += "\n" + m.countView() + m.help.View(m.keymap)
 	}
-	return s
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(s)
 }
 
 func numLen(i int) int {
