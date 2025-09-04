@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 
+	"charm.land/gum/v2/style"
 	"charm.land/lipgloss/v2"
-	log "charm.land/log/v2"
+	"charm.land/log/v2"
 )
 
 // Run is the command-line interface for logging text.
@@ -68,10 +70,7 @@ func (o Options) Run() error {
 
 	st := log.DefaultStyles()
 	lvl := levelToLog[o.Level]
-	lvlStyle := o.LevelStyle.ToLipgloss()
-	if _, isNoColor := lvlStyle.GetForeground().(lipgloss.NoColor); isNoColor {
-		lvlStyle = lvlStyle.Foreground(st.Levels[lvl].GetForeground())
-	}
+	lvlStyle := o.logToStyle(lvl, st)
 
 	st.Levels[lvl] = lvlStyle.
 		SetString(strings.ToUpper(lvl.String())).
@@ -140,10 +139,40 @@ type logger struct {
 }
 
 var levelToLog = map[string]log.Level{
-	"none":  log.Level(math.MaxInt32),
+	"none":  log.Level(math.MaxInt), // cf. unexported log.noLevel
 	"debug": log.DebugLevel,
 	"info":  log.InfoLevel,
 	"warn":  log.WarnLevel,
 	"error": log.ErrorLevel,
 	"fatal": log.FatalLevel,
+}
+
+func (o Options) logToStyle(level log.Level, defaults *log.Styles) lipgloss.Style {
+	levelStyle := style.Styles{}
+	switch level {
+	case log.Level(math.MaxInt32):
+	case log.DebugLevel:
+		levelStyle = o.LevelDebugStyle
+	case log.InfoLevel:
+		levelStyle = o.LevelInfoStyle
+	case log.WarnLevel:
+		levelStyle = o.LevelWarnStyle
+	case log.ErrorLevel:
+		levelStyle = o.LevelErrorStyle
+	case log.FatalLevel:
+		levelStyle = o.LevelFatalStyle
+	}
+
+	// NB: Empirically determined that _this_ is what we get if we pass no CLI/Env args
+	defaultLevelStyle := style.Styles{Align: "left", Bold: true, Border: "none", Margin: "0 0", Padding: "0 0"}
+	if reflect.DeepEqual(levelStyle, defaultLevelStyle) {
+		levelStyle = o.LevelStyle
+	}
+
+	lgStyle := levelStyle.ToLipgloss()
+	if _, isNoColor := lgStyle.GetForeground().(lipgloss.NoColor); isNoColor {
+		lgStyle = lgStyle.Foreground(defaults.Levels[level].GetForeground())
+	}
+
+	return lgStyle
 }
