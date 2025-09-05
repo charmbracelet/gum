@@ -38,6 +38,7 @@ func (k keymap) ShortHelp() []key.Binding {
 type model struct {
 	autoWidth   bool
 	header      string
+	padding     []int
 	headerStyle lipgloss.Style
 	textinput   textinput.Model
 	quitting    bool
@@ -53,27 +54,30 @@ func (m model) View() string {
 	if m.quitting {
 		return ""
 	}
+	var parts []string
 	if m.header != "" {
-		header := m.headerStyle.Render(m.header)
-		return lipgloss.JoinVertical(lipgloss.Left, header, m.textinput.View())
+		parts = append(parts, m.headerStyle.Render(m.header))
 	}
 
-	if !m.showHelp {
-		return m.textinput.View()
+	parts = append(parts, m.textinput.View())
+	if m.showHelp {
+		parts = append(parts, "", m.help.View(m.keymap))
 	}
-	return lipgloss.JoinVertical(
-		lipgloss.Top,
-		m.textinput.View(),
-		"",
-		m.help.View(m.keymap),
-	)
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(lipgloss.JoinVertical(
+			lipgloss.Top,
+			parts...,
+		))
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.autoWidth {
-			m.textinput.Width = msg.Width - lipgloss.Width(m.textinput.Prompt) - 1
+			m.textinput.Width = msg.Width - 1 -
+				lipgloss.Width(m.textinput.Prompt) -
+				m.padding[1] - m.padding[3]
 		}
 	case tea.KeyMsg:
 		switch msg.String() {

@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for prompting a user to confirm an
@@ -28,6 +29,7 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		affirmative:      o.Affirmative,
 		negative:         o.Negative,
@@ -41,6 +43,7 @@ func (o Options) Run() error {
 		selectedStyle:    o.SelectedStyle.ToLipgloss(),
 		unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
 		promptStyle:      o.PromptStyle.ToLipgloss(),
+		padding:          []int{top, right, bottom, left},
 	}
 	tm, err := tea.NewProgram(
 		m,

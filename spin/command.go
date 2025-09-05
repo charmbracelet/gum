@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/x/term"
 )
 
@@ -20,6 +21,7 @@ func (o Options) Run() error {
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		spinner:    s,
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
@@ -29,6 +31,7 @@ func (o Options) Run() error {
 		showStderr: (o.ShowOutput || o.ShowStderr) && isErrTTY,
 		showError:  o.ShowError,
 		isTTY:      isErrTTY,
+		padding:    []int{top, right, bottom, left},
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)

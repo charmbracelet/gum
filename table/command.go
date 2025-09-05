@@ -79,6 +79,7 @@ func (o Options) Run() error {
 	}
 
 	defaultStyles := table.DefaultStyles()
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 
 	styles := table.Styles{
 		Cell:     defaultStyles.Cell.Inherit(o.CellStyle.ToLipgloss()),
@@ -133,7 +134,7 @@ func (o Options) Run() error {
 		table.WithStyles(styles),
 	}
 	if o.Height > 0 {
-		opts = append(opts, table.WithHeight(o.Height))
+		opts = append(opts, table.WithHeight(o.Height-top-bottom))
 	}
 
 	table := table.New(opts...)
@@ -147,6 +148,7 @@ func (o Options) Run() error {
 		hideCount: o.HideCount,
 		help:      help.New(),
 		keymap:    defaultKeymap(),
+		padding:   []int{top, right, bottom, left},
 	}
 	tm, err := tea.NewProgram(
 		m,
