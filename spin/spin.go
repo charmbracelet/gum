@@ -146,6 +146,10 @@ func commandAbort() tea.Msg {
 }
 
 func formatDuration(d time.Duration) string {
+	if d.Seconds() == 0 {
+		return ""
+	}
+
 	days := int(d.Hours()) / 24
 	hours := int(d.Hours()) % 24
 	minutes := int(d.Minutes()) % 60
@@ -201,7 +205,7 @@ func (m model) View() string {
 	} else {
 		header = m.title + " " + m.spinner.View()
 	}
-	return header + elapsed + "\n" + out
+	return header + " " + elapsed + "\n" + out
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
