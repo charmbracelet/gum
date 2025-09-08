@@ -25,6 +25,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/term"
 	"github.com/charmbracelet/x/xpty"
 )
@@ -32,6 +33,7 @@ import (
 type model struct {
 	spinner    spinner.Model
 	title      string
+	padding    []int
 	align      string
 	command    []string
 	quitting   bool
@@ -70,7 +72,7 @@ func commandStart(command []string) tea.Cmd {
 			args = command[1:]
 		}
 
-		executing = exec.Command(command[0], args...) //nolint:gosec
+		executing = exec.CommandContext(context.Background(), command[0], args...) //nolint:gosec
 		executing.Stdin = os.Stdin
 
 		isTerminal := term.IsTerminal(os.Stdout.Fd())
@@ -167,7 +169,9 @@ func (m model) View() string {
 	} else {
 		header = m.title + " " + m.spinner.View()
 	}
-	return header + "\n" + out
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(header, "", out)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

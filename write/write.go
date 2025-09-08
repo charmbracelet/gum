@@ -77,6 +77,7 @@ type model struct {
 	showHelp    bool
 	help        help.Model
 	keymap      keymap
+	padding     []int
 }
 
 func (m model) Init() tea.Cmd { return textarea.Blink }
@@ -96,14 +97,19 @@ func (m model) View() string {
 	if m.showHelp {
 		parts = append(parts, "", m.help.View(m.keymap))
 	}
-	return lipgloss.JoinVertical(lipgloss.Left, parts...)
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(lipgloss.JoinVertical(
+			lipgloss.Left,
+			parts...,
+		))
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.autoWidth {
-			m.textarea.SetWidth(msg.Width)
+			m.textarea.SetWidth(msg.Width - m.padding[1] - m.padding[3])
 		}
 	case tea.FocusMsg, tea.BlurMsg:
 		var cmd tea.Cmd

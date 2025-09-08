@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/style"
 )
 
 // Run provides a shell script interface for the text area bubble.
@@ -30,6 +31,7 @@ func (o Options) Run() error {
 	a.ShowLineNumbers = o.ShowLineNumbers
 	a.CharLimit = o.CharLimit
 	a.MaxHeight = o.MaxLines
+	top, right, bottom, left := style.ParsePadding(o.Padding)
 
 	style := textarea.Style{
 		Base:             o.BaseStyle.ToLipgloss(),
@@ -46,8 +48,8 @@ func (o Options) Run() error {
 	a.Cursor.Style = o.CursorStyle.ToLipgloss()
 	a.Cursor.SetMode(cursor.Modes[o.CursorMode])
 
-	a.SetWidth(o.Width)
-	a.SetHeight(o.Height)
+	a.SetWidth(max(0, o.Width-left-right))
+	a.SetHeight(max(0, o.Height-top-bottom))
 	a.SetValue(o.Value)
 
 	m := model{
@@ -58,6 +60,7 @@ func (o Options) Run() error {
 		help:        help.New(),
 		showHelp:    o.ShowHelp,
 		keymap:      defaultKeymap(),
+		padding:     []int{top, right, bottom, left},
 	}
 
 	m.textarea.KeyMap.InsertNewline = m.keymap.InsertNewline

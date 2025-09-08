@@ -20,6 +20,7 @@ type Options struct {
 	TitleStyle    style.Styles  `embed:"" prefix:"title." envprefix:"GUM_SPIN_TITLE_"`
 	Align         string        `help:"Alignment of spinner with regard to the title" short:"a" type:"align" enum:"left,right" default:"left" env:"GUM_SPIN_ALIGN"`
 	Timeout       time.Duration `help:"Timeout until spin command aborts" default:"0s" env:"GUM_SPIN_TIMEOUT"`
+	Padding       string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_SPIN_PADDING"`
 	Glyphs        []string      `help:"Characters or symbols used to animate the spinner (overrides spinner type)" default:"" env:"GUM_SPIN_GLYPHS"`
 	FrameInterval time.Duration `help:"Time between spinner frames when using custom glyphs (lower is faster)" default:"100ms" env:"GUM_SPIN_FRAME_INTERVAL"`
 }
