@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/filepicker"
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/gumtea"
 	"github.com/charmbracelet/gum/internal/timeout"
 	"github.com/charmbracelet/gum/style"
 )
@@ -61,7 +62,7 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
-	tm, err := tea.NewProgram(
+	tm, err := gumtea.NewProgram(
 		&m,
 		tea.WithOutput(os.Stderr),
 		tea.WithContext(ctx),
