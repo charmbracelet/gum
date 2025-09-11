@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-// Run executes the tail command
+// Run executes the tail command.
 func (o Options) Run() error {
 	// Channel to communicate lines read from stdin
 	lines := make(chan string)

@@ -197,11 +197,14 @@ type Gum struct {
 	//
 	Table table.Options `cmd:"" help:"Render a table of data"`
 
-	// Tail
-	// Provides a means of streaming -n of lines from stdin
-	// Useful for showing a subset of output from a process without clogging up the terminal
+	// Tail provides a means of streaming a number of lines from stdin
+	//
+	// It is useful for showing a subset of output from a process without clogging up the terminal.
+	//
+	// Let's watch apt update:
 	//
 	// $ { sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y; } | gum tail -n 3
+	//
 	Tail tail.Options `cmd:"" help:"Tail the -n of lines from stdin"`
 
 	// Write provides a shell script interface for the text area bubble.
