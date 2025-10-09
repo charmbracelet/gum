@@ -51,6 +51,7 @@ func (o Options) Run() error {
 	m := model{
 		filepicker:  fp,
 		padding:     []int{top, right, bottom, left},
+		maxHeight:   o.Height,
 		showHelp:    o.ShowHelp,
 		help:        help.New(),
 		keymap:      defaultKeymap(),
