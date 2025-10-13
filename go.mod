@@ -22,7 +22,7 @@ require (
 	github.com/muesli/termenv v0.16.0
 	github.com/rivo/uniseg v0.4.7
 	github.com/sahilm/fuzzy v0.1.1
-	golang.org/x/text v0.29.0
+	golang.org/x/text v0.30.0
 )
 
 require (
