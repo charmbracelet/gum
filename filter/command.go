@@ -84,7 +84,11 @@ func (o Options) Run() error {
 	}
 
 	if o.SelectIfOne && len(matches) == 1 {
-		tty.Println(matches[0].Str)
+		if o.OutputIndexes {
+			tty.Println(o.findIndex(matches[0].Str, filteringChoices))
+		} else {
+			tty.Println(matches[0].Str)
+		}
 		return nil
 	}
 
@@ -157,18 +161,39 @@ func (o Options) Run() error {
 	// than 1 or if flag --no-limit is passed, hence there is
 	// no need to further checks
 	if len(m.selected) > 0 {
-		o.checkSelected(m)
+		o.checkSelected(m, filteringChoices)
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
-		tty.Println(m.matches[m.cursor].Str)
+		if o.OutputIndexes {
+			tty.Println(o.findIndex(m.matches[m.cursor].Str, filteringChoices))
+		} else {
+			tty.Println(m.matches[m.cursor].Str)
+		}
 	}
 
 	return nil
 }
 
-func (o Options) checkSelected(m model) {
-	out := []string{}
-	for k := range m.selected {
-		out = append(out, k)
+func (o Options) checkSelected(m model, filteringChoices []string) {
+	if o.OutputIndexes {
+		indexes := []string{}
+		for k := range m.selected {
+			indexes = append(indexes, o.findIndex(k, filteringChoices))
+		}
+		tty.Println(strings.Join(indexes, o.OutputDelimiter))
+	} else {
+		out := []string{}
+		for k := range m.selected {
+			out = append(out, k)
+		}
+		tty.Println(strings.Join(out, o.OutputDelimiter))
 	}
-	tty.Println(strings.Join(out, o.OutputDelimiter))
+}
+
+func (o Options) findIndex(value string, choices []string) string {
+	for i, choice := range choices {
+		if choice == value {
+			return fmt.Sprintf("%d", i)
+		}
+	}
+	return "-1" // Should never happen, but return -1 if not found
 }
