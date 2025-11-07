@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -87,7 +88,7 @@ func (o Options) Run() error {
 		if o.OutputIndexes {
 			idx := o.findIndex(matches[0].Str, filteringChoices)
 			if idx >= 0 {
-				tty.Println(fmt.Sprintf("%d", idx))
+				tty.Println(strconv.Itoa(idx))
 			}
 		} else {
 			tty.Println(matches[0].Str)
@@ -169,7 +170,7 @@ func (o Options) Run() error {
 		if o.OutputIndexes {
 			idx := o.findIndex(m.matches[m.cursor].Str, filteringChoices)
 			if idx >= 0 {
-				tty.Println(fmt.Sprintf("%d", idx))
+				tty.Println(strconv.Itoa(idx))
 			}
 		} else {
 			tty.Println(m.matches[m.cursor].Str)
@@ -189,7 +190,7 @@ func (o Options) checkSelected(m model, filteringChoices []string) {
 		indexes := make([]string, 0, len(m.selected))
 		for k := range m.selected {
 			if idx, ok := indexMap[k]; ok {
-				indexes = append(indexes, fmt.Sprintf("%d", idx))
+				indexes = append(indexes, strconv.Itoa(idx))
 			}
 		}
 		tty.Println(strings.Join(indexes, o.OutputDelimiter))
