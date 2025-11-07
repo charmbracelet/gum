@@ -180,7 +180,6 @@ func (o Options) checkSelected(m model, filteringChoices []string) {
 		for i, choice := range filteringChoices {
 			indexMap[choice] = i
 		}
-		
 		indexes := make([]string, 0, len(m.selected))
 		for k := range m.selected {
 			if idx, ok := indexMap[k]; ok {
@@ -203,5 +202,5 @@ func (o Options) findIndex(value string, choices []string) int {
 			return i
 		}
 	}
-	return -1 // Should never happen, but return -1 if not found
+	return -1 // Value not found in choices
 }
