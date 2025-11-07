@@ -85,7 +85,10 @@ func (o Options) Run() error {
 
 	if o.SelectIfOne && len(matches) == 1 {
 		if o.OutputIndexes {
-			tty.Println(fmt.Sprintf("%d", o.findIndex(matches[0].Str, filteringChoices)))
+			idx := o.findIndex(matches[0].Str, filteringChoices)
+			if idx >= 0 {
+				tty.Println(fmt.Sprintf("%d", idx))
+			}
 		} else {
 			tty.Println(matches[0].Str)
 		}
@@ -164,7 +167,10 @@ func (o Options) Run() error {
 		o.checkSelected(m, filteringChoices)
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
 		if o.OutputIndexes {
-			tty.Println(fmt.Sprintf("%d", o.findIndex(m.matches[m.cursor].Str, filteringChoices)))
+			idx := o.findIndex(m.matches[m.cursor].Str, filteringChoices)
+			if idx >= 0 {
+				tty.Println(fmt.Sprintf("%d", idx))
+			}
 		} else {
 			tty.Println(m.matches[m.cursor].Str)
 		}
