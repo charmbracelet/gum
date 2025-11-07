@@ -182,15 +182,13 @@ func (o Options) Run() error {
 
 func (o Options) checkSelected(m model, filteringChoices []string) {
 	if o.OutputIndexes {
-		// Build index map once for O(n) lookup instead of O(n*m)
-		indexMap := make(map[string]int, len(filteringChoices))
-		for i, choice := range filteringChoices {
-			indexMap[choice] = i
-		}
+		// For each selected item, find all indexes in filteringChoices (handles duplicates)
 		indexes := make([]string, 0, len(m.selected))
 		for k := range m.selected {
-			if idx, ok := indexMap[k]; ok {
-				indexes = append(indexes, strconv.Itoa(idx))
+			for i, choice := range filteringChoices {
+				if choice == k {
+					indexes = append(indexes, strconv.Itoa(i))
+				}
 			}
 		}
 		tty.Println(strings.Join(indexes, o.OutputDelimiter))
