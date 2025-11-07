@@ -14,20 +14,20 @@ func TestFindIndex(t *testing.T) {
 	tests := []struct {
 		name     string
 		value    string
-		expected string
+		expected int
 	}{
-		{"first item", "apple", "0"},
-		{"second item", "banana", "1"},
-		{"third item", "cherry", "2"},
-		{"last item", "date", "3"},
-		{"not found", "grape", "-1"},
+		{"first item", "apple", 0},
+		{"second item", "banana", 1},
+		{"third item", "cherry", 2},
+		{"last item", "date", 3},
+		{"not found", "grape", -1},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := opts.findIndex(tt.value, choices)
 			if result != tt.expected {
-				t.Errorf("expected %q, got %q", tt.expected, result)
+				t.Errorf("expected %d, got %d", tt.expected, result)
 			}
 		})
 	}

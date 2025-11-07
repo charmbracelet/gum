@@ -85,7 +85,7 @@ func (o Options) Run() error {
 
 	if o.SelectIfOne && len(matches) == 1 {
 		if o.OutputIndexes {
-			tty.Println(o.findIndex(matches[0].Str, filteringChoices))
+			tty.Println(fmt.Sprintf("%d", o.findIndex(matches[0].Str, filteringChoices)))
 		} else {
 			tty.Println(matches[0].Str)
 		}
@@ -164,7 +164,7 @@ func (o Options) Run() error {
 		o.checkSelected(m, filteringChoices)
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
 		if o.OutputIndexes {
-			tty.Println(o.findIndex(m.matches[m.cursor].Str, filteringChoices))
+			tty.Println(fmt.Sprintf("%d", o.findIndex(m.matches[m.cursor].Str, filteringChoices)))
 		} else {
 			tty.Println(m.matches[m.cursor].Str)
 		}
@@ -175,9 +175,17 @@ func (o Options) Run() error {
 
 func (o Options) checkSelected(m model, filteringChoices []string) {
 	if o.OutputIndexes {
-		indexes := []string{}
+		// Build index map once for O(n) lookup instead of O(n*m)
+		indexMap := make(map[string]int, len(filteringChoices))
+		for i, choice := range filteringChoices {
+			indexMap[choice] = i
+		}
+		
+		indexes := make([]string, 0, len(m.selected))
 		for k := range m.selected {
-			indexes = append(indexes, o.findIndex(k, filteringChoices))
+			if idx, ok := indexMap[k]; ok {
+				indexes = append(indexes, fmt.Sprintf("%d", idx))
+			}
 		}
 		tty.Println(strings.Join(indexes, o.OutputDelimiter))
 	} else {
@@ -189,11 +197,11 @@ func (o Options) checkSelected(m model, filteringChoices []string) {
 	}
 }
 
-func (o Options) findIndex(value string, choices []string) string {
+func (o Options) findIndex(value string, choices []string) int {
 	for i, choice := range choices {
 		if choice == value {
-			return fmt.Sprintf("%d", i)
+			return i
 		}
 	}
-	return "-1" // Should never happen, but return -1 if not found
+	return -1 // Should never happen, but return -1 if not found
 }
