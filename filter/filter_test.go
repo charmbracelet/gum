@@ -7,6 +7,32 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+func TestFindIndex(t *testing.T) {
+	opts := Options{}
+	choices := []string{"apple", "banana", "cherry", "date"}
+
+	tests := []struct {
+		name     string
+		value    string
+		expected int
+	}{
+		{"first item", "apple", 0},
+		{"second item", "banana", 1},
+		{"third item", "cherry", 2},
+		{"last item", "date", 3},
+		{"not found", "grape", -1},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := opts.findIndex(tt.value, choices)
+			if result != tt.expected {
+				t.Errorf("expected %d, got %d", tt.expected, result)
+			}
+		})
+	}
+}
+
 func TestMatchedRanges(t *testing.T) {
 	for name, tt := range map[string]struct {
 		in  []int
