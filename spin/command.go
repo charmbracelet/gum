@@ -18,6 +18,9 @@ func (o Options) Run() error {
 	isOutTTY := term.IsTerminal(os.Stdout.Fd())
 	isErrTTY := term.IsTerminal(os.Stderr.Fd())
 
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
@@ -32,10 +35,8 @@ func (o Options) Run() error {
 		showError:  o.ShowError,
 		isTTY:      isErrTTY,
 		padding:    []int{top, right, bottom, left},
+		ctx:        ctx,
 	}
-
-	ctx, cancel := timeout.Context(o.Timeout)
-	defer cancel()
 
 	tm, err := tea.NewProgram(
 		m,
