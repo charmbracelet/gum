@@ -68,6 +68,9 @@ brew install gum
 # Arch Linux (btw)
 pacman -S gum
 
+# Mise on Linux/MacOS/Windows
+mise use -g gum@latest
+
 # Nix
 nix-env -iA nixpkgs.gum
 
