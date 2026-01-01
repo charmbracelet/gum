@@ -12,6 +12,7 @@ package filter
 
 import (
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -23,6 +24,20 @@ import (
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
 )
+
+// debounceThreshold is the minimum number of items that triggers debounced
+// search. For smaller datasets, search is immediate.
+const debounceThreshold = 1000
+
+// debounceDuration is how long to wait after the last keystroke before
+// running the search on large datasets.
+const debounceDuration = 100 * time.Millisecond
+
+// debounceTickMsg is the timer tick for debounced search.
+type debounceTickMsg struct {
+	// query is the query that was scheduled for search.
+	query string
+}
 
 func defaultKeymap() keymap {
 	return keymap{
@@ -155,6 +170,10 @@ type model struct {
 	help                  help.Model
 	strict                bool
 	submitted             bool
+	// pendingQuery is the search query waiting to be executed after debounce.
+	pendingQuery string
+	// lastSearchQuery is the query that was last searched.
+	lastSearchQuery string
 }
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
@@ -271,6 +290,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd, icmd tea.Cmd
 	m.textinput, icmd = m.textinput.Update(msg)
 	switch msg := msg.(type) {
+	case debounceTickMsg:
+		// Only run the search if the query hasn't changed since we scheduled.
+		if msg.query == m.pendingQuery && msg.query != m.lastSearchQuery {
+			m = m.runSearch(msg.query)
+		}
 	case tea.WindowSizeMsg:
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
@@ -343,44 +367,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m = m.deselectAll()
 			}
 		default:
-			// yOffsetFromBottom is the number of lines from the bottom of the
-			// list to the top of the viewport. This is used to keep the viewport
-			// at a constant position when the number of matches are reduced
-			// in the reverse layout.
-			var yOffsetFromBottom int
-			if m.reverse {
-				yOffsetFromBottom = max(0, len(m.matches)-m.viewport.YOffset)
-			}
-
 			// A character was entered, this likely means that the text input has
 			// changed. This suggests that the matches are outdated, so update them.
-			var choices []string
-			if !m.strict {
-				choices = append(choices, m.textinput.Value())
-			}
-			choices = append(choices, m.filteringChoices...)
-			if m.fuzzy {
-				if m.sort {
-					m.matches = fuzzy.Find(m.textinput.Value(), choices)
-				} else {
-					m.matches = fuzzy.FindNoSort(m.textinput.Value(), choices)
-				}
-			} else {
-				m.matches = exactMatches(m.textinput.Value(), choices)
+			query := m.textinput.Value()
+
+			// For large datasets, debounce the search to avoid running
+			// expensive fuzzy matching on every keystroke.
+			if len(m.filteringChoices) >= debounceThreshold && query != "" {
+				m.pendingQuery = query
+				return m, tea.Tick(debounceDuration, func(_ time.Time) tea.Msg {
+					return debounceTickMsg{query: query}
+				})
 			}
 
-			// If the search field is empty, let's not display the matches
-			// (none), but rather display all possible choices.
-			if m.textinput.Value() == "" {
-				m.matches = matchAll(m.filteringChoices)
-			}
-
-			// For reverse layout, we need to offset the viewport so that the
-			// it remains at a constant position relative to the cursor.
-			if m.reverse {
-				maxYOffset := max(0, len(m.matches)-m.viewport.Height)
-				m.viewport.YOffset = ordered.Clamp(len(m.matches)-yOffsetFromBottom, 0, maxYOffset)
-			}
+			// For small datasets or empty query, run search immediately.
+			m = m.runSearch(query)
 		}
 	}
 
@@ -395,6 +396,51 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// that the selected index is within the bounds of the number of matches.
 	m.cursor = ordered.Clamp(m.cursor, 0, len(m.matches)-1)
 	return m, tea.Batch(cmd, icmd)
+}
+
+// runSearch executes the search with the given query and updates the matches.
+func (m model) runSearch(query string) model {
+	// yOffsetFromBottom is the number of lines from the bottom of the
+	// list to the top of the viewport. This is used to keep the viewport
+	// at a constant position when the number of matches are reduced
+	// in the reverse layout.
+	var yOffsetFromBottom int
+	if m.reverse {
+		yOffsetFromBottom = max(0, len(m.matches)-m.viewport.YOffset)
+	}
+
+	// Build the choices list.
+	var choices []string
+	if !m.strict {
+		choices = append(choices, query)
+	}
+	choices = append(choices, m.filteringChoices...)
+
+	// Run the search.
+	if query == "" {
+		// If the search field is empty, display all possible choices.
+		m.matches = matchAll(m.filteringChoices)
+	} else if m.fuzzy {
+		if m.sort {
+			m.matches = fuzzy.Find(query, choices)
+		} else {
+			m.matches = fuzzy.FindNoSort(query, choices)
+		}
+	} else {
+		m.matches = exactMatches(query, choices)
+	}
+
+	m.lastSearchQuery = query
+	m.pendingQuery = ""
+
+	// For reverse layout, we need to offset the viewport so that the
+	// it remains at a constant position relative to the cursor.
+	if m.reverse {
+		maxYOffset := max(0, len(m.matches)-m.viewport.Height)
+		m.viewport.YOffset = ordered.Clamp(len(m.matches)-yOffsetFromBottom, 0, maxYOffset)
+	}
+
+	return m
 }
 
 func (m *model) CursorUp() {
