@@ -1,53 +1,13 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    env:
-      GO111MODULE: "on"
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: ~1.21
-
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Download Go modules
-        run: go mod download
-
-      - name: Build
-        run: go build -v ./...
-
-      - name: Test
-        run: go test -v -cover -timeout=30s ./...
-
-  snapshot:
-    uses: charmbracelet/meta/.github/workflows/snapshot.yml@main
+    uses: charmbracelet/meta/.github/workflows/build.yml@main
     secrets:
-      goreleaser_key: ${{ secrets.GORELEASER_KEY }}
-
-  dependabot:
-    needs: [build]
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
-    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
-    steps:
-      - id: metadata
-        uses: dependabot/fetch-metadata@v2
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - run: |
-          gh pr review --approve "$PR_URL"
-          gh pr merge --squash --auto "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      gh_pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
