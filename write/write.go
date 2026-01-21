@@ -137,8 +137,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.submitted = true
 			return m, tea.Quit
 		case key.Matches(msg, km.OpenInEditor):
-			//nolint: gosec
-			return m, createTempFile(m.textarea.Value(), uint(m.textarea.Line())+1)
+			return m, createTempFile(m.textarea.Value(), m.textarea.Line()+1)
 		}
 	}
 
@@ -149,7 +148,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 type startEditorMsg struct {
 	path   string
-	lineno uint
+	lineno int
 }
 
 type editorFinishedMsg struct {
@@ -157,7 +156,7 @@ type editorFinishedMsg struct {
 	err     error
 }
 
-func createTempFile(content string, lineno uint) tea.Cmd {
+func createTempFile(content string, lineno int) tea.Cmd {
 	return func() tea.Msg {
 		f, err := os.CreateTemp("", "gum.*.md")
 		if err != nil {
@@ -175,7 +174,7 @@ func createTempFile(content string, lineno uint) tea.Cmd {
 	}
 }
 
-func openEditor(path string, lineno uint) tea.Cmd {
+func openEditor(path string, lineno int) tea.Cmd {
 	cb := func(err error) tea.Msg {
 		if err != nil {
 			return editorFinishedMsg{
