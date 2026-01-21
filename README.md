@@ -68,6 +68,9 @@ brew install gum
 # Arch Linux (btw)
 pacman -S gum
 
+# Fedora or EPEL 10
+dnf install gum
+
 # Nix
 nix-env -iA nixpkgs.gum
 
