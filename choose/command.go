@@ -106,6 +106,16 @@ func (o Options) Run() error {
 		items[i] = item{text: option, selected: isSelected, order: order}
 	}
 
+	// Handle initial cursor position if specified
+	if o.Initial != "" {
+		for i, option := range o.Options {
+			if option == o.Initial {
+				startingIndex = i
+				break
+			}
+		}
+	}
+
 	// Use the pagination model to display the current and total number of
 	// pages.
 	top, right, bottom, left := style.ParsePadding(o.Padding)
