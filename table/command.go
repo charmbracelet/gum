@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/table"
@@ -40,7 +41,7 @@ func (o Options) Run() error {
 	reader.LazyQuotes = o.LazyQuotes
 	reader.FieldsPerRecord = o.FieldsPerRecord
 	separatorRunes := []rune(o.Separator)
-	if len(separatorRunes) != 1 {
+	if !strings.HasPrefix(o.Separator, "\\") && len(separatorRunes) != 1 {
 		return fmt.Errorf("separator must be single character")
 	}
 	reader.Comma = separatorRunes[0]
