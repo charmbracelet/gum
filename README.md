@@ -376,7 +376,7 @@ the [`charmbracelet/log`](https://github.com/charmbracelet/log) library.
 ```bash
 # Log some debug information.
 gum log --structured --level debug "Creating file..." name file.txt
-# DEBUG Unable to create file. name=temp.txt
+# DEBUG Creating file... name=file.txt
 
 # Log some error.
 gum log --structured --level error "Unable to create file." name file.txt
@@ -384,6 +384,7 @@ gum log --structured --level error "Unable to create file." name file.txt
 
 # Include a timestamp.
 gum log --time rfc822 --level error "Unable to create file."
+# 27 Oct 25 10:38 CET ERROR Unable to create file.
 ```
 
 See the Go [`time` package](https://pkg.go.dev/time#pkg-constants) for acceptable `--time` formats.
