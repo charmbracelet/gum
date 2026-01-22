@@ -163,6 +163,9 @@ func (o Options) Run() error {
 	}
 	m = tm.(model)
 	if !m.submitted {
+		if o.AllowAbort {
+			return nil
+		}
 		return errors.New("nothing selected")
 	}
 	if o.Ordered && o.Limit > 1 {
