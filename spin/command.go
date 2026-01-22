@@ -21,6 +21,13 @@ func (o Options) Run() error {
 	s := spinner.New()
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
+	if len(o.Glyphs) > 0 {
+		s.Spinner = spinner.Spinner{
+			Frames: o.Glyphs,
+			FPS:    o.FrameInterval,
+		}
+	}
+
 	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		spinner:    s,
