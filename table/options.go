@@ -25,6 +25,8 @@ type Options struct {
 	HeaderStyle   style.Styles  `embed:"" prefix:"header." envprefix:"GUM_TABLE_HEADER_"`
 	SelectedStyle style.Styles  `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_TABLE_SELECTED_"`
 	ReturnColumn  int           `short:"r" help:"Which column number should be returned instead of whole row as string. Default=0 returns whole Row" default:"0"`
+	DefaultSelect string        `short:"q" help:"What string to match as the selected row" default:""`
+	DefaultColumn int           `short:"i" help:"Which column to match as the selected row. Default=0 matches against the whole Row" default:"0"`
 	Timeout       time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_TABLE_TIMEOUT"`
 	Padding       string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_TABLE_PADDING"`
 }
