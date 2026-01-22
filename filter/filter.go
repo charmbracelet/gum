@@ -205,7 +205,15 @@ func (m model) View() string {
 			s.WriteString(" ")
 		}
 
-		styledOption := m.choices[match.Str]
+		styledOption, present := m.choices[match.Str]
+		if !present {
+			// No styled option found, print the unstyled string instead
+			// This can happen when --no-strict is used, and we want to print the input as an option
+			s.WriteString(lineTextStyle.Render(match.Str))
+			s.WriteRune('\n')
+			continue
+		}
+
 		if len(match.MatchedIndexes) == 0 {
 			// No matches, just render the text.
 			s.WriteString(lineTextStyle.Render(styledOption))
