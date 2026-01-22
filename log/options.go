@@ -18,11 +18,16 @@ type Options struct {
 
 	MinLevel string `help:"Minimal level to show" default:"" env:"GUM_LOG_LEVEL"`
 
-	LevelStyle     style.Styles `embed:"" prefix:"level." help:"The style of the level being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_"`
-	TimeStyle      style.Styles `embed:"" prefix:"time." help:"The style of the time" envprefix:"GUM_LOG_TIME_"`
-	PrefixStyle    style.Styles `embed:"" prefix:"prefix." help:"The style of the prefix" set:"defaultBold=true" set:"defaultFaint=true" envprefix:"GUM_LOG_PREFIX_"` //nolint:staticcheck
-	MessageStyle   style.Styles `embed:"" prefix:"message." help:"The style of the message" envprefix:"GUM_LOG_MESSAGE_"`
-	KeyStyle       style.Styles `embed:"" prefix:"key." help:"The style of the key" set:"defaultFaint=true" envprefix:"GUM_LOG_KEY_"`
-	ValueStyle     style.Styles `embed:"" prefix:"value." help:"The style of the value" envprefix:"GUM_LOG_VALUE_"`
-	SeparatorStyle style.Styles `embed:"" prefix:"separator." help:"The style of the separator" set:"defaultFaint=true" envprefix:"GUM_LOG_SEPARATOR_"`
+	LevelStyle      style.Styles `embed:"" prefix:"level." help:"The style of the level being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_"`
+	LevelDebugStyle style.Styles `embed:"" prefix:"level.debug." help:"The style of level 'debug' being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_DEBUG_"`
+	LevelInfoStyle  style.Styles `embed:"" prefix:"level.info." help:"The style of level 'info' being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_INFO_"`
+	LevelWarnStyle  style.Styles `embed:"" prefix:"level.warn." help:"The style of level 'warn' being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_WARN_"`
+	LevelErrorStyle style.Styles `embed:"" prefix:"level.error." help:"The style of level 'error' being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_ERROR_"`
+	LevelFatalStyle style.Styles `embed:"" prefix:"level.fatal." help:"The style of level 'fatal' being used" set:"defaultBold=true" envprefix:"GUM_LOG_LEVEL_FATAL_"`
+	TimeStyle       style.Styles `embed:"" prefix:"time." help:"The style of the time" envprefix:"GUM_LOG_TIME_"`
+	PrefixStyle     style.Styles `embed:"" prefix:"prefix." help:"The style of the prefix" set:"defaultBold=true" set:"defaultFaint=true" envprefix:"GUM_LOG_PREFIX_"` //nolint:staticcheck
+	MessageStyle    style.Styles `embed:"" prefix:"message." help:"The style of the message" envprefix:"GUM_LOG_MESSAGE_"`
+	KeyStyle        style.Styles `embed:"" prefix:"key." help:"The style of the key" set:"defaultFaint=true" envprefix:"GUM_LOG_KEY_"`
+	ValueStyle      style.Styles `embed:"" prefix:"value." help:"The style of the value" envprefix:"GUM_LOG_VALUE_"`
+	SeparatorStyle  style.Styles `embed:"" prefix:"separator." help:"The style of the separator" set:"defaultFaint=true" envprefix:"GUM_LOG_SEPARATOR_"`
 }

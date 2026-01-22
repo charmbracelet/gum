@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 )
@@ -68,10 +70,7 @@ func (o Options) Run() error {
 
 	st := log.DefaultStyles()
 	lvl := levelToLog[o.Level]
-	lvlStyle := o.LevelStyle.ToLipgloss()
-	if lvlStyle.GetForeground() == lipgloss.Color("") {
-		lvlStyle = lvlStyle.Foreground(st.Levels[lvl].GetForeground())
-	}
+	lvlStyle := o.logToStyle(lvl, st)
 
 	st.Levels[lvl] = lvlStyle.
 		SetString(strings.ToUpper(lvl.String())).
@@ -146,4 +145,34 @@ var levelToLog = map[string]log.Level{
 	"warn":  log.WarnLevel,
 	"error": log.ErrorLevel,
 	"fatal": log.FatalLevel,
+}
+
+func (o Options) logToStyle(level log.Level, defaults *log.Styles) lipgloss.Style {
+	var levelStyle = style.Styles{}
+	switch level {
+	case log.Level(math.MaxInt32):
+	case log.DebugLevel:
+		levelStyle = o.LevelDebugStyle
+	case log.InfoLevel:
+		levelStyle = o.LevelInfoStyle
+	case log.WarnLevel:
+		levelStyle = o.LevelWarnStyle
+	case log.ErrorLevel:
+		levelStyle = o.LevelErrorStyle
+	case log.FatalLevel:
+		levelStyle = o.LevelFatalStyle
+	}
+
+	// NB: Empirically determined that _this_ is what we get if we pass no CLI/Env args
+	var defaultLevelStyle = style.Styles{Align: "left", Bold: true, Border: "none", Margin: "0 0", Padding: "0 0"}
+	if reflect.DeepEqual(levelStyle, defaultLevelStyle) {
+		levelStyle = o.LevelStyle
+	}
+
+	var lgStyle = levelStyle.ToLipgloss()
+	if lgStyle.GetForeground() == lipgloss.Color("") {
+		lgStyle = lgStyle.Foreground(defaults.Levels[level].GetForeground())
+	}
+
+	return lgStyle
 }
