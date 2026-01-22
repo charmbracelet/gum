@@ -43,26 +43,26 @@ func (k keymap) ShortHelp() []key.Binding {
 func defaultKeymap() keymap {
 	km := textarea.DefaultKeyMap
 	km.InsertNewline = key.NewBinding(
-		key.WithKeys("ctrl+j"),
-		key.WithHelp("ctrl+j", "insert newline"),
+		key.WithKeys(Keybinds["InsertNewline"]),
+		key.WithHelp(Keybinds["InsertNewline"], "insert newline"),
 	)
 	return keymap{
 		KeyMap: km,
 		Quit: key.NewBinding(
-			key.WithKeys("esc"),
-			key.WithHelp("esc", "quit"),
+			key.WithKeys(Keybinds["Quit"]),
+			key.WithHelp(Keybinds["Quit"], "quit"),
 		),
 		Abort: key.NewBinding(
-			key.WithKeys("ctrl+c"),
-			key.WithHelp("ctrl+c", "cancel"),
+			key.WithKeys(Keybinds["Abort"]),
+			key.WithHelp(Keybinds["Abort"], "cancel"),
 		),
 		OpenInEditor: key.NewBinding(
-			key.WithKeys("ctrl+e"),
-			key.WithHelp("ctrl+e", "open editor"),
+			key.WithKeys(Keybinds["OpenInEditor"]),
+			key.WithHelp(Keybinds["OpenInEditor"], "open editor"),
 		),
 		Submit: key.NewBinding(
-			key.WithKeys("enter"),
-			key.WithHelp("enter", "submit"),
+			key.WithKeys(Keybinds["Submit"]),
+			key.WithHelp(Keybinds["Submit"], "submit"),
 		),
 	}
 }

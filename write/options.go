@@ -23,6 +23,12 @@ type Options struct {
 	Timeout         time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_WRITE_TIMEOUT"`
 	StripANSI       bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_WRITE_STRIP_ANSI"`
 
+	BindInsertNewline string      `help:"Change keybind to insert new line" default:"ctrl+j"`
+	BindQuit          string      `help:"Change keybind to quit" default:"esc"`
+	BindAbort         string      `help:"Change keybind to abort" default:"ctrl+c"`
+	BindOpenInEditor  string      `help:"Change keybind to open in editor" default:"ctrl+e"`
+	BindSubmit        string      `help:"Change keybind to submit" default:"enter"`
+
 	BaseStyle             style.Styles `embed:"" prefix:"base." envprefix:"GUM_WRITE_BASE_"`
 	CursorLineNumberStyle style.Styles `embed:"" prefix:"cursor-line-number." set:"defaultForeground=7" envprefix:"GUM_WRITE_CURSOR_LINE_NUMBER_"`
 	CursorLineStyle       style.Styles `embed:"" prefix:"cursor-line." envprefix:"GUM_WRITE_CURSOR_LINE_"`
