@@ -21,6 +21,16 @@ type Options struct {
 	Timeout     time.Duration `help:"Timeout until command aborts without a selection" default:"0s" env:"GUM_FILE_TIMEOUT"`
 	Header      string        `help:"Header value" default:"" env:"GUM_FILE_HEADER"`
 	Height      int           `help:"Maximum number of files to display" default:"10" env:"GUM_FILE_HEIGHT"`
+	Fuzzy       bool          `help:"Enable fuzzy filtering mode to search files by name" default:"false" env:"GUM_FILE_FUZZY"`
+
+	// Fuzzy mode styling options
+	Prompt           string       `help:"Prompt for fuzzy search input" default:"> " env:"GUM_FILE_PROMPT"`
+	Placeholder      string       `help:"Placeholder text for fuzzy search" default:"Search files..." env:"GUM_FILE_PLACEHOLDER"`
+	PromptStyle      style.Styles `embed:"" prefix:"prompt." set:"defaultForeground=240" envprefix:"GUM_FILE_PROMPT_"`
+	PlaceholderStyle style.Styles `embed:"" prefix:"placeholder." set:"defaultForeground=240" envprefix:"GUM_FILE_PLACEHOLDER_"`
+	MatchStyle       style.Styles `embed:"" prefix:"match." help:"The style to use for fuzzy match highlights" set:"defaultForeground=212" envprefix:"GUM_FILE_MATCH_"`
+	Indicator        string       `help:"Character for indicating selection in fuzzy mode" default:"•" env:"GUM_FILE_INDICATOR"`
+	IndicatorStyle   style.Styles `embed:"" prefix:"indicator." set:"defaultForeground=212" envprefix:"GUM_FILE_INDICATOR_"`
 
 	CursorStyle      style.Styles `embed:"" prefix:"cursor." help:"The cursor style" set:"defaultForeground=212" envprefix:"GUM_FILE_CURSOR_"`
 	SymlinkStyle     style.Styles `embed:"" prefix:"symlink." help:"The style to use for symlinks" set:"defaultForeground=36" envprefix:"GUM_FILE_SYMLINK_"`
