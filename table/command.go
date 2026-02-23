@@ -139,16 +139,31 @@ func (o Options) Run() error {
 
 	table := table.New(opts...)
 
+	limit := o.Limit
+	if o.NoLimit {
+		limit = len(rows) + 1
+	}
+
+	km := defaultKeymap()
+	if o.NoLimit || o.Limit > 1 {
+		km.Toggle.SetEnabled(true)
+	}
+	if o.NoLimit {
+		km.ToggleAll.SetEnabled(true)
+	}
+
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
 	m := model{
-		table:     table,
-		showHelp:  o.ShowHelp,
-		hideCount: o.HideCount,
-		help:      help.New(),
-		keymap:    defaultKeymap(),
-		padding:   []int{top, right, bottom, left},
+		table:       table,
+		limit:       limit,
+		selectedMap: make(map[int]struct{}),
+		showHelp:    o.ShowHelp,
+		hideCount:   o.HideCount,
+		help:        help.New(),
+		keymap:      km,
+		padding:     []int{top, right, bottom, left},
 	}
 	tm, err := tea.NewProgram(
 		m,
@@ -164,13 +179,36 @@ func (o Options) Run() error {
 	}
 
 	m = tm.(model)
-	if o.ReturnColumn > 0 && o.ReturnColumn <= len(m.selected) {
-		if err = writer.Write([]string{m.selected[o.ReturnColumn-1]}); err != nil {
-			return fmt.Errorf("failed to write col %d of selected row: %w", o.ReturnColumn, err)
+	if !m.submitted {
+		return fmt.Errorf("nothing selected")
+	}
+
+	// Multi-select: write all selected rows
+	if limit > 1 && m.numSelected > 0 {
+		for i, row := range rows {
+			if _, ok := m.selectedMap[i]; !ok {
+				continue
+			}
+			if o.ReturnColumn > 0 && o.ReturnColumn <= len(row) {
+				if err = writer.Write([]string{row[o.ReturnColumn-1]}); err != nil {
+					return fmt.Errorf("failed to write col %d of selected row: %w", o.ReturnColumn, err)
+				}
+			} else {
+				if err = writer.Write([]string(row)); err != nil {
+					return fmt.Errorf("failed to write selected row: %w", err)
+				}
+			}
 		}
 	} else {
-		if err = writer.Write([]string(m.selected)); err != nil {
-			return fmt.Errorf("failed to write selected row: %w", err)
+		// Single select (default behavior)
+		if o.ReturnColumn > 0 && o.ReturnColumn <= len(m.selected) {
+			if err = writer.Write([]string{m.selected[o.ReturnColumn-1]}); err != nil {
+				return fmt.Errorf("failed to write col %d of selected row: %w", o.ReturnColumn, err)
+			}
+		} else {
+			if err = writer.Write([]string(m.selected)); err != nil {
+				return fmt.Errorf("failed to write selected row: %w", err)
+			}
 		}
 	}
 
