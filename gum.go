@@ -14,6 +14,7 @@ import (
 	"github.com/charmbracelet/gum/log"
 	"github.com/charmbracelet/gum/man"
 	"github.com/charmbracelet/gum/pager"
+	"github.com/charmbracelet/gum/progress"
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/gum/table"
@@ -137,6 +138,16 @@ type Gum struct {
 	//  ↓↑: navigate • q: quit
 	//
 	Pager pager.Options `cmd:"" help:"Scroll through a file"`
+
+	// Progress provides a shell script interface for the progress bar bubble.
+	// https://github.com/charmbracelet/bubbles/tree/master/progress
+	//
+	// It is useful to display progress of a task by reading percentage values
+	// from standard input.
+	//
+	// $ for i in $(seq 0 10 100); do echo "$i"; sleep 0.2; done | gum progress
+	//
+	Progress progress.Options `cmd:"" help:"Display a progress bar"`
 
 	// Spin provides a shell script interface for the spinner bubble.
 	// https://github.com/charmbracelet/bubbles/tree/master/spinner
