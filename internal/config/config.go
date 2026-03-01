@@ -1,7 +1,3 @@
-// Package config provides configuration file support for gum.
-// It reads a config file from XDG config directory or ~/.gumrc and applies
-// default values as environment variables so that Kong's env binding picks
-// them up. Precedence: config file < environment variables < command-line flags.
 package config
 
 import (
@@ -22,8 +18,6 @@ const ConfigFileName = "config"
 // FallbackConfigFile is the fallback config file path relative to home (~/.gumrc).
 const FallbackConfigFile = ".gumrc"
 
-// commandPrefix maps top-level config keys to GUM_* env prefix.
-// Only commands that have env vars in their options are included.
 var commandPrefix = map[string]string{
 	"choose":  "GUM_CHOOSE_",
 	"confirm": "GUM_CONFIRM_",
@@ -40,10 +34,6 @@ var commandPrefix = map[string]string{
 	"write":   "GUM_WRITE_",
 }
 
-// Load finds and loads the gum config file, then applies any values to the
-// environment only for keys that are not already set. This preserves the
-// precedence: config < env < flags.
-//
 // If GUM_DEBUG_CONFIG is set (to any value), Load writes the config file path
 // and the number of env vars applied to stderr.
 func Load() error {
@@ -145,7 +135,6 @@ func flattenToEnv(prefix string, value interface{}) int {
 		}
 		return n
 	case []interface{}:
-		// Kong doesn't bind slice from env in a standard way; skip
 		return 0
 	case string:
 		envKey := strings.TrimSuffix(prefix, "_")
@@ -192,7 +181,6 @@ func flattenToEnv(prefix string, value interface{}) int {
 }
 
 func envSegment(s string) string {
-	// Convert "prompt" -> "PROMPT", "cursor-line" -> "CURSOR_LINE"
 	s = strings.ReplaceAll(s, "-", "_")
 	return strings.ToUpper(s)
 }
