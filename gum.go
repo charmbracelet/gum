@@ -142,7 +142,7 @@ type Gum struct {
 	// https://github.com/charmbracelet/bubbles/tree/master/spinner
 	//
 	// It is useful for displaying that some task is running in the background
-	// while consuming it's output so that it is not shown to the user.
+	// while consuming its output so that it is not shown to the user.
 	//
 	// For example, let's do a long running task: $ sleep 5
 	//

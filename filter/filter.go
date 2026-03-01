@@ -224,7 +224,7 @@ func (m model) View() string {
 
 		s.WriteString(lineTextStyle.Render(lipgloss.StyleRanges(styledOption, ranges...)))
 
-		// We have finished displaying the match with all of it's matched
+		// We have finished displaying the match with all of its matched
 		// characters highlighted and the rest filled in.
 		// Move on to the next match.
 		s.WriteRune('\n')
