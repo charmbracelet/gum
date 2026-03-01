@@ -1,0 +1,52 @@
+# Example gum config file
+# Copy to ~/.config/gum/config.yaml or ~/.gumrc.yaml
+# Run with GUM_DEBUG_CONFIG=1 to see loaded defaults
+
+# Style (gum style) - applies to styled text output
+style:
+  foreground: "212"
+  border: "rounded"
+
+# Input (gum input)
+input:
+  placeholder: "Enter value..."
+  prompt: "> "
+
+# Choose (gum choose)
+choose:
+  cursor: "→ "
+  height: 10
+
+# Confirm (gum confirm)
+confirm:
+  affirmative: "Yep"
+  negative: "Nope"
+
+# Filter (gum filter)
+filter:
+  placeholder: "Search..."
+  prompt: "> "
+
+# Format (gum format)
+format:
+  theme: "pink"
+  type: "markdown"
+
+# Log (gum log)
+log:
+  level: "info"
+  time: "kitchen"
+
+# Spin (gum spin)
+spin:
+  title: "..."
+  spinner: "dot"
+
+# Write (gum write)
+write:
+  placeholder: "Write something..."
+  prompt: "┃ "
+
+# Join (gum join)
+join:
+  align: "center"
