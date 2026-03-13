@@ -166,7 +166,7 @@ func (o Options) Run() error {
 }
 
 func (o Options) checkSelected(m model) {
-	out := []string{}
+	out := make([]string, 0, len(m.selected))
 	for k := range m.selected {
 		out = append(out, k)
 	}
