@@ -69,11 +69,16 @@ func (m model) Init() tea.Cmd { return m.filepicker.Init() }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		height := msg.Height - m.padding[0] - m.padding[2]
+		fpHeight := msg.Height - m.padding[0] - m.padding[2]
+
+		// Account for newline used by lipgloss.JoinVertical
+		// to join filepicker block and help block together.
+		const SepHeight = 1
+
 		if m.showHelp {
-			height -= lipgloss.Height(m.helpView())
+			fpHeight -= SepHeight + lipgloss.Height(m.helpView())
 		}
-		m.filepicker.SetHeight(height)
+		m.filepicker.SetHeight(fpHeight)
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, keyAbort):
