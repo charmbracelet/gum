@@ -75,6 +75,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// to join filepicker block and help block together.
 		const SepHeight = 1
 
+		if m.header != "" {
+			fpHeight -= lipgloss.Height(m.headerRender()) + SepHeight
+		}
+
 		if m.showHelp {
 			fpHeight -= SepHeight + lipgloss.Height(m.helpView())
 		}
@@ -105,7 +109,7 @@ func (m model) View() string {
 	}
 	var parts []string
 	if m.header != "" {
-		parts = append(parts, m.headerStyle.Render(m.header))
+		parts = append(parts, m.headerRender())
 	}
 	parts = append(parts, m.filepicker.View())
 	if m.showHelp {
@@ -121,4 +125,8 @@ func (m model) View() string {
 
 func (m model) helpView() string {
 	return m.help.View(m.keymap)
+}
+
+func (m model) headerRender() string {
+	return m.headerStyle.Render(m.header)
 }
