@@ -188,6 +188,39 @@ export GUM_INPUT_WIDTH=80
 gum input
 ```
 
+### Configuration file
+
+You can set default options in a config file so you don’t have to repeat flags or environment variables. Gum looks for a config file in this order:
+
+1. **Primary (XDG):** `$XDG_CONFIG_HOME/gum/config` (or `~/.config/gum/config` on Linux, `~/Library/Application Support/gum/config` on macOS), with optional `.yaml` or `.yml` extension.
+2. **Fallback:** `~/.gumrc`, with optional `.yaml` or `.yml` extension.
+
+The config file is YAML. Top-level keys are command names (`input`, `choose`, `style`, `log`, etc.). Nested keys match the corresponding `GUM_<COMMAND>_*` environment variable names (in lowercase, with `.` for nesting). Precedence: **config file** &lt; **environment variables** &lt; **command-line flags**.
+
+Note: `gum <command> --help` shows the built-in default in the flag list, not the value from your config. To confirm config is applied, run the command (e.g. `gum input`) and check that the behavior matches your config. You can set `GUM_DEBUG_CONFIG=1` to print the loaded config path and number of defaults applied to stderr.
+
+Example `~/.config/gum/config.yaml`:
+
+```yaml
+# Global styling (gum style command)
+style:
+  foreground: "212"
+  border: "rounded"
+
+# Command-specific defaults
+input:
+  placeholder: "Enter value..."
+  prompt: "> "
+
+choose:
+  cursor: "→ "
+  height: 10
+
+log:
+  level: "info"
+  time: "kitchen"
+```
+
 <img alt="Gum input displaying most customization options" width="600" src="https://vhs.charm.sh/vhs-5zb9DlQYA70aL9ZpYLTwKv.gif">
 
 ## Input

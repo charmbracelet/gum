@@ -5,7 +5,7 @@ type Options struct {
 	Text      []string        `arg:"" optional:"" help:"Text to which to apply the style"`
 	Trim      bool            `help:"Trim whitespaces on every input line" default:"false"`
 	StripANSI bool            `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_STYLE_STRIP_ANSI"`
-	Style     StylesNotHidden `embed:""`
+	Style     StylesNotHidden `embed:"" envprefix:"GUM_STYLE_"`
 }
 
 // Styles is a flag set of possible styles.

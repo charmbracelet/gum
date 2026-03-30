@@ -8,11 +8,11 @@ import (
 
 // Options is the customization options for the confirm command.
 type Options struct {
-	Default     bool   `help:"Default confirmation action" default:"true"`
-	ShowOutput  bool   `help:"Print prompt and chosen action to output" default:"false"`
-	Affirmative string `help:"The title of the affirmative action" default:"Yes"`
-	Negative    string `help:"The title of the negative action" default:"No"`
-	Prompt      string `arg:"" help:"Prompt to display." default:"Are you sure?"`
+	Default     bool   `help:"Default confirmation action" default:"true" env:"GUM_CONFIRM_DEFAULT"`
+	ShowOutput  bool   `help:"Print prompt and chosen action to output" default:"false" env:"GUM_CONFIRM_SHOW_OUTPUT"`
+	Affirmative string `help:"The title of the affirmative action" default:"Yes" env:"GUM_CONFIRM_AFFIRMATIVE"`
+	Negative    string `help:"The title of the negative action" default:"No" env:"GUM_CONFIRM_NEGATIVE"`
+	Prompt      string `arg:"" help:"Prompt to display." default:"Are you sure?" env:"GUM_CONFIRM_PROMPT"`
 	//nolint:staticcheck
 	PromptStyle style.Styles `embed:"" prefix:"prompt." help:"The style of the prompt" set:"defaultMargin=0 0 0 1" set:"defaultForeground=#7571F9" set:"defaultBold=true" envprefix:"GUM_CONFIRM_PROMPT_"`
 	//nolint:staticcheck

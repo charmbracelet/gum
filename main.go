@@ -9,6 +9,7 @@ import (
 
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/gum/internal/config"
 	"github.com/charmbracelet/gum/internal/exit"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
@@ -41,6 +42,12 @@ func main() {
 	version := fmt.Sprintf("gum version %s", Version)
 	if len(CommitSHA) >= shaLen {
 		version += " (" + CommitSHA[:shaLen] + ")"
+	}
+
+	// Load config file defaults (env and flags override these).
+	if err := config.Load(); err != nil {
+		fmt.Fprintln(os.Stderr, "config:", err)
+		os.Exit(1)
 	}
 
 	gum := &Gum{}
