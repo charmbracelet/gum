@@ -17,6 +17,7 @@ type Options struct {
 	Size        bool          `short:"s" help:"Show file size" default:"true" negatable:"" env:"GUM_FILE_SIZE"`
 	File        bool          `help:"Allow files selection" default:"true" env:"GUM_FILE_FILE"`
 	Directory   bool          `help:"Allow directories selection" default:"false" env:"GUM_FILE_DIRECTORY"`
+	Fuzzy       bool          `short:"f" help:"Enable fuzzy-find mode for quick file search" default:"false" env:"GUM_FILE_FUZZY"`
 	ShowHelp    bool          `help:"Show help key binds" negatable:"" default:"true" env:"GUM_FILE_SHOW_HELP"`
 	Timeout     time.Duration `help:"Timeout until command aborts without a selection" default:"0s" env:"GUM_FILE_TIMEOUT"`
 	Header      string        `help:"Header value" default:"" env:"GUM_FILE_HEADER"`
