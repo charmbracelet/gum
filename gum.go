@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/gum/confirm"
 	"github.com/charmbracelet/gum/file"
 	"github.com/charmbracelet/gum/filter"
+	"github.com/charmbracelet/gum/info"
 	"github.com/charmbracelet/gum/format"
 	"github.com/charmbracelet/gum/input"
 	"github.com/charmbracelet/gum/join"
@@ -85,6 +86,9 @@ type Gum struct {
 	// $ cat flavors.text | gum filter
 	//
 	Filter filter.Options `cmd:"" help:"Filter items from a list"`
+
+	// Info prints information about the current terminal environment.
+	Info info.Options `cmd:"" help:"Print terminal information (colors, size, theme)"`
 
 	// Format allows you to render styled text from `markdown`, `code`,
 	// `template` strings, or embedded `emoji` strings.
