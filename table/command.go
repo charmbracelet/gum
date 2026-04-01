@@ -39,7 +39,15 @@ func (o Options) Run() error {
 	reader := csv.NewReader(transform.NewReader(input, transformer))
 	reader.LazyQuotes = o.LazyQuotes
 	reader.FieldsPerRecord = o.FieldsPerRecord
-	separatorRunes := []rune(o.Separator)
+	sep := o.Separator
+	// Handle common escape sequences for separators
+	switch sep {
+	case "\\0", "\\x00", "NUL":
+		sep = "\x00"
+	case "\\t":
+		sep = "\t"
+	}
+	separatorRunes := []rune(sep)
 	if len(separatorRunes) != 1 {
 		return fmt.Errorf("separator must be single character")
 	}
