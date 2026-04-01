@@ -13,6 +13,7 @@ type Options struct {
 	NoLimit          bool          `help:"Pick unlimited number of options (ignores limit)" group:"Selection"`
 	Ordered          bool          `help:"Maintain the order of the selected options" env:"GUM_CHOOSE_ORDERED"`
 	Height           int           `help:"Height of the list" default:"10" env:"GUM_CHOOSE_HEIGHT"`
+	CursorIndex      int           `help:"Index of the item to place the initial cursor on" default:"0" env:"GUM_CHOOSE_CURSOR_INDEX"`
 	Cursor           string        `help:"Prefix to show on item that corresponds to the cursor position" default:"> " env:"GUM_CHOOSE_CURSOR"`
 	ShowHelp         bool          `help:"Show help keybinds" default:"true" negatable:"" env:"GUM_CHOOSE_SHOW_HELP"`
 	Timeout          time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_CHOOSE_TIMEOUT"` // including timeout command options [Timeout,...]

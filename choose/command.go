@@ -83,7 +83,10 @@ func (o Options) Run() error {
 	currentSelected := 0
 	// Check if selected items should be used.
 	hasSelectedItems := len(o.Selected) > 0
-	startingIndex := 0
+	startingIndex := o.CursorIndex
+	if startingIndex < 0 || startingIndex >= len(o.Options) {
+		startingIndex = 0
+	}
 	currentOrder := 0
 	items := make([]item, len(o.Options))
 	for i, option := range o.Options {
