@@ -150,6 +150,7 @@ type model struct {
 	reverse               bool
 	fuzzy                 bool
 	sort                  bool
+	extendedSearch        bool
 	showHelp              bool
 	keymap                keymap
 	help                  help.Model
@@ -359,7 +360,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				choices = append(choices, m.textinput.Value())
 			}
 			choices = append(choices, m.filteringChoices...)
-			if m.fuzzy {
+			if m.extendedSearch {
+				m.matches = extendedMatches(m.textinput.Value(), choices, m.fuzzy)
+			} else if m.fuzzy {
 				if m.sort {
 					m.matches = fuzzy.Find(m.textinput.Value(), choices)
 				} else {
@@ -523,6 +526,92 @@ func matchedRanges(in []int) [][2]int {
 	}
 	out = append(out, current)
 	return out
+}
+
+// extendedMatches implements fzf-style extended search syntax.
+// Terms are space-separated (AND logic). Each term supports:
+//   - ^prefix  : starts with
+//   - suffix$  : ends with
+//   - !term    : negation (exclude matches)
+//   - 'exact   : exact substring match (no fuzzy)
+//   - default  : fuzzy match
+func extendedMatches(search string, choices []string, useFuzzy bool) []fuzzy.Match {
+	terms := strings.Fields(search)
+	if len(terms) == 0 {
+		return matchAll(choices)
+	}
+
+	var results []fuzzy.Match
+	for i, choice := range choices {
+		lower := strings.ToLower(choice)
+		allMatch := true
+		var allIndexes []int
+
+		for _, term := range terms {
+			negate := false
+			if strings.HasPrefix(term, "!") {
+				negate = true
+				term = term[1:]
+				if term == "" {
+					continue
+				}
+			}
+
+			var matched bool
+			lowerTerm := strings.ToLower(term)
+
+			switch {
+			case strings.HasPrefix(term, "^"):
+				// Prefix match
+				lowerTerm = strings.ToLower(term[1:])
+				matched = strings.HasPrefix(lower, lowerTerm)
+			case strings.HasSuffix(term, "$"):
+				// Suffix match
+				lowerTerm = strings.ToLower(term[:len(term)-1])
+				matched = strings.HasSuffix(lower, lowerTerm)
+			case strings.HasPrefix(term, "'"):
+				// Exact substring match
+				lowerTerm = strings.ToLower(term[1:])
+				matched = strings.Contains(lower, lowerTerm)
+			default:
+				// Fuzzy or exact match
+				if useFuzzy {
+					m := fuzzy.Find(term, []string{choice})
+					if len(m) > 0 {
+						matched = true
+						allIndexes = append(allIndexes, m[0].MatchedIndexes...)
+					}
+				} else {
+					idx := strings.Index(lower, lowerTerm)
+					if idx >= 0 {
+						matched = true
+						for j := range lowerTerm {
+							allIndexes = append(allIndexes, idx+j)
+						}
+					}
+				}
+			}
+
+			if negate {
+				matched = !matched
+			}
+
+			if !matched {
+				allMatch = false
+				break
+			}
+		}
+
+		if allMatch {
+			results = append(results, fuzzy.Match{
+				Str:            choice,
+				Index:          i,
+				MatchedIndexes: allIndexes,
+			})
+		}
+	}
+
+	return results
 }
 
 func bytePosToVisibleCharPos(str string, rng [2]int) (int, int) {
