@@ -14,7 +14,7 @@ type Options struct {
 	Level      string `short:"l" help:"The log level to use" enum:"none,debug,info,warn,error,fatal" default:"none"`
 	Prefix     string `help:"Prefix to print before the message"`
 	Structured bool   `short:"s" help:"Use structured logging" xor:"format,structured"`
-	Time       string `short:"t" help:"The time format to use (kitchen, layout, ansic, rfc822, etc...)" default:""`
+	Time       string `short:"t" help:"The time format to use (kitchen, layout, ansic, rfc822, etc...)" default:"" env:"GUM_LOG_TIME"`
 
 	MinLevel string `help:"Minimal level to show" default:"" env:"GUM_LOG_LEVEL"`
 
