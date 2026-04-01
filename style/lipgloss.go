@@ -10,10 +10,10 @@ import (
 // lipgloss.Style.
 func (s Styles) ToLipgloss() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Background(lipgloss.Color(s.Background)).
-		Foreground(lipgloss.Color(s.Foreground)).
-		BorderBackground(lipgloss.Color(s.BorderBackground)).
-		BorderForeground(lipgloss.Color(s.BorderForeground)).
+		Background(lipgloss.Color(ResolveColor(s.Background))).
+		Foreground(lipgloss.Color(ResolveColor(s.Foreground))).
+		BorderBackground(lipgloss.Color(ResolveColor(s.BorderBackground))).
+		BorderForeground(lipgloss.Color(ResolveColor(s.BorderForeground))).
 		Align(decode.Align[s.Align]).
 		Border(Border[s.Border]).
 		Height(s.Height).
@@ -31,10 +31,10 @@ func (s Styles) ToLipgloss() lipgloss.Style {
 // lipgloss.Style.
 func (s StylesNotHidden) ToLipgloss() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Background(lipgloss.Color(s.Background)).
-		Foreground(lipgloss.Color(s.Foreground)).
-		BorderBackground(lipgloss.Color(s.BorderBackground)).
-		BorderForeground(lipgloss.Color(s.BorderForeground)).
+		Background(lipgloss.Color(ResolveColor(s.Background))).
+		Foreground(lipgloss.Color(ResolveColor(s.Foreground))).
+		BorderBackground(lipgloss.Color(ResolveColor(s.BorderBackground))).
+		BorderForeground(lipgloss.Color(ResolveColor(s.BorderForeground))).
 		Align(decode.Align[s.Align]).
 		Border(Border[s.Border]).
 		Height(s.Height).
