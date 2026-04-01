@@ -40,11 +40,11 @@ func (k keymap) ShortHelp() []key.Binding {
 	}
 }
 
-func defaultKeymap() keymap {
+func newKeymap(submitKey, newlineKey, editorKey string) keymap {
 	km := textarea.DefaultKeyMap
 	km.InsertNewline = key.NewBinding(
-		key.WithKeys("ctrl+j"),
-		key.WithHelp("ctrl+j", "insert newline"),
+		key.WithKeys(newlineKey),
+		key.WithHelp(newlineKey, "insert newline"),
 	)
 	return keymap{
 		KeyMap: km,
@@ -57,14 +57,18 @@ func defaultKeymap() keymap {
 			key.WithHelp("ctrl+c", "cancel"),
 		),
 		OpenInEditor: key.NewBinding(
-			key.WithKeys("ctrl+e"),
-			key.WithHelp("ctrl+e", "open editor"),
+			key.WithKeys(editorKey),
+			key.WithHelp(editorKey, "open editor"),
 		),
 		Submit: key.NewBinding(
-			key.WithKeys("enter"),
-			key.WithHelp("enter", "submit"),
+			key.WithKeys(submitKey),
+			key.WithHelp(submitKey, "submit"),
 		),
 	}
+}
+
+func defaultKeymap() keymap {
+	return newKeymap("enter", "ctrl+j", "ctrl+e")
 }
 
 type model struct {

@@ -52,6 +52,7 @@ func (o Options) Run() error {
 	a.SetHeight(max(0, o.Height-top-bottom))
 	a.SetValue(o.Value)
 
+	km := newKeymap(o.SubmitKey, o.NewlineKey, o.OpenEditorKey)
 	m := model{
 		textarea:    a,
 		header:      o.Header,
@@ -59,7 +60,7 @@ func (o Options) Run() error {
 		autoWidth:   o.Width < 1,
 		help:        help.New(),
 		showHelp:    o.ShowHelp,
-		keymap:      defaultKeymap(),
+		keymap:      km,
 		padding:     []int{top, right, bottom, left},
 	}
 
