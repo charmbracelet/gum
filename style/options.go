@@ -4,6 +4,7 @@ package style
 type Options struct {
 	Text      []string        `arg:"" optional:"" help:"Text to which to apply the style"`
 	Trim      bool            `help:"Trim whitespaces on every input line" default:"false"`
+	AutoWrap  bool            `help:"Auto-wrap text to fit terminal width" default:"false" env:"GUM_STYLE_AUTO_WRAP"`
 	StripANSI bool            `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_STYLE_STRIP_ANSI"`
 	Style     StylesNotHidden `embed:""`
 }
