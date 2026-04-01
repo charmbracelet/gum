@@ -3,6 +3,7 @@ package pager
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -47,7 +48,7 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
-	_, err := tea.NewProgram(
+	tm, err := tea.NewProgram(
 		m,
 		tea.WithAltScreen(),
 		tea.WithReportFocus(),
@@ -55,6 +56,17 @@ func (o Options) Run() error {
 	).Run()
 	if err != nil {
 		return fmt.Errorf("unable to start program: %w", err)
+	}
+
+	if o.OutputLineNumbers {
+		m = tm.(model)
+		topLine := m.viewport.YOffset + 1
+		bottomLine := topLine + m.viewport.Height - 1
+		totalLines := len(strings.Split(m.origContent, "\n"))
+		if bottomLine > totalLines {
+			bottomLine = totalLines
+		}
+		fmt.Printf("%d:%d\n", topLine, bottomLine)
 	}
 
 	return nil

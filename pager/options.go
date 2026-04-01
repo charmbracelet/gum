@@ -16,6 +16,7 @@ type Options struct {
 	SoftWrap            bool          `help:"Soft wrap lines" default:"true" negatable:""`
 	MatchStyle          style.Styles  `embed:"" prefix:"match." help:"Style the matched text" set:"defaultForeground=212" set:"defaultBold=true" envprefix:"GUM_PAGER_MATCH_"`                                                      //nolint:staticcheck
 	MatchHighlightStyle style.Styles  `embed:"" prefix:"match-highlight." help:"Style the matched highlight text" set:"defaultForeground=235" set:"defaultBackground=225" set:"defaultBold=true" envprefix:"GUM_PAGER_MATCH_HIGH_"` //nolint:staticcheck
+	OutputLineNumbers   bool          `help:"Output the current line number on exit" default:"false" env:"GUM_PAGER_OUTPUT_LINE_NUMBERS"`
 	Timeout             time.Duration `help:"Timeout until command exits" default:"0s" env:"GUM_PAGER_TIMEOUT"`
 
 	// Deprecated: this has no effect anymore.
