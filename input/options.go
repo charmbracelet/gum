@@ -22,6 +22,8 @@ type Options struct {
 	Header           string        `help:"Header value" default:"" env:"GUM_INPUT_HEADER"`
 	HeaderStyle      style.Styles  `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_INPUT_HEADER_"`
 	Timeout          time.Duration `help:"Timeout until input aborts" default:"0s" env:"GUM_INPUT_TIMEOUT"`
+	ValidateRegex    string        `help:"Regex pattern to validate input before submission" default:"" env:"GUM_INPUT_VALIDATE_REGEX"`
+	ValidateMessage  string        `help:"Message to show when validation fails" default:"Invalid input" env:"GUM_INPUT_VALIDATE_MESSAGE"`
 	StripANSI        bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_INPUT_STRIP_ANSI"`
 	Padding          string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_INPUT_PADDING"`
 }

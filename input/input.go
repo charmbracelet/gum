@@ -8,6 +8,8 @@
 package input
 
 import (
+	"regexp"
+
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -36,16 +38,19 @@ func (k keymap) ShortHelp() []key.Binding {
 }
 
 type model struct {
-	autoWidth   bool
-	header      string
-	padding     []int
-	headerStyle lipgloss.Style
-	textinput   textinput.Model
-	quitting    bool
-	submitted   bool
-	showHelp    bool
-	help        help.Model
-	keymap      keymap
+	autoWidth       bool
+	header          string
+	padding         []int
+	headerStyle     lipgloss.Style
+	textinput       textinput.Model
+	quitting        bool
+	submitted       bool
+	showHelp        bool
+	help            help.Model
+	keymap          keymap
+	validateRegex   *regexp.Regexp
+	validateMessage string
+	validationError string
 }
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
@@ -60,6 +65,10 @@ func (m model) View() string {
 	}
 
 	parts = append(parts, m.textinput.View())
+	if m.validationError != "" {
+		errStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("196"))
+		parts = append(parts, errStyle.Render("  "+m.validationError))
+	}
 	if m.showHelp {
 		parts = append(parts, "", m.help.View(m.keymap))
 	}
@@ -88,9 +97,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case "enter":
+			if m.validateRegex != nil && !m.validateRegex.MatchString(m.textinput.Value()) {
+				m.validationError = m.validateMessage
+				return m, nil
+			}
 			m.quitting = true
 			m.submitted = true
 			return m, tea.Quit
+		default:
+			m.validationError = ""
 		}
 	}
 

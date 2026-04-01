@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -45,15 +46,27 @@ func (o Options) Run() error {
 	}
 
 	top, right, bottom, left := style.ParsePadding(o.Padding)
+
+	var validateRe *regexp.Regexp
+	if o.ValidateRegex != "" {
+		var err error
+		validateRe, err = regexp.Compile(o.ValidateRegex)
+		if err != nil {
+			return fmt.Errorf("invalid validation regex: %w", err)
+		}
+	}
+
 	m := model{
-		textinput:   i,
-		header:      o.Header,
-		headerStyle: o.HeaderStyle.ToLipgloss(),
-		padding:     []int{top, right, bottom, left},
-		autoWidth:   o.Width < 1,
-		showHelp:    o.ShowHelp,
-		help:        help.New(),
-		keymap:      defaultKeymap(),
+		textinput:       i,
+		header:          o.Header,
+		headerStyle:     o.HeaderStyle.ToLipgloss(),
+		padding:         []int{top, right, bottom, left},
+		autoWidth:       o.Width < 1,
+		showHelp:        o.ShowHelp,
+		help:            help.New(),
+		keymap:          defaultKeymap(),
+		validateRegex:   validateRe,
+		validateMessage: o.ValidateMessage,
 	}
 
 	ctx, cancel := timeout.Context(o.Timeout)
