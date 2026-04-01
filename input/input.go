@@ -8,6 +8,8 @@
 package input
 
 import (
+	"strings"
+
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -44,6 +46,7 @@ type model struct {
 	quitting    bool
 	submitted   bool
 	showHelp    bool
+	required    bool
 	help        help.Model
 	keymap      keymap
 }
@@ -88,6 +91,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case "enter":
+			if m.required && strings.TrimSpace(m.textinput.Value()) == "" {
+				return m, nil
+			}
 			m.quitting = true
 			m.submitted = true
 			return m, tea.Quit

@@ -52,6 +52,7 @@ func (o Options) Run() error {
 		padding:     []int{top, right, bottom, left},
 		autoWidth:   o.Width < 1,
 		showHelp:    o.ShowHelp,
+		required:    o.Required,
 		help:        help.New(),
 		keymap:      defaultKeymap(),
 	}
