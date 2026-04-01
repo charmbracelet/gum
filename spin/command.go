@@ -70,11 +70,16 @@ func (o Options) Run() error {
 				return fmt.Errorf("failed to write to stdout: %w", err)
 			}
 		}
-	} else if o.ShowError {
-		// Otherwise if we are showing errors and the command did not exit with a 0 status code then push all of the command
-		// output to the terminal. This way failed commands can be debugged.
-		if _, err := os.Stdout.WriteString(m.output); err != nil {
-			return fmt.Errorf("failed to write to stdout: %w", err)
+	} else {
+		// Command exited with non-zero status. Show output based on flags.
+		if o.ShowError || o.ShowOutput {
+			if _, err := os.Stdout.WriteString(m.output); err != nil {
+				return fmt.Errorf("failed to write to stdout: %w", err)
+			}
+		} else if o.ShowStderr && m.stderr != "" {
+			if _, err := os.Stderr.WriteString(m.stderr); err != nil {
+				return fmt.Errorf("failed to write to stderr: %w", err)
+			}
 		}
 	}
 
