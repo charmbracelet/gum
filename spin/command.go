@@ -30,6 +30,7 @@ func (o Options) Run() error {
 		showStdout: (o.ShowOutput || o.ShowStdout) && isOutTTY,
 		showStderr: (o.ShowOutput || o.ShowStderr) && isErrTTY,
 		showError:  o.ShowError,
+		pinBottom:  o.PinBottom,
 		isTTY:      isErrTTY,
 		padding:    []int{top, right, bottom, left},
 	}

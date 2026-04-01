@@ -45,6 +45,7 @@ type model struct {
 	showStdout bool
 	showStderr bool
 	showError  bool
+	pinBottom  bool
 	err        error
 }
 
@@ -168,6 +169,12 @@ func (m model) View() string {
 		header = m.spinner.View() + " " + m.title
 	} else {
 		header = m.title + " " + m.spinner.View()
+	}
+
+	if m.pinBottom && out != "" {
+		return lipgloss.NewStyle().
+			Padding(m.padding...).
+			Render(out, "", header)
 	}
 	return lipgloss.NewStyle().
 		Padding(m.padding...).
