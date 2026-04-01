@@ -29,12 +29,27 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
+	// Filter out empty extra options
+	var extra []string
+	for _, e := range o.Extra {
+		if e != "" {
+			extra = append(extra, e)
+		}
+	}
+
+	defaultSelected := 0
+	if !o.Default {
+		defaultSelected = 1
+	}
+
 	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		affirmative:      o.Affirmative,
 		negative:         o.Negative,
+		extra:            extra,
 		showOutput:       o.ShowOutput,
 		confirmation:     o.Default,
+		selected:         defaultSelected,
 		defaultSelection: o.Default,
 		keys:             defaultKeymap(o.Affirmative, o.Negative),
 		help:             help.New(),
@@ -56,16 +71,29 @@ func (o Options) Run() error {
 	m = tm.(model)
 
 	if o.ShowOutput {
-		confirmationText := m.negative
-		if m.confirmation {
+		var confirmationText string
+		switch {
+		case m.selected == 0:
 			confirmationText = m.affirmative
+		case m.selected == 1 && m.negative != "":
+			confirmationText = m.negative
+		default:
+			baseIdx := 1
+			if m.negative != "" {
+				baseIdx = 2
+			}
+			extraIdx := m.selected - baseIdx
+			if extraIdx >= 0 && extraIdx < len(extra) {
+				confirmationText = extra[extraIdx]
+			}
 		}
 		fmt.Println(m.prompt, confirmationText)
 	}
 
-	if m.confirmation {
+	// Exit code: 0 = affirmative, 1 = negative, 2+ = extra options
+	if m.selected == 0 {
 		return nil
 	}
 
-	return exit.ErrExit(1)
+	return exit.ErrExit(m.selected)
 }

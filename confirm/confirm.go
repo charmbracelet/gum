@@ -77,6 +77,7 @@ type model struct {
 	prompt      string
 	affirmative string
 	negative    string
+	extra       []string
 	quitting    bool
 	showHelp    bool
 	help        help.Model
@@ -84,6 +85,7 @@ type model struct {
 
 	showOutput   bool
 	confirmation bool
+	selected     int // 0 = affirmative, 1 = negative, 2+ = extra options
 
 	defaultSelection bool
 
@@ -95,6 +97,15 @@ type model struct {
 }
 
 func (m model) Init() tea.Cmd { return nil }
+
+func (m model) totalOptions() int {
+	n := 1 // affirmative
+	if m.negative != "" {
+		n++
+	}
+	n += len(m.extra)
+	return n
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -110,21 +121,33 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.Negative):
-			m.confirmation = false
-			m.quitting = true
-			return m, tea.Quit
+			if len(m.extra) == 0 {
+				m.confirmation = false
+				m.selected = 1
+				m.quitting = true
+				return m, tea.Quit
+			}
+			// When extra options exist, n/N just toggles like other keys
+			m.confirmation = !m.confirmation
 		case key.Matches(msg, m.keys.Toggle):
-			if m.negative == "" {
+			if m.negative == "" && len(m.extra) == 0 {
 				break
 			}
-			m.confirmation = !m.confirmation
+			total := m.totalOptions()
+			m.selected = (m.selected + 1) % total
+			m.confirmation = m.selected == 0
 		case key.Matches(msg, m.keys.Submit):
 			m.quitting = true
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.Affirmative):
-			m.quitting = true
-			m.confirmation = true
-			return m, tea.Quit
+			if len(m.extra) == 0 {
+				m.quitting = true
+				m.confirmation = true
+				m.selected = 0
+				return m, tea.Quit
+			}
+			// When extra options exist, y/Y just toggles
+			m.confirmation = !m.confirmation
 		}
 	}
 	return m, nil
@@ -135,24 +158,41 @@ func (m model) View() string {
 		return ""
 	}
 
-	var aff, neg string
+	// Build the list of all options with their rendered styles.
+	var options []string
 
-	if m.confirmation {
-		aff = m.selectedStyle.Render(m.affirmative)
-		neg = m.unselectedStyle.Render(m.negative)
+	// Affirmative (index 0)
+	if m.selected == 0 {
+		options = append(options, m.selectedStyle.Render(m.affirmative))
 	} else {
-		aff = m.unselectedStyle.Render(m.affirmative)
-		neg = m.selectedStyle.Render(m.negative)
+		options = append(options, m.unselectedStyle.Render(m.affirmative))
 	}
 
-	// If the option is intentionally empty, do not show it.
-	if m.negative == "" {
-		neg = ""
+	// Negative (index 1, if not empty)
+	if m.negative != "" {
+		if m.selected == 1 {
+			options = append(options, m.selectedStyle.Render(m.negative))
+		} else {
+			options = append(options, m.unselectedStyle.Render(m.negative))
+		}
+	}
+
+	// Extra options (index 2+)
+	baseIdx := 1
+	if m.negative != "" {
+		baseIdx = 2
+	}
+	for i, extra := range m.extra {
+		if m.selected == baseIdx+i {
+			options = append(options, m.selectedStyle.Render(extra))
+		} else {
+			options = append(options, m.unselectedStyle.Render(extra))
+		}
 	}
 
 	parts := []string{
 		m.promptStyle.Render(m.prompt) + "\n",
-		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
+		lipgloss.JoinHorizontal(lipgloss.Left, options...),
 	}
 
 	if m.showHelp {
