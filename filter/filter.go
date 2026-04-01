@@ -305,6 +305,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
 			m.submitted = true
+			// When limit=1, always use the cursor item regardless of
+			// pre-selected items, so the user can change their selection.
+			if m.limit == 1 && len(m.matches) > 0 && m.cursor < len(m.matches) {
+				m.selected = map[string]struct{}{m.matches[m.cursor].Str: {}}
+			}
 			return m, tea.Quit
 		case key.Matches(msg, km.Down, km.NDown):
 			m.CursorDown()
