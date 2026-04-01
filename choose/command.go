@@ -144,6 +144,7 @@ func (o Options) Run() error {
 		itemStyle:         o.ItemStyle.ToLipgloss(),
 		selectedItemStyle: o.SelectedItemStyle.ToLipgloss(),
 		numSelected:       currentSelected,
+		autoSelect:        o.AutoSelect,
 		showHelp:          o.ShowHelp,
 		help:              help.New(),
 		keymap:            km,

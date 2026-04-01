@@ -107,6 +107,7 @@ type model struct {
 	items            []item
 	quitting         bool
 	submitted        bool
+	autoSelect       bool
 	index            int
 	limit            int
 	numSelected      int
@@ -201,7 +202,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
-			if m.limit <= 1 && m.numSelected < 1 {
+			if m.numSelected < 1 && (m.limit <= 1 || m.autoSelect) {
 				m.items[m.index].selected = true
 			}
 			m.submitted = true
