@@ -16,6 +16,7 @@ type Options struct {
 	ShowCursorLine  bool          `help:"Show cursor line" default:"false" env:"GUM_WRITE_SHOW_CURSOR_LINE"`
 	ShowLineNumbers bool          `help:"Show line numbers" default:"false" env:"GUM_WRITE_SHOW_LINE_NUMBERS"`
 	Value           string        `help:"Initial value (can be passed via stdin)" default:"" env:"GUM_WRITE_VALUE"`
+	CursorStart     bool          `help:"Place cursor at the beginning of the initial value" default:"false" env:"GUM_WRITE_CURSOR_START"`
 	CharLimit       int           `help:"Maximum value length (0 for no limit)" default:"0"`
 	MaxLines        int           `help:"Maximum number of lines (0 for no limit)" default:"0"`
 	ShowHelp        bool          `help:"Show help key binds" negatable:"" default:"true" env:"GUM_WRITE_SHOW_HELP"`

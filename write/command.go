@@ -51,6 +51,9 @@ func (o Options) Run() error {
 	a.SetWidth(max(0, o.Width-left-right))
 	a.SetHeight(max(0, o.Height-top-bottom))
 	a.SetValue(o.Value)
+	if o.CursorStart && o.Value != "" {
+		a.SetCursor(0)
+	}
 
 	m := model{
 		textarea:    a,
