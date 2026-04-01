@@ -23,5 +23,6 @@ type Options struct {
 	HeaderStyle      style.Styles  `embed:"" prefix:"header." set:"defaultForeground=240" envprefix:"GUM_INPUT_HEADER_"`
 	Timeout          time.Duration `help:"Timeout until input aborts" default:"0s" env:"GUM_INPUT_TIMEOUT"`
 	StripANSI        bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_INPUT_STRIP_ANSI"`
+	NonInteractive   bool          `help:"Output --value without interactive prompt when stderr is not a TTY" default:"false" env:"GUM_NON_INTERACTIVE"`
 	Padding          string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_INPUT_PADDING"`
 }

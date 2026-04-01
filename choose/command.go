@@ -61,6 +61,12 @@ func (o Options) Run() error {
 		return nil
 	}
 
+	// In non-interactive mode, output the first option and exit.
+	if o.NonInteractive && len(o.Options) > 0 {
+		fmt.Println(options[o.Options[0]])
+		return nil
+	}
+
 	// We don't need to display prefixes if we are only picking one option.
 	// Simply displaying the cursor is enough.
 	if o.Limit == 1 && !o.NoLimit {

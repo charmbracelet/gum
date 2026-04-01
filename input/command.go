@@ -23,6 +23,12 @@ func (o Options) Run() error {
 		}
 	}
 
+	// In non-interactive mode, output the value immediately and exit.
+	if o.NonInteractive {
+		fmt.Println(o.Value)
+		return nil
+	}
+
 	i := textinput.New()
 	if o.Value != "" {
 		i.SetValue(o.Value)

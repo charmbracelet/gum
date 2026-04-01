@@ -26,6 +26,14 @@ func (o Options) Run() error {
 		}
 	}
 
+	// In non-interactive mode, return the default value.
+	if o.NonInteractive {
+		if o.Default {
+			return nil
+		}
+		return exit.ErrExit(1)
+	}
+
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 

@@ -22,6 +22,7 @@ type Options struct {
 	CursorMode      string        `prefix:"cursor." name:"mode" help:"Cursor mode" default:"blink" enum:"blink,hide,static" env:"GUM_WRITE_CURSOR_MODE"`
 	Timeout         time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_WRITE_TIMEOUT"`
 	StripANSI       bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_WRITE_STRIP_ANSI"`
+	NonInteractive  bool          `help:"Output --value without interactive prompt" default:"false" env:"GUM_NON_INTERACTIVE"`
 
 	BaseStyle             style.Styles `embed:"" prefix:"base." envprefix:"GUM_WRITE_BASE_"`
 	CursorLineNumberStyle style.Styles `embed:"" prefix:"cursor-line-number." set:"defaultForeground=7" envprefix:"GUM_WRITE_CURSOR_LINE_NUMBER_"`

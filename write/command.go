@@ -23,6 +23,12 @@ func (o Options) Run() error {
 		o.Value = strings.ReplaceAll(in, "\r", "")
 	}
 
+	// In non-interactive mode, output the value immediately and exit.
+	if o.NonInteractive {
+		fmt.Println(o.Value)
+		return nil
+	}
+
 	a := textarea.New()
 	a.Focus()
 
