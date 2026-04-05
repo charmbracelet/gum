@@ -16,6 +16,7 @@ import (
 	"github.com/charmbracelet/gum/internal/tty"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/x/term"
 )
 
 // Run provides a shell script interface for choosing between different through
@@ -108,6 +109,9 @@ func (o Options) Run() error {
 
 	if o.Height <= 0 {
 		o.Height = len(items)
+		if _, termHeight, err := term.GetSize(os.Stdout.Fd()); err == nil && termHeight > 0 && o.Height > termHeight {
+			o.Height = termHeight
+		}
 	}
 
 	// Use the pagination model to display the current and total number of
