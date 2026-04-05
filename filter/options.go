@@ -42,6 +42,7 @@ type Options struct {
 	OutputDelimiter       string        `help:"Option delimiter when writing to STDOUT" default:"\n" env:"GUM_FILTER_OUTPUT_DELIMITER"`
 	StripANSI             bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_FILTER_STRIP_ANSI"`
 	Padding               string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_FILTER_PADDING"`
+	OutputIndexes         bool          `help:"Output 0-based indexes of selected items instead of values" default:"false" env:"GUM_FILTER_OUTPUT_INDEXES"`
 
 	// Deprecated: use [FuzzySort]. This will be removed at some point.
 	Sort bool `help:"Sort fuzzy results by their scores" default:"true" env:"GUM_FILTER_FUZZY_SORT" negatable:"" hidden:""`

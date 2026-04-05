@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -84,7 +85,14 @@ func (o Options) Run() error {
 	}
 
 	if o.SelectIfOne && len(matches) == 1 {
-		tty.Println(matches[0].Str)
+		if o.OutputIndexes {
+			idx := o.findIndex(matches[0].Str, filteringChoices)
+			if idx >= 0 {
+				tty.Println(strconv.Itoa(idx))
+			}
+		} else {
+			tty.Println(matches[0].Str)
+		}
 		return nil
 	}
 
@@ -157,18 +165,47 @@ func (o Options) Run() error {
 	// than 1 or if flag --no-limit is passed, hence there is
 	// no need to further checks
 	if len(m.selected) > 0 {
-		o.checkSelected(m)
+		o.checkSelected(m, filteringChoices)
 	} else if len(m.matches) > m.cursor && m.cursor >= 0 {
-		tty.Println(m.matches[m.cursor].Str)
+		if o.OutputIndexes {
+			idx := o.findIndex(m.matches[m.cursor].Str, filteringChoices)
+			if idx >= 0 {
+				tty.Println(strconv.Itoa(idx))
+			}
+		} else {
+			tty.Println(m.matches[m.cursor].Str)
+		}
 	}
 
 	return nil
 }
 
-func (o Options) checkSelected(m model) {
-	out := []string{}
-	for k := range m.selected {
-		out = append(out, k)
+func (o Options) checkSelected(m model, filteringChoices []string) {
+	if o.OutputIndexes {
+		// For each selected item, find all indexes in filteringChoices (handles duplicates)
+		indexes := make([]string, 0, len(m.selected))
+		for k := range m.selected {
+			for i, choice := range filteringChoices {
+				if choice == k {
+					indexes = append(indexes, strconv.Itoa(i))
+				}
+			}
+		}
+		tty.Println(strings.Join(indexes, o.OutputDelimiter))
+	} else {
+		out := []string{}
+		for k := range m.selected {
+			out = append(out, k)
+		}
+		tty.Println(strings.Join(out, o.OutputDelimiter))
 	}
-	tty.Println(strings.Join(out, o.OutputDelimiter))
+}
+
+func (o Options) findIndex(value string, choices []string) int {
+	for i, choice := range choices {
+		if choice == value {
+			return i
+		}
+	}
+	return -1 // Value not found in choices
 }
