@@ -106,6 +106,10 @@ func (o Options) Run() error {
 		items[i] = item{text: option, selected: isSelected, order: order}
 	}
 
+	if o.Height <= 0 {
+		o.Height = len(items)
+	}
+
 	// Use the pagination model to display the current and total number of
 	// pages.
 	top, right, bottom, left := style.ParsePadding(o.Padding)
