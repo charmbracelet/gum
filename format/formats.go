@@ -1,3 +1,4 @@
+//nolint
 package format
 
 import (

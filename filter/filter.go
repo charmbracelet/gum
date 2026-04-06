@@ -489,7 +489,7 @@ func exactMatches(search string, choices []string) []fuzzy.Match {
 
 		index := strings.Index(matchedString, search)
 		if index >= 0 {
-			matchedIndexes := []int{}
+			matchedIndexes := make([]int, 0, len(search))
 			for s := range search {
 				matchedIndexes = append(matchedIndexes, index+s)
 			}

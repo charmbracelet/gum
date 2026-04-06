@@ -33,13 +33,13 @@ func (z Zsh) writeFlag(buf io.StringWriter, f *kong.Flag) {
 	str.WriteString("        ")
 	if f.Short != 0 {
 		str.WriteString("'(")
-		str.WriteString(fmt.Sprintf("-%c --%s", f.Short, f.Name))
+		fmt.Fprintf(&str, "-%c --%s", f.Short, f.Name)
 		if !f.IsBool() {
 			str.WriteString("=")
 		}
 		str.WriteString(")'")
 		str.WriteString("{")
-		str.WriteString(fmt.Sprintf("-%c,--%s", f.Short, f.Name))
+		fmt.Fprintf(&str, "-%c,--%s", f.Short, f.Name)
 		if !f.IsBool() {
 			str.WriteString("=")
 		}
@@ -47,12 +47,12 @@ func (z Zsh) writeFlag(buf io.StringWriter, f *kong.Flag) {
 		str.WriteString("\"")
 	} else {
 		str.WriteString("\"")
-		str.WriteString(fmt.Sprintf("--%s", f.Name))
+		fmt.Fprintf(&str, "--%s", f.Name)
 		if !f.IsBool() {
 			str.WriteString("=")
 		}
 	}
-	str.WriteString(fmt.Sprintf("[%s]", f.Help))
+	fmt.Fprintf(&str, "[%s]", f.Help)
 	if !f.IsBool() {
 		str.WriteString(":")
 		str.WriteString(strings.ToLower(f.Help))
