@@ -2,9 +2,9 @@
 
 # Choose
 gum choose Foo Bar Baz
-gum choose Choose One Item --cursor "* " --cursor.foreground 99 --selected.foreground 99
-gum choose Pick Two Items Maximum --limit 2 --cursor "* " --cursor-prefix "(•) " --selected-prefix "(x) " --unselected-prefix "( ) " --cursor.foreground 99 --selected.foreground 99
-gum choose Unlimited Choice Of Items --no-limit --cursor "* " --cursor-prefix "(•) " --selected-prefix "(x) " --unselected-prefix "( ) " --cursor.foreground 99 --selected.foreground 99
+gum choose Choose One Item --cursor "* " --cursor.foreground 99 --selected-item.foreground 99
+gum choose Pick Two Items Maximum --limit 2 --cursor "* " --cursor-prefix "(•) " --selected-prefix "(x) " --unselected-prefix "( ) " --cursor.foreground 99 --selected-item.foreground 99
+gum choose Unlimited Choice Of Items --no-limit --cursor "* " --cursor-prefix "(•) " --selected-prefix "(x) " --unselected-prefix "( ) " --cursor.foreground 99 --selected-item.foreground 99
 
 # Confirm
 gum confirm "Testing?"
