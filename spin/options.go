@@ -8,7 +8,7 @@ import (
 
 // Options is the customization options for the spin command.
 type Options struct {
-	Command []string `arg:"" help:"Command to run"`
+	Command []string `arg:"" passthrough:"" help:"Command to run"`
 
 	ShowOutput   bool          `help:"Show or pipe output of command during execution (shows both STDOUT and STDERR)" default:"false" env:"GUM_SPIN_SHOW_OUTPUT"`
 	ShowError    bool          `help:"Show output of command only if the command fails" default:"false" env:"GUM_SPIN_SHOW_ERROR"`
