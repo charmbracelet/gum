@@ -2,6 +2,7 @@ package spin
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/charmbracelet/bubbles/spinner"
@@ -37,9 +38,14 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
+	teaOutput := io.Writer(os.Stderr)
+	if !isErrTTY {
+		teaOutput = io.Discard
+	}
+
 	tm, err := tea.NewProgram(
 		m,
-		tea.WithOutput(os.Stderr),
+		tea.WithOutput(teaOutput),
 		tea.WithContext(ctx),
 		tea.WithInput(nil),
 	).Run()
