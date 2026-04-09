@@ -57,3 +57,20 @@ func TestByteToChar(t *testing.T) {
 		t.Errorf("expected %+q, got %+q", expect, got)
 	}
 }
+
+func TestToggleSelectionWithNoMatches(t *testing.T) {
+	m := model{
+		selected: make(map[string]struct{}),
+		limit:    2,
+	}
+
+	m.ToggleSelection()
+
+	if len(m.selected) != 0 {
+		t.Fatalf("expected no selected items, got %d", len(m.selected))
+	}
+
+	if m.numSelected != 0 {
+		t.Fatalf("expected no selected count, got %d", m.numSelected)
+	}
+}

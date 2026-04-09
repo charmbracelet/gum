@@ -444,6 +444,10 @@ func (m *model) CursorDown() {
 }
 
 func (m *model) ToggleSelection() {
+	if len(m.matches) == 0 || m.cursor < 0 || m.cursor >= len(m.matches) {
+		return
+	}
+
 	if _, ok := m.selected[m.matches[m.cursor].Str]; ok {
 		delete(m.selected, m.matches[m.cursor].Str)
 		m.numSelected--
