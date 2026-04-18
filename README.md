@@ -370,13 +370,13 @@ named emojis see the [GitHub API](https://api.github.com/emojis).
 
 ## Log
 
-`log` logs messages to the terminal at using different levels and styling using
+`log` logs messages to the terminal using different levels and styling using
 the [`charmbracelet/log`](https://github.com/charmbracelet/log) library.
 
 ```bash
 # Log some debug information.
 gum log --structured --level debug "Creating file..." name file.txt
-# DEBUG Unable to create file. name=temp.txt
+# DEBUG Creating file... name=file.txt
 
 # Log some error.
 gum log --structured --level error "Unable to create file." name file.txt
