@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
+
+version: 2
+
+includes:
+  - from_url:
+      url: charmbracelet/meta/main/goreleaser-full.yaml
+
+variables:
+  main: "."
+  scoop_name: charm-gum
+  description: "A tool for glamorous shell scripts"
+  github_url: "https://github.com/charmbracelet/gum"
+  maintainer: "Maas Lalani <maas@charm.sh>"
+  brew_commit_author_name: "Maas Lalani"
+  brew_commit_author_email: "maas@charm.sh"
+
+milestones:
+  - close: true
