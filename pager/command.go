@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 )
@@ -28,6 +29,19 @@ func (o Options) Run() error {
 			o.Content = backspace.ReplaceAllString(stdin, "")
 		} else {
 			return fmt.Errorf("provide some content to display")
+		}
+	}
+
+	if o.SyntaxHighlight != "" {
+		switch {
+		case o.SyntaxHighlight == "markdown":
+			renderedContent, err := glamour.Render(o.Content, "dark")
+			if err != nil {
+				return fmt.Errorf("unable to render: %w", err)
+			}
+			o.Content = renderedContent
+		default:
+			return fmt.Errorf("syntax-highlight language: markdown")
 		}
 	}
 
