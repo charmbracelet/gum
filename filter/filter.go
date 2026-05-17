@@ -171,7 +171,10 @@ func (m model) View() string {
 	// height, we need to offset the matches so that the first match is at the
 	// bottom edge of the viewport instead of in the middle.
 	if m.reverse && len(m.matches) < m.viewport.Height {
-		s.WriteString(strings.Repeat("\n", m.viewport.Height-len(m.matches)))
+		pad := m.viewport.Height - len(m.matches)
+		if pad > 0 {
+			s.WriteString(strings.Repeat("\n", pad))
+		}
 	}
 
 	// Since there are matches, display them so that the user can see, in real
@@ -286,8 +289,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.viewport.Height = m.viewport.Height - m.padding[0] - m.padding[2]
 		m.viewport.Width = msg.Width - m.padding[1] - m.padding[3]
 		m.textinput.Width = msg.Width - m.padding[1] - m.padding[3]
-		if m.reverse {
-			m.viewport.YOffset = ordered.Clamp(len(m.matches)-m.viewport.Height, 0, len(m.matches))
+		m.normalizeViewport()
+		if m.reverse && len(m.matches) > 0 {
+			m.viewport.YOffset = max(0, len(m.matches)-m.viewport.Height)
 		}
 	case tea.KeyMsg:
 		km := m.keymap
@@ -314,7 +318,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.cursor = 0
 			m.viewport.GotoTop()
 		case key.Matches(msg, km.End):
-			m.cursor = len(m.choices) - 1
+			if len(m.matches) > 0 {
+				m.cursor = len(m.matches) - 1
+			}
 			m.viewport.GotoBottom()
 		case key.Matches(msg, km.ToggleAndNext):
 			if m.limit == 1 {
@@ -397,25 +403,41 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmd, icmd)
 }
 
+func (m *model) normalizeViewport() {
+	if m.viewport.Height < 0 {
+		m.viewport.Height = 0
+	}
+	if m.viewport.Width < 0 {
+		m.viewport.Width = 0
+	}
+	if len(m.matches) == 0 {
+		m.viewport.YOffset = 0
+		return
+	}
+	maxYOffset := max(0, len(m.matches)-m.viewport.Height)
+	m.viewport.YOffset = ordered.Clamp(m.viewport.YOffset, 0, maxYOffset)
+}
+
 func (m *model) CursorUp() {
 	if len(m.matches) == 0 {
 		return
 	}
+	viewportHeight := max(0, m.viewport.Height)
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor + 1) % len(m.matches)
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
 			m.viewport.ScrollUp(1)
 		}
-		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
-			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
+		if len(m.matches)-m.cursor > viewportHeight+m.viewport.YOffset {
+			m.viewport.SetYOffset(len(m.matches) - viewportHeight)
 		}
 	} else {
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
 		if m.cursor < m.viewport.YOffset {
 			m.viewport.ScrollUp(1)
 		}
-		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
-			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
+		if m.cursor >= m.viewport.YOffset+viewportHeight {
+			m.viewport.SetYOffset(len(m.matches) - viewportHeight)
 		}
 	}
 }
@@ -424,9 +446,10 @@ func (m *model) CursorDown() {
 	if len(m.matches) == 0 {
 		return
 	}
+	viewportHeight := max(0, m.viewport.Height)
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
-		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
+		if len(m.matches)-m.cursor > viewportHeight+m.viewport.YOffset {
 			m.viewport.ScrollDown(1)
 		}
 		if len(m.matches)-m.cursor <= m.viewport.YOffset {
@@ -434,7 +457,7 @@ func (m *model) CursorDown() {
 		}
 	} else {
 		m.cursor = (m.cursor + 1) % len(m.matches)
-		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
+		if m.cursor >= m.viewport.YOffset+viewportHeight {
 			m.viewport.ScrollDown(1)
 		}
 		if m.cursor < m.viewport.YOffset {
