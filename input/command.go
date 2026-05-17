@@ -45,11 +45,15 @@ func (o Options) Run() error {
 	}
 
 	top, right, bottom, left := style.ParsePadding(o.Padding)
+	padding := []int{top, right, bottom, left}
+	if o.Width < 1 {
+		applyTerminalWidth(&i, padding)
+	}
 	m := model{
 		textinput:   i,
 		header:      o.Header,
 		headerStyle: o.HeaderStyle.ToLipgloss(),
-		padding:     []int{top, right, bottom, left},
+		padding:     padding,
 		autoWidth:   o.Width < 1,
 		showHelp:    o.ShowHelp,
 		help:        help.New(),
