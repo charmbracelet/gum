@@ -79,6 +79,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				lipgloss.Width(m.textinput.Prompt) -
 				m.padding[1] - m.padding[3]
 		}
+	return m, tea.ClearScreen
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
