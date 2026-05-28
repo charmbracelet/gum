@@ -181,7 +181,11 @@ func runPreview(cmd, item string, seq int) tea.Cmd {
 }
 
 func (m model) Init() tea.Cmd {
-	return tea.Batch(textinput.Blink, m.maybePreview())
+	cmds := []tea.Cmd{textinput.Blink}
+	if m.previewActive && len(m.matches) > 0 && m.cursor >= 0 && m.cursor < len(m.matches) {
+		cmds = append(cmds, runPreview(m.previewCmd, m.matches[m.cursor].Str, m.previewSeq))
+	}
+	return tea.Batch(cmds...)
 }
 
 func (m model) View() string {
@@ -356,9 +360,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			break
 		}
 		m.previewContent = msg.content
-		if m.previewContent != "" {
-			m.previewViewport.SetContent(m.previewContent)
-		}
 	case tea.KeyMsg:
 		km := m.keymap
 		switch {

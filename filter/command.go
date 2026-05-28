@@ -89,6 +89,7 @@ func (o Options) Run() error {
 	}
 
 	if o.Preview != "" && (o.PreviewWidth < 1 || o.PreviewWidth > 99) {
+		fmt.Fprintf(os.Stderr, "warning: invalid --preview-width %d, using default 50\n", o.PreviewWidth)
 		o.PreviewWidth = 50
 	}
 
@@ -132,6 +133,7 @@ func (o Options) Run() error {
 		previewViewport:       &viewport.Model{},
 		previewWidth:          o.PreviewWidth,
 		previewActive:         o.Preview != "",
+		previewSeq:            1,
 	}
 
 	isSelectAll := len(o.Selected) == 1 && o.Selected[0] == "*"
