@@ -11,6 +11,7 @@
 package filter
 
 import (
+	"os/exec"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -155,9 +156,33 @@ type model struct {
 	help                  help.Model
 	strict                bool
 	submitted             bool
+	previewCmd            string
+	previewViewport       *viewport.Model
+	previewContent        string
+	previewWidth          int
+	previewActive         bool
+	previewSeq            int
 }
 
-func (m model) Init() tea.Cmd { return textinput.Blink }
+type previewMsg struct {
+	seq     int
+	content string
+}
+
+func runPreview(cmd, item string, seq int) tea.Cmd {
+	return func() tea.Msg {
+		c := exec.Command("sh", "-c", strings.ReplaceAll(cmd, "{}", item))
+		out, err := c.CombinedOutput()
+		if err != nil {
+			return previewMsg{seq: seq}
+		}
+		return previewMsg{seq: seq, content: strings.TrimSpace(string(out))}
+	}
+}
+
+func (m model) Init() tea.Cmd {
+	return tea.Batch(textinput.Blink, m.maybePreview())
+}
 
 func (m model) View() string {
 	if m.quitting {
@@ -232,10 +257,20 @@ func (m model) View() string {
 
 	m.viewport.SetContent(s.String())
 
-	// View the input and the filtered choices
+	var body string
+	if m.previewActive {
+		m.previewViewport.SetContent(m.previewContent)
+		body = lipgloss.JoinHorizontal(lipgloss.Top, m.viewport.View(), m.previewViewport.View())
+	} else {
+		body = m.viewport.View()
+	}
+	return m.assembleView(body)
+}
+
+func (m model) assembleView(body string) string {
 	header := m.headerStyle.Render(m.header)
 	if m.reverse {
-		view := m.viewport.View()
+		view := body
 		if m.header != "" {
 			view += "\n" + header
 		}
@@ -248,7 +283,7 @@ func (m model) View() string {
 			Render(view)
 	}
 
-	view := m.textinput.View() + "\n" + m.viewport.View()
+	view := m.textinput.View() + "\n" + body
 	if m.showHelp {
 		view += m.helpView()
 	}
@@ -267,11 +302,37 @@ func (m model) helpView() string {
 	return "\n\n" + m.help.View(m.keymap)
 }
 
+func (m *model) maybePreview() tea.Cmd {
+	if !m.previewActive || len(m.matches) == 0 || m.cursor < 0 || m.cursor >= len(m.matches) {
+		return nil
+	}
+	m.previewSeq++
+	return runPreview(m.previewCmd, m.matches[m.cursor].Str, m.previewSeq)
+}
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd, icmd tea.Cmd
 	m.textinput, icmd = m.textinput.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
+		totalWidth := msg.Width - m.padding[1] - m.padding[3]
+		m.textinput.Width = totalWidth
+		if m.previewActive {
+			filterWidth := totalWidth * (100 - m.previewWidth) / 100
+			previewWidth := totalWidth - filterWidth
+			if filterWidth < 1 {
+				filterWidth = 1
+				previewWidth = totalWidth - 1
+			}
+			if previewWidth < 1 {
+				previewWidth = 1
+				filterWidth = totalWidth - 1
+			}
+			m.viewport.Width = filterWidth
+			m.previewViewport.Width = previewWidth
+		} else {
+			m.viewport.Width = totalWidth
+		}
 		if m.height == 0 || m.height > msg.Height {
 			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
 		}
@@ -284,10 +345,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.helpView())
 		}
 		m.viewport.Height = m.viewport.Height - m.padding[0] - m.padding[2]
-		m.viewport.Width = msg.Width - m.padding[1] - m.padding[3]
-		m.textinput.Width = msg.Width - m.padding[1] - m.padding[3]
+		if m.previewActive {
+			m.previewViewport.Height = m.viewport.Height
+		}
 		if m.reverse {
 			m.viewport.YOffset = ordered.Clamp(len(m.matches)-m.viewport.Height, 0, len(m.matches))
+		}
+	case previewMsg:
+		if msg.seq != m.previewSeq {
+			break
+		}
+		m.previewContent = msg.content
+		if m.previewContent != "" {
+			m.previewViewport.SetContent(m.previewContent)
 		}
 	case tea.KeyMsg:
 		km := m.keymap
@@ -382,6 +452,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.viewport.YOffset = ordered.Clamp(len(m.matches)-yOffsetFromBottom, 0, maxYOffset)
 			}
 		}
+		m.cursor = ordered.Clamp(m.cursor, 0, len(m.matches)-1)
+		cmd = tea.Batch(cmd, m.maybePreview())
 	}
 
 	m.keymap.FocusInSearch.SetEnabled(!m.textinput.Focused())
@@ -391,9 +463,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.keymap.Home.SetEnabled(!m.textinput.Focused())
 	m.keymap.End.SetEnabled(!m.textinput.Focused())
 
-	// It's possible that filtering items have caused fewer matches. So, ensure
-	// that the selected index is within the bounds of the number of matches.
-	m.cursor = ordered.Clamp(m.cursor, 0, len(m.matches)-1)
 	return m, tea.Batch(cmd, icmd)
 }
 

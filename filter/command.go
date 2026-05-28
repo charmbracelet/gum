@@ -88,6 +88,10 @@ func (o Options) Run() error {
 		return nil
 	}
 
+	if o.Preview != "" && (o.PreviewWidth < 1 || o.PreviewWidth > 99) {
+		o.PreviewWidth = 50
+	}
+
 	km := defaultKeymap()
 	if o.NoLimit || o.Limit > 1 {
 		km.Toggle.SetEnabled(true)
@@ -124,6 +128,10 @@ func (o Options) Run() error {
 		showHelp:              o.ShowHelp,
 		keymap:                km,
 		help:                  help.New(),
+		previewCmd:            o.Preview,
+		previewViewport:       &viewport.Model{},
+		previewWidth:          o.PreviewWidth,
+		previewActive:         o.Preview != "",
 	}
 
 	isSelectAll := len(o.Selected) == 1 && o.Selected[0] == "*"
