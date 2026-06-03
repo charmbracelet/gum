@@ -124,6 +124,10 @@ func (o Options) Run() error {
 				return styles.Cell
 			})
 
+		if o.Width > 0 {
+			table = table.Width(o.Width)
+		}
+
 		fmt.Println(table.Render())
 		return nil
 	}
