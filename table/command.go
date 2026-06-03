@@ -116,6 +116,7 @@ func (o Options) Run() error {
 			Rows(data...).
 			BorderStyle(o.BorderStyle.ToLipgloss()).
 			Border(style.Border[o.Border]).
+			BorderRow(o.BorderRow).
 			StyleFunc(func(row, _ int) lipgloss.Style {
 				if row == 0 {
 					return styles.Header
