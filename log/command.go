@@ -108,10 +108,7 @@ func (o Options) Run() error {
 	}
 
 	if len(o.Text) > 1 {
-		args = make([]interface{}, len(o.Text[1:]))
-		for i, arg := range o.Text[1:] {
-			args[i] = arg
-		}
+		args = logArgs(o.Text[1:], o.Structured)
 	}
 
 	logger := map[string]logger{
@@ -137,6 +134,24 @@ func (o Options) Run() error {
 type logger struct {
 	printf func(string, ...interface{})
 	print  func(interface{}, ...interface{})
+}
+
+type structuredKey string
+
+func (k structuredKey) String() string {
+	return string(k)
+}
+
+func logArgs(text []string, structured bool) []interface{} {
+	args := make([]interface{}, len(text))
+	for i, arg := range text {
+		if structured && i%2 == 0 {
+			args[i] = structuredKey(arg)
+			continue
+		}
+		args[i] = arg
+	}
+	return args
 }
 
 var levelToLog = map[string]log.Level{
