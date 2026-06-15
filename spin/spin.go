@@ -67,6 +67,10 @@ type finishCommandMsg struct {
 
 func commandStart(command []string) tea.Cmd {
 	return func() tea.Msg {
+		bothbuf.Reset()
+		outbuf.Reset()
+		errbuf.Reset()
+
 		var args []string
 		if len(command) > 1 {
 			args = command[1:]
@@ -75,17 +79,18 @@ func commandStart(command []string) tea.Cmd {
 		executing = exec.CommandContext(context.Background(), command[0], args...) //nolint:gosec
 		executing.Stdin = os.Stdin
 
-		isTerminal := term.IsTerminal(os.Stdout.Fd())
+		isStdoutTTY := term.IsTerminal(os.Stdout.Fd())
+		isStderrTTY := term.IsTerminal(os.Stderr.Fd())
 
 		// NOTE(@andreynering): We had issues with Git Bash on Windows
 		// when it comes to handling PTYs, so we're falling back to
 		// to redirecting stdout/stderr as usual to avoid issues.
 		//nolint:nestif
-		if isTerminal && runtime.GOOS == "windows" {
+		if runtime.GOOS == "windows" || !isStdoutTTY || !isStderrTTY {
 			executing.Stdout = io.MultiWriter(&bothbuf, &outbuf)
 			executing.Stderr = io.MultiWriter(&bothbuf, &errbuf)
 			_ = executing.Run()
-		} else if isTerminal {
+		} else {
 			stdoutPty, err := openPty(os.Stdout)
 			if err != nil {
 				return errorMsg(err)
@@ -112,10 +117,6 @@ func commandStart(command []string) tea.Cmd {
 				return errorMsg(err)
 			}
 			_ = xpty.WaitProcess(context.Background(), executing)
-		} else {
-			executing.Stdout = os.Stdout
-			executing.Stderr = os.Stderr
-			_ = executing.Run()
 		}
 
 		status := executing.ProcessState.ExitCode()
@@ -160,7 +161,7 @@ func (m model) View() string {
 	}
 
 	if !m.isTTY {
-		return m.title
+		return ""
 	}
 
 	var header string
