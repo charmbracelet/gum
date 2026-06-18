@@ -6,9 +6,10 @@ import (
 )
 
 const (
-	minTokens  = 1
-	halfTokens = 2
-	maxTokens  = 4
+	minTokens   = 1
+	halfTokens  = 2
+	threeTokens = 3
+	maxTokens   = 4
 )
 
 // ParsePadding parses 1 - 4 integers from a string and returns them in a top,
@@ -37,6 +38,10 @@ func ParsePadding(s string) (int, int, int, int) {
 
 	if len(tokens) == halfTokens {
 		return ints[0], ints[1], ints[0], ints[1]
+	}
+
+	if len(tokens) == threeTokens {
+		return ints[0], ints[1], ints[2], ints[1]
 	}
 
 	if len(tokens) == maxTokens {
