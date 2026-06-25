@@ -65,6 +65,9 @@ Use a package manager:
 # macOS or Linux
 brew install gum
 
+# Alpine Linux
+apk add gum
+
 # Arch Linux (btw)
 pacman -S gum
 
