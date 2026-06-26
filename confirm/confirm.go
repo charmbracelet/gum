@@ -87,6 +87,8 @@ type model struct {
 
 	defaultSelection bool
 
+	width int
+
 	// styles
 	promptStyle     lipgloss.Style
 	selectedStyle   lipgloss.Style
@@ -99,7 +101,10 @@ func (m model) Init() tea.Cmd { return nil }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		return m, nil
+		m.width = msg.Width
+		// confirm renders inline (no alt screen); clear stale lines when the
+		// viewport changes so wrapped prompt/button text does not linger.
+		return m, tea.ClearScreen
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keys.Abort):
@@ -150,8 +155,13 @@ func (m model) View() string {
 		neg = ""
 	}
 
+	promptStyle := m.promptStyle
+	if width := m.contentWidth(); width > 0 {
+		promptStyle = promptStyle.MaxWidth(width)
+	}
+
 	parts := []string{
-		m.promptStyle.Render(m.prompt) + "\n",
+		promptStyle.Render(m.prompt) + "\n",
 		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
 	}
 
@@ -165,4 +175,18 @@ func (m model) View() string {
 			lipgloss.Left,
 			parts...,
 		))
+}
+
+func (m model) contentWidth() int {
+	if m.width == 0 {
+		return 0
+	}
+	horizontalPadding := 0
+	if len(m.padding) > 1 {
+		horizontalPadding += m.padding[1]
+	}
+	if len(m.padding) > 3 {
+		horizontalPadding += m.padding[3]
+	}
+	return m.width - horizontalPadding
 }
