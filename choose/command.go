@@ -172,11 +172,16 @@ func (o Options) Run() error {
 	}
 
 	var out []string
+	if o.Header != "" {
+		out = append(out, o.Header)
+	}
+
 	for _, item := range m.items {
 		if item.selected {
 			out = append(out, options[item.text])
 		}
 	}
+
 	tty.Println(strings.Join(out, o.OutputDelimiter))
 	return nil
 }
