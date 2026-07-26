@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/x/ansi"
+	"github.com/sahilm/fuzzy"
 )
 
 func TestMatchedRanges(t *testing.T) {
@@ -39,6 +40,21 @@ func TestMatchedRanges(t *testing.T) {
 				t.Errorf("expected %v, got %v", tt.out, match)
 			}
 		})
+	}
+}
+
+func TestToggleSelectionEmptyMatches(t *testing.T) {
+	m := &model{
+		selected: map[string]struct{}{},
+		matches:  fuzzy.Matches{},
+		limit:    10,
+	}
+
+	// Toggling with no visible matches must be a no-op, not a panic.
+	m.ToggleSelection()
+
+	if len(m.selected) != 0 || m.numSelected != 0 {
+		t.Errorf("expected no selection, got selected=%d numSelected=%d", len(m.selected), m.numSelected)
 	}
 }
 
