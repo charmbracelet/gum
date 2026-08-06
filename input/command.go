@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
@@ -32,11 +32,14 @@ func (o Options) Run() error {
 	i.Focus()
 	i.Prompt = o.Prompt
 	i.Placeholder = o.Placeholder
-	i.Width = o.Width
-	i.PromptStyle = o.PromptStyle.ToLipgloss()
-	i.PlaceholderStyle = o.PlaceholderStyle.ToLipgloss()
-	i.Cursor.Style = o.CursorStyle.ToLipgloss()
-	i.Cursor.SetMode(cursor.Modes[o.CursorMode])
+	i.SetWidth(o.Width)
+	styles := i.Styles()
+	styles.Focused.Prompt = o.PromptStyle.ToLipgloss()
+	styles.Blurred.Prompt = o.PromptStyle.ToLipgloss()
+	styles.Focused.Placeholder = o.PlaceholderStyle.ToLipgloss()
+	styles.Blurred.Placeholder = o.PlaceholderStyle.ToLipgloss()
+	i.SetStyles(styles)
+	cursor.TextInput(&i, o.CursorMode, o.CursorStyle)
 	i.CharLimit = o.CharLimit
 
 	if o.Password {
@@ -62,7 +65,6 @@ func (o Options) Run() error {
 	p := tea.NewProgram(
 		m,
 		tea.WithOutput(os.Stderr),
-		tea.WithReportFocus(),
 		tea.WithContext(ctx),
 	)
 	tm, err := p.Run()

@@ -12,11 +12,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textarea"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/textarea"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/editor"
 )
 
@@ -41,7 +41,7 @@ func (k keymap) ShortHelp() []key.Binding {
 }
 
 func defaultKeymap() keymap {
-	km := textarea.DefaultKeyMap
+	km := textarea.DefaultKeyMap()
 	km.InsertNewline = key.NewBinding(
 		key.WithKeys("ctrl+j"),
 		key.WithHelp("ctrl+j", "insert newline"),
@@ -82,9 +82,9 @@ type model struct {
 
 func (m model) Init() tea.Cmd { return textarea.Blink }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 
 	var parts []string
@@ -97,12 +97,14 @@ func (m model) View() string {
 	if m.showHelp {
 		parts = append(parts, "", m.help.View(m.keymap))
 	}
-	return lipgloss.NewStyle().
+	v := tea.NewView(lipgloss.NewStyle().
 		Padding(m.padding...).
 		Render(lipgloss.JoinVertical(
 			lipgloss.Left,
 			parts...,
-		))
+		)))
+	v.ReportFocus = true
+	return v
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -123,7 +125,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Interrupt
 		}
 		m.textarea.SetValue(msg.content)
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Abort):

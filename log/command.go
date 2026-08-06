@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/log"
+	"charm.land/lipgloss/v2"
+	log "charm.land/log/v2"
 )
 
 // Run is the command-line interface for logging text.
@@ -69,7 +69,7 @@ func (o Options) Run() error {
 	st := log.DefaultStyles()
 	lvl := levelToLog[o.Level]
 	lvlStyle := o.LevelStyle.ToLipgloss()
-	if lvlStyle.GetForeground() == lipgloss.Color("") {
+	if fg := lvlStyle.GetForeground(); fg == nil || fg == lipgloss.Color("") {
 		lvlStyle = lvlStyle.Foreground(st.Levels[lvl].GetForeground())
 	}
 
@@ -102,13 +102,13 @@ func (o Options) Run() error {
 	}
 
 	var arg0 string
-	var args []interface{}
+	var args []any
 	if len(o.Text) > 0 {
 		arg0 = o.Text[0]
 	}
 
 	if len(o.Text) > 1 {
-		args = make([]interface{}, len(o.Text[1:]))
+		args = make([]any, len(o.Text[1:]))
 		for i, arg := range o.Text[1:] {
 			args[i] = arg
 		}
@@ -135,8 +135,8 @@ func (o Options) Run() error {
 }
 
 type logger struct {
-	printf func(string, ...interface{})
-	print  func(interface{}, ...interface{})
+	printf func(string, ...any)
+	print  func(any, ...any)
 }
 
 var levelToLog = map[string]log.Level{

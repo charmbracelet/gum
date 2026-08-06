@@ -7,14 +7,15 @@ import (
 	"os"
 	"runtime/debug"
 
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/alecthomas/kong"
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/exit"
-	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/termenv"
 )
 
 const shaLen = 7
+
+const defaultBool = "false"
 
 var (
 	// Version contains the application version number. It's set via ldflags
@@ -29,8 +30,6 @@ var (
 var bubbleGumPink = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 
 func main() {
-	lipgloss.SetColorProfile(termenv.NewOutput(os.Stderr).Profile)
-
 	if Version == "" {
 		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
 			Version = info.Main.Version
@@ -66,11 +65,11 @@ func main() {
 			"defaultForeground":       "",
 			"defaultMargin":           "0 0",
 			"defaultPadding":          "0 0",
-			"defaultUnderline":        "false",
-			"defaultBold":             "false",
-			"defaultFaint":            "false",
-			"defaultItalic":           "false",
-			"defaultStrikethrough":    "false",
+			"defaultUnderline":        defaultBool,
+			"defaultBold":             defaultBool,
+			"defaultFaint":            defaultBool,
+			"defaultItalic":           defaultBool,
+			"defaultStrikethrough":    defaultBool,
 		},
 	)
 	if err := ctx.Run(); err != nil {

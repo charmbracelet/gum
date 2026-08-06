@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/textinput"
+	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 )
 
@@ -23,7 +23,10 @@ func (s *search) new() {
 	input := textinput.New()
 	input.Placeholder = "search"
 	input.Prompt = "/"
-	input.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	styles := input.Styles()
+	styles.Focused.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	styles.Blurred.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	input.SetStyles(styles)
 	s.input = input
 }
 
@@ -99,7 +102,7 @@ func (s *search) NextMatch(m *model) {
 	}
 
 	// Only update if the match is not within the viewport.
-	if index != -1 && (line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset) {
+	if index != -1 && (line > m.viewport.YOffset()-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset()) {
 		m.viewport.SetYOffset(line)
 	}
 }
@@ -141,7 +144,7 @@ func (s *search) PrevMatch(m *model) {
 	}
 
 	// Only update if the match is not within the viewport.
-	if index != -1 && (line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset) {
+	if index != -1 && (line > m.viewport.YOffset()-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset()) {
 		m.viewport.SetYOffset(line)
 	}
 }

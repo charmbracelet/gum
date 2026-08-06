@@ -16,11 +16,10 @@
 package join
 
 import (
-	"fmt"
-
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 
 	"github.com/charmbracelet/gum/internal/decode"
+	"github.com/charmbracelet/gum/internal/tty"
 )
 
 // Run is the command-line interface for the joining strings through lipgloss.
@@ -29,6 +28,6 @@ func (o Options) Run() error {
 	if o.Vertical {
 		join = lipgloss.JoinVertical
 	}
-	fmt.Println(join(decode.Align[o.Align], o.Text...))
+	tty.Println(join(decode.Align[o.Align], o.Text...))
 	return nil
 }

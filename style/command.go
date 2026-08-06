@@ -7,10 +7,10 @@ package style
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/charmbracelet/gum/internal/stdin"
+	"github.com/charmbracelet/gum/internal/tty"
 )
 
 // Run provides a shell script interface for the Lip Gloss styling.
@@ -32,6 +32,6 @@ func (o Options) Run() error {
 		}
 		text = strings.Join(lines, "\n")
 	}
-	fmt.Println(o.Style.ToLipgloss().Render(text))
+	tty.Println(o.Style.ToLipgloss().Render(text))
 	return nil
 }

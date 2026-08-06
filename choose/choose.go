@@ -13,11 +13,11 @@ package choose
 import (
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/paginator"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/paginator"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/exp/ordered"
 )
 
@@ -112,6 +112,7 @@ type model struct {
 	numSelected      int
 	currentOrder     int
 	paginator        paginator.Model
+	hasDarkBG        bool
 	showHelp         bool
 	help             help.Model
 	keymap           keymap
@@ -129,14 +130,17 @@ type item struct {
 	order    int
 }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd { return tea.RequestBackgroundColor }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.BackgroundColorMsg:
+		m.hasDarkBG = msg.IsDark()
+		return m, nil
 	case tea.WindowSizeMsg:
 		return m, nil
 
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		start, end := m.paginator.GetSliceBounds(len(m.items))
 		km := m.keymap
 		switch {
@@ -240,9 +244,9 @@ func (m model) deselectAll() model {
 	return m
 }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 
 	var s strings.Builder
@@ -268,6 +272,11 @@ func (m model) View() string {
 	}
 
 	if m.paginator.TotalPages > 1 {
+		lightDark := lipgloss.LightDark(m.hasDarkBG)
+		subduedStyle := lipgloss.NewStyle().Foreground(lightDark(lipgloss.Color("#847A85"), lipgloss.Color("#979797")))
+		verySubduedStyle := lipgloss.NewStyle().Foreground(lightDark(lipgloss.Color("#DDDADA"), lipgloss.Color("#3C3C3C")))
+		m.paginator.ActiveDot = subduedStyle.Render("•")
+		m.paginator.InactiveDot = verySubduedStyle.Render("•")
 		s.WriteString(strings.Repeat("\n", m.height-m.paginator.ItemsOnPage(len(m.items))+1))
 		s.WriteString("  " + m.paginator.View())
 	}
@@ -283,7 +292,7 @@ func (m model) View() string {
 	}
 
 	view := lipgloss.JoinVertical(lipgloss.Left, parts...)
-	return lipgloss.NewStyle().
+	return tea.NewView(lipgloss.NewStyle().
 		Padding(m.padding...).
-		Render(view)
+		Render(view))
 }

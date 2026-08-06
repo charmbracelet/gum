@@ -7,10 +7,10 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/textinput"
+	"charm.land/bubbles/v2/viewport"
+	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/files"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
@@ -27,12 +27,16 @@ func (o Options) Run() error {
 	i.Focus()
 
 	i.Prompt = o.Prompt
-	i.PromptStyle = o.PromptStyle.ToLipgloss()
-	i.PlaceholderStyle = o.PlaceholderStyle.ToLipgloss()
+	styles := i.Styles()
+	styles.Focused.Prompt = o.PromptStyle.ToLipgloss()
+	styles.Blurred.Prompt = o.PromptStyle.ToLipgloss()
+	styles.Focused.Placeholder = o.PlaceholderStyle.ToLipgloss()
+	styles.Blurred.Placeholder = o.PlaceholderStyle.ToLipgloss()
+	i.SetStyles(styles)
 	i.Placeholder = o.Placeholder
-	i.Width = o.Width
+	i.SetWidth(o.Width)
 
-	v := viewport.New(o.Width, o.Height)
+	v := viewport.New(viewport.WithWidth(o.Width), viewport.WithHeight(o.Height))
 
 	if len(o.Options) == 0 {
 		if input, _ := stdin.Read(stdin.StripANSI(o.StripANSI)); input != "" {
@@ -51,11 +55,7 @@ func (o Options) Run() error {
 
 	options := []tea.ProgramOption{
 		tea.WithOutput(os.Stderr),
-		tea.WithReportFocus(),
 		tea.WithContext(ctx),
-	}
-	if o.Height == 0 {
-		options = append(options, tea.WithAltScreen())
 	}
 
 	var matches []fuzzy.Match

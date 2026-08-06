@@ -18,11 +18,11 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/table"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/table"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type keymap struct {
@@ -96,7 +96,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		km := m.keymap
 		switch {
 		case key.Matches(msg, km.Select):
@@ -116,17 +116,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 	s := m.table.View()
 	if m.showHelp {
 		s += "\n" + m.countView() + m.help.View(m.keymap)
 	}
-	return lipgloss.NewStyle().
+	return tea.NewView(lipgloss.NewStyle().
 		Padding(m.padding...).
-		Render(s)
+		Render(s))
 }
 
 func numLen(i int) int {

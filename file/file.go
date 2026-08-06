@@ -13,11 +13,11 @@
 package file
 
 import (
-	"github.com/charmbracelet/bubbles/filepicker"
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/filepicker"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type keymap filepicker.KeyMap
@@ -74,7 +74,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			height -= lipgloss.Height(m.helpView())
 		}
 		m.filepicker.SetHeight(height)
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, keyAbort):
 			m.quitting = true
@@ -94,9 +94,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 	var parts []string
 	if m.header != "" {
@@ -106,12 +106,12 @@ func (m model) View() string {
 	if m.showHelp {
 		parts = append(parts, m.helpView())
 	}
-	return lipgloss.NewStyle().
+	return tea.NewView(lipgloss.NewStyle().
 		Padding(m.padding...).
 		Render(lipgloss.JoinVertical(
 			lipgloss.Left,
 			parts...,
-		))
+		)))
 }
 
 func (m model) helpView() string {
