@@ -60,6 +60,7 @@ type model struct {
 	quitting     bool
 	showHelp     bool
 	padding      []int
+	maxHeight    int
 	help         help.Model
 	keymap       keymap
 }
@@ -69,11 +70,11 @@ func (m model) Init() tea.Cmd { return m.filepicker.Init() }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		height := msg.Height - m.padding[0] - m.padding[2]
+		height := m.maxHeight - m.padding[0] - m.padding[2]
 		if m.showHelp {
 			height -= lipgloss.Height(m.helpView())
 		}
-		m.filepicker.SetHeight(height)
+		m.filepicker.SetHeight(min(height, msg.Height))
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, keyAbort):
