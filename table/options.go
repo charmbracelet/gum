@@ -15,6 +15,8 @@ type Options struct {
 	Print           bool     `short:"p" help:"static print" default:"false"`
 	File            string   `short:"f" help:"file path" default:""`
 	Border          string   `short:"b" help:"border style" default:"rounded" enum:"rounded,thick,normal,hidden,double,none"`
+	BorderRow       bool     `help:"Draw a border separator between every row" default:"false" negatable:"" env:"GUM_TABLE_BORDER_ROW"`
+	Width           int      `help:"Set a fixed total table width (0 = auto-size to content)" default:"0" env:"GUM_TABLE_WIDTH"`
 	ShowHelp        bool     `help:"Show help keybinds" default:"true" negatable:"" env:"GUM_TABLE_SHOW_HELP"`
 	HideCount       bool     `help:"Hide item count on help keybinds" default:"false" negatable:"" env:"GUM_TABLE_HIDE_COUNT"`
 	LazyQuotes      bool     `help:"If LazyQuotes is true, a quote may appear in an unquoted field and a non-doubled quote may appear in a quoted field" default:"false" env:"GUM_TABLE_LAZY_QUOTES"`

@@ -116,12 +116,17 @@ func (o Options) Run() error {
 			Rows(data...).
 			BorderStyle(o.BorderStyle.ToLipgloss()).
 			Border(style.Border[o.Border]).
+			BorderRow(o.BorderRow).
 			StyleFunc(func(row, _ int) lipgloss.Style {
 				if row == 0 {
 					return styles.Header
 				}
 				return styles.Cell
 			})
+
+		if o.Width > 0 {
+			table = table.Width(o.Width)
+		}
 
 		fmt.Println(table.Render())
 		return nil
