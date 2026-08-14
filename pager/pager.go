@@ -101,6 +101,8 @@ type model struct {
 	matchHighlightStyle lipgloss.Style
 	maxWidth            int
 	keymap              keymap
+	width               int
+	height              int
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -108,7 +110,9 @@ func (m model) Init() tea.Cmd { return nil }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.processText(msg)
+		m.width = msg.Width
+		m.height = msg.Height
+		m.processText()
 	case tea.KeyMsg:
 		return m.keyHandler(msg)
 	}
@@ -125,9 +129,13 @@ func (m *model) helpView() string {
 	return m.help.View(m.keymap)
 }
 
-func (m *model) processText(msg tea.WindowSizeMsg) {
-	m.viewport.Height = msg.Height - lipgloss.Height(m.helpView())
-	m.viewport.Width = msg.Width
+func (m *model) processText() string {
+	if m.height == 0 {
+		return ""
+	}
+
+	m.viewport.Height = m.height - lipgloss.Height(m.helpView())
+	m.viewport.Width = m.width
 	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
 	var text strings.Builder
 
@@ -168,10 +176,10 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 		remainingLines := "   ~ │ " + strings.Repeat("\n   ~ │ ", diffHeight-1)
 		text.WriteString(m.lineNumberStyle.Render(remainingLines))
 	}
-	m.viewport.SetContent(text.String())
+	rendered := text.String()
+	m.viewport.SetContent(rendered)
+	return rendered
 }
-
-const heightOffset = 2
 
 func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 	km := m.keymap
@@ -185,7 +193,7 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 
 				// Trigger a view update to highlight the found matches.
 				m.search.NextMatch(&m)
-				m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+				m.search.alignViewport(&m, m.processText())
 			} else {
 				m.search.Done()
 			}
@@ -205,10 +213,10 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 			return m, textinput.Blink
 		case key.Matches(msg, km.PrevMatch):
 			m.search.PrevMatch(&m)
-			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+			m.search.alignViewport(&m, m.processText())
 		case key.Matches(msg, km.NextMatch):
 			m.search.NextMatch(&m)
-			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+			m.search.alignViewport(&m, m.processText())
 		case key.Matches(msg, km.Quit):
 			return m, tea.Quit
 		case key.Matches(msg, km.Abort):

@@ -7,7 +7,6 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/x/ansi"
 )
 
 type search struct {
@@ -89,19 +88,6 @@ func (s *search) NextMatch(m *model) {
 	s.matchString = m.content[match[0]:match[1]]
 	s.matchLipglossStr = m.matchHighlightStyle.Render(s.matchString[leftPad : len(s.matchString)-rightPad])
 	m.content = lhs + strings.Replace(rhs, m.content[match[0]:match[1]], s.matchLipglossStr, 1)
-
-	// Update the viewport position.
-	var line int
-	formatStr := softWrapEm(m.content, m.maxWidth, m.softWrap)
-	index := strings.Index(formatStr, s.matchLipglossStr)
-	if index != -1 {
-		line = strings.Count(formatStr[:index], "\n")
-	}
-
-	// Only update if the match is not within the viewport.
-	if index != -1 && (line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset) {
-		m.viewport.SetYOffset(line)
-	}
 }
 
 func (s *search) PrevMatch(m *model) {
@@ -131,39 +117,24 @@ func (s *search) PrevMatch(m *model) {
 	s.matchString = m.content[match[0]:match[1]]
 	s.matchLipglossStr = m.matchHighlightStyle.Render(s.matchString[leftPad : len(s.matchString)-rightPad])
 	m.content = lhs + strings.Replace(rhs, m.content[match[0]:match[1]], s.matchLipglossStr, 1)
-
-	// Update the viewport position.
-	var line int
-	formatStr := softWrapEm(m.content, m.maxWidth, m.softWrap)
-	index := strings.Index(formatStr, s.matchLipglossStr)
-	if index != -1 {
-		line = strings.Count(formatStr[:index], "\n")
-	}
-
-	// Only update if the match is not within the viewport.
-	if index != -1 && (line > m.viewport.YOffset-1+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset) {
-		m.viewport.SetYOffset(line)
-	}
 }
 
-func softWrapEm(str string, maxWidth int, softWrap bool) string {
-	var text strings.Builder
-	for _, line := range strings.Split(str, "\n") {
-		idx := 0
-		if w := ansi.StringWidth(line); softWrap && w > maxWidth {
-			for w > idx {
-				truncatedLine := ansi.Cut(line, idx, maxWidth+idx)
-				idx += maxWidth
-				text.WriteString(truncatedLine)
-				text.WriteString("\n")
-			}
-		} else {
-			text.WriteString(line)
-			text.WriteString("\n")
-		}
+func (s *search) alignViewport(m *model, rendered string) {
+	if s.matchLipglossStr == "" || rendered == "" {
+		return
 	}
 
-	return text.String()
+	index := strings.Index(rendered, s.matchLipglossStr)
+	if index == -1 {
+		return
+	}
+
+	line := strings.Count(rendered[:index], "\n")
+
+	// Only update if the match is not within the viewport.
+	if line > m.viewport.YOffset+m.viewport.VisibleLineCount()-1 || line < m.viewport.YOffset {
+		m.viewport.SetYOffset(line)
+	}
 }
 
 // lipglossPadding calculates how much padding a string is given by a style.
