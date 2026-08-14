@@ -126,7 +126,9 @@ func (m *model) helpView() string {
 }
 
 func (m *model) processText(msg tea.WindowSizeMsg) {
-	m.viewport.Height = msg.Height - lipgloss.Height(m.helpView())
+	// Reserve one line for the separator between viewport content and the help
+	// bar rendered in View().
+	m.viewport.Height = msg.Height - lipgloss.Height(m.helpView()) - 1
 	m.viewport.Width = msg.Width
 	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
 	var text strings.Builder
