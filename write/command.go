@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/textarea"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/textarea"
+	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/gum/cursor"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
@@ -33,7 +33,7 @@ func (o Options) Run() error {
 	a.MaxHeight = o.MaxLines
 	top, right, bottom, left := style.ParsePadding(o.Padding)
 
-	style := textarea.Style{
+	taStyles := textarea.StyleState{
 		Base:             o.BaseStyle.ToLipgloss(),
 		Placeholder:      o.PlaceholderStyle.ToLipgloss(),
 		CursorLine:       o.CursorLineStyle.ToLipgloss(),
@@ -43,10 +43,11 @@ func (o Options) Run() error {
 		Prompt:           o.PromptStyle.ToLipgloss(),
 	}
 
-	a.BlurredStyle = style
-	a.FocusedStyle = style
-	a.Cursor.Style = o.CursorStyle.ToLipgloss()
-	a.Cursor.SetMode(cursor.Modes[o.CursorMode])
+	styles := a.Styles()
+	styles.Focused = taStyles
+	styles.Blurred = taStyles
+	a.SetStyles(styles)
+	cursor.TextArea(&a, o.CursorMode, o.CursorStyle)
 
 	a.SetWidth(max(0, o.Width-left-right))
 	a.SetHeight(max(0, o.Height-top-bottom))
@@ -71,7 +72,6 @@ func (o Options) Run() error {
 	p := tea.NewProgram(
 		m,
 		tea.WithOutput(os.Stderr),
-		tea.WithReportFocus(),
 		tea.WithContext(ctx),
 	)
 	tm, err := p.Run()

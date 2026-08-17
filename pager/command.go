@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/viewport"
+	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
 )
@@ -14,7 +14,7 @@ import (
 // Run provides a shell script interface for the viewport bubble.
 // https://github.com/charmbracelet/bubbles/viewport
 func (o Options) Run() error {
-	vp := viewport.New(o.Style.Width, o.Style.Height)
+	vp := viewport.New(viewport.WithWidth(o.Style.Width), viewport.WithHeight(o.Style.Height))
 	vp.Style = o.Style.ToLipgloss()
 
 	if o.Content == "" {
@@ -49,8 +49,6 @@ func (o Options) Run() error {
 
 	_, err := tea.NewProgram(
 		m,
-		tea.WithAltScreen(),
-		tea.WithReportFocus(),
 		tea.WithContext(ctx),
 	).Run()
 	if err != nil {

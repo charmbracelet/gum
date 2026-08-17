@@ -8,17 +8,17 @@
 package input
 
 import (
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type keymap textinput.KeyMap
 
 func defaultKeymap() keymap {
-	k := textinput.DefaultKeyMap
+	k := textinput.DefaultKeyMap()
 	return keymap(k)
 }
 
@@ -50,9 +50,9 @@ type model struct {
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 	var parts []string
 	if m.header != "" {
@@ -63,23 +63,25 @@ func (m model) View() string {
 	if m.showHelp {
 		parts = append(parts, "", m.help.View(m.keymap))
 	}
-	return lipgloss.NewStyle().
+	v := tea.NewView(lipgloss.NewStyle().
 		Padding(m.padding...).
 		Render(lipgloss.JoinVertical(
 			lipgloss.Top,
 			parts...,
-		))
+		)))
+	v.ReportFocus = true
+	return v
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.autoWidth {
-			m.textinput.Width = msg.Width - 1 -
+			m.textinput.SetWidth(msg.Width - 1 -
 				lipgloss.Width(m.textinput.Prompt) -
-				m.padding[1] - m.padding[3]
+				m.padding[1] - m.padding[3])
 		}
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "ctrl+c":
 			m.quitting = true

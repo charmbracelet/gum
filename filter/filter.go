@@ -13,12 +13,12 @@ package filter
 import (
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/textinput"
+	"charm.land/bubbles/v2/viewport"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/exp/ordered"
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
@@ -159,9 +159,9 @@ type model struct {
 
 func (m model) Init() tea.Cmd { return textinput.Blink }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 
 	var s strings.Builder
@@ -170,8 +170,8 @@ func (m model) View() string {
 	// For reverse layout, if the number of matches is less than the viewport
 	// height, we need to offset the matches so that the first match is at the
 	// bottom edge of the viewport instead of in the middle.
-	if m.reverse && len(m.matches) < m.viewport.Height {
-		s.WriteString(strings.Repeat("\n", m.viewport.Height-len(m.matches)))
+	if m.reverse && len(m.matches) < m.viewport.Height() {
+		s.WriteString(strings.Repeat("\n", m.viewport.Height()-len(m.matches)))
 	}
 
 	// Since there are matches, display them so that the user can see, in real
@@ -234,20 +234,35 @@ func (m model) View() string {
 
 	// View the input and the filtered choices
 	header := m.headerStyle.Render(m.header)
+	var content string
 	if m.reverse {
-		view := m.viewport.View()
-		if m.header != "" {
-			view += "\n" + header
-		}
-		view += "\n" + m.textinput.View()
-		if m.showHelp {
-			view += m.helpView()
-		}
-		return lipgloss.NewStyle().
-			Padding(m.padding...).
-			Render(view)
+		content = m.reverseView(header)
+	} else {
+		content = m.normalView(header)
 	}
+	v := tea.NewView(content)
+	v.ReportFocus = true
+	if m.height == 0 {
+		v.AltScreen = true
+	}
+	return v
+}
 
+func (m model) reverseView(header string) string {
+	view := m.viewport.View()
+	if m.header != "" {
+		view += "\n" + header
+	}
+	view += "\n" + m.textinput.View()
+	if m.showHelp {
+		view += m.helpView()
+	}
+	return lipgloss.NewStyle().
+		Padding(m.padding...).
+		Render(view)
+}
+
+func (m model) normalView(header string) string {
 	view := m.textinput.View() + "\n" + m.viewport.View()
 	if m.showHelp {
 		view += m.helpView()
@@ -257,7 +272,6 @@ func (m model) View() string {
 			Padding(m.padding...).
 			Render(header + "\n" + view)
 	}
-
 	return lipgloss.NewStyle().
 		Padding(m.padding...).
 		Render(view)
@@ -273,23 +287,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.height == 0 || m.height > msg.Height {
-			m.viewport.Height = msg.Height - lipgloss.Height(m.textinput.View())
+			m.viewport.SetHeight(msg.Height - lipgloss.Height(m.textinput.View()))
 		}
 		// Include the header in the height calculation.
 		if m.header != "" {
-			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.headerStyle.Render(m.header))
+			m.viewport.SetHeight(m.viewport.Height() - lipgloss.Height(m.headerStyle.Render(m.header)))
 		}
 		// Include the help in the total height calculation.
 		if m.showHelp {
-			m.viewport.Height = m.viewport.Height - lipgloss.Height(m.helpView())
+			m.viewport.SetHeight(m.viewport.Height() - lipgloss.Height(m.helpView()))
 		}
-		m.viewport.Height = m.viewport.Height - m.padding[0] - m.padding[2]
-		m.viewport.Width = msg.Width - m.padding[1] - m.padding[3]
-		m.textinput.Width = msg.Width - m.padding[1] - m.padding[3]
+		m.viewport.SetHeight(m.viewport.Height() - m.padding[0] - m.padding[2])
+		m.viewport.SetWidth(msg.Width - m.padding[1] - m.padding[3])
+		m.textinput.SetWidth(msg.Width - m.padding[1] - m.padding[3])
 		if m.reverse {
-			m.viewport.YOffset = ordered.Clamp(len(m.matches)-m.viewport.Height, 0, len(m.matches))
+			m.viewport.SetYOffset(ordered.Clamp(len(m.matches)-m.viewport.Height(), 0, len(m.matches)))
 		}
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		km := m.keymap
 		switch {
 		case key.Matches(msg, km.FocusInSearch):
@@ -349,7 +363,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// in the reverse layout.
 			var yOffsetFromBottom int
 			if m.reverse {
-				yOffsetFromBottom = max(0, len(m.matches)-m.viewport.YOffset)
+				yOffsetFromBottom = max(0, len(m.matches)-m.viewport.YOffset())
 			}
 
 			// A character was entered, this likely means that the text input has
@@ -378,8 +392,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// For reverse layout, we need to offset the viewport so that the
 			// it remains at a constant position relative to the cursor.
 			if m.reverse {
-				maxYOffset := max(0, len(m.matches)-m.viewport.Height)
-				m.viewport.YOffset = ordered.Clamp(len(m.matches)-yOffsetFromBottom, 0, maxYOffset)
+				maxYOffset := max(0, len(m.matches)-m.viewport.Height())
+				m.viewport.SetYOffset(ordered.Clamp(len(m.matches)-yOffsetFromBottom, 0, maxYOffset))
 			}
 		}
 	}
@@ -403,19 +417,19 @@ func (m *model) CursorUp() {
 	}
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor + 1) % len(m.matches)
-		if len(m.matches)-m.cursor <= m.viewport.YOffset {
+		if len(m.matches)-m.cursor <= m.viewport.YOffset() {
 			m.viewport.ScrollUp(1)
 		}
-		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
-			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
+		if len(m.matches)-m.cursor > m.viewport.Height()+m.viewport.YOffset() {
+			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height())
 		}
 	} else {
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
-		if m.cursor < m.viewport.YOffset {
+		if m.cursor < m.viewport.YOffset() {
 			m.viewport.ScrollUp(1)
 		}
-		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
-			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height)
+		if m.cursor >= m.viewport.YOffset()+m.viewport.Height() {
+			m.viewport.SetYOffset(len(m.matches) - m.viewport.Height())
 		}
 	}
 }
@@ -426,18 +440,18 @@ func (m *model) CursorDown() {
 	}
 	if m.reverse { //nolint:nestif
 		m.cursor = (m.cursor - 1 + len(m.matches)) % len(m.matches)
-		if len(m.matches)-m.cursor > m.viewport.Height+m.viewport.YOffset {
+		if len(m.matches)-m.cursor > m.viewport.Height()+m.viewport.YOffset() {
 			m.viewport.ScrollDown(1)
 		}
-		if len(m.matches)-m.cursor <= m.viewport.YOffset {
+		if len(m.matches)-m.cursor <= m.viewport.YOffset() {
 			m.viewport.GotoTop()
 		}
 	} else {
 		m.cursor = (m.cursor + 1) % len(m.matches)
-		if m.cursor >= m.viewport.YOffset+m.viewport.Height {
+		if m.cursor >= m.viewport.YOffset()+m.viewport.Height() {
 			m.viewport.ScrollDown(1)
 		}
-		if m.cursor < m.viewport.YOffset {
+		if m.cursor < m.viewport.YOffset() {
 			m.viewport.GotoTop()
 		}
 	}

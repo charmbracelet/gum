@@ -1,6 +1,6 @@
 package style
 
-import "github.com/charmbracelet/lipgloss"
+import "charm.land/lipgloss/v2"
 
 // Border maps strings to `lipgloss.Border`s.
 var Border map[string]lipgloss.Border = map[string]lipgloss.Border{

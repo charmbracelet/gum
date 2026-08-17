@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/textinput"
+	"charm.land/bubbles/v2/viewport"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 )
 
@@ -109,7 +109,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.processText(msg)
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		return m.keyHandler(msg)
 	}
 
@@ -126,13 +126,13 @@ func (m *model) helpView() string {
 }
 
 func (m *model) processText(msg tea.WindowSizeMsg) {
-	m.viewport.Height = msg.Height - lipgloss.Height(m.helpView())
-	m.viewport.Width = msg.Width
-	textStyle := lipgloss.NewStyle().Width(m.viewport.Width)
+	m.viewport.SetHeight(msg.Height - lipgloss.Height(m.helpView()))
+	m.viewport.SetWidth(msg.Width)
+	textStyle := lipgloss.NewStyle().Width(m.viewport.Width())
 	var text strings.Builder
 
 	// Determine max width of a line.
-	m.maxWidth = m.viewport.Width
+	m.maxWidth = m.viewport.Width()
 	if m.softWrap {
 		vpStyle := m.viewport.Style
 		m.maxWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
@@ -163,7 +163,7 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 		}
 	}
 
-	diffHeight := m.viewport.Height - lipgloss.Height(text.String())
+	diffHeight := m.viewport.Height() - lipgloss.Height(text.String())
 	if diffHeight > 0 && m.showLineNumbers {
 		remainingLines := "   ~ │ " + strings.Repeat("\n   ~ │ ", diffHeight-1)
 		text.WriteString(m.lineNumberStyle.Render(remainingLines))
@@ -173,7 +173,7 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 
 const heightOffset = 2
 
-func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
+func (m model) keyHandler(msg tea.KeyPressMsg) (model, tea.Cmd) {
 	km := m.keymap
 	var cmd tea.Cmd
 	if m.search.active {
@@ -185,7 +185,7 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 
 				// Trigger a view update to highlight the found matches.
 				m.search.NextMatch(&m)
-				m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+				m.processText(tea.WindowSizeMsg{Height: m.viewport.Height() + heightOffset, Width: m.viewport.Width()})
 			} else {
 				m.search.Done()
 			}
@@ -205,10 +205,10 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 			return m, textinput.Blink
 		case key.Matches(msg, km.PrevMatch):
 			m.search.PrevMatch(&m)
-			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height() + heightOffset, Width: m.viewport.Width()})
 		case key.Matches(msg, km.NextMatch):
 			m.search.NextMatch(&m)
-			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height + heightOffset, Width: m.viewport.Width})
+			m.processText(tea.WindowSizeMsg{Height: m.viewport.Height() + heightOffset, Width: m.viewport.Width()})
 		case key.Matches(msg, km.Quit):
 			return m, tea.Quit
 		case key.Matches(msg, km.Abort):
@@ -220,10 +220,15 @@ func (m model) keyHandler(msg tea.KeyMsg) (model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m model) View() string {
+func (m model) View() tea.View {
+	v := tea.NewView("")
+	v.AltScreen = true
+	v.ReportFocus = true
 	if m.search.active {
-		return m.viewport.View() + "\n " + m.search.input.View()
+		v.SetContent(m.viewport.View() + "\n " + m.search.input.View())
+		return v
 	}
 
-	return m.viewport.View() + "\n" + m.helpView()
+	v.SetContent(m.viewport.View() + "\n" + m.helpView())
+	return v
 }

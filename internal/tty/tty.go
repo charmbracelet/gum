@@ -3,22 +3,25 @@ package tty
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"sync"
 
-	"github.com/charmbracelet/x/ansi"
-	"github.com/charmbracelet/x/term"
+	"github.com/charmbracelet/colorprofile"
 )
 
-var isTTY = sync.OnceValue(func() bool {
-	return term.IsTerminal(os.Stdout.Fd())
+var stdout = sync.OnceValue(func() io.Writer {
+	return colorprofile.NewWriter(os.Stdout, os.Environ())
 })
+
+// Writer returns a writer to stdout that downgrades or strips ansi
+// sequences according to the environment (NO_COLOR, CLICOLOR, CLICOLOR_FORCE)
+// and the capabilities of the terminal.
+func Writer() io.Writer {
+	return stdout()
+}
 
 // Println handles println, striping ansi sequences if stdout is not a tty.
 func Println(s string) {
-	if isTTY() {
-		fmt.Println(s)
-		return
-	}
-	fmt.Println(ansi.Strip(s))
+	_, _ = fmt.Fprintln(stdout(), s)
 }

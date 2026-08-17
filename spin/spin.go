@@ -23,9 +23,9 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/charmbracelet/bubbles/spinner"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/spinner"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/term"
 	"github.com/charmbracelet/x/xpty"
 )
@@ -146,9 +146,9 @@ func (m model) Init() tea.Cmd {
 	)
 }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 
 	var out string
@@ -160,7 +160,7 @@ func (m model) View() string {
 	}
 
 	if !m.isTTY {
-		return m.title
+		return tea.NewView(m.title)
 	}
 
 	var header string
@@ -169,9 +169,9 @@ func (m model) View() string {
 	} else {
 		header = m.title + " " + m.spinner.View()
 	}
-	return lipgloss.NewStyle().
+	return tea.NewView(lipgloss.NewStyle().
 		Padding(m.padding...).
-		Render(header, "", out)
+		Render(header, "", out))
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -183,7 +183,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.status = msg.status
 		m.quitting = true
 		return m, tea.Quit
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "ctrl+c":
 			return m, commandAbort

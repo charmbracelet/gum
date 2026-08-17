@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/table"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/table"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
+	ltable "charm.land/lipgloss/v2/table"
 	"github.com/charmbracelet/gum/internal/stdin"
 	"github.com/charmbracelet/gum/internal/timeout"
+	"github.com/charmbracelet/gum/internal/tty"
 	"github.com/charmbracelet/gum/style"
-	"github.com/charmbracelet/lipgloss"
-	ltable "github.com/charmbracelet/lipgloss/table"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
@@ -123,7 +124,7 @@ func (o Options) Run() error {
 				return styles.Cell
 			})
 
-		fmt.Println(table.Render())
+		tty.Println(table.Render())
 		return nil
 	}
 
