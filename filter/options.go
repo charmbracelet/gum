@@ -43,6 +43,9 @@ type Options struct {
 	StripANSI             bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_FILTER_STRIP_ANSI"`
 	Padding               string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_FILTER_PADDING"`
 
+	Preview      string `help:"Command to execute for each selected item to generate a preview. {} is replaced with the current item" default:"" env:"GUM_FILTER_PREVIEW" group:"Preview"`
+	PreviewWidth int    `help:"Width of the preview window (percentage 1-99)" default:"50" env:"GUM_FILTER_PREVIEW_WIDTH" group:"Preview"`
+
 	// Deprecated: use [FuzzySort]. This will be removed at some point.
 	Sort bool `help:"Sort fuzzy results by their scores" default:"true" env:"GUM_FILTER_FUZZY_SORT" negatable:"" hidden:""`
 }
