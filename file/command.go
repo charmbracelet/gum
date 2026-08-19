@@ -9,8 +9,8 @@ import (
 	"charm.land/bubbles/v2/filepicker"
 	"charm.land/bubbles/v2/help"
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/gum/internal/timeout"
-	"github.com/charmbracelet/gum/style"
+	"charm.land/gum/v2/internal/timeout"
+	"charm.land/gum/v2/style"
 )
 
 // Run is the interface to picking a file.

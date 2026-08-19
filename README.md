@@ -137,7 +137,7 @@ Or download it:
 Or just install it with `go`:
 
 ```bash
-go install github.com/charmbracelet/gum@latest
+go install charm.land/gum/v2@latest
 ```
 
 [releases]: https://github.com/charmbracelet/gum/releases

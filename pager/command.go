@@ -7,8 +7,8 @@ import (
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/internal/timeout"
+	"charm.land/gum/v2/internal/stdin"
+	"charm.land/gum/v2/internal/timeout"
 )
 
 // Run provides a shell script interface for the viewport bubble.

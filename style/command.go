@@ -9,8 +9,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/internal/tty"
+	"charm.land/gum/v2/internal/stdin"
+	"charm.land/gum/v2/internal/tty"
 )
 
 // Run provides a shell script interface for the Lip Gloss styling.

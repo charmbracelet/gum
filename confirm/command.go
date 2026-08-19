@@ -7,10 +7,10 @@ import (
 
 	"charm.land/bubbles/v2/help"
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/gum/internal/exit"
-	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/internal/timeout"
-	"github.com/charmbracelet/gum/style"
+	"charm.land/gum/v2/internal/exit"
+	"charm.land/gum/v2/internal/stdin"
+	"charm.land/gum/v2/internal/timeout"
+	"charm.land/gum/v2/style"
 )
 
 // Run provides a shell script interface for prompting a user to confirm an

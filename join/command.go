@@ -18,8 +18,8 @@ package join
 import (
 	"charm.land/lipgloss/v2"
 
-	"github.com/charmbracelet/gum/internal/decode"
-	"github.com/charmbracelet/gum/internal/tty"
+	"charm.land/gum/v2/internal/decode"
+	"charm.land/gum/v2/internal/tty"
 )
 
 // Run is the command-line interface for the joining strings through lipgloss.

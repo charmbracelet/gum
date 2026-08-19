@@ -1,4 +1,4 @@
-module github.com/charmbracelet/gum
+module charm.land/gum/v2
 
 go 1.25.13
 

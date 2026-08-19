@@ -8,9 +8,9 @@ import (
 	"runtime/debug"
 
 	tea "charm.land/bubbletea/v2"
+	"charm.land/gum/v2/internal/exit"
 	"charm.land/lipgloss/v2"
 	"github.com/alecthomas/kong"
-	"github.com/charmbracelet/gum/internal/exit"
 )
 
 const shaLen = 7
