@@ -4,7 +4,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/sahilm/fuzzy"
 )
 
 func TestMatchedRanges(t *testing.T) {
@@ -55,5 +58,46 @@ func TestByteToChar(t *testing.T) {
 	start, stop := bytePosToVisibleCharPos(str, rng)
 	if got := ansi.Strip(ansi.Cut(stStr, start, stop)); got != expect {
 		t.Errorf("expected %+q, got %+q", expect, got)
+	}
+}
+
+func TestStrictSubmitRequiresMatch(t *testing.T) {
+	m := model{
+		textinput: textinput.New(),
+		keymap:    defaultKeymap(),
+		strict:    true,
+	}
+	m.textinput.SetValue("zzz")
+
+	got, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated := got.(model)
+
+	if updated.submitted {
+		t.Fatal("expected strict mode to keep running when there are no matches")
+	}
+	if updated.quitting {
+		t.Fatal("expected strict mode to stay open when there are no matches")
+	}
+}
+
+func TestStrictSubmitStillWorksWithMatches(t *testing.T) {
+	m := model{
+		textinput: textinput.New(),
+		keymap:    defaultKeymap(),
+		strict:    true,
+		matches: []fuzzy.Match{
+			{Str: "banana"},
+		},
+	}
+	m.textinput.SetValue("ban")
+
+	got, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated := got.(model)
+
+	if !updated.submitted {
+		t.Fatal("expected strict mode to submit when matches exist")
+	}
+	if !updated.quitting {
+		t.Fatal("expected strict mode to quit after a successful submit")
 	}
 }
