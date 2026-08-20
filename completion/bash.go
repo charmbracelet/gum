@@ -63,7 +63,7 @@ const (
 	//
 	// All directives using iota should be above this one.
 	// For internal use.
-	shellCompDirectiveMaxValue //nolint:deadcode,unused,varcheck
+	shellCompDirectiveMaxValue //nolint:unused
 
 	// ShellCompDirectiveDefault indicates to let the shell perform its default
 	// behavior after completions have been provided.
@@ -580,7 +580,7 @@ func writeFlag(buf io.StringWriter, flag *kong.Flag, cmd *kong.Node) {
 	writeFlagHandler(buf, "--"+name, map[string][]string{}, cmd)
 }
 
-//nolint:deadcode,unused
+//nolint:unused
 func writeLocalNonPersistentFlag(buf io.StringWriter, flag *kong.Flag) {
 	name := flag.Name
 	format := "    local_nonpersistent_flags+=(\"--%[1]s" + cbn

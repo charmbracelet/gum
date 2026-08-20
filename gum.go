@@ -14,6 +14,7 @@ import (
 	"github.com/charmbracelet/gum/log"
 	"github.com/charmbracelet/gum/man"
 	"github.com/charmbracelet/gum/pager"
+	"github.com/charmbracelet/gum/panel"
 	"github.com/charmbracelet/gum/spin"
 	"github.com/charmbracelet/gum/style"
 	"github.com/charmbracelet/gum/table"
@@ -225,4 +226,15 @@ type Gum struct {
 	// $ gum version-check '~> 0.15'
 	//
 	VersionCheck version.Options `cmd:"" help:"Semver check current gum version"`
+
+	// Panel provides a multi-panel TUI with choose and filter panels side by side.
+	//
+	// Each panel block starts with 'choose' or 'filter' and accepts the same
+	// flags as 'gum choose' / 'gum filter'. Blocks are separated by '--'.
+	//
+	// $ gum panel -- choose apple banana cherry -- filter mango papaya
+	// $ gum panel -- choose --limit 3 --header "Pick fruit" apple banana cherry \
+	//             -- filter --no-fuzzy --placeholder "Search" mango papaya
+	//
+	Panel panel.Options `cmd:"" help:"Run multiple choose/filter panels side by side"`
 }

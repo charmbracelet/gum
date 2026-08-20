@@ -32,12 +32,6 @@ func hasCommands(cmd *kong.Node) bool {
 	return false
 }
 
-//nolint:deadcode,unused
-func isArgument(cmd *kong.Node) bool {
-	return cmd.Type == kong.ArgumentNode
-}
-
-// writeString writes a string into a buffer, and checks if the error is not nil.
 func writeString(b io.StringWriter, s string) {
 	if _, err := b.WriteString(s); err != nil {
 		fmt.Fprintln(os.Stderr, "Error:", err)
