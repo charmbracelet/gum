@@ -69,7 +69,7 @@ func (o Options) Run() error {
 	st := log.DefaultStyles()
 	lvl := levelToLog[o.Level]
 	lvlStyle := o.LevelStyle.ToLipgloss()
-	if fg := lvlStyle.GetForeground(); fg == nil || fg == lipgloss.Color("") {
+	if _, isNoColor := lvlStyle.GetForeground().(lipgloss.NoColor); isNoColor {
 		lvlStyle = lvlStyle.Foreground(st.Levels[lvl].GetForeground())
 	}
 
