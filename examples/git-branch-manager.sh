@@ -15,9 +15,9 @@ git_color_text () {
 
 get_branches () {
   if [ ${1+x} ]; then
-    gum choose --selected.foreground="$GIT_COLOR" --limit="$1" $(git branch --format="%(refname:short)")
+    gum choose --selected-item.foreground="$GIT_COLOR" --limit="$1" $(git branch --format="%(refname:short)")
   else
-    gum choose --selected.foreground="$GIT_COLOR" --no-limit $(git branch --format="%(refname:short)")
+    gum choose --selected-item.foreground="$GIT_COLOR" --no-limit $(git branch --format="%(refname:short)")
   fi
 }
 
