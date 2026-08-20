@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/charmbracelet/gum/style"
+	"charm.land/gum/v2/style"
 )
 
 // Options is the set of options that can configure a join.

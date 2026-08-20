@@ -14,8 +14,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/gum/internal/stdin"
-	"github.com/charmbracelet/gum/internal/tty"
+	"charm.land/gum/v2/internal/stdin"
+	"charm.land/gum/v2/internal/tty"
 )
 
 // Run runs the format command.

@@ -4,7 +4,7 @@ package cursor
 import (
 	"charm.land/bubbles/v2/textarea"
 	"charm.land/bubbles/v2/textinput"
-	"github.com/charmbracelet/gum/style"
+	"charm.land/gum/v2/style"
 )
 
 // TextInput applies the given cursor mode and style to the text input.

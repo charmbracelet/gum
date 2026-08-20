@@ -3,7 +3,7 @@ package filter
 import (
 	"time"
 
-	"github.com/charmbracelet/gum/style"
+	"charm.land/gum/v2/style"
 )
 
 // Options is the customization options for the filter command.

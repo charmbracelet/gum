@@ -3,7 +3,7 @@ package style
 import (
 	"charm.land/lipgloss/v2"
 
-	"github.com/charmbracelet/gum/internal/decode"
+	"charm.land/gum/v2/internal/decode"
 )
 
 // ToLipgloss takes a Styles flag set and returns the corresponding
