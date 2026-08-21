@@ -21,6 +21,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"sync"
 	"syscall"
 
 	"charm.land/bubbles/v2/spinner"
@@ -90,13 +91,12 @@ func commandStart(command []string) tea.Cmd {
 			if err != nil {
 				return errorMsg(err)
 			}
-			defer stdoutPty.Close() //nolint:errcheck
 
 			stderrPty, err := openPty(os.Stderr)
 			if err != nil {
+				_ = stdoutPty.Close()
 				return errorMsg(err)
 			}
-			defer stderrPty.Close() //nolint:errcheck
 
 			if outUnixPty, isOutUnixPty := stdoutPty.(*xpty.UnixPty); isOutUnixPty {
 				executing.Stdout = outUnixPty.Slave()
@@ -105,13 +105,32 @@ func commandStart(command []string) tea.Cmd {
 				executing.Stderr = errUnixPty.Slave()
 			}
 
-			go io.Copy(io.MultiWriter(&bothbuf, &outbuf), stdoutPty) //nolint:errcheck
-			go io.Copy(io.MultiWriter(&bothbuf, &errbuf), stderrPty) //nolint:errcheck
+			var wg sync.WaitGroup
+			wg.Add(2)
+			go func() {
+				defer wg.Done()
+				_, _ = io.Copy(io.MultiWriter(&bothbuf, &outbuf), stdoutPty)
+			}()
+			go func() {
+				defer wg.Done()
+				_, _ = io.Copy(io.MultiWriter(&bothbuf, &errbuf), stderrPty)
+			}()
 
 			if err = stdoutPty.Start(executing); err != nil {
+				_ = stdoutPty.Close()
+				_ = stderrPty.Close()
 				return errorMsg(err)
 			}
 			_ = xpty.WaitProcess(context.Background(), executing)
+
+			// Close the PTYs so the copy goroutines hit EOF, then wait
+			// for them to drain before we read from the buffers. Without
+			// this, short-lived commands (e.g. cp that fails with
+			// "Permission denied") can race the goroutines and we end up
+			// returning empty stdout/stderr.
+			_ = stdoutPty.Close()
+			_ = stderrPty.Close()
+			wg.Wait()
 		} else {
 			executing.Stdout = os.Stdout
 			executing.Stderr = os.Stderr
