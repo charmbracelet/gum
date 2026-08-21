@@ -458,6 +458,9 @@ func (m *model) CursorDown() {
 }
 
 func (m *model) ToggleSelection() {
+	if len(m.matches) == 0 {
+		return
+	}
 	if _, ok := m.selected[m.matches[m.cursor].Str]; ok {
 		delete(m.selected, m.matches[m.cursor].Str)
 		m.numSelected--
