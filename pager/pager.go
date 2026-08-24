@@ -128,11 +128,24 @@ func (m *model) helpView() string {
 func (m *model) processText(msg tea.WindowSizeMsg) {
 	m.viewport.SetHeight(msg.Height - lipgloss.Height(m.helpView()))
 	m.viewport.SetWidth(msg.Width)
-	textStyle := lipgloss.NewStyle().Width(m.viewport.Width())
+	m.viewport.SetContent(m.layoutContent(m.viewport.Width(), m.viewport.Height()))
+}
+
+// layoutContent lays out the pager content to fill a viewport of the
+// given dimensions.
+//
+// The viewport renders its content inside its style frame, so the
+// usable number of rows is the viewport height minus the vertical
+// frame size (border, margins and padding). Padding against the full
+// viewport height instead overfills the frame, which makes the
+// viewport scrollable even when all content fits, hiding the last
+// lines when scrolled to the bottom.
+func (m *model) layoutContent(viewportWidth, viewportHeight int) string {
+	textStyle := lipgloss.NewStyle().Width(viewportWidth)
 	var text strings.Builder
 
 	// Determine max width of a line.
-	m.maxWidth = m.viewport.Width()
+	m.maxWidth = viewportWidth
 	if m.softWrap {
 		vpStyle := m.viewport.Style
 		m.maxWidth -= vpStyle.GetHorizontalBorderSize() + vpStyle.GetHorizontalMargins() + vpStyle.GetHorizontalPadding()
@@ -163,12 +176,16 @@ func (m *model) processText(msg tea.WindowSizeMsg) {
 		}
 	}
 
-	diffHeight := m.viewport.Height() - lipgloss.Height(text.String())
-	if diffHeight > 0 && m.showLineNumbers {
-		remainingLines := "   ~ │ " + strings.Repeat("\n   ~ │ ", diffHeight-1)
-		text.WriteString(m.lineNumberStyle.Render(remainingLines))
+	// Drop the trailing newline so the final empty phantom line does
+	// not count towards the content height.
+	content := strings.TrimSuffix(text.String(), "\n")
+
+	interiorHeight := viewportHeight - m.viewport.Style.GetVerticalFrameSize()
+	if fill := interiorHeight - lipgloss.Height(content); m.showLineNumbers && fill > 0 {
+		filler := "   ~ │ " + strings.Repeat("\n   ~ │ ", fill-1)
+		content += "\n" + m.lineNumberStyle.Render(filler)
 	}
-	m.viewport.SetContent(text.String())
+	return content
 }
 
 const heightOffset = 2
