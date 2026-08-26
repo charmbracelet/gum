@@ -29,7 +29,7 @@ import (
 // the user types for as long as the spinner is up. Password prompts are
 // unaffected, as they clear ECHO themselves.
 func hushStdin(f *os.File) (restore func(), err error) {
-	fd := int(f.Fd()) //nolint:gosec // a file descriptor always fits in an int
+	fd := int(f.Fd())
 
 	saved, err := unix.IoctlGetTermios(fd, ioctlReadTermios)
 	if err != nil {
