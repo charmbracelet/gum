@@ -1,4 +1,4 @@
-//go:build !unix
+//go:build !(linux || solaris || darwin || dragonfly || freebsd || netbsd || openbsd)
 
 package spin
 
