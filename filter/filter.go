@@ -286,18 +286,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.textinput, icmd = m.textinput.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		if m.height == 0 || m.height > msg.Height {
-			m.viewport.SetHeight(msg.Height - lipgloss.Height(m.textinput.View()))
+		baseHeight := msg.Height
+		if m.height != 0 {
+			baseHeight = min(m.height, msg.Height)
 		}
+		viewportHeight := baseHeight - lipgloss.Height(m.textinput.View())
 		// Include the header in the height calculation.
 		if m.header != "" {
-			m.viewport.SetHeight(m.viewport.Height() - lipgloss.Height(m.headerStyle.Render(m.header)))
+			viewportHeight -= lipgloss.Height(m.headerStyle.Render(m.header))
 		}
 		// Include the help in the total height calculation.
 		if m.showHelp {
-			m.viewport.SetHeight(m.viewport.Height() - lipgloss.Height(m.helpView()))
+			viewportHeight -= lipgloss.Height(m.helpView())
 		}
-		m.viewport.SetHeight(m.viewport.Height() - m.padding[0] - m.padding[2])
+		viewportHeight -= m.padding[0] + m.padding[2]
+		viewportHeight = max(0, viewportHeight)
+		m.viewport.SetHeight(viewportHeight)
 		m.viewport.SetWidth(msg.Width - m.padding[1] - m.padding[3])
 		m.textinput.SetWidth(msg.Width - m.padding[1] - m.padding[3])
 		if m.reverse {
