@@ -129,6 +129,16 @@ cd /usr/ports/devel/gum && sudo make install clean
 
 </details>
 
+<details>
+<summary>Slackware</summary>
+
+```bash
+# slackbuilds.org
+sbopkg -i gum
+```
+
+</details>
+
 Or download it:
 
 - [Packages][releases] are available in Debian, RPM, and Alpine formats
