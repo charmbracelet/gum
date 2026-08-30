@@ -96,6 +96,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.table.SetWidth(max(0, msg.Width-m.padding[1]-m.padding[3]))
 	case tea.KeyPressMsg:
 		km := m.keymap
 		switch {
