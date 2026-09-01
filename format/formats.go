@@ -4,11 +4,28 @@ package format
 import (
 	"bytes"
 	"fmt"
+	"os"
 	tpl "text/template"
 
 	"charm.land/glamour/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/term"
 )
+
+// defaultMarkdownWidth is the word wrap width used when the terminal size
+// cannot be detected (e.g. when output is piped).
+const defaultMarkdownWidth = 80
+
+// markdownWidth returns the width to wrap markdown to. Wrapping to the terminal
+// width lets glamour keep long table cells inside their column instead of
+// letting the whole table overflow. Falls back to a sensible default when the
+// output is not a terminal.
+func markdownWidth() int {
+	if w, _, err := term.GetSize(os.Stdout.Fd()); err == nil && w > 0 {
+		return w
+	}
+	return defaultMarkdownWidth
+}
 
 func code(input, language string) (string, error) {
 	renderer, err := glamour.NewTermRenderer(
@@ -42,7 +59,7 @@ func emoji(input string) (string, error) {
 func markdown(input string, theme string) (string, error) {
 	renderer, err := glamour.NewTermRenderer(
 		glamour.WithStylePath(theme),
-		glamour.WithWordWrap(0),
+		glamour.WithWordWrap(markdownWidth()),
 	)
 	if err != nil {
 		return "", fmt.Errorf("unable to render: %w", err)
