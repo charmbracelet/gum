@@ -50,14 +50,25 @@ func (o Options) Run() error {
 	// and should emit colors even when piped, respecting NO_COLOR,
 	// CLICOLOR_FORCE and TERM via `colorprofile.Env` (which ignores TTY).
 	profile := colorprofile.Env(os.Environ())
-	if profile == colorprofile.NoTTY {
-		// Env returned NoTTY (no TERM or TERM=dumb without CLICOLOR_FORCE).
-		// For `format | less -R` we want colors even when piped, matching v1.
-		// Only force ANSI when TERM is not dumb; respect TERM=dumb which
-		// explicitly requests no color unless CLICOLOR_FORCE (already handled
-		// by Env returning >=ANSI).
-		if term := os.Getenv("TERM"); term != "dumb" {
+	switch o.Color {
+	case "always":
+		// Explicit flag overrides TERM=dumb and NO_COLOR - force at least ANSI.
+		if profile < colorprofile.ANSI {
 			profile = colorprofile.ANSI
+		}
+	case "never":
+		// Fully disable colors (and styles) - stronger than NO_COLOR which keeps bold.
+		profile = colorprofile.NoTTY
+	default: // auto: keep fixed behavior - preserve when piped, respect env.
+		if profile == colorprofile.NoTTY {
+			// Env returned NoTTY (no TERM or TERM=dumb without CLICOLOR_FORCE).
+			// For `format | less -R` we want colors even when piped, matching v1.
+			// Only force ANSI when TERM is not dumb; respect TERM=dumb which
+			// explicitly requests no color unless CLICOLOR_FORCE (already handled
+			// by Env returning >=ANSI).
+			if term := os.Getenv("TERM"); term != "dumb" {
+				profile = colorprofile.ANSI
+			}
 		}
 	}
 	w := &colorprofile.Writer{
