@@ -11,6 +11,14 @@ import (
 )
 
 var stdout = sync.OnceValue(func() io.Writer {
+	// When CLICOLOR_FORCE=1 is set, force TrueColor profile to preserve
+	// ANSI sequences in subshells/command substitution (issue #1127)
+	if os.Getenv("CLICOLOR_FORCE") == "1" {
+		return &colorprofile.Writer{
+			Forward: os.Stdout,
+			Profile: colorprofile.TrueColor,
+		}
+	}
 	return colorprofile.NewWriter(os.Stdout, os.Environ())
 })
 
