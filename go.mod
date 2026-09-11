@@ -1,6 +1,6 @@
 module charm.land/gum/v2
 
-go 1.25.13
+go 1.26.7
 
 require (
 	charm.land/bubbles/v2 v2.1.1
