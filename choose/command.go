@@ -159,7 +159,7 @@ func (o Options) Run() error {
 		if !o.QuietEmpty {
 			return errors.New("nothing selected")
 		} else {
-			return &error_types.QuietError{Err: errors.New("nothing selected")}
+			return error_types.QuietError("nothing selected")
 		}
 	}
 	if o.Ordered && o.Limit > 1 {

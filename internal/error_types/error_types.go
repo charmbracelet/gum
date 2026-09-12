@@ -1,16 +1,7 @@
 package error_types;
 
-type QuietError struct {
-    Err error
-}
+// QuietError is a custom exit error.
+type QuietError string
 
-func (e *QuietError) Error() string {
-    if e.Err != nil {
-        return e.Err.Error()
-    }
-    return "quiet error"
-}
-
-func (e *QuietError) Unwrap() error {
-    return e.Err
-}
+// Error implements error.
+func (e QuietError) Error() string { return string(e) }

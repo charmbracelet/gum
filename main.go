@@ -86,8 +86,7 @@ func main() {
 			fmt.Fprintln(os.Stderr, "timed out")
 			os.Exit(exit.StatusTimeout)
 		}
-		var quietErr *error_types.QuietError
-		if errors.As(err, &quietErr) {
+		if _, ok := errors.AsType[error_types.QuietError](err); ok {
 			os.Exit(1)
 		}
 		fmt.Fprintln(os.Stderr, err)
