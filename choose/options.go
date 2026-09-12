@@ -27,6 +27,7 @@ type Options struct {
 	LabelDelimiter   string        `help:"Allows to set a delimiter, so options can be set as label:value" default:"" env:"GUM_CHOOSE_LABEL_DELIMITER"`
 	StripANSI        bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_CHOOSE_STRIP_ANSI"`
 	Padding          string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_CHOOSE_PADDING"`
+	QuietEmpty       bool          `help:"Do not print diagnostics if no options are selected" default:"false" negatable:"" env:"GUM_CHOOSE_QUIET_EMPTY"`
 
 	CursorStyle       style.Styles `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_CURSOR_"`
 	HeaderStyle       style.Styles `embed:"" prefix:"header." set:"defaultForeground=99" envprefix:"GUM_CHOOSE_HEADER_"`

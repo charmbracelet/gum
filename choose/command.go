@@ -15,6 +15,7 @@ import (
 	"charm.land/gum/v2/internal/timeout"
 	"charm.land/gum/v2/internal/tty"
 	"charm.land/gum/v2/style"
+	"charm.land/gum/v2/internal/error_types"
 )
 
 // Run provides a shell script interface for choosing between different through
@@ -155,7 +156,11 @@ func (o Options) Run() error {
 	}
 	m = tm.(model)
 	if !m.submitted {
-		return errors.New("nothing selected")
+		if !o.QuietEmpty {
+			return errors.New("nothing selected")
+		} else {
+			return &error_types.QuietError{Err: errors.New("nothing selected")}
+		}
 	}
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {

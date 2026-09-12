@@ -9,8 +9,10 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/gum/v2/internal/exit"
+	"charm.land/gum/v2/internal/error_types"
 	"charm.land/lipgloss/v2"
 	"github.com/alecthomas/kong"
+
 )
 
 const shaLen = 7
@@ -83,6 +85,10 @@ func main() {
 		if errors.Is(err, tea.ErrProgramKilled) {
 			fmt.Fprintln(os.Stderr, "timed out")
 			os.Exit(exit.StatusTimeout)
+		}
+		var quietErr *error_types.QuietError
+		if errors.As(err, &quietErr) {
+			os.Exit(1)
 		}
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

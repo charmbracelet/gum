@@ -15,6 +15,7 @@ import (
 	"charm.land/gum/v2/internal/stdin"
 	"charm.land/gum/v2/internal/timeout"
 	"charm.land/gum/v2/internal/tty"
+	"charm.land/gum/v2/internal/error_types"
 	"charm.land/gum/v2/style"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/sahilm/fuzzy"
@@ -150,7 +151,11 @@ func (o Options) Run() error {
 
 	m = tm.(model)
 	if !m.submitted {
-		return errors.New("nothing selected")
+		if !o.QuietEmpty {
+			return errors.New("nothing selected")
+		} else {
+			return &error_types.QuietError{Err: errors.New("nothing selected")}
+		}
 	}
 
 	// allSelections contains values only if limit is greater
