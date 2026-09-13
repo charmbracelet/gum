@@ -134,11 +134,22 @@ func (o Options) Run() error {
 				continue
 			}
 			if o.Limit == 1 {
+				// When the user can choose only one option don't select the option but
+				// start with the cursor hovering over it.
 				m.cursor = i
-				m.selected[option.Str] = struct{}{}
 			} else {
 				currentSelected++
 				m.selected[option.Str] = struct{}{}
+			}
+		}
+	}
+
+	// Handle initial cursor position if specified
+	if o.Initial != "" {
+		for i, match := range matches {
+			if match.Str == o.Initial {
+				m.cursor = i
+				break
 			}
 		}
 	}
