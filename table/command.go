@@ -62,6 +62,10 @@ func (o Options) Run() error {
 		columnNames = o.Columns
 	}
 
+	if (o.DefaultColumn == 0) != (o.DefaultSelect == "") {
+		return fmt.Errorf("--default-column and --default-select must both be set")
+	}
+
 	data, err := reader.ReadAll()
 	if err != nil {
 		return fmt.Errorf("invalid data provided")
@@ -89,6 +93,7 @@ func (o Options) Run() error {
 	}
 
 	rows := make([]table.Row, 0, len(data))
+	cursor := 0
 	for row := range data {
 		if len(data[row]) > len(columns) {
 			return fmt.Errorf("invalid number of columns")
@@ -99,6 +104,14 @@ func (o Options) Run() error {
 			data[row] = append(data[row], "")
 		}
 
+		if o.DefaultColumn > len(columns) {
+			return fmt.Errorf("--default-column out of range")
+		}
+		if o.DefaultColumn > 0 {
+			if data[row][o.DefaultColumn-1] == o.DefaultSelect {
+				cursor = row
+			}
+		}
 		for i, col := range data[row] {
 			if len(o.Widths) == 0 {
 				width := lipgloss.Width(col)
@@ -139,6 +152,7 @@ func (o Options) Run() error {
 	}
 
 	table := table.New(opts...)
+	table.SetCursor(cursor)
 
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
