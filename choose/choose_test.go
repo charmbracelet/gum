@@ -24,13 +24,13 @@ func buildModel(t *testing.T, items, limit int) model {
 		km.Toggle.SetEnabled(true)
 	}
 	return model{
-		height:     5,
-		items:      ms,
-		index:      0,
-		limit:      limit,
-		paginator:  pager,
-		help:       help.New(),
-		keymap:     km,
+		height:    5,
+		items:     ms,
+		index:     0,
+		limit:     limit,
+		paginator: pager,
+		help:      help.New(),
+		keymap:    km,
 	}
 }
 
