@@ -55,8 +55,8 @@ func defaultKeymap() keymap {
 			key.WithDisabled(),
 		),
 		Toggle: key.NewBinding(
-			key.WithKeys("ctrl+@"),
-			key.WithHelp("ctrl+@", "toggle"),
+			key.WithKeys("ctrl+space"),
+			key.WithHelp("ctrl+space", "toggle"),
 			key.WithDisabled(),
 		),
 		ToggleAll: key.NewBinding(
