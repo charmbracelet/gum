@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/x/ansi"
+	"github.com/sahilm/fuzzy"
 )
 
 func TestMatchedRanges(t *testing.T) {
@@ -57,3 +58,58 @@ func TestByteToChar(t *testing.T) {
 		t.Errorf("expected %+q, got %+q", expect, got)
 	}
 }
+
+func TestToggleSelection(t *testing.T) {
+	t.Run("empty matches does not panic", func(t *testing.T) {
+		m := model{
+			matches:  []fuzzy.Match{},
+			selected: make(map[string]struct{}),
+			cursor:   0,
+			limit:    10,
+		}
+		// Should safely no-op without panicking (Issue #1105)
+		m.ToggleSelection()
+		if len(m.selected) != 0 {
+			t.Errorf("expected 0 selected, got %d", len(m.selected))
+		}
+	})
+
+	t.Run("out of bounds cursor does not panic", func(t *testing.T) {
+		m := model{
+			matches:  []fuzzy.Match{{Str: "apple"}},
+			selected: make(map[string]struct{}),
+			cursor:   -1,
+			limit:    10,
+		}
+		m.ToggleSelection()
+		if len(m.selected) != 0 {
+			t.Errorf("expected 0 selected, got %d", len(m.selected))
+		}
+
+		m.cursor = 5
+		m.ToggleSelection()
+		if len(m.selected) != 0 {
+			t.Errorf("expected 0 selected, got %d", len(m.selected))
+		}
+	})
+
+	t.Run("valid toggle and untoggle", func(t *testing.T) {
+		m := model{
+			matches:  []fuzzy.Match{{Str: "apple"}, {Str: "banana"}},
+			selected: make(map[string]struct{}),
+			cursor:   0,
+			limit:    2,
+		}
+
+		m.ToggleSelection()
+		if _, ok := m.selected["apple"]; !ok || m.numSelected != 1 {
+			t.Errorf("expected apple selected, got %v", m.selected)
+		}
+
+		m.ToggleSelection()
+		if _, ok := m.selected["apple"]; ok || m.numSelected != 0 {
+			t.Errorf("expected apple deselected, got %v", m.selected)
+		}
+	})
+}
+
