@@ -10,4 +10,6 @@ type Options struct {
 	StripANSI bool `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_FORMAT_STRIP_ANSI"`
 
 	Type string `help:"Format to use (markdown,template,code,emoji)" enum:"markdown,template,code,emoji" short:"t" default:"markdown" env:"GUM_FORMAT_TYPE"`
+
+	Color string `help:"Color output (auto, always, never)" enum:"auto,always,never" default:"auto" env:"GUM_FORMAT_COLOR"`
 }
