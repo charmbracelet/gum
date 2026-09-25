@@ -24,6 +24,8 @@ type Options struct {
 	CellStyle     style.Styles  `embed:"" prefix:"cell." envprefix:"GUM_TABLE_CELL_"`
 	HeaderStyle   style.Styles  `embed:"" prefix:"header." envprefix:"GUM_TABLE_HEADER_"`
 	SelectedStyle style.Styles  `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_TABLE_SELECTED_"`
+	Limit         int           `help:"Maximum number of rows to select" default:"1" group:"Selection" env:"GUM_TABLE_LIMIT"`
+	NoLimit       bool          `help:"Pick unlimited number of rows (ignores limit)" group:"Selection" env:"GUM_TABLE_NO_LIMIT"`
 	ReturnColumn  int           `short:"r" help:"Which column number should be returned instead of whole row as string. Default=0 returns whole Row" default:"0"`
 	Timeout       time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_TABLE_TIMEOUT"`
 	Padding       string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_TABLE_PADDING"`
