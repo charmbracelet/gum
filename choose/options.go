@@ -31,5 +31,5 @@ type Options struct {
 	CursorStyle       style.Styles `embed:"" prefix:"cursor." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_CURSOR_"`
 	HeaderStyle       style.Styles `embed:"" prefix:"header." set:"defaultForeground=99" envprefix:"GUM_CHOOSE_HEADER_"`
 	ItemStyle         style.Styles `embed:"" prefix:"item." hidden:"" envprefix:"GUM_CHOOSE_ITEM_"`
-	SelectedItemStyle style.Styles `embed:"" prefix:"selected." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_SELECTED_"`
+	SelectedItemStyle style.Styles `embed:"" prefix:"selected-item." set:"defaultForeground=212" envprefix:"GUM_CHOOSE_SELECTED_ITEM_"`
 }
