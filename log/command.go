@@ -81,8 +81,7 @@ func (o Options) Run() error {
 		Inline(true)
 	st.Prefix = o.PrefixStyle.ToLipgloss().
 		Inline(true)
-	st.Message = o.MessageStyle.ToLipgloss().
-		Inline(true)
+	st.Message = o.MessageStyle.ToLipgloss()
 	st.Key = o.KeyStyle.ToLipgloss().
 		Inline(true)
 	st.Value = o.ValueStyle.ToLipgloss().
@@ -128,7 +127,7 @@ func (o Options) Run() error {
 	} else if o.Structured {
 		logger.print(arg0, args...)
 	} else {
-		logger.print(strings.Join(o.Text, " "))
+		logger.print(strings.Join(o.Text, "\n"))
 	}
 
 	return nil
