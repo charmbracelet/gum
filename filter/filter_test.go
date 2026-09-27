@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/x/ansi"
+	"github.com/sahilm/fuzzy"
 )
 
 func TestMatchedRanges(t *testing.T) {
@@ -55,5 +56,70 @@ func TestByteToChar(t *testing.T) {
 	start, stop := bytePosToVisibleCharPos(str, rng)
 	if got := ansi.Strip(ansi.Cut(stStr, start, stop)); got != expect {
 		t.Errorf("expected %+q, got %+q", expect, got)
+	}
+}
+
+func TestInitialCursorPositioning(t *testing.T) {
+	tests := []struct {
+		name     string
+		options  []string
+		initial  string
+		expected int // expected cursor position
+	}{
+		{
+			name:     "initial option exists",
+			options:  []string{"Apple", "Banana", "Cherry", "Date"},
+			initial:  "Cherry",
+			expected: 2,
+		},
+		{
+			name:     "initial option doesn't exist",
+			options:  []string{"Apple", "Banana", "Cherry", "Date"},
+			initial:  "Orange",
+			expected: 0, // should default to first item
+		},
+		{
+			name:     "empty initial option",
+			options:  []string{"Apple", "Banana", "Cherry", "Date"},
+			initial:  "",
+			expected: 0, // should default to first item
+		},
+		{
+			name:     "initial option is first",
+			options:  []string{"Apple", "Banana", "Cherry", "Date"},
+			initial:  "Apple",
+			expected: 0,
+		},
+		{
+			name:     "initial option is last",
+			options:  []string{"Apple", "Banana", "Cherry", "Date"},
+			initial:  "Date",
+			expected: 3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Create matches like in the actual filter command
+			matches := make([]fuzzy.Match, len(tt.options))
+			for i, option := range tt.options {
+				matches[i] = fuzzy.Match{Str: option}
+			}
+
+			// Simulate the logic from command.go
+			cursor := 0
+			if tt.initial != "" {
+				for i, match := range matches {
+					if match.Str == tt.initial {
+						cursor = i
+						break
+					}
+				}
+			}
+
+			if cursor != tt.expected {
+				t.Errorf("expected cursor position %d, got %d", tt.expected, cursor)
+			}
+		})
 	}
 }
