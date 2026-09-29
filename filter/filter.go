@@ -19,6 +19,7 @@ import (
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/exp/ordered"
 	"github.com/rivo/uniseg"
 	"github.com/sahilm/fuzzy"
@@ -205,7 +206,14 @@ func (m model) View() tea.View {
 			s.WriteString(" ")
 		}
 
-		styledOption := m.choices[match.Str]
+		styledOption, present := m.choices[match.Str]
+		if !present {
+			// --no-strict can surface the current input as a match even when it
+			// is not one of the original options.
+			s.WriteString(lineTextStyle.Render(match.Str))
+			s.WriteRune('\n')
+			continue
+		}
 		if len(match.MatchedIndexes) == 0 {
 			// No matches, just render the text.
 			s.WriteString(lineTextStyle.Render(styledOption))
@@ -368,26 +376,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			// A character was entered, this likely means that the text input has
 			// changed. This suggests that the matches are outdated, so update them.
-			var choices []string
-			if !m.strict {
-				choices = append(choices, m.textinput.Value())
-			}
-			choices = append(choices, m.filteringChoices...)
-			if m.fuzzy {
-				if m.sort {
-					m.matches = fuzzy.Find(m.textinput.Value(), choices)
-				} else {
-					m.matches = fuzzy.FindNoSort(m.textinput.Value(), choices)
+			value := m.textinput.Value()
+			if !m.strict && value != "" {
+				if _, ok := m.choices[value]; !ok {
+					m.choices[value] = value
 				}
-			} else {
-				m.matches = exactMatches(m.textinput.Value(), choices)
 			}
-
-			// If the search field is empty, let's not display the matches
-			// (none), but rather display all possible choices.
-			if m.textinput.Value() == "" {
-				m.matches = matchAll(m.filteringChoices)
-			}
+			m.matches = buildMatches(value, m.filteringChoices, m.fuzzy, m.sort, m.strict)
 
 			// For reverse layout, we need to offset the viewport so that the
 			// it remains at a constant position relative to the cursor.
@@ -485,6 +480,46 @@ func (m model) deselectAll() model {
 	m.selected = make(map[string]struct{})
 	m.numSelected = 0
 	return m
+}
+
+// initialChoices builds the option map and the first match list for a filter
+// command. --no-strict --value must include that value as a selectable match
+// so accepting the prefilled input prints the value instead of a fuzzy hit
+// (or nothing). See https://github.com/charmbracelet/gum/issues/957
+func initialChoices(o Options) (map[string]string, []string, []fuzzy.Match) {
+	choices := map[string]string{}
+	filteringChoices := make([]string, 0, len(o.Options))
+	for _, opt := range o.Options {
+		s := ansi.Strip(opt)
+		choices[s] = opt
+		filteringChoices = append(filteringChoices, s)
+	}
+	if !o.Strict && o.Value != "" {
+		if _, ok := choices[o.Value]; !ok {
+			choices[o.Value] = o.Value
+		}
+	}
+	return choices, filteringChoices, buildMatches(o.Value, filteringChoices, o.Fuzzy, o.Sort && o.FuzzySort, o.Strict)
+}
+
+// buildMatches returns the visible matches for the current filter value.
+// When strict is false and value is non-empty, the typed value is included as
+// a selectable option so --no-strict --value can be accepted as-is.
+func buildMatches(value string, filteringChoices []string, fuzzyMatch, sortResults, strict bool) []fuzzy.Match {
+	if value == "" {
+		return matchAll(filteringChoices)
+	}
+	searchIn := filteringChoices
+	if !strict {
+		searchIn = append([]string{value}, filteringChoices...)
+	}
+	if fuzzyMatch {
+		if sortResults {
+			return fuzzy.Find(value, searchIn)
+		}
+		return fuzzy.FindNoSort(value, searchIn)
+	}
+	return exactMatches(value, searchIn)
 }
 
 func matchAll(options []string) []fuzzy.Match {

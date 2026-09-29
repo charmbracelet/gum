@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/x/ansi"
+	"github.com/sahilm/fuzzy"
 )
 
 func TestMatchedRanges(t *testing.T) {
@@ -40,6 +41,113 @@ func TestMatchedRanges(t *testing.T) {
 			}
 		})
 	}
+}
+
+func matchStrs(matches []fuzzy.Match) []string {
+	out := make([]string, len(matches))
+	for i, m := range matches {
+		out[i] = m.Str
+	}
+	return out
+}
+
+func TestInitialChoicesNoStrictValue(t *testing.T) {
+	options := []string{"alice", "carol", "bob"}
+
+	t.Run("prefilled prefix used to print the first option", func(t *testing.T) {
+		_, _, matches := initialChoices(Options{
+			Options:   options,
+			Value:     "al",
+			Fuzzy:     true,
+			Sort:      true,
+			FuzzySort: true,
+			Strict:    true,
+		})
+		if len(matches) == 0 || matches[0].Str != "alice" {
+			t.Fatalf("strict mode should still prefer alice, got %v", matchStrs(matches))
+		}
+	})
+
+	t.Run("accepting --value al prints al not alice", func(t *testing.T) {
+		choices, _, matches := initialChoices(Options{
+			Options:   options,
+			Value:     "al",
+			Fuzzy:     true,
+			Sort:      true,
+			FuzzySort: true,
+			Strict:    false,
+		})
+		if choices["al"] != "al" {
+			t.Fatalf("expected the typed value in the choice map, got %#v", choices["al"])
+		}
+		if len(matches) == 0 || matches[0].Str != "al" {
+			t.Fatalf("Enter would print %v, want al", matchStrs(matches))
+		}
+	})
+
+	t.Run("accepting --value dan prints dan not empty", func(t *testing.T) {
+		_, _, matches := initialChoices(Options{
+			Options:   options,
+			Value:     "dan",
+			Fuzzy:     true,
+			Sort:      true,
+			FuzzySort: true,
+			Strict:    false,
+		})
+		if len(matches) == 0 {
+			t.Fatal("Enter would print nothing")
+		}
+		if matches[0].Str != "dan" {
+			t.Fatalf("Enter would print %q, want dan", matches[0].Str)
+		}
+	})
+}
+
+func TestBuildMatchesNoStrictValue(t *testing.T) {
+	options := []string{"alice", "carol", "bob"}
+
+	t.Run("strict value still selects the first option match", func(t *testing.T) {
+		matches := buildMatches("al", options, true, true, true)
+		if len(matches) == 0 {
+			t.Fatal("expected option matches")
+		}
+		if matches[0].Str != "alice" {
+			t.Fatalf("expected alice, got %q", matches[0].Str)
+		}
+	})
+
+	t.Run("no-strict value that prefixes an option is accepted as-is", func(t *testing.T) {
+		// Reproduces https://github.com/charmbracelet/gum/issues/957
+		// `gum filter --no-strict --value al alice carol bob` then Enter
+		// used to print "alice".
+		matches := buildMatches("al", options, true, true, false)
+		if len(matches) == 0 || matches[0].Str != "al" {
+			t.Fatalf("expected first match %q, got %v", "al", matchStrs(matches))
+		}
+	})
+
+	t.Run("no-strict value that matches nothing is still selectable", func(t *testing.T) {
+		// `gum filter --no-strict --value dan alice carol bob` then Enter
+		// used to print nothing.
+		matches := buildMatches("dan", options, true, true, false)
+		if len(matches) == 0 || matches[0].Str != "dan" {
+			t.Fatalf("expected first match %q, got %v", "dan", matchStrs(matches))
+		}
+	})
+
+	t.Run("empty value lists all options even when not strict", func(t *testing.T) {
+		matches := buildMatches("", options, true, true, false)
+		if got, want := matchStrs(matches), options; !reflect.DeepEqual(got, want) {
+			t.Fatalf("expected %v, got %v", want, got)
+		}
+	})
+
+	t.Run("no-strict exact match includes the typed value", func(t *testing.T) {
+		matches := buildMatches("al", options, false, true, false)
+		if len(matches) == 0 || matches[0].Str != "al" {
+			t.Fatalf("expected first match %q, got %v", "al", matchStrs(matches))
+		}
+	})
 }
 
 func TestByteToChar(t *testing.T) {

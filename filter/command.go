@@ -16,8 +16,6 @@ import (
 	"charm.land/gum/v2/internal/timeout"
 	"charm.land/gum/v2/internal/tty"
 	"charm.land/gum/v2/style"
-	"github.com/charmbracelet/x/ansi"
-	"github.com/sahilm/fuzzy"
 )
 
 // Run provides a shell script interface for filtering through options, powered
@@ -58,26 +56,11 @@ func (o Options) Run() error {
 		tea.WithContext(ctx),
 	}
 
-	var matches []fuzzy.Match
 	if o.Value != "" {
 		i.SetValue(o.Value)
 	}
 
-	choices := map[string]string{}
-	filteringChoices := []string{}
-	for _, opt := range o.Options {
-		s := ansi.Strip(opt)
-		choices[s] = opt
-		filteringChoices = append(filteringChoices, s)
-	}
-	switch {
-	case o.Value != "" && o.Fuzzy:
-		matches = fuzzy.Find(o.Value, filteringChoices)
-	case o.Value != "" && !o.Fuzzy:
-		matches = exactMatches(o.Value, filteringChoices)
-	default:
-		matches = matchAll(filteringChoices)
-	}
+	choices, filteringChoices, matches := initialChoices(o)
 
 	if o.NoLimit {
 		o.Limit = len(o.Options)
