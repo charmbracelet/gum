@@ -11,12 +11,17 @@
 package confirm
 
 import (
+	"fmt"
+	"time"
+
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/key"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 )
+
+type tickMsg struct{}
 
 func defaultKeymap(affirmative, negative string) keymap {
 	return keymap{
@@ -87,6 +92,11 @@ type model struct {
 
 	defaultSelection bool
 
+	timeout       time.Duration
+	deadline      time.Time
+	remaining     time.Duration
+	timerActive   bool
+
 	// styles
 	promptStyle     lipgloss.Style
 	selectedStyle   lipgloss.Style
@@ -94,12 +104,33 @@ type model struct {
 	padding         []int
 }
 
-func (m model) Init() tea.Cmd { return nil }
+func (m model) Init() tea.Cmd {
+	if m.timeout <= 0 {
+		return nil
+	}
+	m.timerActive = true
+	return tea.Tick(200*time.Millisecond, func(time.Time) tea.Msg {
+		return tickMsg{}
+	})
+}
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		return m, nil
+	case tickMsg:
+		if m.timeout <= 0 || !m.timerActive {
+			return m, nil
+		}
+		m.remaining = time.Until(m.deadline)
+		if m.remaining <= 0 {
+			m.confirmation = false
+			m.quitting = true
+			return m, tea.Quit
+		}
+		return m, tea.Tick(200*time.Millisecond, func(time.Time) tea.Msg {
+			return tickMsg{}
+		})
 	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.keys.Abort):
@@ -112,18 +143,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Negative):
 			m.confirmation = false
 			m.quitting = true
+			m.timerActive = false
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.Toggle):
 			if m.negative == "" {
 				break
 			}
 			m.confirmation = !m.confirmation
+			m.timerActive = false
+			return m, nil
 		case key.Matches(msg, m.keys.Submit):
 			m.quitting = true
+			m.timerActive = false
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.Affirmative):
 			m.quitting = true
 			m.confirmation = true
+			m.timerActive = false
 			return m, tea.Quit
 		}
 	}
@@ -150,8 +186,17 @@ func (m model) View() tea.View {
 		neg = ""
 	}
 
+	timer := ""
+	if m.timeout > 0 && m.timerActive {
+		remaining := m.remaining
+		if remaining <= 0 {
+			remaining = 0
+		}
+		timer = fmt.Sprintf(" [%s]", remaining.Round(time.Second).String())
+	}
+
 	parts := []string{
-		m.promptStyle.Render(m.prompt) + "\n",
+		m.promptStyle.Render(m.prompt) + timer + "\n",
 		lipgloss.JoinHorizontal(lipgloss.Left, aff, neg),
 	}
 
