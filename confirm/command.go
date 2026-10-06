@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"charm.land/bubbles/v2/help"
 	tea "charm.land/bubbletea/v2"
@@ -44,6 +45,10 @@ func (o Options) Run() error {
 		unselectedStyle:  o.UnselectedStyle.ToLipgloss(),
 		promptStyle:      o.PromptStyle.ToLipgloss(),
 		padding:          []int{top, right, bottom, left},
+		timeout:          o.Timeout,
+		deadline:         time.Now().Add(o.Timeout),
+		remaining:        o.Timeout,
+		timerActive:      o.Timeout > 0,
 	}
 	tm, err := tea.NewProgram(
 		m,
