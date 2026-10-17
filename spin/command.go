@@ -3,6 +3,7 @@ package spin
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"charm.land/bubbles/v2/spinner"
 	tea "charm.land/bubbletea/v2"
@@ -18,9 +19,7 @@ func (o Options) Run() error {
 	isOutTTY := term.IsTerminal(os.Stdout.Fd())
 	isErrTTY := term.IsTerminal(os.Stderr.Fd())
 
-	s := spinner.New()
-	s.Style = o.SpinnerStyle.ToLipgloss()
-	s.Spinner = spinnerMap[o.Spinner]
+	s := o.newSpinner()
 	top, right, bottom, left := style.ParsePadding(o.Padding)
 	m := model{
 		spinner:    s,
@@ -79,4 +78,18 @@ func (o Options) Run() error {
 	}
 
 	return exit.ErrExit(m.status)
+}
+
+func (o Options) newSpinner() spinner.Model {
+	s := spinner.New()
+	s.Style = o.SpinnerStyle.ToLipgloss()
+	if sp, ok := spinnerMap[o.Spinner]; ok {
+		s.Spinner = sp
+	} else {
+		s.Spinner = spinner.Dot
+	}
+	if o.FPS > 0 {
+		s.Spinner.FPS = time.Second / time.Duration(o.FPS)
+	}
+	return s
 }
