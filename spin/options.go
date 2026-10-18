@@ -19,6 +19,6 @@ type Options struct {
 	Title        string        `help:"Text to display to user while spinning" default:"Loading..." env:"GUM_SPIN_TITLE"`
 	TitleStyle   style.Styles  `embed:"" prefix:"title." envprefix:"GUM_SPIN_TITLE_"`
 	Align        string        `help:"Alignment of spinner with regard to the title" short:"a" type:"align" enum:"left,right" default:"left" env:"GUM_SPIN_ALIGN"`
-	Timeout      time.Duration `help:"Timeout until spin command aborts" default:"0s" env:"GUM_SPIN_TIMEOUT"`
+	Timeout      time.Duration `help:"Timeout until spin command aborts (the running command is not killed)" default:"0s" env:"GUM_SPIN_TIMEOUT"`
 	Padding      string        `help:"Padding" default:"${defaultPadding}" group:"Style Flags" env:"GUM_SPIN_PADDING"`
 }
