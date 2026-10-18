@@ -4,7 +4,10 @@ import (
 	"reflect"
 	"testing"
 
+	"charm.land/bubbles/v2/viewport"
+	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/x/ansi"
+	"github.com/sahilm/fuzzy"
 )
 
 func TestMatchedRanges(t *testing.T) {
@@ -57,3 +60,93 @@ func TestByteToChar(t *testing.T) {
 		t.Errorf("expected %+q, got %+q", expect, got)
 	}
 }
+
+func TestToggleSelectionEmptyMatches(t *testing.T) {
+	m := &model{
+		limit:    2,
+		matches:  []fuzzy.Match{},
+		selected: make(map[string]struct{}),
+		cursor:   0,
+	}
+
+	// Should not panic when matches is empty
+	m.ToggleSelection()
+
+	if len(m.selected) != 0 {
+		t.Errorf("expected 0 selections, got %d", len(m.selected))
+	}
+}
+
+func TestToggleSelectionOutOfBoundsCursor(t *testing.T) {
+	m := &model{
+		limit: 2,
+		matches: []fuzzy.Match{
+			{Str: "apple"},
+		},
+		selected: make(map[string]struct{}),
+		cursor:   5,
+	}
+
+	// Should not panic when cursor is out of bounds
+	m.ToggleSelection()
+
+	m.cursor = -1
+	m.ToggleSelection()
+
+	if len(m.selected) != 0 {
+		t.Errorf("expected 0 selections, got %d", len(m.selected))
+	}
+}
+
+func TestToggleSelection(t *testing.T) {
+	m := &model{
+		limit: 2,
+		matches: []fuzzy.Match{
+			{Str: "apple"},
+			{Str: "banana"},
+		},
+		selected: make(map[string]struct{}),
+		cursor:   0,
+	}
+
+	// Select first item
+	m.ToggleSelection()
+	if _, ok := m.selected["apple"]; !ok {
+		t.Errorf("expected apple to be selected")
+	}
+	if m.numSelected != 1 {
+		t.Errorf("expected numSelected to be 1, got %d", m.numSelected)
+	}
+
+	// Deselect first item
+	m.ToggleSelection()
+	if _, ok := m.selected["apple"]; ok {
+		t.Errorf("expected apple to be deselected")
+	}
+	if m.numSelected != 0 {
+		t.Errorf("expected numSelected to be 0, got %d", m.numSelected)
+	}
+}
+
+func TestFilterUpdateToggleAndNextEmptyMatches(t *testing.T) {
+	km := defaultKeymap()
+	km.ToggleAndNext.SetEnabled(true)
+	v := viewport.New(viewport.WithWidth(10), viewport.WithHeight(10))
+
+	m := model{
+		limit:    2,
+		matches:  []fuzzy.Match{},
+		selected: make(map[string]struct{}),
+		keymap:   km,
+		viewport: &v,
+	}
+
+	tabMsg := tea.KeyPressMsg{Code: tea.KeyTab}
+	newModel, _ := m.Update(tabMsg)
+	updated := newModel.(model)
+	if len(updated.selected) != 0 {
+		t.Errorf("expected 0 selections, got %d", len(updated.selected))
+	}
+}
+
+
