@@ -20,7 +20,7 @@ type Options struct {
 	MaxLines        int           `help:"Maximum number of lines (0 for no limit)" default:"0"`
 	ShowHelp        bool          `help:"Show help key binds" negatable:"" default:"true" env:"GUM_WRITE_SHOW_HELP"`
 	CursorMode      string        `prefix:"cursor." name:"mode" help:"Cursor mode" default:"blink" enum:"blink,hide,static" env:"GUM_WRITE_CURSOR_MODE"`
-	Timeout         time.Duration `help:"Timeout until choose returns selected element" default:"0s" env:"GUM_WRITE_TIMEOUT"`
+	Timeout         time.Duration `help:"Timeout until write aborts" default:"0s" env:"GUM_WRITE_TIMEOUT"`
 	StripANSI       bool          `help:"Strip ANSI sequences when reading from STDIN" default:"true" negatable:"" env:"GUM_WRITE_STRIP_ANSI"`
 
 	BaseStyle             style.Styles `embed:"" prefix:"base." envprefix:"GUM_WRITE_BASE_"`
