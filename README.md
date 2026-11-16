@@ -231,6 +231,31 @@ cat flavors.txt | gum filter --limit 2
 cat flavors.txt | gum filter --no-limit
 ```
 
+### Extended filtering
+
+Use `--extended` (or `GUM_FILTER_EXTENDED=true`) to narrow down a list with
+multiple search terms. Every term must match, in any order within the option.
+Terms use the usual case-insensitive fuzzy matching. Prefix a term with an
+apostrophe to require a contiguous, case-insensitive match instead:
+
+```bash
+# Match both src and model, even when they are separated in a path.
+git ls-files | gum filter --extended --value "src model"
+
+# Require contiguous model, rather than a fuzzy match like m_o_d_e_l.
+git ls-files | gum filter --extended --value "src 'model"
+```
+
+With `--no-fuzzy`, every term is a contiguous match. `--no-fuzzy-sort` preserves
+the input order; otherwise fuzzy scores are combined across terms. These options
+work with initial values, interactive typing, and multiple selections.
+
+Escape whitespace with a backslash to keep it inside a term (for example,
+`--value "'user\ model"`). Escape an initial apostrophe with a backslash to
+search for it literally. Backslashes before other characters, such as those in
+Windows paths, are preserved; `\\` searches for one literal backslash. Without
+`--extended`, spaces and apostrophes keep their existing literal behavior.
+
 ## Choose
 
 Choose an option from a list of choices.

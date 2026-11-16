@@ -149,6 +149,7 @@ type model struct {
 	unselectedPrefixStyle lipgloss.Style
 	reverse               bool
 	fuzzy                 bool
+	extended              bool
 	sort                  bool
 	showHelp              bool
 	keymap                keymap
@@ -214,12 +215,18 @@ func (m model) View() tea.View {
 		}
 
 		var ranges []lipgloss.Range
-		for _, rng := range matchedRanges(match.MatchedIndexes) {
-			// ansi.Cut is grapheme and ansi sequence aware, we match against a ansi.Stripped string, but we might still have graphemes.
-			// all that to say that rng is byte positions, but we need to pass it down to ansi.Cut as char positions.
-			// so we need to adjust it here:
-			start, stop := bytePosToVisibleCharPos(match.Str, rng)
-			ranges = append(ranges, lipgloss.NewRange(start, stop+1, m.matchStyle))
+		if m.extended {
+			for _, rng := range extendedMatchedRanges(match.Str, match.MatchedIndexes) {
+				ranges = append(ranges, lipgloss.NewRange(rng[0], rng[1], m.matchStyle))
+			}
+		} else {
+			for _, rng := range matchedRanges(match.MatchedIndexes) {
+				// ansi.Cut is grapheme and ansi sequence aware, we match against a ansi.Stripped string, but we might still have graphemes.
+				// all that to say that rng is byte positions, but we need to pass it down to ansi.Cut as char positions.
+				// so we need to adjust it here:
+				start, stop := bytePosToVisibleCharPos(match.Str, rng)
+				ranges = append(ranges, lipgloss.NewRange(start, stop+1, m.matchStyle))
+			}
 		}
 
 		s.WriteString(lineTextStyle.Render(lipgloss.StyleRanges(styledOption, ranges...)))
@@ -373,7 +380,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				choices = append(choices, m.textinput.Value())
 			}
 			choices = append(choices, m.filteringChoices...)
-			if m.fuzzy {
+			if m.extended {
+				m.matches = extendedMatches(m.textinput.Value(), choices, m.fuzzy, m.sort)
+			} else if m.fuzzy {
 				if m.sort {
 					m.matches = fuzzy.Find(m.textinput.Value(), choices)
 				} else {
