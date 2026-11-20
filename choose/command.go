@@ -11,11 +11,11 @@ import (
 	"charm.land/bubbles/v2/help"
 	"charm.land/bubbles/v2/paginator"
 	tea "charm.land/bubbletea/v2"
+	"charm.land/gum/v2/internal/exit"
 	"charm.land/gum/v2/internal/stdin"
 	"charm.land/gum/v2/internal/timeout"
 	"charm.land/gum/v2/internal/tty"
 	"charm.land/gum/v2/style"
-	"charm.land/gum/v2/internal/error_types"
 )
 
 // Run provides a shell script interface for choosing between different through
@@ -156,11 +156,10 @@ func (o Options) Run() error {
 	}
 	m = tm.(model)
 	if !m.submitted {
-		if !o.QuietEmpty {
-			return errors.New("nothing selected")
-		} else {
-			return error_types.QuietError("nothing selected")
+		if o.QuietEmpty {
+			return exit.ErrExit(1)
 		}
+		return errors.New("nothing selected")
 	}
 	if o.Ordered && o.Limit > 1 {
 		sort.Slice(m.items, func(i, j int) bool {
