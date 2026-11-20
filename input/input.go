@@ -77,9 +77,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if m.autoWidth {
-			m.textinput.SetWidth(msg.Width - 1 -
+			width := msg.Width - 1 -
 				lipgloss.Width(m.textinput.Prompt) -
-				m.padding[1] - m.padding[3])
+				m.padding[1] - m.padding[3]
+			if width > 0 {
+				m.textinput.SetWidth(width)
+			}
 		}
 	case tea.KeyPressMsg:
 		switch msg.String() {
