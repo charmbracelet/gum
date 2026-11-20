@@ -54,6 +54,10 @@ func (o Options) Run() error {
 		return fmt.Errorf("unable to confirm: %w", err)
 	}
 	m = tm.(model)
+	// A graceful program quit (for example SIGTERM) is not a confirmed answer.
+	if !m.quitting && ctx.Err() != context.DeadlineExceeded {
+		return fmt.Errorf("confirmation aborted: %w", exit.ErrExit(1))
+	}
 
 	if o.ShowOutput {
 		confirmationText := m.negative
