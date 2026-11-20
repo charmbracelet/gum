@@ -8,6 +8,6 @@ on:
 
 jobs:
   build:
-    uses: charmbracelet/meta/.github/workflows/build.yml@main
+    uses: charmbracelet/meta/.github/workflows/build.yml@4f7f704b30a477716e0e7bdbbc273485d2522dc5 # main as of 2026-10-31
     secrets:
       gh_pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
