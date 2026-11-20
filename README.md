@@ -296,6 +296,7 @@ gum spin --spinner dot --title "Buying Bubble Gum..." -- sleep 5
 <img src="https://vhs.charm.sh/vhs-3YFswCmoY4o3Q7MyzWl6sS.gif" width="600" alt="Shell running gum spin while sleeping for 5 seconds" />
 
 Available spinner types include: `line`, `dot`, `minidot`, `jump`, `pulse`, `points`, `globe`, `moon`, `monkey`, `meter`, `hamburger`.
+Adjust the animation speed with `--fps` (e.g. `--fps 5`).
 
 ## Table
 
