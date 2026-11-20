@@ -21,7 +21,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"syscall"
 
 	"charm.land/bubbles/v2/spinner"
 	tea "charm.land/bubbletea/v2"
@@ -31,6 +30,7 @@ import (
 )
 
 type model struct {
+	ctx        context.Context
 	spinner    spinner.Model
 	title      string
 	padding    []int
@@ -65,14 +65,19 @@ type finishCommandMsg struct {
 	status int
 }
 
-func commandStart(command []string) tea.Cmd {
+func commandStart(ctx context.Context, command []string) tea.Cmd {
 	return func() tea.Msg {
 		var args []string
 		if len(command) > 1 {
 			args = command[1:]
 		}
 
-		executing = exec.CommandContext(context.Background(), command[0], args...) //nolint:gosec
+		bothbuf.Reset()
+		outbuf.Reset()
+		errbuf.Reset()
+
+		executing = exec.CommandContext(ctx, command[0], args...) //nolint:gosec
+		setupProcess(executing)
 		executing.Stdin = os.Stdin
 
 		isTerminal := term.IsTerminal(os.Stdout.Fd())
@@ -111,16 +116,19 @@ func commandStart(command []string) tea.Cmd {
 			if err = stdoutPty.Start(executing); err != nil {
 				return errorMsg(err)
 			}
-			_ = xpty.WaitProcess(context.Background(), executing)
+			_ = xpty.WaitProcess(ctx, executing)
 		} else {
 			executing.Stdout = os.Stdout
 			executing.Stderr = os.Stderr
 			_ = executing.Run()
 		}
 
-		status := executing.ProcessState.ExitCode()
-		if status == -1 {
-			status = 1
+		status := 0
+		if executing.ProcessState != nil {
+			status = executing.ProcessState.ExitCode()
+			if status == -1 {
+				status = 1
+			}
 		}
 
 		return finishCommandMsg{
@@ -134,15 +142,19 @@ func commandStart(command []string) tea.Cmd {
 
 func commandAbort() tea.Msg {
 	if executing != nil && executing.Process != nil {
-		_ = executing.Process.Signal(syscall.SIGINT)
+		_ = abortProcess(executing)
 	}
 	return tea.InterruptMsg{}
 }
 
 func (m model) Init() tea.Cmd {
+	ctx := m.ctx
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	return tea.Batch(
 		m.spinner.Tick,
-		commandStart(m.command),
+		commandStart(ctx, m.command),
 	)
 }
 

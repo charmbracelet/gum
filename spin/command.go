@@ -22,7 +22,12 @@ func (o Options) Run() error {
 	s.Style = o.SpinnerStyle.ToLipgloss()
 	s.Spinner = spinnerMap[o.Spinner]
 	top, right, bottom, left := style.ParsePadding(o.Padding)
+
+	ctx, cancel := timeout.Context(o.Timeout)
+	defer cancel()
+
 	m := model{
+		ctx:        ctx,
 		spinner:    s,
 		title:      o.TitleStyle.ToLipgloss().Render(o.Title),
 		command:    o.Command,
@@ -33,9 +38,6 @@ func (o Options) Run() error {
 		isTTY:      isErrTTY,
 		padding:    []int{top, right, bottom, left},
 	}
-
-	ctx, cancel := timeout.Context(o.Timeout)
-	defer cancel()
 
 	tm, err := tea.NewProgram(
 		m,
