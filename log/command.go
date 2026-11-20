@@ -81,8 +81,7 @@ func (o Options) Run() error {
 		Inline(true)
 	st.Prefix = o.PrefixStyle.ToLipgloss().
 		Inline(true)
-	st.Message = o.MessageStyle.ToLipgloss().
-		Inline(true)
+	st.Message = o.MessageStyle.ToLipgloss()
 	st.Key = o.KeyStyle.ToLipgloss().
 		Inline(true)
 	st.Value = o.ValueStyle.ToLipgloss().
