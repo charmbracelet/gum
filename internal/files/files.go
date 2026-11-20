@@ -13,8 +13,11 @@ func List() []string {
 	var files []string
 	err := filepath.Walk(".",
 		func(path string, info os.FileInfo, err error) error {
-			if shouldIgnore(path) || info.IsDir() || err != nil {
+			if err != nil {
 				return nil //nolint:nilerr
+			}
+			if shouldIgnore(path) || info.IsDir() {
+				return nil
 			}
 			files = append(files, path)
 			return nil
