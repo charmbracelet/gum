@@ -317,6 +317,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Interrupt
 		case key.Matches(msg, km.Submit):
+			if m.strict && len(m.matches) == 0 && len(m.selected) == 0 {
+				break
+			}
 			m.quitting = true
 			m.submitted = true
 			return m, tea.Quit
