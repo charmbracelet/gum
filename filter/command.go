@@ -72,6 +72,8 @@ func (o Options) Run() error {
 		filteringChoices = append(filteringChoices, s)
 	}
 	switch {
+	case o.Extended:
+		matches = extendedMatches(o.Value, filteringChoices, o.Fuzzy, o.Sort && o.FuzzySort)
 	case o.Value != "" && o.Fuzzy:
 		matches = fuzzy.Find(o.Value, filteringChoices)
 	case o.Value != "" && !o.Fuzzy:
@@ -120,6 +122,7 @@ func (o Options) Run() error {
 		limit:                 o.Limit,
 		reverse:               o.Reverse,
 		fuzzy:                 o.Fuzzy,
+		extended:              o.Extended,
 		sort:                  o.Sort && o.FuzzySort,
 		strict:                o.Strict,
 		showHelp:              o.ShowHelp,
