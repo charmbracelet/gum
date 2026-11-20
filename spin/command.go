@@ -55,7 +55,7 @@ func (o Options) Run() error {
 		if _, err := fmt.Fprintf(os.Stderr, "%s\n", m.err.Error()); err != nil {
 			return fmt.Errorf("failed to write to stdout: %w", err)
 		}
-		return exit.ErrExit(1)
+		return exit.ErrExit(1) //nolint:wrapcheck
 	} else if m.status == 0 {
 		var output string
 		if o.ShowOutput || (o.ShowStdout && o.ShowStderr) {
@@ -78,5 +78,5 @@ func (o Options) Run() error {
 		}
 	}
 
-	return exit.ErrExit(m.status)
+	return exit.ErrExit(m.status) //nolint:wrapcheck
 }

@@ -152,7 +152,7 @@ func (o Options) Run() error {
 	m = tm.(model)
 	if !m.submitted {
 		if o.QuietEmpty {
-			return exit.ErrExit(1)
+			return exit.ErrExit(1) //nolint:wrapcheck
 		}
 		return errors.New("nothing selected")
 	}
