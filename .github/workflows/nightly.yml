@@ -8,6 +8,8 @@ on:
 jobs:
   nightly:
     uses: charmbracelet/meta/.github/workflows/nightly.yml@main
+    with:
+      go_version: "1.25.8"
     secrets:
       docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
       docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
