@@ -22,7 +22,7 @@ func (o Options) Run() error {
 		case "yes", "y":
 			return nil
 		default:
-			return exit.ErrExit(1)
+			return exit.ErrExit(1) //nolint:wrapcheck
 		}
 	}
 
@@ -67,5 +67,5 @@ func (o Options) Run() error {
 		return nil
 	}
 
-	return exit.ErrExit(1)
+	return exit.ErrExit(1) //nolint:wrapcheck
 }

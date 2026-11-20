@@ -11,6 +11,7 @@ import (
 	"charm.land/bubbles/v2/textinput"
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
+	"charm.land/gum/v2/internal/exit"
 	"charm.land/gum/v2/internal/files"
 	"charm.land/gum/v2/internal/stdin"
 	"charm.land/gum/v2/internal/timeout"
@@ -150,6 +151,9 @@ func (o Options) Run() error {
 
 	m = tm.(model)
 	if !m.submitted {
+		if o.QuietEmpty {
+			return exit.ErrExit(1) //nolint:wrapcheck
+		}
 		return errors.New("nothing selected")
 	}
 
