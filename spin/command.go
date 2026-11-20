@@ -37,6 +37,16 @@ func (o Options) Run() error {
 	ctx, cancel := timeout.Context(o.Timeout)
 	defer cancel()
 
+	// The tea.Program below runs with a nil input reader (the wrapped
+	// command owns stdin), so the terminal's replies to Bubble Tea's
+	// capability queries would otherwise be echoed into the output.
+	// Silence them for the duration of the program.
+	if term.IsTerminal(os.Stdin.Fd()) {
+		if restore, err := hushStdin(os.Stdin); err == nil {
+			defer restore()
+		}
+	}
+
 	tm, err := tea.NewProgram(
 		m,
 		tea.WithOutput(os.Stderr),
