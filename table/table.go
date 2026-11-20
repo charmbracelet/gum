@@ -2,7 +2,7 @@
 // https://github.com/charmbracelet/bubbles/tree/master/table
 //
 // It is useful to render tabular (CSV) data in a terminal and allows
-// the user to select a row from the table.
+// the user to select one or more rows from the table.
 //
 // Let's render a table of gum flavors:
 //
@@ -28,6 +28,8 @@ import (
 type keymap struct {
 	Navigate,
 	Select,
+	Toggle,
+	ToggleAll,
 	Quit,
 	Abort key.Binding
 }
@@ -37,11 +39,18 @@ func (k keymap) FullHelp() [][]key.Binding { return nil }
 
 // ShortHelp implements help.KeyMap.
 func (k keymap) ShortHelp() []key.Binding {
-	return []key.Binding{
+	bindings := []key.Binding{
 		k.Navigate,
 		k.Select,
-		k.Quit,
 	}
+	if k.Toggle.Enabled() {
+		bindings = append(bindings, k.Toggle)
+	}
+	if k.ToggleAll.Enabled() {
+		bindings = append(bindings, k.ToggleAll)
+	}
+	bindings = append(bindings, k.Quit)
+	return bindings
 }
 
 func defaultKeymap() keymap {
@@ -53,6 +62,16 @@ func defaultKeymap() keymap {
 		Select: key.NewBinding(
 			key.WithKeys("enter"),
 			key.WithHelp("enter", "select"),
+		),
+		Toggle: key.NewBinding(
+			key.WithKeys(" ", "tab", "x"),
+			key.WithHelp("x", "toggle"),
+			key.WithDisabled(),
+		),
+		ToggleAll: key.NewBinding(
+			key.WithKeys("a", "A", "ctrl+a"),
+			key.WithHelp("ctrl+a", "select all"),
+			key.WithDisabled(),
 		),
 		Quit: key.NewBinding(
 			key.WithKeys("esc", "ctrl+q", "q"),
@@ -66,14 +85,18 @@ func defaultKeymap() keymap {
 }
 
 type model struct {
-	table     table.Model
-	selected  table.Row
-	quitting  bool
-	showHelp  bool
-	hideCount bool
-	help      help.Model
-	keymap    keymap
-	padding   []int
+	table       table.Model
+	selected    table.Row
+	selectedMap map[int]struct{} // tracks selected row indices for multi-select
+	limit       int
+	numSelected int
+	submitted   bool
+	quitting    bool
+	showHelp    bool
+	hideCount   bool
+	help        help.Model
+	keymap      keymap
+	padding     []int
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -99,8 +122,45 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyPressMsg:
 		km := m.keymap
 		switch {
+		case key.Matches(msg, km.ToggleAll):
+			if m.limit <= 1 {
+				break
+			}
+			if m.numSelected < len(m.table.Rows()) && m.numSelected < m.limit {
+				// Select all (up to limit)
+				for i := range m.table.Rows() {
+					if m.numSelected >= m.limit {
+						break
+					}
+					if _, ok := m.selectedMap[i]; !ok {
+						m.selectedMap[i] = struct{}{}
+						m.numSelected++
+					}
+				}
+			} else {
+				// Deselect all
+				m.selectedMap = make(map[int]struct{})
+				m.numSelected = 0
+			}
+			return m, nil
+		case key.Matches(msg, km.Toggle):
+			if m.limit <= 1 {
+				break
+			}
+			cursor := m.table.Cursor()
+			if _, ok := m.selectedMap[cursor]; ok {
+				delete(m.selectedMap, cursor)
+				m.numSelected--
+			} else if m.numSelected < m.limit {
+				m.selectedMap[cursor] = struct{}{}
+				m.numSelected++
+			}
+			return m, nil
 		case key.Matches(msg, km.Select):
-			m.selected = m.table.SelectedRow()
+			if m.limit <= 1 {
+				m.selected = m.table.SelectedRow()
+			}
+			m.submitted = true
 			m.quitting = true
 			return m, tea.Quit
 		case key.Matches(msg, km.Quit):
