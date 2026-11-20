@@ -50,7 +50,7 @@ func defaultKeymap(affirmative, negative string) keymap {
 			key.WithHelp("←→", "toggle"),
 		),
 		Submit: key.NewBinding(
-			key.WithKeys("enter"),
+			key.WithKeys("enter", "ctrl+j"),
 			key.WithHelp("enter", "submit"),
 		),
 	}
