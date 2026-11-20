@@ -1,5 +1,7 @@
 # Gum Format
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Gum format allows you to format different text into human readable output.
 
 Four different parse-able formats exist:

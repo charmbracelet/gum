@@ -1,5 +1,7 @@
 # Gum
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 <p>
     <a href="https://stuff.charm.sh/gum/nutritional-information.png" target="_blank"><img src="https://stuff.charm.sh/gum/gum.png" alt="Gum Image" width="450" /></a>
     <br><br>
