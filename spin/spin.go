@@ -46,6 +46,7 @@ type model struct {
 	showStderr bool
 	showError  bool
 	err        error
+	ctx        context.Context
 }
 
 var (
@@ -65,14 +66,14 @@ type finishCommandMsg struct {
 	status int
 }
 
-func commandStart(command []string) tea.Cmd {
+func commandStart(ctx context.Context, command []string) tea.Cmd {
 	return func() tea.Msg {
 		var args []string
 		if len(command) > 1 {
 			args = command[1:]
 		}
 
-		executing = exec.CommandContext(context.Background(), command[0], args...) //nolint:gosec
+		executing = exec.CommandContext(ctx, command[0], args...) //nolint:gosec
 		executing.Stdin = os.Stdin
 
 		isTerminal := term.IsTerminal(os.Stdout.Fd())
@@ -111,7 +112,7 @@ func commandStart(command []string) tea.Cmd {
 			if err = stdoutPty.Start(executing); err != nil {
 				return errorMsg(err)
 			}
-			_ = xpty.WaitProcess(context.Background(), executing)
+			_ = xpty.WaitProcess(ctx, executing)
 		} else {
 			executing.Stdout = os.Stdout
 			executing.Stderr = os.Stderr
@@ -142,7 +143,7 @@ func commandAbort() tea.Msg {
 func (m model) Init() tea.Cmd {
 	return tea.Batch(
 		m.spinner.Tick,
-		commandStart(m.command),
+		commandStart(m.ctx, m.command),
 	)
 }
 
